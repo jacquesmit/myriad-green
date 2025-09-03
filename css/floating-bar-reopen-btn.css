@@ -1,0 +1,22 @@
+/* Minimal styles for the floating bar reopen button.
+   This file prevents 404s and can be extended with real styles as needed. */
+
+.reopen-floating-bar-btn {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 9999;
+  display: none; /* toggled by JS when the floating bar is closed */
+  padding: 0.6rem 0.9rem;
+  border-radius: 999px;
+  background: #3a7d3a;
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+  cursor: pointer;
+}
+
+.reopen-floating-bar-btn:focus{
+  outline: 3px solid rgba(58,125,58,0.35);
+  outline-offset: 2px;
+}

@@ -1,0 +1,51 @@
+.about-hero {
+  display: flex;
+  align-items: stretch;
+  gap: 2.5rem;
+}
+
+.about-content {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.about-visual {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: 100%;
+}
+
+.about-visual img {
+  flex: 1 1 0;
+  min-height: 350px;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 1.5rem 1.5rem 0 0;
+}
+
+#weather-widget {
+  margin: 0;
+  border-radius: 0 0 1.5rem 1.5rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  max-width: 100%;
+}
+
+@media (max-width: 767px) {
+  h1 { font-size: clamp(1.6rem, 4.5vw, 2.1rem); line-height: 1.2; }
+  h2 { font-size: clamp(1.3rem, 4vw, 1.8rem);  line-height: 1.25; }
+  h3 { font-size: clamp(1.1rem, 3.6vw, 1.4rem); }
+  .container { width: min(100% - 1.5rem, var(--container, 1100px)); }
+  section, .section { padding-block: 1.5rem; }
+  .about-hero-flex { grid-template-columns: 1fr; gap: 1rem; }
+  .btn, button, [role="button"] { min-height: 44px; padding: .65em 1em; }
+  img, video { max-width: 100%; height: auto; }
+  .nav { gap: .3rem; }
+  .nav a { padding: .5rem .6rem; }
+  [class*="col-"], [class*="span-"], .table-wrap, .map, .gallery { max-width: 100%; overflow-x: auto; }
+}

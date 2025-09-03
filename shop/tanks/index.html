@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shop Tank Products | Myriad Green</title>
+  <meta name="description" content="Browse tank products: JoJo tanks in various sizes." />
+  <link rel="canonical" href="https://www.myriadgreen.co.za/shop/tanks/" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/css/bundles/site.min.css">
+  <link rel="stylesheet" href="/css/pages/shop.css">
+</head>
+<body>
+  <div id="site-nav"></div>
+  <nav class="shop-nav mt-1-5rem text-center">
+  <a href="/shop/pumps">Pumps</a> |
+  <a href="/shop/tanks">Tanks</a> |
+  <a href="/shop/irrigation">Irrigation</a> |
+  <a href="/shop/filtration">Filtration</a> |
+  <a href="/shop/accessories">Accessories</a>
+  </nav>
+  <main class="container">
+    <h1>Shop Tanks</h1>
+    <div class="product-grid">
+      <article class="product-card">
+        <a href="jojo-tank-2000l.html">
+          <figure><img src="/images/products/placeholder.svg" alt="JoJo Tank 2000L"></figure>
+          <h3>JoJo Tank 2000L</h3>
+        </a>
+        <p class="description hidden"></p>
+        <div class="card-actions">
+          <a class="view-details-btn" href="jojo-tank-2000l.html">View details</a>
+        </div>
+      </article>
+      <article class="product-card">
+        <a href="jojo-tank-2500l.html">
+          <figure><img src="/images/products/placeholder.svg" alt="JoJo Tank 2500L"></figure>
+          <h3>JoJo Tank 2500L</h3>
+        </a>
+        <p class="description hidden"></p>
+        <div class="card-actions">
+          <a class="view-details-btn" href="jojo-tank-2500l.html">View details</a>
+        </div>
+      </article>
+      <article class="product-card">
+        <a href="jojo-tank-5000l.html">
+          <figure><img src="/images/products/placeholder.svg" alt="JoJo Tank 5000L"></figure>
+          <h3>JoJo Tank 5000L</h3>
+        </a>
+        <p class="description hidden"></p>
+        <div class="card-actions">
+          <a class="view-details-btn" href="jojo-tank-5000l.html">View details</a>
+        </div>
+      </article>
+    </div>
+  </main>
+  <div id="booking-modal-container"></div>
+  <div id="cartModal" class="cart-modal hidden">
+    <div class="cart-modal-content">
+      <button id="closeCartBtn" class="close-btn" aria-label="Close cart">&times;</button>
+      <h2>Your Cart</h2>
+      <ul id="cartItemsList" class="cart-items-list"></ul>
+      <p class="total">Total: R<span id="cartTotal">0.00</span></p>
+      <div class="checkout-actions">
+        <a href="/checkout" class="cart-checkout-btn">Proceed to Checkout</a>
+      </div>
+    </div>
+  </div>
+  <footer id="site-footer"></footer>
+  <button id="openCartBtn" class="floating-cart-btn" aria-label="View cart">
+    <i class="fas fa-shopping-cart"></i>
+    <span class="cart-badge" id="cartCount">0</span>
+  </button>
+  <script src="/js/site-init.js" defer></script>
+  <script src="/js/booking-modal-loader.js" defer></script>
+  <script src="/js/cart-modal.js" defer></script>
+  <script src="/js/checkout.js" defer></script>
+</body>
+</html>

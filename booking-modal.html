@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book a Consultation</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/booking-modal.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/reset.css" />
+  <link rel="stylesheet" href="/css/theme.css" />
+  <link rel="stylesheet" href="/css/utilities.css" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/landinghero.css" />
+  <link rel="stylesheet" href="/css/servicesection.css" />
+  <link rel="stylesheet" href="/css/booking-modal.css" />
+  <link rel="stylesheet" href="/css/faq-section.css" />
+  <link rel="stylesheet" href="/css/testimonials.css" />
+  <link rel="stylesheet" href="/css/about-us-section.css" />
+  <link rel="stylesheet" href="/css/main-navigation.css" />
+  <link rel="stylesheet" href="/css/mobile-nav.css" />
+  <link rel="stylesheet" href="/css/footer.css" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/theme-toggle.css" />
+  <link rel="stylesheet" href="/css/components/buttons/book-now-button.css" />
+  <link rel="stylesheet" href="/css/components/buttons/social-bar.css" />
+  <link rel="stylesheet" href="/css/floating-bar-reopen-btn.css" />
+  <link rel="stylesheet" href="/css/contact-us-form.css">
+  <link rel="stylesheet" href="/css/mobile-tweaks.css" />
+  <link rel="stylesheet" href="/css/icon-strip-mobile.css" />
+  <link rel="stylesheet" href="/css/mobile-tap-feedback.css" />
+  <link rel="stylesheet" href="/css/mobile-scroll-icon-animate.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+  <link rel="stylesheet" href="/css/weather-widget.css">
+  <link rel="stylesheet" href="/css/cart-modal.css" />
+  <link rel="stylesheet" href="/css/checkout.css" />
+  <link rel="stylesheet" href="/css/shop-section.css" />
+</head>
+<body>
+  <div id="booking-modal" class="booking-modal hidden">
+    <div class="booking-modal-content">
+      <button id="close-modal" aria-label="Close modal">&times;</button>
+
+      <div class="header-row">
+        <h2>Book a Consultation</h2>
+    <!-- Date picker moved inside the form. -->
+      </div>
+
+      <form id="booking-form">
+
+  <label for="datetime">Choose a date and time</label>
+  <input type="datetime-local" id="datetime" name="datetime" />
+  <span class="input-message" id="datetime-message"></span>
+
+
+  <label for="name">Full Name</label>
+  <input type="text" id="name" name="name" />
+  <span class="input-message" id="name-message"></span>
+
+
+  <label for="email">Email</label>
+  <input type="email" id="email" name="email" />
+  <span class="input-message" id="email-message"></span>
+
+
+  <label for="phone">Phone</label>
+  <input type="tel" id="phone" name="phone" />
+  <span class="input-message" id="phone-message"></span>
+
+  <label for="service">Service</label>
+  <select id="service" name="service">
+          <option value="">Choose a service</option>
+          <option>Irrigation</option>
+          <option>Boreholes</option>
+          <option>Plumbing</option>
+          <option>Electrical</option>
+          <option>Water Storage Tanks</option>
+          <option>Water Filtration</option>
+          <option>Pumps</option>
+          <option>Landscaping</option>
+          <option>Grey Water Systems</option>
+          <option>Rain Water Harvesting</option>
+          <option>Waste Water Systems</option>
+          <option>Leak Detection</option>
+          <option>Emergency Services</option>
+          <option>Solar Installations</option>
+          <option>Blocked Drainage</option>
+          <option>Gutter Solutions</option>
+          <option>Instant Lawn</option>
+          <option>Aggregates</option>
+          <option>Garden Substrates</option>
+          <option>Treefelling</option>
+          <option>Coc Certificates</option>
+          <option>Gas Installations</option>
+  </select>
+
+  <span class="input-message" id="service-message"></span>
+  <label for="hours" style="margin-top:10px;">Hours expected</label>
+  <input type="number" id="hours" name="hours" min="1" value="1" style="width:80px;display:block;" required />
+  <span id="hours-message" class="input-message"></span>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="isEmergency" name="isEmergency" />
+          <label for="isEmergency">Emergency Booking</label>
+        </div>
+
+        <p class="checkbox-text">
+          Emergency bookings are prioritized and require immediate payment.
+        </p>
+
+
+  <label for="message">Message</label>
+  <textarea id="message" name="message" rows="4"></textarea>
+  <span class="input-message" id="message-message"></span>
+
+        <div class="booking-summary" id="booking-summary" style="background:#f3f4f6;padding:16px 18px 10px 18px;border-radius:8px;margin:18px 0 10px 0;display:none;">
+          <h3 style="color:#146eb4;font-size:1.1rem;margin-bottom:10px;">Booking Summary</h3>
+          <table style="width:100%;font-size:15px;color:#374151;margin-bottom:10px;">
+            <tr><td><strong>Name:</strong></td><td id="summary-name"></td></tr>
+            <tr><td><strong>Email:</strong></td><td id="summary-email"></td></tr>
+            <tr><td><strong>Phone:</strong></td><td id="summary-phone"></td></tr>
+            <tr><td><strong>Service:</strong></td><td id="summary-service"></td></tr>
+            <tr><td><strong>Date & Time:</strong></td><td id="summary-datetime"></td></tr>
+            <tr><td><strong>Emergency:</strong></td><td id="summary-emergency"></td></tr>
+            <tr><td><strong>Hours Expected:</strong></td><td id="summary-hours"></td></tr>
+            <tr><td><strong>Total Price:</strong></td><td id="summary-price"></td></tr>
+            <tr><td><strong>Message:</strong></td><td id="summary-message"></td></tr>
+          </table>
+        </div>
+        <div class="button-row">
+          <button type="submit">Submit Booking</button>
+          <a href="https://wa.me/YOURNUMBER" target="_blank" class="whatsapp-icon">
+            <i class="fab fa-whatsapp"></i>
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+</body>
+</html>
+

@@ -1,0 +1,869 @@
+[data-theme="dark"] .booking-modal-content {
+  background: var(--booking-bg-dark, #232a34) !important;
+}
+[data-theme="dark"] .booking-modal-content h2 {
+  color: var(--booking-heading-dark, #f7fafc) !important;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.25);
+}
+/* --- Input Message Styles (Validation Feedback) --- */
+
+.input-message {
+  display: block;
+  font-size: 0.97em;
+  margin-top: 0.1em;
+  color: var(--color-error, #e07c3a);
+  background: transparent;
+  border-radius: 4px;
+  padding: 2px 8px;
+  min-height: 1.2em;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: color 0.2s, background 0.2s;
+}
+
+[data-theme="dark"] .input-message {
+  color: var(--color-error-dark, #ffb86b);
+  background: transparent;
+}
+/* Hide default select arrow and add custom caret for booking modal dropdown */
+.booking-modal-content select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%232f76bc" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M5.516 7.548a.75.75 0 0 1 1.06 0L10 10.97l3.424-3.423a.75.75 0 1 1 1.06 1.06l-3.954 3.954a.75.75 0 0 1-1.06 0L5.516 8.608a.75.75 0 0 1 0-1.06z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+  padding-right: 2.5em;
+}
+.booking-modal-content select::-ms-expand {
+  display: none;
+}
+/* --- Air Datepicker Modal Compatibility --- */
+.air-datepicker {
+  z-index: 9999 !important;
+}
+.booking-modal-content {
+  overflow: visible !important;
+}
+/* --- Flatpickr Modal Compatibility --- */
+/* Flatpickr code removed */
+.booking-modal-content {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(47, 118, 188, 0.13), 0 2px 8px rgba(135,230,75,0.08);
+  padding: 2.8rem 2.2rem 2.2rem 2.2rem;
+  max-width: 440px;
+  width: 100%;
+  margin: 0 auto;
+  animation: modalFadeIn 0.38s cubic-bezier(.25,.8,.25,1);
+  position: relative;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.97) translateY(30px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.booking-modal-content h2 {
+  color: #2f76bc;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  letter-spacing: -0.5px;
+}
+
+.booking-modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.7rem;
+}
+
+#booking-modal-content label {
+  /* Add your label styles here if needed */
+}
+#close-modal {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.1rem;
+  background: #f7fafc;
+  border: none;
+  color: #2f76bc;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  width: 2.3rem;
+  height: 2.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(47, 118, 188, 0.08);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  z-index: 10;
+}
+#close-modal:hover, #close-modal:focus {
+  background: #2f76bc;
+  color: #fff;
+}
+.booking-modal-content {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(47, 118, 188, 0.10);
+  padding: 1.5rem 1.2rem 1.2rem 1.2rem;
+  max-width: 400px;
+  width: 100%;
+  margin: 0 auto;
+}
+.booking-modal-content h2 {
+  color: #2f76bc;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.booking-modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+.booking-modal-content label {
+  font-size: 1rem;
+  color: #1a365d;
+  margin-bottom: 0.2rem;
+}
+.booking-modal-content input[type="text"],
+.booking-modal-content input[type="email"],
+.booking-modal-content input[type="tel"],
+.booking-modal-content select,
+.booking-modal-content textarea {
+  padding: 0.7rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 5px;
+  font-size: 1rem;
+  background: #f7fafc;
+  color: #222;
+  margin-bottom: 0.1rem;
+  transition: border 0.2s;
+}
+.booking-modal-content input:focus,
+.booking-modal-content select:focus,
+.booking-modal-content textarea:focus {
+  border-color: #87e64b;
+  outline: none;
+}
+.booking-modal-content textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+.booking-modal-content .checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.1rem;
+}
+.booking-modal-content .checkbox-row input[type="checkbox"] {
+  accent-color: #87e64b;
+  width: 1.1em;
+  height: 1.1em;
+}
+.booking-modal-content .checkbox-text {
+  color: #4b5563;
+  font-size: 0.97em;
+  margin-bottom: 0.5rem;
+}
+.booking-modal-content .button-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.booking-modal-content button[type="submit"] {
+  background: #2f76bc;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  padding: 0.8rem 0;
+  box-shadow: 0 2px 8px rgba(47, 118, 188, 0.08);
+  transition: background 0.2s, transform 0.2s;
+}
+.booking-modal-content button[type="submit"]:hover {
+  background: #87e64b;
+  color: #222;
+  transform: translateY(-1px) scale(1.01);
+}
+.booking-modal-content .calendar-btn {
+  background: none;
+  border: none;
+  color: #2f76bc;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.2em 0.4em;
+  margin-left: -2rem;
+  z-index: 2;
+  transition: color 0.2s;
+  border-radius: 50%;
+}
+.booking-modal-content .calendar-btn:focus, .booking-modal-content .calendar-btn:hover {
+  color: #87e64b;
+  background: #e6fffa;
+  outline: none;
+}
+/* --- Booking Modal Form Styling --- */
+.booking-modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  background: #fff;
+  border-radius: 14px;
+  padding: 1.5rem 1.2rem 1.2rem 1.2rem;
+  box-shadow: 0 4px 24px rgba(47, 118, 188, 0.10);
+}
+.booking-modal-content label {
+  font-weight: 500;
+  color: #2f76bc;
+  margin-bottom: 0.3rem;
+}
+.booking-modal-content input[type="text"],
+.booking-modal-content input[type="email"],
+.booking-modal-content input[type="tel"],
+.booking-modal-content select,
+.booking-modal-content textarea {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #f7fafc;
+  color: #222;
+  margin-bottom: 0.2rem;
+  transition: border 0.2s;
+}
+.booking-modal-content input:focus,
+.booking-modal-content select:focus,
+.booking-modal-content textarea:focus {
+  border-color: #87e64b;
+  outline: none;
+}
+.booking-modal-content textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+.booking-modal-content .checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.2rem;
+}
+.booking-modal-content .checkbox-row input[type="checkbox"] {
+  margin: 0;
+}
+/* --- Booking Modal Date Picker Input Row --- */
+.flatpickr-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.flatpickr-input-wrap input[type="text"] {
+  flex: 1 1 auto;
+  padding-right: 2.5rem;
+}
+
+.calendar-btn {
+  background: none;
+  border: none;
+  color: #2f76bc;
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 0.3em 0.5em;
+  margin-left: -2.2rem;
+  z-index: 2;
+  transition: color 0.2s;
+}
+.calendar-btn:focus, .calendar-btn:hover {
+  color: #87e64b;
+  outline: none;
+}
+/* Flatpickr Date Picker Fix - Working Modern Theme */
+.flatpickr-calendar {
+  z-index: 99999 !important;
+  position: fixed !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  min-width: 340px;
+  width: 420px !important;
+  max-width: none !important;
+  top: 80px !important;
+  background: linear-gradient(135deg, #f7fafc 0%, #e6fffa 100%) !important;
+  border-radius: 20px !important;
+  border: 2px solid #2f76bc !important;
+  box-shadow: 0 18px 48px rgba(47, 118, 188, 0.22), 0 4px 16px rgba(135,230,75,0.18);
+  backdrop-filter: blur(22px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(180%) !important;
+  padding: 24px 18px !important;
+  animation: flatpickrIn 0.35s cubic-bezier(.25,.8,.25,1);
+  overflow-x: auto !important;
+  font-family: inherit !important;
+  font-size: 1rem !important;
+}
+.flatpickr-calendar .flatpickr-months {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 12px;
+  font-family: inherit !important;
+  font-size: 1.1rem !important;
+}
+.flatpickr-calendar .flatpickr-day {
+  font-family: inherit !important;
+  font-size: 1rem !important;
+  color: #2f76bc !important;
+  border-radius: 8px !important;
+  transition: background 0.2s, color 0.2s;
+}
+.flatpickr-calendar .flatpickr-day.selected,
+.flatpickr-calendar .flatpickr-day.startRange,
+.flatpickr-calendar .flatpickr-day.endRange {
+  background: var(--color-accent, #87e64b) !important;
+  color: #fff !important;
+  box-shadow: 0 2px 8px rgba(135,230,75,0.18);
+}
+.flatpickr-calendar .flatpickr-day:hover {
+  background: #e6fffa !important;
+  color: #2f76bc !important;
+}
+.flatpickr-calendar .flatpickr-month {
+  background: rgba(47, 118, 188, 0.08);
+  border-radius: 12px;
+  padding: 8px 18px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2f76bc;
+  box-shadow: 0 2px 8px rgba(47, 118, 188, 0.08);
+  margin: 0 8px;
+}
+.flatpickr-calendar .flatpickr-current-month {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2f76bc;
+  letter-spacing: 0.5px;
+}
+.flatpickr-calendar .flatpickr-prev-month,
+.flatpickr-calendar .flatpickr-next-month {
+  background: #e6fffa;
+  color: #2f76bc;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  margin: 0 4px;
+}
+.flatpickr-calendar .flatpickr-prev-month:hover,
+.flatpickr-calendar .flatpickr-next-month:hover {
+  background: #2f76bc;
+  color: #fff;
+  transform: scale(1.1);
+}
+
+@keyframes flatpickrIn {
+  from { opacity: 0; transform: scale(0.95) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes modalPop {
+  from { transform: scale(0.96) translateY(20px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* Custom Flatpickr Theme for Booking Modal */
+.booking-flatpickr-theme.flatpickr-calendar {
+  background: linear-gradient(135deg, #f7fafc 0%, #e6fffa 100%) !important;
+  border: 2px solid #87e64b !important;
+  border-radius: 20px !important;
+  box-shadow: 0 18px 48px rgba(47, 118, 188, 0.18), 0 4px 16px rgba(135,230,75,0.12);
+  padding: 24px 18px !important;
+  font-family: inherit !important;
+  font-size: 1.05rem !important;
+}
+.booking-flatpickr-theme .flatpickr-months {
+  background: transparent !important;
+  color: #2f76bc !important;
+}
+.booking-flatpickr-theme .flatpickr-day {
+  border-radius: 8px !important;
+  color: #2f76bc !important;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+}
+.booking-flatpickr-theme .flatpickr-day.selected,
+.booking-flatpickr-theme .flatpickr-day.startRange,
+.booking-flatpickr-theme .flatpickr-day.endRange {
+  background: #87e64b !important;
+  color: #fff !important;
+  box-shadow: 0 2px 8px rgba(135,230,75,0.18);
+}
+.booking-flatpickr-theme .flatpickr-day:hover {
+  background: #e6fffa !important;
+  color: #2f76bc !important;
+}
+.booking-flatpickr-theme .flatpickr-time {
+  background: #f7fafc !important;
+  border-radius: 8px !important;
+  color: #2f76bc !important;
+  font-weight: 600;
+}
+.booking-flatpickr-theme .flatpickr-am-pm {
+  background: #e6fffa !important;
+  color: #2f76bc !important;
+  border-radius: 6px !important;
+  font-weight: 600;
+}
+.booking-flatpickr-theme .flatpickr-current-month {
+  color: #2f76bc !important;
+  font-weight: 700;
+}
+.booking-flatpickr-theme .flatpickr-prev-month,
+.booking-flatpickr-theme .flatpickr-next-month {
+  background: #e6fffa !important;
+  color: #2f76bc !important;
+  border-radius: 50% !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.3rem !important;
+  cursor: pointer !important;
+  transition: background 0.2s, color 0.2s, transform 0.2s !important;
+  margin: 0 4px !important;
+}
+.booking-flatpickr-theme .flatpickr-prev-month:hover,
+.booking-flatpickr-theme .flatpickr-next-month:hover {
+  background: #87e64b !important;
+  color: #fff !important;
+  transform: scale(1.1);
+}
+
+/* Hide default caret in Flatpickr month select (fix double caret) */
+.flatpickr-monthDropdown-months {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding-right: 1.5em;
+  color: inherit;
+}
+
+/* Hide Flatpickr's custom arrow for month dropdown */
+.flatpickr-current-month .flatpickr-monthDropdown-months + .flatpickr-arrow {
+  display: none !important;
+}
+
+/* Hide the default select arrow for all browsers */
+.flatpickr-monthDropdown-months::-ms-expand {
+  display: none;
+}
+.flatpickr-monthDropdown-months::-webkit-inner-spin-button,
+.flatpickr-monthDropdown-months::-webkit-outer-spin-button,
+.flatpickr-monthDropdown-months::-webkit-calendar-picker-indicator {
+  display: none !important;
+  -webkit-appearance: none !important;
+}
+
+/* Modal Overlay & Container */
+.hidden {
+  display: none !important;
+}
+
+#booking-modal {
+  position: fixed;
+  inset: 0;
+  background: var(--booking-overlay, rgba(0,0,0,0.32));
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 60px 20px;
+  z-index: 9999;
+  transition: all 0.3s ease;
+}
+
+.booking-modal {
+  margin-top: 15px;
+}
+
+.checkbox-row input[type="checkbox"] {
+  margin-top: 4px;
+  transform: scale(1.2);
+  accent-color: var(--color-accent, #87e64b);
+  width: auto;
+}
+
+.checkbox-text {
+  font-size: 0.9em;
+  color: var(--booking-label);
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+/* Submit Button */
+form button[type="submit"] {
+  margin-top: 20px;
+  padding: 0.75rem 1.5rem;
+  font-size: 16px;
+  font-weight: 600;
+  border: 2px solid var(--color-border, #e5e7eb);
+  background-color: var(--color-accent, #87e64b);
+  color: var(--color-heading, #111827);
+  border-radius: var(--radius-sm, 4px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-shadow: var(--shadow-soft, 0 2px 4px rgba(0,0,0,0.1));
+}
+
+form button[type="submit"]:hover {
+  background-color: var(--color-accent-hover, #6bb82e);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium, 0 4px 8px rgba(0,0,0,0.15));
+}
+
+/* WhatsApp Icon Button */
+.contact-actions {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.whatsapp-link,
+.whatsapp-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #25d366;
+  color: white;
+  font-size: 18px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin-top: 1.1rem;
+}
+
+.whatsapp-link:hover,
+.whatsapp-icon:hover {
+  background: #1ebc59;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+}
+
+/* Button Row */
+.button-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.button-row button {
+  flex: 1;
+}
+
+/* Modal title styling - specific fix for "Book a Visit" */
+#booking-modal h2,
+#booking-modal .modal-title,
+.booking-modal-content h2 {
+  color: var(--booking-heading) !important;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* Fix Flatpickr month dropdown visibility in modal */
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+  z-index: 2;
+  position: relative;
+  background: #fff !important;
+  color: #222 !important;
+  min-width: 80px;
+  max-width: 120px;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  display: inline-block !important;
+}
+
+/* Ensure Flatpickr month dropdown is not clipped by modal overflow */
+.booking-modal .flatpickr-calendar {
+  z-index: 9999 !important;
+}
+
+/* Flatpickr Date Picker Fix */
+.flatpickr-calendar {
+  z-index: 99999 !important;
+  position: fixed !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  min-width: 340px;
+  width: 420px !important;
+  max-width: none !important;
+  top: 80px !important;
+  background: linear-gradient(135deg, #f7fafc 0%, #e6fffa 100%) !important;
+  border-radius: 20px !important;
+  border: 2px solid #2f76bc !important;
+  box-shadow: 0 18px 48px rgba(47, 118, 188, 0.22), 0 4px 16px rgba(135,230,75,0.18);
+  backdrop-filter: blur(22px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(180%) !important;
+  padding: 24px 18px !important;
+  animation: flatpickrIn 0.35s cubic-bezier(.25,.8,.25,1);
+  overflow-x: auto !important;
+  font-family: inherit !important;
+  font-size: 1rem !important;
+}
+
+.flatpickr-calendar .flatpickr-months {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 12px;
+  font-family: inherit !important;
+  font-size: 1.1rem !important;
+}
+
+/* Flatpickr Day Cell Customization */
+.flatpickr-calendar .flatpickr-day {
+  font-family: inherit !important;
+  font-size: 1rem !important;
+  color: #2f76bc !important;
+  border-radius: 8px !important;
+  transition: background 0.2s, color 0.2s;
+}
+.flatpickr-calendar .flatpickr-day.selected,
+.flatpickr-calendar .flatpickr-day.startRange,
+.flatpickr-calendar .flatpickr-day.endRange {
+  background: var(--color-accent, #87e64b) !important;
+  color: #fff !important;
+  box-shadow: 0 2px 8px rgba(135,230,75,0.18);
+}
+.flatpickr-calendar .flatpickr-day:hover {
+  background: #e6fffa !important;
+  color: #2f76bc !important;
+}
+.flatpickr-calendar .flatpickr-month {
+  background: rgba(47, 118, 188, 0.08);
+  border-radius: 12px;
+  padding: 8px 18px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2f76bc;
+  box-shadow: 0 2px 8px rgba(47, 118, 188, 0.08);
+  margin: 0 8px;
+}
+.flatpickr-calendar .flatpickr-current-month {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2f76bc;
+  letter-spacing: 0.5px;
+}
+.flatpickr-calendar .flatpickr-prev-month,
+.flatpickr-calendar .flatpickr-next-month {
+  background: #e6fffa;
+  color: #2f76bc;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  margin: 0 4px;
+}
+.flatpickr-calendar .flatpickr-prev-month:hover,
+.flatpickr-calendar .flatpickr-next-month:hover {
+  background: #2f76bc;
+  color: #fff;
+  transform: scale(1.1);
+}
+
+@keyframes flatpickrIn {
+  from { opacity: 0; transform: scale(0.95) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes modalPop {
+  from { transform: scale(0.96) translateY(20px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* Custom Flatpickr Theme for Booking Modal */
+.booking-flatpickr-theme.flatpickr-calendar {
+  background: linear-gradient(135deg, #f7fafc 0%, #e6fffa 100%) !important;
+  border: 2px solid #87e64b !important;
+  border-radius: 20px !important;
+  box-shadow: 0 18px 48px rgba(47, 118, 188, 0.18), 0 4px 16px rgba(135,230,75,0.12);
+  padding: 24px 18px !important;
+  font-family: inherit !important;
+  font-size: 1.05rem !important;
+}
+.booking-flatpickr-theme .flatpickr-months {
+  background: transparent !important;
+  color: #2f76bc !important;
+}
+.booking-flatpickr-theme .flatpickr-day {
+  border-radius: 8px !important;
+  color: #2f76bc !important;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+}
+.booking-flatpickr-theme .flatpickr-day.selected,
+.booking-flatpickr-theme .flatpickr-day.startRange,
+.booking-flatpickr-theme .flatpickr-day.endRange {
+  background: #87e64b !important;
+  color: #fff !important;
+  box-shadow: 0 2px 8px rgba(135,230,75,0.18);
+}
+.booking-flatpickr-theme .flatpickr-day:hover {
+  background: #e6fffa !important;
+  color: #2f76bc !important;
+}
+.booking-flatpickr-theme .flatpickr-time {
+  background: #f7fafc !important;
+  border-radius: 8px !important;
+  color: #2f76bc !important;
+  font-weight: 600;
+}
+.booking-flatpickr-theme .flatpickr-am-pm {
+  background: #e6fffa !important;
+  color: #2f76bc !important;
+  border-radius: 6px !important;
+  font-weight: 600;
+}
+.booking-flatpickr-theme .flatpickr-current-month {
+  color: #2f76bc !important;
+  font-weight: 700;
+}
+.booking-flatpickr-theme .flatpickr-prev-month,
+.booking-flatpickr-theme .flatpickr-next-month {
+  background: #e6fffa !important;
+  color: #2f76bc !important;
+  border-radius: 50% !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.3rem !important;
+  cursor: pointer !important;
+  transition: background 0.2s, color 0.2s, transform 0.2s !important;
+  margin: 0 4px !important;
+}
+.booking-flatpickr-theme .flatpickr-prev-month:hover,
+.booking-flatpickr-theme .flatpickr-next-month:hover {
+  background: #87e64b !important;
+  color: #fff !important;
+  transform: scale(1.1);
+}
+
+/* Ensure Flatpickr calendar has enough height in modal */
+.booking-modal .flatpickr-calendar {
+  min-height: 340px !important;
+  height: auto !important;
+  max-height: 420px !important;
+  overflow-y: visible !important;
+}
+
+/* Remove margin-top from Flatpickr calendar in modal */
+.booking-modal .flatpickr-calendar {
+  margin-top: 0 !important;
+}
+
+/* Make Flatpickr calendar auto-size in modal */
+.booking-modal .flatpickr-calendar {
+  min-height: unset !important;
+  max-height: unset !important;
+  height: auto !important;
+  width: auto !important;
+  min-width: 260px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  #booking-modal {
+    padding: 20px 10px;
+  }
+  
+  .booking-modal-content {
+    padding: 16px;
+  }
+  
+  .header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .header-row input {
+    max-width: 100%;
+    font-size: 1rem;
+  }
+  
+  .button-row {
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .flatpickr-calendar {
+    top: 60px !important;
+    min-width: 220px;
+    width: 98vw !important;
+    max-width: 98vw !important;
+    border-radius: 16px !important;
+    padding: 14px 8px !important;
+    font-size: 0.98rem !important;
+  }
+}
+
+@media (min-width: 900px) {
+  .booking-modal-content {
+    max-width: 600px;
+    width: 100%;
+    margin: 4vh auto;
+  }
+}
+
+/* Hide Flatpickr month dropdown, show only arrows */
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+  display: none !important;
+}
+
+/* Modern styling for native datetime-local input in modal */
+#datetime[type="datetime-local"] {
+  width: 100%;
+  padding: 0.75em 1em;
+  border: 1px solid #cfd8dc;
+  border-radius: 8px;
+  font-size: 1.05em;
+  background: #f8fafc;
+  color: #222;
+  margin-bottom: 1em;
+  box-shadow: 0 1px 2px rgba(60,60,60,0.04);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+#datetime[type="datetime-local"]:focus {
+  border-color: #2f76bc;
+  outline: none;
+  box-shadow: 0 0 0 2px #2f76bc33;
+}

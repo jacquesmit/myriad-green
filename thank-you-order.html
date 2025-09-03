@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thank You for Your Order!</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f9f7;
+      margin: 0;
+      padding: 2rem;
+      color: #2f4033;
+      overflow-x: hidden;
+    }
+
+    .card {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      text-align: center;
+      animation: fadeIn 1s ease-out;
+    }
+
+    h1 {
+      color: #3a5e4a;
+    }
+
+    #orderSummaryList {
+      list-style: none;
+      padding: 0;
+      margin-top: 2rem;
+    }
+
+    #orderSummaryList li {
+      padding: 1rem;
+      border-bottom: 1px solid #e1eee5;
+      font-size: 1.1rem;
+      opacity: 0;
+      animation: fadeInItem 0.5s forwards;
+    }
+
+    #orderSummaryList li:nth-child(1) { animation-delay: 0.3s; }
+    #orderSummaryList li:nth-child(2) { animation-delay: 0.6s; }
+    #orderSummaryList li:nth-child(3) { animation-delay: 0.9s; }
+
+    #orderTotal {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-top: 1.5rem;
+      color: #1e3729;
+    }
+
+    #countdown {
+      font-size: 1.1rem;
+      margin-top: 1rem;
+      color: #6b8c7c;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInItem {
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.4; }
+      100% { opacity: 1; }
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      width: 100vw;
+      height: 100vh;
+      z-index: 9999;
+    }
+  </style>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="/css/reset.css" />
+  <link rel="stylesheet" href="/css/theme.css" />
+  <link rel="stylesheet" href="/css/utilities.css" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/landinghero.css" />
+  <link rel="stylesheet" href="/css/servicesection.css" />
+  <link rel="stylesheet" href="/css/booking-modal.css" />
+  <link rel="stylesheet" href="/css/faq-section.css" />
+  <link rel="stylesheet" href="/css/testimonials.css" />
+  <link rel="stylesheet" href="/css/about-us-section.css" />
+  <link rel="stylesheet" href="/css/main-navigation.css" />
+  <link rel="stylesheet" href="/css/mobile-nav.css" />
+  <link rel="stylesheet" href="/css/footer.css" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/theme-toggle.css" />
+  <link rel="stylesheet" href="/css/components/buttons/book-now-button.css" />
+  <link rel="stylesheet" href="/css/components/buttons/social-bar.css" />
+  <link rel="stylesheet" href="/css/floating-bar-reopen-btn.css" />
+  <link rel="stylesheet" href="/css/contact-us-form.css">
+  <link rel="stylesheet" href="/css/mobile-tweaks.css" />
+  <link rel="stylesheet" href="/css/icon-strip-mobile.css" />
+  <link rel="stylesheet" href="/css/mobile-tap-feedback.css" />
+  <link rel="stylesheet" href="/css/mobile-scroll-icon-animate.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+  <link rel="stylesheet" href="/css/weather-widget.css">
+  <link rel="stylesheet" href="/css/cart-modal.css" />
+  <link rel="stylesheet" href="/css/checkout.css" />
+  <link rel="stylesheet" href="/css/shop-section.css" />
+</head>
+<body>
+  <div class="card">
+    <h1>🎉 Thank You for Your Order!</h1>
+    <ul id="orderSummaryList"></ul>
+    <div id="orderTotal"></div>
+    <div id="countdown"></div>
+  </div>
+
+  <canvas id="fireworkCanvas"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script src="js/order-confirmation.js"></script>
+
+  <script>
+    const canvas = document.getElementById('fireworkCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles = [];
+
+    function createFirework(x, y) {
+      const colors = ["#ff5252", "#ffa000", "#7c4dff", "#00e676", "#40c4ff"];
+      for (let i = 0; i < 80; i++) {
+        particles.push({
+          x,
+          y,
+          radius: Math.random() * 2 + 1,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          angle: Math.random() * 2 * Math.PI,
+          speed: Math.random() * 4 + 1,
+          alpha: 1
+        });
+      }
+    }
+
+    function hexToRgb(hex) {
+      const bigint = parseInt(hex.replace("#", ""), 16);
+      return `${(bigint >> 16) & 255},${(bigint >> 8) & 255},${bigint & 255}`;
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += Math.cos(p.angle) * p.speed;
+        p.y += Math.sin(p.angle) * p.speed;
+        p.alpha -= 0.008;
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = `rgba(${hexToRgb(p.color)}, ${p.alpha})`;
+        ctx.fill();
+      }
+      requestAnimationFrame(animate);
+    }
+
+    // Fireworks loop
+    let bursts = 0;
+    const fireInterval = setInterval(() => {
+      createFirework(
+        Math.random() * window.innerWidth,
+        Math.random() * window.innerHeight / 2
+      );
+      bursts++;
+      if (bursts >= 7) clearInterval(fireInterval);
+    }, 800);
+
+    animate();
+
+    // Countdown and Redirect
+    let seconds = 8;
+    const interval = setInterval(() => {
+      seconds--;
+      countdown.textContent = `Returning to homepage in ${seconds} seconds...`;
+      if (seconds <= 0) clearInterval(interval);
+    }, 1000);
+
+    setTimeout(() => {
+      canvas.style.transition = "opacity 1s ease";
+      canvas.style.opacity = 0;
+
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1000);
+    }, 8000);
+  </script>
+
+  <script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const sessionId = urlParams.get('sessionId');
+  const orderId = urlParams.get('orderId');
+  // server will store emailSent in Firestore; we use that to decide client fallback
+  // Detect backend API base: if not on port 3000 locally, point to http://localhost:3000
+  const detectApiBase = () => {
+    const { hostname, port, protocol } = window.location;
+    const isLocal = (hostname === 'localhost' || hostname === '127.0.0.1' || /^192\.168\./.test(hostname) || /^10\./.test(hostname) || /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(hostname));
+    if (isLocal && port !== '3000') return 'http://localhost:3000';
+    return `${protocol}//${hostname}${port ? ':' + port : ''}`;
+  };
+  const API_BASE = detectApiBase();
+
+  // Prefer sessionId for fetching; fall back to orderId if present
+  const lookupId = sessionId || orderId;
+  if (!lookupId) {
+    document.getElementById('orderSummaryList').innerHTML = '<li>❌ Missing order identifier in URL.</li>';
+  } else {
+  fetch(`${API_BASE}/order/${encodeURIComponent(lookupId)}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch order');
+        }
+        return response.json();
+      })
+      .then(order => {
+        const list = document.getElementById("orderSummaryList");
+        const totalEl = document.getElementById("orderTotal");
+        let total = 0;
+        list.innerHTML = ""; // Clear list
+
+        (order.cart || []).forEach((item, i) => {
+          const li = document.createElement("li");
+          li.textContent = `✔️ ${item.quantity} × ${item.name} — R${(item.price * item.quantity).toFixed(2)}`;
+          li.style.animationDelay = `${0.3 + i * 0.3}s`;
+          list.appendChild(li);
+          total += item.price * item.quantity;
+        });
+
+        totalEl.innerHTML = `Total Paid: <strong>R${total.toFixed(2)}</strong>`;
+
+  // If server did not send the confirmation email (emailSent !== true), send it client-side using fetched details
+  if (order.emailSent !== true && window.sendOrderConfirmationEmail) {
+          try {
+            window.sendOrderConfirmationEmail(
+              order.cart || [],
+              { name: order.customerName, email: order.customerEmail, phone: order.customerPhone },
+              total
+            );
+          } catch (e) { /* non-fatal */ }
+        }
+
+        // Clean up local cart data
+        try { localStorage.removeItem('cart'); localStorage.removeItem('lastOrder'); } catch {}
+      })
+      .catch(error => {
+        console.error('Error fetching order details:', error);
+        document.getElementById("orderSummaryList").innerHTML = '<li>❌ Failed to load order details.</li>';
+      });
+  }
+
+  // Fallback behavior: Display error messages if orderId is missing or fetch fails.
+  </script>
+</body>
+</html>

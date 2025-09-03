@@ -1,0 +1,102 @@
+/* checkout-form.css - Styles for the checkout form */
+
+.checkout-form {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  max-width: 420px;
+  margin: 2rem auto 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.checkout-form fieldset {
+  border: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+}
+
+.checkout-form legend {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2a7c4f;
+  margin-bottom: 0.7rem;
+}
+
+.checkout-form label {
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+  color: #333;
+}
+
+.checkout-form input[type="text"],
+.checkout-form input[type="email"],
+.checkout-form input[type="tel"] {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #cfd8dc;
+  border-radius: 5px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  background: #f8fafb;
+  transition: border 0.2s;
+}
+
+.checkout-form input:focus {
+  border-color: #2a7c4f;
+  outline: none;
+}
+
+.checkout-form .payment-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.checkout-form .submit-order-btn {
+  background: #2a7c4f;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 0.8rem 1.6rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.checkout-form .submit-order-btn:hover {
+  background: #256b42;
+}
+
+.checkout-form .cancel-order-btn {
+  background: #e0e0e0;
+  color: #333;
+  border: none;
+  border-radius: 5px;
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.checkout-form .cancel-order-btn:hover {
+  background: #bdbdbd;
+}
+
+.checkout-form .back-arrow-icon {
+  font-size: 1.5rem;
+  color: #2a7c4f;
+  cursor: pointer;
+  margin-right: 1rem;
+  transition: color 0.2s;
+}
+
+.checkout-form .back-arrow-icon:hover {
+  color: #256b42;
+}

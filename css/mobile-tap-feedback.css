@@ -1,0 +1,20 @@
+/* Add tap/focus feedback for icon-feature and feature-card on mobile */
+@media (hover: none) and (pointer: coarse) {
+  .icon-feature:active,
+  .icon-feature:focus-visible,
+  .feature-card:active,
+  .feature-card:focus-visible {
+    background: #f2fbe3;
+    box-shadow: 0 2px 12px rgba(135, 230, 75, 0.15);
+    color: #7bbd1e;
+    outline: none;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  }
+  .icon-feature:active i,
+  .icon-feature:focus-visible i,
+  .feature-card:active i,
+  .feature-card:focus-visible i {
+    color: #7bbd1e;
+    transition: color 0.2s;
+  }
+}

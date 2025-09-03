@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="../css/weather-widget.css">
+  <style>
+    .hero-title, [data-hero-title] {
+      text-align: left;
+      color: #1a1a1a;
+      text-shadow: 0 2px 8px rgba(255,255,255,0.10), 0 1px 2px rgba(0,0,0,0.06);
+    }
+    .hero-intro, [data-hero-intro], .lead {
+      text-align: left;
+      color: #222;
+      text-shadow: 0 2px 8px rgba(255,255,255,0.08), 0 1px 2px rgba(0,0,0,0.05);
+      max-width: 700px;
+      margin-left: 0;
+      margin-right: auto;
+    }
+    @media (max-width: 600px) {
+      .hero-title, [data-hero-title], .hero-intro, [data-hero-intro], .lead {
+        text-align: left;
+        font-size: 1.1em;
+      }
+    }
+
+    /* Partners/Brands Section Styles */
+    .partners-section {
+  padding: 4rem 0 3rem 0;
+  background: linear-gradient(90deg, #f8fafc 0%, #e0f7fa 100%);
+}
+.partners-section .section-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.partners-section h2 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+.partners-intro {
+  color: #374151;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+}
+.brands-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+}
+.brand-card {
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  min-height: 80px;
+  transition: box-shadow 0.2s, background 0.2s;
+}
+.brand-card:hover {
+  box-shadow: 0 4px 16px rgba(37,99,235,0.18);
+}
+.brand-logo {
+  max-width: 110px;
+  max-height: 48px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: grayscale(0%);
+  transition: filter 0.2s, opacity 0.2s;
+  opacity: 0.92;
+  display: block;
+  margin: 0 auto;
+}
+[data-theme="light"] .brand-logo {
+  background: rgba(255,255,255,0.7);
+  border-radius: 8px;
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+}
+.brand-card:hover .brand-logo {
+  filter: grayscale(0%) brightness(1.1);
+  opacity: 1;
+}
+[data-theme="dark"] .brand-logo {
+  filter: grayscale(0%) brightness(0.9);
+  background: transparent;
+  outline: none;
+}
+  </style>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Irrigation Gauteng | Johannesburg, Pretoria, Sandton, Centurion | Myriad Green</title>
+  <!-- FAQPage JSON-LD for SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What’s included in monthly irrigation plans?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Our irrigation plans include seasonal tune-ups, leak checks, and smart controller adjustments for properties in Gauteng."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you service boreholes and irrigation tanks?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes! We handle both irrigation and borehole systems, including controller integration and municipal backup tanks for Johannesburg, Pretoria, and Sandton clients."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How long does irrigation installation take?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Small irrigation systems can be done in a day. Larger or complex zones may take 2–3 working days, depending on your Gauteng property size."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which irrigation brands do you use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We use top-quality brands such as Hunter, Rain Bird, Irritrol, Orbit, and Netafim for controllers, valves, and sprinklers to ensure reliability and efficiency."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can you upgrade my old irrigation system to smart controls?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes! We retrofit existing systems with smart controllers, WiFi timers, and rain sensors for water savings and remote management."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you offer maintenance plans for irrigation systems?",
+        "acceptedAnswer": {
+          "@type",
+          "Answer",
+          "text": "We offer monthly and seasonal maintenance plans that include inspections, cleaning, leak checks, and adjustments to keep your system running efficiently."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can you help with water restrictions and compliance?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. We design systems to comply with local water restrictions and can install rain sensors, drip irrigation, and efficient nozzles to help you save water."
+        }
+      }
+    ]
+  }
+  </script>
+  <meta name="description" content="Professional irrigation services in Gauteng, Johannesburg, Pretoria, Sandton, Centurion, and all major suburbs. Smart irrigation systems, repairs, and water-saving solutions for homes, estates, and businesses.">
+  <meta name="keywords" content="Irrigation Gauteng, Irrigation Johannesburg, Irrigation Pretoria, Irrigation Sandton, Irrigation Centurion, Smart Irrigation, Irrigation Systems, Lawn Irrigation, Irrigation Repairs, Water Management Gauteng, Irrigation Company Gauteng, Irrigation Services Gauteng, Irrigation Installers Gauteng, Irrigation Contractors Gauteng, Irrigation Maintenance Gauteng, Irrigation Solutions Gauteng, Irrigation for Gardens, Irrigation for Estates, Irrigation for Businesses">
+
+  <!-- Google Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Base Styles -->
+  <link rel="stylesheet" href="../css/reset.css" />
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/utilities.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+
+  <!-- Page Styles -->
+  <link rel="stylesheet" href="../css/landinghero.css" />
+  <link rel="stylesheet" href="../css/servicesection.css" />
+  <link rel="stylesheet" href="../css/booking-modal.css" />
+  <link rel="stylesheet" href="../css/services/irrigation-sections.css" />
+  <link rel="stylesheet" href="../css/faq-section.css" />
+  <link rel="stylesheet" href="../css/testimonials.css" />
+  <link rel="stylesheet" href="../css/about-us-section.css" />
+  <link rel="stylesheet" href="../css/components/buttons/book-now-button.css" />
+  <link rel="stylesheet" href="../css/components/buttons/floating-contact-bar.css" />
+  <link rel="stylesheet" href="../css/floating-bar-reopen-btn.css" />
+
+  <!-- AOS Animation -->
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+
+  <!-- Cart & Shop Styles for Irrigation Products -->
+  
+  <link rel="stylesheet" href="/css/reset.css" />
+  <link rel="stylesheet" href="/css/theme.css" />
+  <link rel="stylesheet" href="/css/utilities.css" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/landinghero.css" />
+  <link rel="stylesheet" href="/css/servicesection.css" />
+  <link rel="stylesheet" href="/css/booking-modal.css" />
+  <link rel="stylesheet" href="/css/faq-section.css" />
+  <link rel="stylesheet" href="/css/testimonials.css" />
+  <link rel="stylesheet" href="/css/about-us-section.css" />
+  <link rel="stylesheet" href="/css/main-navigation.css" />
+  <link rel="stylesheet" href="/css/mobile-nav.css" />
+  <link rel="stylesheet" href="/css/footer.css" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/theme-toggle.css" />
+  <link rel="stylesheet" href="/css/components/buttons/book-now-button.css" />
+  <link rel="stylesheet" href="/css/components/buttons/social-bar.css" />
+  <link rel="stylesheet" href="/css/floating-bar-reopen-btn.css" />
+  <link rel="stylesheet" href="/css/contact-us-form.css">
+  <link rel="stylesheet" href="/css/mobile-tweaks.css" />
+  <link rel="stylesheet" href="/css/icon-strip-mobile.css" />
+  <link rel="stylesheet" href="/css/mobile-tap-feedback.css" />
+  <link rel="stylesheet" href="/css/mobile-scroll-icon-animate.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+  <link rel="stylesheet" href="/css/weather-widget.css">
+  <link rel="stylesheet" href="/css/cart-modal.css" />
+  <link rel="stylesheet" href="/css/checkout.css" />
+  <link rel="stylesheet" href="/css/shop-section.css" />
+</head>
+
+<body>
+
+  <!-- ✅ Injected Social Bar -->
+  <div id="site-social-bar"></div>
+
+  <!-- ✅ Injected Navigation -->
+  <div id="site-nav"></div>
+
+
+
+
+
+
+    <main>
+
+
+      <section class="hero-irrigation">
+  <div class="hero-grid">
+    <div class="hero-text" data-aos="fade-right">
+  <h1 data-hero-title>Smart Irrigation Services in Gauteng</h1>
+  <p data-hero-intro>Efficient, tailored water solutions for gardens, estates, and smallholdings in Johannesburg, Pretoria, Sandton, and Centurion. Expert irrigation installers for every suburb.</p>
+      <button class="btn book-now-button" id="hero-book-service" style="margin-top:2rem;font-size:1.25rem;padding:1rem 2.5rem;border-radius:2rem;background:linear-gradient(90deg,#87e64b,#9fc612);color:#fff;border:none;box-shadow:0 2px 12px rgba(0,0,0,0.08);cursor:pointer;transition:background 0.2s,color 0.2s,box-shadow 0.2s;">Book a Service</button>
+    </div>
+  </div>
+</section>
+
+<!-- ICON STRIP AFTER HERO -->
+<section class="icon-strip-horizontal section" style="background:transparent;">
+  <div class="icon-strip-container">
+    <div class="icon-feature"><i class="fas fa-award"></i><p>14+ Years Irrigation Experience</p></div>
+    <div class="icon-feature"><i class="fas fa-recycle"></i><p>Eco-Friendly Irrigation Tech</p></div>
+    <div class="icon-feature"><i class="fas fa-tint"></i><p>Smart Water Saving Systems</p></div>
+      </main>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          document.querySelectorAll('.faq-question').forEach(btn => {
+            btn.addEventListener('click', function() {
+              const item = btn.closest('.faq-item');
+              const isOpen = item.classList.contains('open');
+              document.querySelectorAll('.faq-item.open').forEach(openItem => {
+                if (openItem !== item) openItem.classList.remove('open');
+              });
+              item.classList.toggle('open', !isOpen);
+            });
+          });
+        });
+      </script>
+  </div>
+</section>
+
+
+    <!-- ✅ OVERVIEW SECTION -->
+    <section class="overview section">
+      <div class="container grid-two-columns">
+        <div class="overview-image">
+          <figure>
+            <img src="../images/mrg products/removed back ground/esp-me_3stn-module_wide_00134_1-removebg-preview.png" alt="Smart Irrigation Controller" loading="lazy" />
+            <figcaption>Rain Bird ESP-Me Smart Controller Module</figcaption>
+          </figure>
+        </div>
+        <div class="overview-text">
+          <h2>Complete Irrigation Solutions for Gauteng</h2>
+          <p>We provide tailored irrigation systems in Johannesburg, Pretoria, Sandton, and Centurion that enhance water efficiency, save time, and preserve landscape health. Our irrigation company specializes in smart, water-wise solutions for every property.</p>
+          <ul class="overview-list">
+            <li>Smart irrigation controllers with app automation</li>
+            <li>Drip and spray systems customized per zone</li>
+            <li>Water-saving retrofits and pressure management</li>
+            <li>Leak detection and repair integration</li>
+          </ul>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- About Section (inserted as requested) -->
+    <section id="about-us" class="about-us-section" aria-labelledby="about-heading">
+      <div class="container">
+        <div class="about-hero">
+          <!-- SEO-Optimized Content -->
+          <article class="about-content">
+            <header>
+              <h2 id="about-heading">About Myriad Green</h2>
+              <p class="about-lead">
+                Since 2018, we've been South Africa's go-to water management specialists, solving everything from emergency leaks to complete irrigation automation.
+              </p>
+              <p>
+                What started as a small local team has grown into Gauteng's leading experts in irrigation solutions, leak detection, and water management. With over 500 successful projects, we deliver fast, reliable service for homes, businesses, and estates across the region.
+              </p>
+            </header>
+            <section class="about-story">
+              <p>
+                What started as a small team of water engineers has grown into Gauteng's most trusted name in irrigation, plumbing, and water systems. We've completed over 500 successful projects because we understand that water problems can't wait.
+              </p>
+              <!-- Core Services with Proper Schema -->
+              <section class="core-services-summary" itemscope itemtype="https://schema.org/Service">
+                <h3>Our Most Important Services</h3>
+                <div class="priority-services">
+                  <article class="service-priority featured" itemscope itemtype="https://schema.org/Service">
+                    <div class="service-icon" aria-hidden="true">🌱</div>
+                    <div class="service-info">
+                      <h4 itemprop="name">Irrigation Installation, Maintenance & Repairs</h4>
+                      <p itemprop="description">Complete irrigation solutions - from smart systems to traditional setups, ongoing maintenance and emergency repairs</p>
+                    </div>
+                  </article>
+                  <article class="service-priority" itemscope itemtype="https://schema.org/Service">
+                    <div class="service-icon" aria-hidden="true">🔍</div>
+                    <div class="service-info">
+                      <h4 itemprop="name">Advanced Leak Detection</h4>
+                      <p itemprop="description">Non-intrusive leak detection technology - find hidden leaks without damaging your property</p>
+                    </div>
+                  </article>
+                  <article class="service-priority" itemscope itemtype="https://schema.org/Service">
+                    <div class="service-icon" aria-hidden="true">🚿</div>
+                    <div class="service-info">
+                      <h4 itemprop="name">Drain Unblocking</h4>
+                      <p itemprop="description">Professional drain cleaning and unblocking services - from kitchen sinks to main sewer lines</p>
+                    </div>
+                  </article>
+                  <article class="service-priority" itemscope itemtype="https://schema.org/Service">
+                    <div class="service-icon" aria-hidden="true">🌧️</div>
+                    <div class="service-info">
+                      <h4 itemprop="name">Rainwater Harvesting</h4>
+                      <p itemprop="description">Sustainable water collection systems - reduce municipal dependency and save on water bills</p>
+                    </div>
+                  </article>
+                  <article class="service-priority" itemscope itemtype="https://schema.org/Service">
+                    <div class="service-icon" aria-hidden="true">💧</div>
+                    <div class="service-info">
+                      <h4 itemprop="name">Water Storage Tanks & Booster Pumps</h4>
+                      <p itemprop="description">Complete water storage solutions with pressure management for consistent water supply</p>
+                    </div>
+                  </article>
+                </div>
+                <!-- Additional Services -->
+                <aside class="other-services">
+                  <h4>Additional Services</h4>
+                  <ul class="services-list" role="list">
+                    <li role="listitem">Emergency Plumbing Services</li>
+                    <li role="listitem">Borehole Drilling & Repairs</li>
+                    <li role="listitem">Water Filtration Systems</li>
+                    <li role="listitem">Geyser Installation & Repairs</li>
+                    <li role="listitem">Pool Equipment & Maintenance</li>
+                    <li role="listitem">Bathroom & Kitchen Renovations</li>
+                  </ul>
+                </aside>
+              </section>
+              <div class="about-cta">
+                <button class="btn-primary open-modal-btn" 
+                        data-service="General Inquiry" 
+                        aria-describedby="about-heading"
+                        type="button">
+                  See How We Can Help
+                </button>
+              </div>
+            </section>
+          </article>
+          <!-- Semantic Image with Rich Data and Weather Widget -->
+          <div class="about-visual" itemscope itemtype="https://schema.org/ImageObject" style="display: flex; flex-direction: column; align-items: flex-start;">
+            <img src="/images/plumbing/plumbing-585658_1280.jpg" 
+                 alt="Myriad Green professional team installing smart irrigation systems in Gauteng, South Africa" 
+                 loading="lazy" 
+                 width="600" 
+                 height="400"
+                 itemprop="contentUrl" style="margin-bottom:1.2rem;max-width:100%;height:auto;" />
+            <figcaption class="sr-only" itemprop="caption">
+              Professional water management installation by Myriad Green team - specialists in irrigation, leak detection, and water storage solutions across Gauteng
+            </figcaption>
+            <h2 class="weather-widget-title" style="margin:0 0 0.7rem 0;font-size:1.15rem;font-weight:600;color:#3a7d3a;align-self:flex-start;">Today's Weather & Water Advice</h2>
+            <!-- 🌦️ Weather Widget -->
+            <!-- dev-only note: API key handled in JS; data-owm-key not required here -->
+            <div
+              id="weather-widget"
+              class="weather-widget"
+              data-suburb="Johannesburg"
+              data-country="ZA"
+              data-units="metric"
+              data-cache-mins="120"
+              data-stale-mins="240"
+              data-theme="xbox"
+              data-tone="solid"
+              data-icon="#ffffff"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  <section class="testimonials-section" aria-labelledby="testimonials-heading">
+      <div class="container">
+        <h2 id="testimonials-heading">What Our Clients Say</h2>
+        <p class="testimonials-intro">Here's what some of our clients have to say about our irrigation services.</p>
+
+        <div class="testimonial-grid">
+          <figure class="testimonial-card">
+            <img src="../images/testimonials/coert du plessis.png" alt="Coert du Plessis" class="client-image" />
+            <figcaption>
+              <blockquote>
+                <p>Fantastic service, couldn't be happier with my new irrigation system!</p>
+              </blockquote>
+              <div class="star-rating" aria-label="5 out of 5 stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <cite>– Coert du Plessis</cite>
+            </figcaption>
+          </figure>
+
+          <figure class="testimonial-card">
+            <img src="../images/testimonials/ketut-subiyanto.png" alt="Ketut Subiyanto" class="client-image" />
+            <figcaption>
+              <blockquote>
+                <p>Highly recommended for all borehole drilling and repair needs.</p>
+              </blockquote>
+              <div class="star-rating" aria-label="4 out of 5 stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="far fa-star"></i>
+              </div>
+              <cite>– Ketut Subiyanto</cite>
+            </figcaption>
+          </figure>
+
+          <figure class="testimonial-card">
+            <img src="../images/testimonials/testimonial.png" alt="Letitia Baard" class="client-image" />
+            <figcaption>
+              <blockquote>
+                <p>Professional and efficient team! They were on time and completed the work as requested.</p>
+              </blockquote>
+              <div class="star-rating" aria-label="5 out of 5 stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <cite>– Letitia Baard</cite>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+     </section>
+
+       <!-- ✅ FEATURES SECTION -->
+    <section class="features section">
+      <div class="container">
+        <h2 class="section-heading">What We Offer: Irrigation Services in Gauteng</h2>
+        <p class="section-subheading">Innovative irrigation systems and water management solutions tailored to save water and maximize plant health in all major Gauteng suburbs.</p>
+        <div class="grid">
+          <div class="feature-card"><i class="fas fa-wifi feature-icon"></i><h3>Smart Irrigation Controllers</h3><p>Wi-Fi enabled scheduling with weather syncing and mobile app control for homes and businesses in Gauteng.</p></div>
+          <div class="feature-card"><i class="fas fa-tint feature-icon"></i><h3>Drip & Spray Systems</h3><p>Efficient water delivery for gardens, lawns, and planters with minimal waste. Ideal for Johannesburg, Pretoria, and Sandton properties.</p></div>
+          <div class="feature-card"><i class="fas fa-draw-polygon feature-icon"></i><h3>Custom Zoning</h3><p>We design layouts that split your landscape into optimal watering zones for maximum water savings and healthy lawns.</p></div>
+          <div class="feature-card"><i class="fas fa-tools feature-icon"></i><h3>Maintenance & Repairs</h3><p>We service and upgrade existing irrigation systems, replacing faulty pipes and emitters across Gauteng.</p></div>
+        </div>
+      </div>
+    </section>
+
+      <!-- ✅ WHY CHOOSE US -->
+    <section class="why-choose-us-section">
+  <div class="section-heading">
+  <h2>Why Choose Our Irrigation Services</h2>
+  <p>Trusted by homeowners, estates, and contractors across Gauteng for quality, reliability, and long-term irrigation service. We are leading irrigation installers in Johannesburg, Pretoria, and Sandton.</p>
+  </div>
+
+  <div class="why-cards">
+    <div class="why-card">
+      <i class="fas fa-check-circle"></i>
+      <h3>14+ Years of Irrigation Experience</h3>
+      <p>We’ve built and maintained irrigation systems across residential, commercial, and estate properties in Gauteng since 2009.</p>
+    </div>
+    <div class="why-card">
+      <i class="fas fa-shield-alt"></i>
+      <h3>Quality Irrigation Workmanship</h3>
+      <p>We don’t just install — we guarantee long-term performance with every irrigation system we build or repair in Gauteng.</p>
+    </div>
+    <div class="why-card">
+      <i class="fas fa-recycle"></i>
+      <h3>Eco-Friendly Irrigation Focus</h3>
+      <p>From rainwater harvesting to low-flow emitters, we offer water-wise irrigation options for every landscape in Johannesburg, Pretoria, and beyond.</p>
+    </div>
+  </div>
+</section>
+
+<section class="how-it-works section">
+  <h2 class="section-heading">How Our Irrigation Process Works</h2>
+  <p class="section-subheading">Here’s how we bring smart irrigation to your property in Gauteng, from assessment to automation.</p>
+
+  <div class="steps-progress-container">
+    <!-- ✅ Progress line -->
+    <div class="animated-progress-line"></div>
+
+    <!-- ✅ Step cards -->
+    <div class="grid-four-columns">
+      <div class="step-card">
+        <div class="step-icon"><i class="fas fa-lightbulb"></i></div>
+        <h3>Step 1: Assess Your Irrigation Needs</h3>
+        <p>We inspect your property layout, plant zones, and water pressure to identify exact irrigation needs for your garden or estate.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-icon"><i class="fas fa-drafting-compass"></i></div>
+        <h3>Step 2: Design a Water-Saving System</h3>
+        <p>We design a water-efficient irrigation system tailored to your landscape, sun, and slope for optimal results in Gauteng.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-icon"><i class="fas fa-tools"></i></div>
+        <h3>Step 3: Install Smart Irrigation</h3>
+        <p>Smart controllers, drip or spray zones, and sensors are installed by our expert irrigation team.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-icon"><i class="fas fa-mobile-alt"></i></div>
+        <h3>Step 4: Automate & Monitor</h3>
+        <p>Your irrigation system is activated and connected to app control with automation for easy management in Johannesburg, Pretoria, and Sandton.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="irrigation-services-section" id="irrigation-services">
+  <div class="section-heading">
+    <h2>Complete Irrigation Services</h2>
+    <p>A comprehensive offering covering residential, commercial, and smart irrigation systems — fully tailored to Gauteng’s diverse landscapes.</p>
+  </div>
+
+  <!-- Residential Irrigation -->
+  <h3 class="services-group-heading">Residential Irrigation</h3>
+  <p class="section-keywords">We provide residential irrigation design, installation, upgrades, and maintenance for homes in Sandton, Fourways, Midrand, Centurion, Pretoria, Edenvale, Bryanston, Randburg, and all major Gauteng suburbs. Our automated and water-wise solutions help you save water, reduce bills, and keep your garden or lawn healthy year-round. Trusted by local homeowners for quality, reliability, and eco-friendly technology.</p>
+  <div class="services-grid">
+    <div class="service-card" data-aos="fade-up">
+        <i class="fas fa-home"></i>
+        <h3>Lawn Irrigation Systems</h3>
+        <p>Custom-designed lawn irrigation systems for homes in Gauteng, Johannesburg, Pretoria, Sandton, and Centurion. We assess your garden’s size, soil, and sun exposure to create a system that ensures even water distribution, healthy lawns, and reduced water waste. Our solutions include pop-up sprinklers, smart controllers, and seasonal adjustments for optimal performance year-round.</p>
+      </div>
+      <div class="service-card" data-aos="fade-up">
+        <i class="fas fa-hand-holding-water"></i>
+        <h3>Drip Irrigation</h3>
+        <p>Water-saving drip irrigation systems designed for flowerbeds, pots, vegetable gardens, and landscaped areas. Our drip solutions deliver precise moisture directly to plant roots, minimizing evaporation and runoff. Ideal for Gauteng’s climate, these systems help conserve water, prevent overwatering, and promote lush, healthy growth in both residential and estate gardens.</p>
+      </div>
+      <div class="service-card" data-aos="fade-up">
+        <i class="fas fa-sync-alt"></i>
+        <h3>Manual to Automatic</h3>
+        <p>We convert manual irrigation setups into fully automated systems for homes and estates in Gauteng, Johannesburg, Pretoria, Sandton, and Centurion. Our team upgrades your existing system with smart controllers, timers, and sensors, allowing you to schedule watering, reduce water waste, and enjoy hands-free operation. This service is ideal for busy homeowners and property managers seeking convenience and efficiency.</p>
+      </div>
+      <div class="service-card" data-aos="fade-up">
+        <i class="fas fa-cloud-rain"></i>
+        <h3>Rain Sensor Installation</h3>
+        <p>Our rain sensor installation service adds smart technology to your irrigation system, automatically pausing watering during rainfall to prevent overwatering and save water. We install and calibrate rain sensors compatible with all major irrigation brands, ensuring your garden or landscape in Gauteng receives the right amount of water, only when needed. This upgrade helps protect your plants and lowers your water bill.</p>
+      </div>
+    </div>
+
+  <!-- Commercial / Estate -->
+  <h3 class="services-group-heading">Commercial & Estate Irrigation</h3>
+  <p class="section-keywords">Our commercial and estate irrigation services cover golf courses, estates, schools, sports fields, and public spaces in Johannesburg, Pretoria, Sandton, Centurion, Bedfordview, Benoni, Boksburg, and beyond. We specialize in large-scale irrigation design, project management, water management, and sustainable solutions for high-traffic and complex landscapes. Choose us for advanced technology, compliance, and long-term support.</p>
+  <div class="services-grid">
+    <div class="service-card" data-aos="fade-up">
+      <i class="fas fa-building"></i>
+      <h3>Estate-wide Irrigation</h3>
+      <p>We manage large-scale irrigation projects for estates, complexes, golf courses, and commercial properties throughout Gauteng, Johannesburg, Pretoria, Sandton, and Centurion. Our team designs and installs custom irrigation systems with advanced zoning, smart controllers, and water-saving technology. We handle project management from consultation to completion, ensuring reliable, efficient watering for expansive landscapes and shared spaces.</p>
+    </div>
+    <div class="service-card" data-aos="fade-up">
+      <i class="fas fa-school"></i>
+      <h3>Schools & Public Spaces</h3>
+      <p>Complete irrigation solutions for schools, sports fields, public gardens, and campuses in Gauteng and surrounding areas. We design systems that meet safety and compliance standards, provide even coverage for large turf areas, and use durable components for high-traffic environments. Our services include automated scheduling, water conservation features, and ongoing maintenance for year-round performance.</p>
+    </div>
+    <div class="service-card" data-aos="fade-up">
+      <i class="fas fa-water"></i>
+      <h3>Borehole & Tank Integration</h3>
+      <p>We integrate boreholes and municipal backup water tanks into your irrigation network, providing a reliable water source for gardens, estates, and commercial properties. Our solutions include pump installation, filtration, and automated switching between water sources. This service helps reduce reliance on municipal supply, ensures uninterrupted irrigation during water outages, and supports sustainable water management in Gauteng.</p>
+    </div>
+    <div class="service-card" data-aos="fade-up">
+      <i class="fas fa-tachometer-alt"></i>
+      <h3>Filtration & Pressure Control</h3>
+      <p>Protect your irrigation system with advanced filtration and pressure control solutions. We install sand, disc, and mesh filters to remove debris, and pressure regulators to maintain optimal flow across all zones. Our services prevent clogging, extend equipment life, and ensure consistent water delivery for properties in Gauteng, Johannesburg, Pretoria, and beyond. Custom solutions are available for both residential and commercial systems.</p>
+    </div>
+  </div>
+
+  <!-- Smart Systems -->
+  <h3 class="services-group-heading">Smart Irrigation & Automation</h3>
+  <p class="section-keywords">Upgrade to smart irrigation with Wi-Fi controllers, weather sensors, and app-based automation for properties in Gauteng, including Dainfern, Lonehill, Sunninghill, Waterfall, and Kyalami. Our systems offer remote control, leak detection, and real-time alerts, making irrigation easy, efficient, and future-proof. Perfect for busy families, estates, and businesses seeking the best in water-saving technology.</p>
+  <div class="services-grid">
+    <div class="service-card" data-aos="fade-up">
+      <i class="fas fa-wifi"></i>
+      <h3>Wi-Fi Enabled Controllers</h3>
+      <p>Control your irrigation from anywhere using your smartphone.</p>
+    </div>
+    <div class="service-card" data-aos="fade-up">
+      <i class="fas fa-bolt"></i>
+      <h3>Weather-Based Automation</h3>
+      <p>Systems that adapt automatically to seasonal and daily weather changes.</p>
+    </div>
+    <div class="service-card" data-aos="fade-up">
+      <i class="fas fa-tint"></i>
+      <h3>Flow Meters & Alerts</h3>
+      <p>Real-time alerts for leaks, burst pipes, or abnormal water usage.</p>
+    </div>
+    <div class="service-card" data-aos="fade-up">
+      <i class="fas fa-mobile-alt"></i>
+      <h3>Mobile App Integration</h3>
+      <p>Full system control via your mobile device with diagnostics and scheduling.</p>
+    </div>
+  </div>
+
+  <!-- Repairs & Maintenance -->
+  <h3 class="services-group-heading">Maintenance & Repairs</h3>
+  <p class="section-keywords">We offer fast, professional irrigation repairs, troubleshooting, and maintenance contracts in Johannesburg, Pretoria, Sandton, Roodepoort, Alberton, Germiston, and all surrounding areas. From emergency pipe bursts to seasonal servicing, our certified team ensures your system runs efficiently, saving you time, water, and money. Book a free consultation for reliable, affordable service.</p>
+  <div class="services-grid">
+    <div class="service-card" data-aos="fade-up">
+      <i class="fas fa-tools"></i>
+      <h3>Sprinkler & Valve Repair</h3>
+      <p>Quick repair and replacement of damaged or clogged sprinkler heads and valves.</p>
+    </div>
+    <div class="service-card" data-aos="fade-up">
+      <i class="fas fa-exclamation-triangle"></i>
+      <h3>Pipe Burst & Leak Fixes</h3>
+      <p>We locate and repair underground leaks fast — minimizing damage and water loss.</p>
+    </div>
+    <div class="service-card" data-aos="fade-up">
+      <i class="fas fa-cogs"></i>
+      <h3>Controller Troubleshooting</h3>
+      <p>Fix faulty timers, rewiring, or power issues affecting your system.</p>
+    </div>
+    <div class="service-card" data-aos="fade-up">
+      <i class="fas fa-calendar-check"></i>
+      <h3>Seasonal & Monthly Servicing</h3>
+      <p>Flexible once-off and monthly service options to keep your system running efficiently.</p>
+    </div>
+  </div>
+
+  <!-- Optional Specialty -->
+  <h3 class="services-group-heading">Specialty Applications</h3>
+  <p class="section-keywords">Our specialty irrigation services include micro misting, rooftop gardens, vertical gardens, and custom-zone reticulation for unique properties in Gauteng, including Parkhurst, Rosebank, Hyde Park, Menlyn, Brooklyn, and Silver Lakes. We design and install tailored solutions for greenhouses, urban spaces, and complex landscapes, using the latest eco-friendly and space-saving technology.</p>
+  <div class="services-grid">
+    <div class="service-card" data-aos="fade-up">
+      <i class="fas fa-seedling"></i>
+      <h3>Micro Misting & Shrubs</h3>
+      <p>Delicate irrigation for bonsai, orchids, greenhouses and sensitive plant beds.</p>
+    </div>
+    <div class="service-card" data-aos="fade-up">
+      <i class="fas fa-tree"></i>
+      <h3>Rooftop & Vertical Gardens</h3>
+      <p>Specialised irrigation designs for green roofs and space-saving urban gardens.</p>
+    </div>
+    <div class="service-card" data-aos="fade-up">
+      <i class="fas fa-ruler-combined"></i>
+      <h3>Custom-Zone Reticulation</h3>
+      <p>Tailored zoning to meet landscape diversity, slopes, and sun/shade areas.</p>
+    </div>
+  </div>
+</section>
+
+
+
+
+    <!-- ✅ PRICING SECTION -->
+    <section class="pricing section">
+      <div class="container">
+    <h2 class="section-heading">Flexible Irrigation Packages for Gauteng</h2>
+    <p class="section-subheading">Choose a plan that fits your garden, estate, or business in Johannesburg, Pretoria, Sandton, or Centurion. Affordable irrigation solutions for every need and budget.</p>
+        <div class="pricing-cards">
+          <div class="pricing-card">
+            <h3 class="plan-title">Starter</h3>
+            <p class="plan-price">R7,500 <span>/ once-off</span></p>
+            <ul class="plan-features"><li>Small garden</li><li>4 zones</li><li>Automated sprinklers</li><li>Installation included</li></ul>
+            <button class="btn book-now-button">Book Starter</button>
+          </div>
+          <div class="pricing-card highlighted">
+            <h3 class="plan-title">Standard</h3>
+            <p class="plan-price">R2,800 <span>/ once-off</span></p>
+            <ul class="plan-features"><li>Medium coverage</li><li>6 sprinkler heads</li><li>Smart timer</li><li>Free consultation</li></ul>
+            <button class="btn book-now-button">Book Standard</button>
+          </div>
+          <div class="pricing-card">
+            <h3 class="plan-title">Premium</h3>
+            <p class="plan-price">R4,600 <span>/ once-off</span></p>
+            <ul class="plan-features"><li>Large properties</li><li>Custom zones</li><li>Remote control</li><li>6-month check</li></ul>
+            <button class="btn book-now-button">Book Premium</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+      <!-- ✅ MONTHLY CARE PLANS -->
+    <section class="monthly-pricing section alt-bg">
+      <div class="container">
+    <h2 class="section-heading">Monthly Irrigation Care Plans in Gauteng</h2>
+    <p class="section-subheading">Ongoing support, seasonal adjustments, and peace of mind for your irrigation system in Johannesburg, Pretoria, and all major suburbs.</p>
+        <div class="pricing-cards">
+          <div class="pricing-card">
+            <h3 class="plan-title">Care Basic</h3>
+            <p class="plan-price">R350 <span>/ month</span></p>
+            <ul class="plan-features"><li>Monthly check</li><li>Nozzle cleaning</li><li>Minor repairs</li><li>Priority support</li></ul>
+            <button class="btn book-now-button">Start Basic</button>
+          </div>
+          <div class="pricing-card highlighted">
+            <h3 class="plan-title">Care Plus</h3>
+            <p class="plan-price">R750 <span>/ month</span></p>
+            <ul class="plan-features"><li>Includes Basic</li><li>Seasonal tuning</li><li>Smart reprogramming</li><li>Leak inspection</li></ul>
+            <button class="btn book-now-button">Start Plus</button>
+          </div>
+          <div class="pricing-card">
+            <h3 class="plan-title">Care Pro</h3>
+            <p class="plan-price">R1,250 <span>/ month</span></p>
+            <ul class="plan-features"><li>All Plus features</li><li>Emergency callouts</li><li>Component cover</li><li>Water usage reports</li></ul>
+            <button class="btn book-now-button">Start Pro</button>
+          </div>
+        </div>
+      </div>
+
+   <section class="project-gallery-section">
+  <div class="section-heading">
+    <h2>Recent Irrigation Projects in Gauteng</h2>
+    <p>A glimpse at some of our completed irrigation installations and landscaping projects across Johannesburg, Pretoria, Sandton, and Centurion. See why we’re a top-rated irrigation company in Gauteng.</p>
+  </div>
+
+  <div class="project-list">
+    <!-- Project 1 -->
+    <div class="project-row">
+      <div class="project-image">
+        <img src="../images/work/irrigation and lawn installation before.png" alt="Irrigation and lawn installation Sandton">
+      </div>
+      <div class="project-copy">
+        <h3>Irrigation & Lawn Installation – Sandton</h3>
+        <p>This Sandton client required a complete lawn makeover. We installed a fully automated smart irrigation system beneath newly laid Kikuyu lawn, complete with moisture sensors and rain shut-off valves. The result: a lush, evergreen yard that stays healthy year-round with minimal water waste. Another successful irrigation installation in Johannesburg’s northern suburbs.</p>
+      </div>
+    </div>
+
+    <!-- Project 2 -->
+    <div class="project-row reverse">
+      <div class="project-image">
+        <img src="../images/work/Booster-Pump And tank Installation .jpg" alt="Faerie Glen tank base and municipal backup install">
+      </div>
+      <div class="project-copy">
+        <h3>Tank Base, Municipal Backup & Filtration – Faerie Glen</h3>
+        <p>This Faerie Glen installation featured a concrete slab tank base, a 5,000L municipal backup water tank, and full domestic water filtration. The irrigation system was connected to the backup line, ensuring the garden remains watered even during outages. Clean, secure, and future-proofed for Pretoria and Gauteng clients.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ✅ TRUST BADGES SECTION -->
+<section class="trust-badges section">
+  <div class="trust-wrapper">
+    <div class="trust-heading">
+      <h2>Why Trust Our Gauteng Irrigation Services</h2>
+      <p>Smart irrigation, proven results. Here’s what sets us apart as leading irrigation contractors in Johannesburg, Pretoria, and Sandton.</p>
+    </div>
+
+    <div class="trust-icons">
+      <div class="trust-icon-row">
+        <div class="icon-feature">
+          <i class="fas fa-award"></i>
+          <p>Certified Experts</p>
+        </div>
+        <div class="icon-feature">
+          <i class="fas fa-check-circle"></i>
+          <p>Reliable Installations</p>
+        </div>
+        <div class="icon-feature">
+          <i class="fas fa-leaf"></i>
+          <p>Eco-Friendly Solutions</p>
+        </div>
+      </div>
+
+      <div class="trust-icon-row">
+        <div class="icon-feature">
+          <i class="fas fa-clock"></i>
+          <p>On-Time Service</p>
+        </div>
+        <div class="icon-feature">
+          <i class="fas fa-thumbs-up"></i>
+          <p>Customer Satisfaction</p>
+        </div>
+        <div class="icon-feature">
+          <i class="fas fa-certificate"></i>
+          <p>Guaranteed Work</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- ✅ DESIGN PACKAGES -->
+    <section class="design-packages section">
+      <div class="container">
+    <h2 class="section-heading">Tailored Irrigation System Designs for Gauteng</h2>
+    <p class="section-subheading">Optimized irrigation plans for homes, estates, and schools in Johannesburg, Pretoria, and Sandton — no CAD software required.</p>
+        <div class="pricing-cards">
+          <div class="pricing-card">
+            <h3 class="plan-title">Small Residential</h3>
+            <p class="plan-price">R1,250 <span>/ once-off</span></p>
+            <ul class="plan-features">
+              <li>Up to 500m²</li>
+              <li>Duplex / Townhouses</li>
+              <li>Drip/Spray layout map</li>
+              <li>Product recommendation</li>
+            </ul>
+            <button class="btn book-now-button" data-service="Small Irrigation Design">Order Design</button>
+          </div>
+
+          <div class="pricing-card highlighted">
+            <h3 class="plan-title">Medium Residential</h3>
+            <p class="plan-price">R2,950 <span>/ once-off</span></p>
+            <ul class="plan-features">
+              <li>500m² to 2000m²</li>
+              <li>Full layout and spec</li>
+              <li>Parts + zones listed</li>
+              <li>Water-efficiency focus</li>
+            </ul>
+            <button class="btn book-now-button" data-service="Medium Irrigation Design">Order Design</button>
+          </div>
+
+          <div class="pricing-card">
+            <h3 class="plan-title">Large & Estates</h3>
+            <p class="plan-price">Custom <span>/ Quote Only</span></p>
+            <ul class="plan-features">
+              <li>Over 2000m²</li>
+              <li>CAD with Zones</li>
+              <li>Full system spec</li>
+              <li>On-site consultation</li>
+            </ul>
+            <button class="btn book-now-button" data-service="Large Irrigation Design">Request Quote</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+   
+
+
+
+    <!-- ✅ PROCESS PROMISE -->
+    <section class="process-promise section">
+      <div class="container">
+    <h2 class="section-heading">Our Promise: Expert Irrigation in Gauteng</h2>
+    <p class="section-subheading">From the first call to the final drop, we guarantee expert irrigation care and consistency for every client in Johannesburg, Pretoria, and Sandton.</p>
+        <div class="grid grid-three-columns">
+          <div class="promise-card"><i class="fas fa-clipboard-check promise-icon"></i><h3>Transparent Quotes</h3><p>Suburb-based pricing with no hidden charges.</p></div>
+          <div class="promise-card"><i class="fas fa-user-clock promise-icon"></i><h3>On-Time Service</h3><p>Instant booking confirmation. Reliable, scheduled delivery.</p></div>
+          <div class="promise-card"><i class="fas fa-seedling promise-icon"></i><h3>Green Standards</h3><p>We prioritize sustainability, conservation, and long-term system health.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ✅ MAP: Service Area Preview -->
+
+<!-- Unified Service Area Section -->
+<section class="service-area-section" aria-labelledby="service-area-heading">
+  <div class="service-area-heading">
+    <h2 id="service-area-heading">Areas We Cover in Gauteng</h2>
+    <p class="service-area-subheading">Irrigation installation, repairs, and smart upgrades for every suburb in Johannesburg, Pretoria, Sandton, Centurion, and beyond.</p>
+  </div>
+  <div class="service-area-map">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d114664.2179343187!2d27.8821366!3d-26.2707596!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e9574e6b2e2e7e3%3A0x6e6b2e2e7e3e6e6b!2sGauteng!5e0!3m2!1sen!2sza!4v1692288000000!5m2!1sen!2sza" width="100%" height="400" style="border-radius:1rem;border:0;box-shadow:0 2px 16px rgba(0,0,0,0.08);margin-bottom:2rem;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+  <div class="service-area-grid">
+    <a href="#" class="service-area-link" style="background:var(--color-card-bg);color:var(--color-text);box-shadow:none;border:1px solid var(--color-border);font-weight:500;">Johannesburg</a>
+    <a href="#" class="service-area-link" style="background:var(--color-card-bg);color:var(--color-text);box-shadow:none;border:1px solid var(--color-border);font-weight:500;">Pretoria</a>
+    <a href="#" class="service-area-link" style="background:var(--color-card-bg);color:var(--color-text);box-shadow:none;border:1px solid var(--color-border);font-weight:500;">Sandton</a>
+    <a href="#" class="service-area-link" style="background:var(--color-card-bg);color:var(--color-text);box-shadow:none;border:1px solid var(--color-border);font-weight:500;">Centurion</a>
+    <a href="#" class="service-area-link" style="background:var(--color-card-bg);color:var(--color-text);box-shadow:none;border:1px solid var(--color-border);font-weight:500;">Midrand</a>
+    <a href="#" class="service-area-link" style="background:var(--color-card-bg);color:var(--color-text);box-shadow:none;border:1px solid var(--color-border);font-weight:500;">East Rand</a>
+    <a href="#" class="service-area-link" style="background:var(--color-card-bg);color:var(--color-text);box-shadow:none;border:1px solid var(--color-border);font-weight:500;">West Rand</a>
+    <a href="#" class="service-area-link" style="background:var(--color-card-bg);color:var(--color-text);box-shadow:none;border:1px solid var(--color-border);font-weight:500;">Randburg</a>
+    <a href="#" class="service-area-link" style="background:var(--color-card-bg);color:var(--color-text);box-shadow:none;border:1px solid var(--color-border);font-weight:500;">Fourways</a>
+    <a href="#" class="service-area-link view-all" style="background:transparent;color:var(--color-link);border:2px dashed var(--color-link);font-weight:600;">View All Suburbs</a>
+  </div>
+</section>
+
+
+  
+
+    <!-- Shop -->
+   <section id="featured-products" class="featured-products" aria-labelledby="products-heading">
+  <div class="container">
+    <div class="products-heading-wrap center-align">
+      <h2 id="products-heading">Featured Products</h2>
+    </div>
+
+  <div class="product-grid">
+    <article class="product-card">
+        <a href="/shop/booster-pump-kit">
+      <figure><img src="/images/mrg products/pumps/dab 1080 transformed and bRemoved.png" alt="Inline Booster Pump" loading="lazy" decoding="async"></figure>
+          <h3>Inline Booster Pump</h3>
+        </a>
+        <p class="price">R1,499.00</p>
+        <p class="description" style="display: none;">High-efficiency booster pump designed to increase household water pressure and improve flow rates.</p>
+        <div class="card-actions">
+          <button class="add-to-cart-btn" data-id="booster-pump-kit" data-name="Inline Booster Pump" data-price="1499">Add to Cart</button>
+          <button class="buy-now-btn" data-id="booster-pump-kit" data-name="Inline Booster Pump" data-price="1499" aria-label="Buy Inline Booster Pump now">Buy Now</button>
+        </div>
+      </article>
+
+    <article class="product-card">
+        <a href="/shop/whole-house-filter">
+      <figure><img src="/images/mrg products/removed back ground/3stage_Big_Blue-removebg-preview-transformed.png" alt="3-Stage Water Filter" loading="lazy" decoding="async"></figure>
+          <h3>3-Stage Water Filter</h3>
+        </a>
+        <p class="price">R899.00</p>
+        <p class="description" style="display: none;">Triple-stage filter for removing sediment, chlorine, and harmful contaminants from tap water.</p>
+        <div class="card-actions">
+          <button class="add-to-cart-btn" data-id="whole-house-filter" data-name="3-Stage Water Filter" data-price="899">Add to Cart</button>
+          <button class="buy-now-btn" data-id="whole-house-filter" data-name="3-Stage Water Filter" data-price="899" aria-label="Buy 3-Stage Water Filter now">Buy Now</button>
+        </div>
+      </article>
+
+  <article class="product-card">
+    <a href="/shop/jojo-tank-5000l">
+      <figure><img src="/images/mrg products/Eco tanks/Green/Eco_Tank_5000L_V_Eco_Green_resized.png" alt="JoJo Water Tank 5000L" loading="lazy" decoding="async"></figure>
+          <h3>JoJo Water Tank 5000L</h3>
+        </a>
+        <p class="price">R2,999.00</p>
+        <p class="description" style="display: none;">Durable polyethylene water tank ideal for rainwater harvesting and home backup supply.</p>
+        <div class="card-actions">
+          <button class="add-to-cart-btn" data-id="jojo-tank-5000l" data-name="JoJo Water Tank 5000L" data-price="2999">Add to Cart</button>
+          <button class="buy-now-btn" data-id="jojo-tank-5000l" data-name="JoJo Water Tank 5000L" data-price="2999" aria-label="Buy JoJo Water Tank 5000L now">Buy Now</button>
+        </div>
+      </article>
+
+    <article class="product-card">
+        <a href="/shop/tank-level-indicator">
+      <figure><img src="/images/plumbing/plumbing-585658_1280.jpg" alt="Float Switch" loading="lazy" decoding="async"></figure>
+          <h3>Float Switch</h3>
+        </a>
+        <p class="price">R299.00</p>
+        <p class="description" style="display: none;">Reliable float switch sensor for automating water level detection in tanks and reservoirs.</p>
+        <div class="card-actions">
+          <button class="add-to-cart-btn" data-id="tank-level-indicator" data-name="Float Switch" data-price="299">Add to Cart</button>
+          <button class="buy-now-btn" data-id="tank-level-indicator" data-name="Float Switch" data-price="299" aria-label="Buy Float Switch now">Buy Now</button>
+        </div>
+      </article>
+    </div>
+    <div style="display: flex; justify-content: center; margin-top: 2.5rem;">
+      <button class="cart-view-btn" id="inlineCartBtn">View Cart</button>
+    </div>
+  </div>
+</section>
+
+
+    <!-- ✅ FAQ SECTION -->
+    <section class="faq-section section" id="faq">
+      <div class="container">
+    <div class="faq-header" style="display:flex;align-items:center;gap:0.7rem;margin-bottom:1.2rem;">
+      <span class="faq-icon" aria-label="Irrigation FAQ" style="display:inline-flex;align-items:center;">
+        <!-- SEO-friendly Irrigation icon SVG -->
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+          <title>Irrigation FAQ</title>
+          <circle cx="16" cy="16" r="16" fill="#e9fbe5"/>
+          <path d="M10 22c2-4 10-4 12 0" stroke="#3a7d3a" stroke-width="2" fill="none"/>
+          <ellipse cx="16" cy="14" rx="4" ry="6" fill="#3a7d3a"/>
+          <ellipse cx="16" cy="14" rx="2" ry="4" fill="#e9fbe5"/>
+        </svg>
+      </span>
+      <h2 style="margin:0;font-size:1.5rem;font-weight:700;color:var(--color-heading);">Frequently Asked Irrigation Questions</h2>
+    </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What’s included in monthly irrigation plans?</span>
+            <i class="faq-toggle-icon fas fa-plus"></i>
+          </button>
+          <div class="faq-answer">
+            <p>Our irrigation plans include seasonal tune-ups, leak checks, and smart controller adjustments for properties in Gauteng.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Do you service boreholes and irrigation tanks?</span>
+            <i class="faq-toggle-icon fas fa-plus"></i>
+          </button>
+          <div class="faq-answer">
+            <p>Yes! We handle both irrigation and borehole systems, including controller integration and municipal backup tanks for Johannesburg, Pretoria, and Sandton clients.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>How long does irrigation installation take?</span>
+            <i class="faq-toggle-icon fas fa-plus"></i>
+          </button>
+          <div class="faq-answer">
+            <p>Small irrigation systems can be done in a day. Larger or complex zones may take 2–3 working days, depending on your Gauteng property size.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Which irrigation brands do you use?</span>
+            <i class="faq-toggle-icon fas fa-plus"></i>
+          </button>
+          <div class="faq-answer">
+            <p>We use top-quality brands such as Hunter, Rain Bird, Irritrol, Orbit, and Netafim for controllers, valves, and sprinklers to ensure reliability and efficiency.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Can you upgrade my old irrigation system to smart controls?</span>
+            <i class="faq-toggle-icon fas fa-plus"></i>
+          </button>
+          <div class="faq-answer">
+            <p>Yes! We retrofit existing systems with smart controllers, WiFi timers, and rain sensors for water savings and remote management.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Do you offer maintenance plans for irrigation systems?</span>
+            <i class="faq-toggle-icon fas fa-plus"></i>
+          </button>
+          <div class="faq-answer">
+            <p>We offer monthly and seasonal maintenance plans that include inspections, cleaning, leak checks, and adjustments to keep your system running efficiently.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Can you help with water restrictions and compliance?</span>
+            <i class="faq-toggle-icon fas fa-plus"></i>
+          </button>
+          <div class="faq-answer">
+            <p>Absolutely. We design systems to comply with local water restrictions and can install rain sensors, drip irrigation, and efficient nozzles to help you save water.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+    <!-- ✅ CTA SECTION -->
+<section class="contact-form-section">
+  <div class="form-layout modern-form">
+
+    <!-- 🌄 Image Side -->
+    <div class="form-image">
+      <img src="../images/work/Irrigation Repairs.png" alt="Irrigation Gauteng Enquiry">
+    </div>
+
+    <!-- 📝 Form Side -->
+    <div class="form-content">
+      <h2>Irrigation Services – Gauteng</h2>
+      <p>Get in touch for irrigation services in Sandton, Johannesburg, Pretoria, Centurion, and all major Gauteng suburbs. We usually respond within a few hours and offer expert advice for all irrigation needs.</p>
+
+      <form id="form-irrigation-gauteng" class="contact-form" method="POST" action="https://formspree.io/f/xdkgbjre" novalidate>
+        
+        <!-- Full Name -->
+        <div class="form-group">
+          <input type="text" id="name" name="name" placeholder=" " required>
+          <label for="name">Full Name</label>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <input type="email" id="email" name="email" placeholder=" " required>
+          <label for="email">Email Address</label>
+        </div>
+
+        <!-- Phone -->
+        <div class="form-group">
+          <input type="tel" id="phone" name="phone" placeholder=" " required>
+          <label for="phone">Phone Number</label>
+        </div>
+
+        <!-- Address -->
+        <div class="form-group">
+          <input type="text" id="address" name="address" placeholder=" " required>
+          <label for="address">Suburb / Area / Address</label>
+        </div>
+
+        <!-- Message -->
+        <div class="form-group">
+          <textarea id="message" name="message" placeholder=" " rows="4" required></textarea>
+          <label for="message">How can we help?</label>
+        </div>
+
+        <!-- Service Dropdown -->
+        <div class="form-group">
+          <select id="service" name="service" required>
+            <option value="" disabled selected hidden>Select an Irrigation Service</option>
+            <option value="Irrigation Installation">Irrigation Installation</option>
+            <option value="Sprinkler System Repairs">Sprinkler System Repairs</option>
+            <option value="Smart Irrigation Upgrades">Smart Irrigation Upgrades</option>
+            <option value="Drip Irrigation Systems">Drip Irrigation Systems</option>
+            <option value="Garden Irrigation">Garden Irrigation</option>
+            <option value="Irrigation Automation">Irrigation Automation</option>
+            <option value="Manual to Automatic Conversion">Manual to Automatic Conversion</option>
+            <option value="Greywater Irrigation Setup">Greywater Irrigation Setup</option>
+            <option value="Rain Sensor Installation">Rain Sensor Installation</option>
+            <option value="Seasonal Irrigation Adjustment">Seasonal Irrigation Adjustment</option>
+            <option value="Irrigation Valve Replacement">Irrigation Valve Replacement</option>
+            <option value="System Pressure Testing">System Pressure Testing</option>
+            <option value="Irrigation System Maintenance">Irrigation System Maintenance</option>
+            <option value="Zone Configuration">Zone Configuration</option>
+            <option value="Sprinkler Head Replacement">Sprinkler Head Replacement</option>
+          </select>
+          
+        </div>
+
+        <!-- Hidden SEO Tracking Field -->
+        <input type="hidden" name="page-source" value="Irrigation - Gauteng Page">
+
+        <!-- Submit Button -->
+        <button type="submit" class="cta-btn">Send Message</button>
+
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Partners/Brands Section -->
+<section class="partners-section section" aria-labelledby="partners-heading">
+  <div class="container">
+    <header class="section-header">
+      <h2 id="partners-heading">Our Trusted Partners & Brands</h2>
+      <p class="partners-intro">We use only the best South African and global brands for irrigation, water management, and smart garden solutions.</p>
+    </header>
+    <div class="brands-grid single-row">
+      <div class="brand-card">
+        <img src="/images/brands-partners-logos/Jo-Jo-logo/jojo-logo-white-new-t.png" alt="JoJo Tanks" title="JoJo Tanks" class="brand-logo" />
+      </div>
+      <div class="brand-card">
+        <img src="/images/brands-partners-logos/Eco-Tank-logo/eco-logo.png" alt="Eco Tanks" title="Eco Tanks" class="brand-logo" />
+      </div>
+      <div class="brand-card">
+        <img src="/images/brands-partners-logos/rain-bird-logo/RainBirdLogo_330x100.png" alt="Rain Bird" title="Rain Bird" class="brand-logo" />
+      </div>
+      <div class="brand-card">
+        <img src="/images/brands-partners-logos/hunter-logo/Hunter_Logo.png" alt="Hunter" title="Hunter" class="brand-logo" />
+      </div>
+      <div class="brand-card">
+        <img src="/images/brands-partners-logos/orbit-logo/orbit-sprinkler-logo-removebg-preview.png" alt="Orbit" title="Orbit" class="brand-logo" />
+      </div>
+      <div class="brand-card">
+        <img src="/images/brands-partners-logos/weather-matic-logo/Weathermatic-logo.png" alt="Weathermatic" title="Weathermatic" class="brand-logo" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.partners-section.section {
+  padding: clamp(3rem, 8vw, 5rem) 0;
+  border-radius: var(--radius-lg, 18px);
+  box-shadow: var(--shadow-soft, 0 4px 6px rgba(0,0,0,0.08));
+  background: var(--color-section-bg);
+  transition: background 0.3s;
+}
+[data-theme="dark"] .partners-section.section {
+  background: var(--color-section-bg, #181818);
+}
+.partners-section .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 3rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+}
+.partners-section .section-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.partners-section h2 {
+  color: var(--heading-color);
+  font-size: var(--font-size-xxl, 2.2rem);
+  font-family: var(--font-secondary, 'Cal Sans', sans-serif);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+[data-theme="dark"] .partners-section h2 {
+  color: var(--heading-color, #f7fafc);
+}
+.partners-intro {
+  color: var(--color-subheading);
+  font-size: var(--font-size-md, 1.1rem);
+  margin-top: 0.5rem;
+}
+[data-theme="dark"] .partners-intro {
+  color: var(--color-subheading, #cbd5e0);
+}
+.brands-grid.single-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  overflow-x: auto;
+  background: linear-gradient(90deg, #f8fafc 0%, #e0f7fa 100%);
+  border-radius: 14px;
+  padding: 1.5rem 0;
+}
+[data-theme="dark"] .brands-grid.single-row {
+  background: transparent;
+}
+  .brand-card {
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+    min-height: 80px;
+    transition: box-shadow 0.2s, background 0.2s;
+}
+/* No dark theme override for .brand-card background */
+}
+.brand-card:hover {
+  box-shadow: 0 4px 16px rgba(37,99,235,0.18);
+}
+.brand-logo {
+  max-width: 110px;
+  max-height: 48px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: grayscale(0%);
+  transition: filter 0.2s, opacity 0.2s;
+  opacity: 0.92;
+  display: block;
+  margin: 0 auto;
+}
+[data-theme="light"] .brand-logo {
+  background: rgba(255,255,255,0.7);
+  border-radius: 8px;
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+}
+.brand-card:hover .brand-logo {
+  filter: grayscale(0%) brightness(1.1);
+  opacity: 1;
+}
+[data-theme="dark"] .brand-logo {
+  filter: grayscale(0%) brightness(0.9);
+  background: transparent;
+  outline: none;
+}
+@media (max-width: 900px) {
+  .brands-grid.single-row {
+    gap: 1rem;
+    padding: 0 0.5rem;
+  }
+  .brand-card {
+    padding: 1rem 1rem;
+    min-width: 90px;
+    min-height: 60px;
+  }
+  .brand-logo {
+    max-width: 70px;
+    max-height: 32px;
+  }
+}
+</style>
+<!-- End Partners/Brands Section -->
+
+  <!-- ✅ Injected Booking Modal -->
+
+
+  <!-- ✅ Injected Footer -->
+
+  <!-- ✅ JavaScript -->
+  <script src="../js/site-init.js" type="module"></script>
+  <!-- Inline JS removed; handled by site-init.js -->
+  
+  <!-- Back to Top Button -->
+<!--#include file="../partials/scroll-to-top.html" -->
+
+<!-- Testimonial Carousel JS -->
+<!-- Load testimonial logic -->
+<script src="../js/testimonial-carousel-irrigation.js" defer></script>
+
+<script src="../js/how-it-works-animate.js" defer></script>
+
+
+<!-- AOS Animation JS -->
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({
+    duration: 800,
+    once: true
+  });
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Myriad Green Irrigation",
+  "image": "https://www.myriadgreen.co.za/images/logo.png",
+  "url": "https://www.myriadgreen.co.za/services/irrigation.html",
+  "telephone": "+27 83 456 7890",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "123 Green Lane",
+    "addressLocality": "Gauteng",
+    "addressRegion": "Gauteng",
+    "postalCode": "",
+    "addressCountry": "ZA"
+  },
+  "priceRange": "R950 – R12,500+",
+  "description": "Professional irrigation services in Gauteng, Johannesburg, Pretoria, Sandton, Centurion, and all major suburbs. Smart irrigation systems, repairs, and water-saving solutions for homes, estates, and businesses.",
+  "areaServed": [
+    { "@type": "Place", "name": "Gauteng" },
+    { "@type": "Place", "name": "Johannesburg" },
+    { "@type": "Place", "name": "Pretoria" },
+    { "@type": "Place", "name": "Sandton" },
+    { "@type": "Place", "name": "Centurion" },
+    { "@type": "Place", "name": "Fourways" },
+    { "@type": "Place", "name": "Midrand" },
+    { "@type": "Place", "name": "Moreleta Park" },
+    { "@type": "Place", "name": "Waterkloof" }
+  ],
+  "serviceType": "Irrigation Installation and Maintenance"
+}
+</script>
+
+
+  <button class="scroll-to-top" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+
+
+  <!-- ✅ CART SYSTEM - Floating Cart Button (fixed, after all content) -->
+  <button id="openCartBtn" class="floating-cart-btn" aria-label="View cart">
+  <i class="fas fa-shopping-cart"></i>
+  <span class="cart-badge" id="cartCount">0</span>
+  </button>
+
+  <!-- Cart Modal Markup (matching index.html) -->
+  <div id="cartModal" class="cart-modal hidden">
+    <div class="cart-modal-content">
+      <button id="closeCartBtn" class="close-btn" aria-label="Close cart">&times;</button>
+           <h2>Your Cart</h2>
+      <ul id="cartItemsList" class="cart-items-list"></ul>
+      <p class="total">Total: R<span id="cartTotal">0.00</span></p>
+      <div class="checkout-actions">
+        <a href="/checkout" class="cart-checkout-btn">Proceed to Checkout</a>
+      </div>
+    </div>
+  </div>
+  </main>
+
+  <footer id="site-footer" aria-label="Site footer"></footer>
+
+  <div id="booking-modal-container"></div>
+  <script src="../js/site-init.js" defer></script>
+  <script src="../js/booking-modal-loader.js" defer></script>
+  <script src="../js/cart-modal.js" defer></script>
+  <script src="../js/checkout.js" defer></script>
+
+    <script src="../js/weather-widget.js" defer></script>
+</body>
+</html>
+

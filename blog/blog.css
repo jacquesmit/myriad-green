@@ -1,0 +1,119 @@
+/* ==============================
+   BLOG.CSS — Styles for Blog Pages
+   ============================== */
+
+:root {
+  --blog-accent: var(--accent-color);
+  --blog-text: var(--text-color);
+  --blog-bg: var(--background-color);
+  --blog-heading: var(--heading-color);
+  --blog-link: var(--link-color);
+  --blog-link-hover: var(--link-hover-color);
+}
+
+[data-theme="dark"] {
+  --blog-bg: #111;
+  --blog-text: #ddd;
+  --blog-heading: #fff;
+  --blog-link: #5dbb63;
+  --blog-link-hover: #7ce68c;
+}
+
+.blog-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  background-color: var(--blog-bg);
+  color: var(--blog-text);
+  font-family: var(--font-family);
+}
+
+.blog-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.blog-header h1 {
+  font-size: 2.5rem;
+  color: var(--blog-heading);
+}
+
+.blog-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.blog-card {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: var(--shadow-light);
+  transition: transform 0.3s ease;
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-medium);
+}
+
+.blog-card h2 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: var(--blog-heading);
+}
+
+.blog-card p {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.blog-card a {
+  color: var(--blog-link);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.blog-card a:hover {
+  color: var(--blog-link-hover);
+  text-decoration: underline;
+}
+
+/* Post Page Styles */
+.post-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.post-header h1 {
+  font-size: 2.2rem;
+  color: var(--blog-heading);
+}
+
+.post-meta {
+  font-size: 0.9rem;
+  color: var(--gray);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.post-content {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--blog-text);
+}
+
+.post-content h2,
+.post-content h3 {
+  color: var(--blog-heading);
+  margin-top: 2rem;
+}
+
+.post-content a {
+  color: var(--blog-link);
+  text-decoration: underline;
+}
+
+.post-content a:hover {
+  color: var(--blog-link-hover);
+}

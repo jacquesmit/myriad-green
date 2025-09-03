@@ -1,0 +1,14 @@
+/* irrigation-sections.css
+   Scope: shared styles for irrigation page sections (hero, features, local CTAs)
+   Safe placeholder to avoid 404s; extend as needed.
+*/
+
+/* Example non-destructive tweaks */
+.hero-irrigation {
+  /* ensure hero spacing is consistent */
+  padding-block: clamp(2rem, 4vw, 4rem);
+}
+
+.section.irrigation-local-cta {
+  margin-block: clamp(2rem, 4vw, 4rem);
+}

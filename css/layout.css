@@ -1,0 +1,75 @@
+/* layout.css - Universal Container System */
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 3rem); /* Responsive horizontal padding */
+}
+
+/* Section containers with consistent spacing */
+.section-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 4rem) clamp(1rem, 4vw, 3rem);
+}
+
+/* Consistent spacing for all major sections */
+section {
+  padding: clamp(3rem, 8vw, 5rem) 0;
+}
+
+/* Content wrapper for better readability */
+.content-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2rem);
+}
+
+/* Grid container for cards and items */
+.grid-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 3rem);
+  display: grid;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+/* Enhanced Mobile Responsive Design */
+
+/* Large Tablets - 1024px and below */
+@media (max-width: 1024px) {
+  .container {
+    padding: 0 clamp(1rem, 3vw, 2rem);
+  }
+  
+  .section-container {
+    padding: clamp(2rem, 5vw, 3rem) clamp(1rem, 3vw, 2rem);
+  }
+  
+  section {
+    padding: clamp(2rem, 6vw, 4rem) 0;
+  }
+  
+  .content-wrapper {
+    padding: 0 clamp(1rem, 3vw, 1.5rem);
+  }
+  
+  .grid-container {
+    padding: 0 clamp(1rem, 3vw, 2rem);
+    gap: clamp(1.25rem, 3vw, 2rem);
+  }
+}
+
+/* Consolidated mobile-only patch */
+@media (max-width: 767px) {
+  h1 { font-size: clamp(1.6rem, 4.5vw, 2.1rem); line-height: 1.2; }
+  h2 { font-size: clamp(1.3rem, 4vw, 1.8rem);  line-height: 1.25; }
+  h3 { font-size: clamp(1.1rem, 3.6vw, 1.4rem); }
+  .container { width: min(100% - 1.5rem, var(--container, 1100px)); }
+  section, .section { padding-block: 1.5rem; }
+  .btn, button, [role="button"] { min-height: 44px; padding: .65em 1em; }
+  img, video { max-width: 100%; height: auto; }
+  .nav { gap: .3rem; }
+  .nav a { padding: .5rem .6rem; }
+  [class*="col-"], [class*="span-"], .table-wrap, .map, .gallery { max-width: 100%; overflow-x: auto; }
+}

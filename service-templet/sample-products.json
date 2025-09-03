@@ -1,0 +1,26 @@
+[
+  {
+    "id": "201",
+    "img": "/images/mrg products/removed back ground/hunter_pgp_adj.png",
+    "alt": "Hunter PGP-ADJ Rotor",
+    "title": "Hunter PGP-ADJ Rotor",
+    "price": "R320.00",
+    "desc": "Adjustable rotor sprinkler for medium to large lawns."
+  },
+  {
+    "id": "202",
+    "img": "/images/mrg products/removed back ground/rainbird_xeri_dripline.png",
+    "alt": "Rain Bird Xeri Dripline",
+    "title": "Rain Bird Xeri Dripline",
+    "price": "R1,150.00",
+    "desc": "Pressure-compensating dripline for beds and hedges."
+  },
+  {
+    "id": "203",
+    "img": "/images/mrg products/removed back ground/esp-me_3stn-module_wide_00134_1-removebg-preview.png",
+    "alt": "Rain Bird ESP-Me Controller",
+    "title": "Rain Bird ESP-Me Controller",
+    "price": "R3,950.00",
+    "desc": "Wi‑Fi capable controller with modular expansion."
+  }
+]

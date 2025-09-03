@@ -1,0 +1,70 @@
+.open-modal-btn {
+  display: inline-block;
+  background-color: #87e64b; /* Myriad Green's primary green */
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: 'Poppins', sans-serif;
+}
+/* Booking Modal Button */
+.open-modal-btn {
+  display: inline-block;
+  background-color: var(--color-accent, #87e64b);  /* Uses your theming */
+  color: var(--color-heading, #ffffff);
+  font-size: var(--font-size-md, 1rem);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--radius-md, 8px);
+  cursor: pointer;
+  transition: var(--transition-default, all 0.3s ease);
+  box-shadow: var(--shadow-soft, 0 2px 4px rgba(0, 0, 0, 0.1));
+  font-family: var(--font-primary, 'Poppins', sans-serif);
+}
+
+.open-modal-btn:hover {
+  background-color: var(--color-accent-hover, #75c43e);
+  box-shadow: var(--shadow-medium, 0 4px 8px rgba(0, 0, 0, 0.15));
+}
+
+.open-modal-btn:active {
+  background-color: #6eb439;
+  transform: scale(0.98);
+}
+
+/* Optional: Add responsive control */
+@media (max-width: 600px) {
+  .open-modal-btn {
+    width: 100%;
+    font-size: 0.95rem;
+    padding: 0.75rem;
+  }
+}
+
+/* Booking Modal Title */
+.modal-content h2 {
+  color: var(--color-heading, #333);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.open-modal-btn:hover {
+  background-color: #75c43e;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.open-modal-btn:active {
+  background-color: #6eb439;
+  transform: scale(0.98);
+}
+.modal-content h2 {
+  color: #333;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}

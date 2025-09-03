@@ -1,0 +1,11 @@
+{
+  "defaults": {
+    "hero": {
+      "intro": "Trusted local specialists for design, installation and maintenance.",
+      "cta": "Get a Quote"
+    },
+    "overview": ["Assessment", "Install & setup", "Optimisation", "Maintenance"]
+  },
+  "overrides": {
+  }
+}

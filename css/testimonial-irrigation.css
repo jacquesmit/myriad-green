@@ -1,0 +1,90 @@
+/* ✅ TESTIMONIALS SECTION */
+.testimonials {
+  background: var(--bg-light);
+  text-align: center;
+  padding: 4rem 1rem;
+}
+
+.testimonial-carousel {
+  position: relative;
+  max-width: 800px;
+  margin: 2rem auto 0;
+}
+
+.testimonial-slide {
+  display: none;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.testimonial-slide.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+blockquote {
+  font-size: 1.25rem;
+  font-style: italic;
+  color: var(--text-primary);
+  margin: 0 auto 1rem;
+  max-width: 90%;
+  line-height: 1.6;
+}
+
+.client-name {
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+.testimonial-controls {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+.testimonial-controls button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  font-size: 1.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.testimonial-controls button:hover {
+  background: var(--accent-dark);
+  transform: scale(1.05);
+}
+
+/* ✅ Mobile Improvements */
+@media (max-width: 600px) {
+  .testimonials {
+    padding: 3rem 1rem;
+  }
+
+  blockquote {
+    font-size: 1.05rem;
+    padding: 0 1rem;
+  }
+
+  .client-name {
+    font-size: 0.95rem;
+  }
+
+  .testimonial-controls {
+    margin-top: 1.2rem;
+    gap: 0.5rem;
+  }
+
+  .testimonial-controls button {
+    font-size: 1.1rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+

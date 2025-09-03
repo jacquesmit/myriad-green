@@ -1,0 +1,50 @@
+/* Apply to all valid modal trigger buttons */
+.book-now-button,
+.book-service-btn,
+.service-book-btn {
+  background-color: var(--btn-primary-bg, #2563eb);
+  color: var(--btn-primary-text, #ffffff);
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  width: fit-content;
+}
+
+.book-now-button:hover,
+.book-service-btn:hover,
+.service-book-btn:hover {
+  background-color: var(--btn-primary-hover, #1e40af);
+  transform: translateY(-2px);
+}
+
+.book-now-button:active,
+.book-service-btn:active,
+.service-book-btn:active {
+  transform: scale(0.97);
+}
+
+/* Responsive Mobile */
+@media (max-width: 600px) {
+  .book-now-button,
+  .book-service-btn,
+  .service-book-btn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+  }
+}
+
+
+@media (max-width: 600px) {
+  .book-now-button {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+  }
+}

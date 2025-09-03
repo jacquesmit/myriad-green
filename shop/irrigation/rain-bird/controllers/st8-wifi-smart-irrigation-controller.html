@@ -1,0 +1,140 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="utf-8">
+<link rel="stylesheet" href="/css/bundles/site.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rain Bird ST8-WiFi Smart Irrigation Controller – 8-Zone App Control | Myriad Green</title>
+  <meta name="description" content="Rain Bird ST8-WiFi smart irrigation controller with 8 zones, mobile app control, weather adjustments, and easy scheduling. Perfect for homeowners.">
+  <link rel="canonical" href="https://www.myriadgreen.co.za/shop/irrigation/rain-bird/controllers/st8-wifi-smart-irrigation-controller.html">
+
+  <link rel="stylesheet" href="/css/reset.css">
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/css/main-navigation.css">
+  <link rel="stylesheet" href="/css/product-page.css">
+  <link rel="stylesheet" href="/css/cart-modal.css">
+  <link rel="stylesheet" href="/css/checkout.css">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&amp;display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Injected Navigation -->
+  <header id="site-header" class="menu-header-container" data-inject="nav"></header>
+  <main>
+    <header class="product-hero">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/shop/">Shop</a> / <a href="/shop/irrigation/">Irrigation</a> / <a href="/shop/irrigation/rain-bird/">Rain Bird</a> / <span aria-current="page">ST8-WiFi Smart Controller</span>
+      </nav>
+      <h1>Rain Bird ST8-WiFi Smart Irrigation Controller – 8-Zone App Control</h1>
+      <p class="subhead">Smart scheduling with the Rain Bird app, weather-based adjustments, and easy homeowner setup.</p>
+    </header>
+
+    <section class="product-layout">
+      <figure class="product-media">
+        <img src="/shop/images/rainbird/rainbird-st8-wifi-smart-irrigation-controller.webp" srcset="/shop/images/rainbird/rainbird-st8-wifi-smart-irrigation-controller.webp 1x,
+                  /shop/images/rainbird/rainbird-st8-wifi-smart-irrigation-controller-front-alt.webp 2x" alt="Rain Bird ST8-WiFi smart irrigation controller with 8-zone app control" width="800" height="800" loading="eager" onerror="this.src='/images/products/placeholder.svg'">
+        <figcaption class="visually-hidden">ST8-WiFi front view</figcaption>
+      </figure>
+
+      <aside class="product-purchase" itemscope="" itemtype="https://schema.org/Offer">
+        <label for="st8-variation">Choose your model:</label>
+        <select id="st8-variation" title="Enter st8 variation">
+          <option value="8-wifi" data-price="2999.00" data-sku="ST8-WIFI">8 Zone WiFi (R2,999.00)</option>
+          <option value="8-wifi-pro" data-price="3499.00" data-sku="ST8-WIFI-PRO">8 Zone WiFi Pro (R3,499.00)</option>
+        </select>
+        <p class="price">R <span id="st8-variation-price" data-price="" itemprop="price" content="2999.00">2,999.00</span></p>
+        <meta itemprop="priceCurrency" content="ZAR">
+        <link itemprop="availability" href="https://schema.org/InStock">
+        <p class="sku">SKU: <span id="st8-variation-sku" data-sku="">ST8-WIFI</span></p>
+
+        <div class="purchase-actions">
+          <button class="add-to-cart-btn" data-id="st8-wifi" data-sku="ST8-WIFI" data-name="Rain Bird ST8-WiFi Smart Irrigation Controller" data-price="2999.00" data-image="/shop/images/rainbird/rainbird-st8-wifi-smart-irrigation-controller.webp">
+            Add to Cart
+          </button>
+          <button class="buy-now-btn" data-id="st8-wifi" data-sku="ST8-WIFI" data-name="Rain Bird ST8-WiFi Smart Irrigation Controller" data-price="2999.00" data-image="/shop/images/rainbird/rainbird-st8-wifi-smart-irrigation-controller.webp">
+            Buy Now
+          </button>
+        </div>
+
+        <ul class="trust-list">
+          <li>✓ 8-zone smart controller</li>
+          <li>✓ App control (iOS/Android)</li>
+          <li>✓ Weather-based adjustments</li>
+          <li>✓ Quick homeowner install</li>
+        </ul>
+      </aside>
+    </section>
+
+    <section class="product-details">
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          // Variation price update
+          const variationSelect = document.getElementById('st8-variation');
+          const priceSpan = document.getElementById('st8-variation-price');
+          const skuSpan = document.getElementById('st8-variation-sku');
+          const addToCartBtn = document.querySelector('.add-to-cart-btn');
+          const buyNowBtn = document.querySelector('.buy-now-btn');
+          variationSelect.addEventListener('change', function() {
+            const selected = variationSelect.options[variationSelect.selectedIndex];
+            const price = selected.getAttribute('data-price');
+            const sku = selected.getAttribute('data-sku');
+            priceSpan.textContent = Number(price).toLocaleString('en-ZA', {minimumFractionDigits:2});
+            priceSpan.setAttribute('content', price);
+            skuSpan.textContent = sku;
+            skuSpan.setAttribute('data-sku', sku);
+            addToCartBtn.setAttribute('data-sku', sku);
+            addToCartBtn.setAttribute('data-price', price);
+            buyNowBtn.setAttribute('data-sku', sku);
+            buyNowBtn.setAttribute('data-price', price);
+          });
+        });
+      </script>
+      <h2>What’s included</h2>
+      <ul>
+        <li>Rain Bird ST8-WiFi Controller</li>
+        <li>Mounting hardware</li>
+        <li>Quick start guide</li>
+      </ul>
+
+      <h2>Specs</h2>
+      <table class="specs">
+        <tbody><tr><th>Zones</th><td>8</td></tr>
+        <tr><th>Connectivity</th><td>Wi-Fi + Mobile App</td></tr>
+        <tr><th>Scheduling</th><td>Weather-adjusted, flexible programs</td></tr>
+        <tr><th>Enclosure</th><td>Indoor/Outdoor</td></tr>
+      </tbody></table>
+
+      <h2>Use cases</h2>
+      <p>Homeowners who want simple app control, weather-smart watering, and fast setup.</p>
+    </section>
+
+    <!-- JSON-LD Product -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": "Rain Bird ST8-WiFi Smart Irrigation Controller – 8-Zone App Control",
+      "image": ["https://www.myriadgreen.co.za/shop/images/rainbird/rainbird-st8-wifi-smart-irrigation-controller.webp"],
+      "description": "Smart 8-zone irrigation controller with mobile app control and weather-based scheduling.",
+      "brand": { "@type": "Brand", "name": "Rain Bird" },
+      "sku": "ST8-WIFI",
+      "category": "Irrigation Controller",
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "ZAR",
+        "price": "2999.00",
+        "availability": "https://schema.org/InStock",
+        "url": "https://www.myriadgreen.co.za/shop/irrigation/rain-bird/controllers/st8-wifi-smart-irrigation-controller"
+      }
+    }
+    </script>
+  </main>
+
+  <!-- Shop functionality scripts -->
+  <script src="/js/site-init.js" defer=""></script>
+  <script src="/js/cart-modal.js" defer=""></script>
+  <script src="/js/checkout.js" defer=""></script>
+  <!-- Injected Footer -->
+  <footer id="site-footer" data-inject="footer"></footer>
+
+
+</body></html>

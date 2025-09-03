@@ -1,0 +1,32 @@
+{
+  "/irrigation/pretoria/hatfield/index": {
+    "default": "Irrigation Services in Hatfield",
+    "weather": { "hot": "Summer Irrigation in Hatfield", "rain": "Rain‑Smart Irrigation in Hatfield" },
+    "trends": { "smart_irrigation": "Smart Irrigation Systems – Hatfield" },
+    "lock": ""
+  },
+  "/irrigation/pretoria/hatfield/installation": {
+    "default": "Sprinkler Installation in Hatfield",
+    "weather": { "hot": "Summer Sprinkler Installation in Hatfield" },
+    "trends": { "sprinkler_install": "Professional Sprinkler Installation – Hatfield" },
+    "lock": ""
+  },
+  "/irrigation/pretoria/hatfield/repair": {
+    "default": "Sprinkler Repair in Hatfield",
+    "weather": { "rain": "Emergency Leak & Sprinkler Repair in Hatfield" },
+    "trends": { "repair_spike": "Same‑Day Sprinkler Repairs – Hatfield" },
+    "lock": ""
+  },
+  "/irrigation/pretoria/hatfield/maintenance": {
+    "default": "Irrigation Maintenance in Hatfield",
+    "weather": {},
+    "trends": {},
+    "lock": ""
+  },
+  "/irrigation/pretoria/hatfield/products": {
+    "default": "Irrigation Products in Hatfield",
+    "weather": {},
+    "trends": {},
+    "lock": ""
+  }
+}

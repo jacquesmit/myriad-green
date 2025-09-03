@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Align irrigation product counts",
+			"type": "shell",
+			"command": "node scripts/retrofit-product-grids-count.js",
+			"args": [],
+			"problemMatcher": [],
+			"group": "build"
+		}
+	]
+}

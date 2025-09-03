@@ -1,0 +1,191 @@
+/* Service Checkout Cards Section */
+.service-checkout-section {
+  padding: 3rem 0 2rem 0;
+  background: var(--color-section-bg, var(--color-bg-alt, #f8fafc));
+}
+[data-theme="dark"] .service-checkout-section {
+  background: var(--color-section-bg, #232a34);
+}
+
+.service-cards-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.service-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(49,130,206,0.07);
+  padding: 0.05rem 0.05rem 0.05rem 0.05rem;
+  max-width: 340px;
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.service-card:hover {
+  box-shadow: 0 8px 32px rgba(49,130,206,0.15);
+  transform: translateY(-4px);
+}
+
+/* Icon styling */
+.service-icon {
+  font-size: 2.5rem;
+  color: #107c10;
+  margin-bottom: 0.02rem;
+  transition: color 0.3s ease;
+  background: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+[data-theme="light"] .service-icon {
+  color: #107c10;
+}
+[data-theme="light"] .service-icon.fa-x {
+  color: #107c10;
+}
+[data-theme="light"] .service-icon.fa-o {
+  color: #107c10;
+}
+[data-theme="light"] .service-icon.fa-check {
+  color: #107c10;
+}
+[data-theme="light"] .service-icon.fa-times {
+  color: #107c10;
+}
+
+/* Title styling */
+.service-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+/* Description */
+.service-desc {
+  font-size: 1rem;
+  color: #4a5568;
+  margin-bottom: 0;
+  margin-top: 0;
+  text-align: center;
+}
+
+/* Button */
+.book-now-button {
+  background: #107c10;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.15rem 0.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+.book-now-button:hover {
+  background: #0e6a0e;
+  color: #fff;
+}
+
+/* Hover Effects on icon and title inside card */
+.service-card:hover .service-icon {
+  color: #0050a3; /* Amazon Blue-ish */
+
+  .service-link {
+    color: #107c10 !important;
+    font-weight: 700;
+    font-size: 1.08rem;
+    letter-spacing: 0.01em;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+    position: relative;
+    z-index: 2;
+  }
+  .service-link:hover {
+    color: #107c10 !important;
+    background: none !important;
+    text-decoration: underline;
+    opacity: 1 !important;
+  }
+
+}
+
+
+@media (max-width: 900px) {
+  .service-cards-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+/* =======================
+   Service Card Hover FX
+========================== */
+.service-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.service-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Icon color on hover */
+.service-card:hover .service-svg-icon svg {
+  color: var(--color-accent-hover, #2b6cb0);
+  transition: color 0.3s ease;
+}
+
+/* Title hover effect */
+.service-card:hover .service-title {
+  color: var(--color-accent-hover, #2b6cb0);
+}
+
+/* Link hover */
+.service-link {
+  color: #107c10;
+  font-weight: 700;
+  font-size: 1.08rem;
+  letter-spacing: 0.01em;
+  transition: color 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+.service-link:hover {
+  color: #107c10;
+  text-decoration: underline;
+  color: rgba(16, 124, 16, 0.7) !important;
+}
+
+/* Book button hover (already in your CSS but included for clarity) */
+.service-link {
+  display: inline-block;
+  color: #107c10 !important;
+  font-weight: 700;
+  font-size: 1.08rem;
+  letter-spacing: 0.01em;
+  text-decoration: underline;
+  background: #e6f4ea;
+  border-radius: 6px;
+  padding: 0.18em 0.7em;
+  margin-top: 0.05em;
+  margin-bottom: 0.05em;
+  transition: background 0.2s, color 0.2s;
+  position: relative;
+  z-index: 2;
+}
+.service-link:hover {
+  color: #107c10 !important;
+  background: #c2e9d7 !important;
+  text-decoration: underline;
+  opacity: 1 !important;
+}
+
+/* Rainwater Harvesting SVG wrapper for service card */
+

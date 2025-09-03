@@ -1,0 +1,26 @@
+<!-- Example: service-card.html -->
+<article class="service-card" itemscope itemtype="https://schema.org/Service">
+  <header class="service-header">
+    <figure class="service-svg-icon" aria-hidden="true">
+      <!-- Inject SVG dynamically -->
+      {{icon}}
+    </figure>
+    <h3 class="service-title" itemprop="name">
+      <a href="{{link}}" itemprop="url">{{title}}</a>
+    </h3>
+    <a href="{{link}}" class="service-link">
+      Learn More
+      <span class="sr-only">about {{title}}</span>
+    </a>
+  </header>
+  <div class="service-content">
+    <p class="service-description" itemprop="description">
+      {{description}}
+    </p>
+  </div>
+  <footer class="service-actions">
+    <button class="service-book-btn" data-service="{{buttonLabel}}">
+      {{buttonText}}
+    </button>
+  </footer>
+</article>

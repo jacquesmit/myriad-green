@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thank You | Myriad Green</title>
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/thank-you-page.css">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="/css/reset.css" />
+  <link rel="stylesheet" href="/css/theme.css" />
+  <link rel="stylesheet" href="/css/utilities.css" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/landinghero.css" />
+  <link rel="stylesheet" href="/css/servicesection.css" />
+  <link rel="stylesheet" href="/css/booking-modal.css" />
+  <link rel="stylesheet" href="/css/faq-section.css" />
+  <link rel="stylesheet" href="/css/testimonials.css" />
+  <link rel="stylesheet" href="/css/about-us-section.css" />
+  <link rel="stylesheet" href="/css/main-navigation.css" />
+  <link rel="stylesheet" href="/css/mobile-nav.css" />
+  <link rel="stylesheet" href="/css/footer.css" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/theme-toggle.css" />
+  <link rel="stylesheet" href="/css/components/buttons/book-now-button.css" />
+  <link rel="stylesheet" href="/css/components/buttons/social-bar.css" />
+  <link rel="stylesheet" href="/css/floating-bar-reopen-btn.css" />
+  <link rel="stylesheet" href="/css/contact-us-form.css">
+  <link rel="stylesheet" href="/css/mobile-tweaks.css" />
+  <link rel="stylesheet" href="/css/icon-strip-mobile.css" />
+  <link rel="stylesheet" href="/css/mobile-tap-feedback.css" />
+  <link rel="stylesheet" href="/css/mobile-scroll-icon-animate.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+  <link rel="stylesheet" href="/css/weather-widget.css">
+  <link rel="stylesheet" href="/css/cart-modal.css" />
+  <link rel="stylesheet" href="/css/checkout.css" />
+  <link rel="stylesheet" href="/css/shop-section.css" />
+</head>
+<body>
+  <section class="thank-you-section">
+    <div class="thank-you-container">
+      <h1>Thank You!</h1>
+      <p>Your request has been sent. We'll be in touch shortly.</p>
+      <!--
+        NOTE: The booking summary below is dynamically filled from URL parameters.
+        When Stripe is integrated, you may want to fetch booking/order details from your backend using an order/session ID in the URL.
+        See JS section at the bottom for details.
+      -->
+      <div class="booking-summary" style="background:#f7fafc;padding:16px 18px 10px 18px;border-radius:8px;margin:18px 0 10px 0;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <h3 style="color:#146eb4;font-size:1.1rem;margin-bottom:10px;">Booking Summary</h3>
+        <table style="width:100%;font-size:15px;color:#374151;margin-bottom:10px;">
+          <tr><td><strong>Name:</strong></td><td id="summary-name"></td></tr>
+          <tr><td><strong>Email:</strong></td><td id="summary-email"></td></tr>
+          <tr><td><strong>Service:</strong></td><td id="summary-service"></td></tr>
+          <tr><td><strong>Date & Time:</strong></td><td id="summary-datetime"></td></tr>
+          <tr><td><strong>Emergency:</strong></td><td id="summary-emergency"></td></tr>
+          <tr><td><strong>Hours Expected:</strong></td><td id="summary-hours"></td></tr>
+          <tr><td><strong>Total Price:</strong></td><td id="summary-price"></td></tr>
+        </table>
+      </div>
+      <a id="addToCalendarBtn" href="#" download="myriad-green-booking.ics" class="irrigation-contact-us-btn" style="margin-bottom:12px;display:inline-block;">Add to Calendar</a>
+      <a href="index.html" class="irrigation-contact-us-btn">Return to Home</a>
+    </div>
+  </section>
+
+  <script>
+// NOTE: This JS block makes the summary dynamic using URL parameters.
+// When Stripe is live, you may want to fetch booking/order details from your backend using an order/session ID in the URL.
+function getParam(name) {
+  const url = new URL(window.location.href);
+  return url.searchParams.get(name) || '';
+}
+const bookingIdParam = getParam('bookingId');
+const booking = {
+  name: getParam('name'),
+  email: getParam('email'),
+  service: getParam('service'),
+  datetime: getParam('datetime'),
+  emergency: getParam('emergency'),
+  hours: getParam('hours'),
+  price: getParam('price')
+};
+document.getElementById('summary-name').textContent = booking.name;
+document.getElementById('summary-email').textContent = booking.email;
+document.getElementById('summary-service').textContent = booking.service;
+document.getElementById('summary-datetime').textContent = booking.datetime;
+document.getElementById('summary-emergency').textContent = booking.emergency;
+document.getElementById('summary-hours').textContent = booking.hours;
+document.getElementById('summary-price').textContent = booking.price ? `R${booking.price}` : '';
+
+// Add to Calendar (.ics) logic, using dynamic data
+function pad(n) { return n < 10 ? '0' + n : n; }
+function toICSDateTime(dt) {
+  // Expects 'YYYY-MM-DDTHH:MM' or 'YYYY-MM-DD HH:MM'
+  if (!dt) return '';
+  let d = dt.replace(' ', 'T');
+  const [date, time] = d.split('T');
+  if (!date || !time) return '';
+  return date.replace(/-/g, '') + 'T' + time.replace(':', '') + '00Z';
+}
+const dtStart = toICSDateTime(booking.datetime);
+let dtEnd = '';
+if (dtStart && booking.hours) {
+  // Add hours to start time for end time
+  const start = new Date(booking.datetime);
+  start.setHours(start.getHours() + parseInt(booking.hours || '1'));
+  dtEnd = toICSDateTime(start.toISOString().slice(0,16));
+}
+const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Myriad Green//Booking//EN\nCALSCALE:GREGORIAN\nBEGIN:VEVENT\nDTSTART:${dtStart}\nDTEND:${dtEnd}\nSUMMARY:${booking.service} Consultation\nDESCRIPTION:Booking for ${booking.name} (${booking.email})\nLOCATION:Myriad Green\nEND:VEVENT\nEND:VCALENDAR`;
+const icsBlob = new Blob([icsContent.replace(/\n/g, "\r\n")], { type: 'text/calendar' });
+document.getElementById('addToCalendarBtn').href = URL.createObjectURL(icsBlob);
+
+// ✅ Redirect after 15 seconds
+setTimeout(() => {
+  window.location.href = "/";
+}, 15000);
+
+// ✅ Fireworks (Confetti style)
+function launchFireworks() {
+  const duration = 2 * 1000;
+  const animationEnd = Date.now() + duration;
+  const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+  function randomInRange(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+  const interval = setInterval(() => {
+    const timeLeft = animationEnd - Date.now();
+    if (timeLeft <= 0) {
+      return clearInterval(interval);
+    }
+    confetti(Object.assign({}, defaults, {
+      particleCount: 40,
+      origin: { x: randomInRange(0.1, 0.9), y: Math.random() - 0.2 }
+    }));
+  }, 250);
+}
+document.addEventListener('DOMContentLoaded', launchFireworks);
+</script>
+
+<!-- Booking confirmation via Booking Modal's Firebase (if bookingId present) -->
+<script type="module">
+  const url = new URL(window.location.href);
+  const bookingId = url.searchParams.get('bookingId');
+  const sessionId = url.searchParams.get('sessionId');
+  if (bookingId) {
+    try {
+      const { initializeApp } = await import('https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js');
+      const { getFirestore, doc, getDoc, updateDoc } = await import('https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js');
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDshdxstcCy5hqoN4PBOt0KjEtPP6F4ehU",
+        authDomain: "myriad-green-booking.firebaseapp.com",
+        projectId: "myriad-green-booking",
+        storageBucket: "myriad-green-booking.appspot.com",
+        messagingSenderId: "1045964317317",
+        appId: "1:1045964317317:web:4d56dd1b99b7e06f27ffec",
+        measurementId: "G-FVNSW4M4JN"
+      };
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      const ref = doc(db, 'bookings', bookingId);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const b = snap.data();
+        const fmt = v => (v == null ? '' : v);
+        document.getElementById('summary-name').textContent = fmt(b.name);
+        document.getElementById('summary-email').textContent = fmt(b.email);
+        document.getElementById('summary-service').textContent = fmt(b.service);
+        document.getElementById('summary-datetime').textContent = fmt(b.datetime);
+        document.getElementById('summary-emergency').textContent = b.isEmergency ? 'Yes' : 'No';
+        document.getElementById('summary-hours').textContent = fmt(b.hours);
+        document.getElementById('summary-price').textContent = b.price ? `R${b.price}` : '';
+
+        // Persist confirmation on booking doc
+        try {
+          await updateDoc(ref, {
+            status: 'confirmed',
+            stripeSessionId: sessionId || '',
+            confirmedAt: new Date()
+          });
+        } catch (updErr) {
+          console.warn('⚠️ Failed to mark booking confirmed:', updErr);
+        }
+
+        // Recreate ICS download using fetched data
+        try {
+          function toICSDateTime(dt) {
+            if (!dt) return '';
+            let d = dt.replace(' ', 'T');
+            const [date, time] = d.split('T');
+            if (!date || !time) return '';
+            return date.replace(/-/g, '') + 'T' + time.replace(':', '') + '00Z';
+          }
+          const dtStart = toICSDateTime(b.datetime);
+          let dtEnd = '';
+          if (dtStart && b.hours) {
+            const start = new Date(b.datetime);
+            start.setHours(start.getHours() + parseInt(b.hours || '1'));
+            const iso = start.toISOString().slice(0,16);
+            const endFmt = toICSDateTime(iso);
+            dtEnd = endFmt;
+          }
+          const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Myriad Green//Booking//EN\nCALSCALE:GREGORIAN\nBEGIN:VEVENT\nDTSTART:${dtStart}\nDTEND:${dtEnd}\nSUMMARY:${(b.service || 'Consultation')}\nDESCRIPTION:Booking for ${(b.name || '')} (${(b.email || '')})\nLOCATION:Myriad Green\nEND:VEVENT\nEND:VCALENDAR`;
+          const icsBlob = new Blob([icsContent.replace(/\n/g, "\r\n")], { type: 'text/calendar' });
+          const link = document.getElementById('addToCalendarBtn');
+          if (link) link.href = URL.createObjectURL(icsBlob);
+        } catch (icsErr) {
+          console.warn('⚠️ Failed to generate ICS:', icsErr);
+        }
+      } else {
+        console.warn('⚠️ Booking not found:', bookingId);
+      }
+    } catch (e) {
+      console.warn('⚠️ Booking confirmation flow failed:', e);
+    }
+  }
+</script>
+
+<!-- ✅ Include the Confetti Library -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+</body>
+</html>

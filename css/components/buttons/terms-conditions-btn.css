@@ -1,0 +1,67 @@
+/* Terms & Conditions Button - visually prominent, accessible, and branded */
+.terms-conditions-btn {
+  background: linear-gradient(90deg, #87e64b 0%, #176a3a 100%);
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  padding: 1rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(23,106,58,0.15);
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.terms-conditions-btn:hover {
+  background: linear-gradient(90deg, #176a3a 0%, #87e64b 100%);
+  box-shadow: 0 6px 24px rgba(23,106,58,0.22);
+  transform: translateY(-2px) scale(1.03);
+}
+.terms-conditions-btn:active {
+  background: #176a3a;
+  transform: scale(0.98);
+}
+.terms-conditions-btn span {
+  position: relative;
+  z-index: 1;
+  animation: miracle-bounce 1.2s infinite alternate cubic-bezier(.77,0,.18,1);
+}
+@keyframes miracle-bounce {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-6px) scale(1.12); }
+}
+.miracle-circle-btn {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 32px rgba(23,106,58,0.22);
+  background: linear-gradient(135deg,#f6fff8 0%,#176a3a 100%);
+  position: relative;
+  border: none;
+  outline: none;
+  animation: miracle-glow 2s infinite alternate cubic-bezier(.77,0,.18,1);
+  border: 4px solid #fff;
+}
+@keyframes miracle-glow {
+  0% {
+    box-shadow: 0 0 0 0 #176a3a, 0 0 24px 8px #b6ffb0;
+    border-color: #fff;
+  }
+  50% {
+    box-shadow: 0 0 0 8px #176a3a, 0 0 32px 16px #b6ffb0;
+    border-color: #f6fff8;
+  }
+  100% {
+    box-shadow: 0 0 0 0 #176a3a, 0 0 24px 8px #b6ffb0;
+    border-color: #fff;
+  }
+}

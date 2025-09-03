@@ -1,0 +1,14 @@
+.service-svg-wrapper {
+  width: 100%;
+  max-width: 600px;
+  margin: 2rem auto 0 auto;
+  display: block;
+  text-align: center;
+.service-svg-wrapper svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+}

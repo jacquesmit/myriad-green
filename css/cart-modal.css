@@ -1,0 +1,303 @@
+/* 🌑 Cart Modal Overlay */
+.cart-modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+.cart-modal.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 🛍️ Modal Content */
+.cart-modal-content {
+  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+  color: #222;
+  border-radius: 20px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.18);
+  padding: 3rem 2.5rem 2.5rem 2.5rem;
+  max-width: 540px;
+  border: 1px solid #e5e7eb;
+  position: relative;
+  transform: scale(0.97);
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(.4,2,.3,1), opacity 0.3s cubic-bezier(.4,2,.3,1);
+}
+.cart-modal:not(.hidden) .cart-modal-content {
+  transform: scale(1);
+  opacity: 1;
+}
+[data-theme="dark"] .cart-modal-content {
+  background: linear-gradient(135deg, #23272e 0%, #374151 100%);
+  color: #f3f4f6;
+  border: 1px solid #374151;
+}
+
+/* Theme Support */
+[data-theme="dark"] {
+  --modal-bg: #1f2937;
+  --modal-text: #f3f4f6;
+  --border-color: #374151;
+}
+[data-theme="light"] {
+  --modal-bg: #ffffff;
+  --modal-text: #111111;
+  --border-color: #e5e7eb;
+}
+
+/* ❌ Close Button */
+.cart-modal-content .close-btn {
+  position: absolute;
+  top: 18px; right: 22px;
+  font-size: 2rem;
+  color: #64748b;
+  transition: color 0.2s;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.cart-modal-content .close-btn:hover {
+  color: #2563eb;
+}
+[data-theme="dark"] .cart-modal-content .close-btn {
+  color: #94a3b8;
+}
+[data-theme="dark"] .cart-modal-content .close-btn:hover {
+  color: #60a5fa;
+}
+
+/* 🛒 Title */
+.cart-modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #2563eb;
+}
+[data-theme="dark"] .cart-modal-content h2 {
+  color: #60a5fa;
+}
+
+/* 🧾 Cart Items List */
+.cart-items-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+.cart-items-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  margin-bottom: 1.2rem;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+  border: 1px solid #e5e7eb;
+  padding: 1.1rem 1.2rem;
+  transition: box-shadow 0.2s;
+}
+.cart-items-list li:hover {
+  box-shadow: 0 4px 18px rgba(37,99,235,0.10);
+}
+[data-theme="dark"] .cart-items-list li {
+  background: #23272e;
+  border: 1px solid #374151;
+}
+.cart-items-list img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 0.5rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.cart-items-list .item-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.cart-items-list .item-title {
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: #222;
+}
+[data-theme="dark"] .cart-items-list .item-title {
+  color: #f3f4f6;
+}
+.cart-items-list .item-desc {
+  color: #64748b;
+}
+[data-theme="dark"] .cart-items-list .item-desc {
+  color: #94a3b8;
+}
+.cart-items-list .item-qty {
+  font-size: 0.95rem;
+  color: #2563eb;
+  font-weight: 500;
+}
+
+/* 💵 Total */
+.cart-modal-content p.total {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #059669;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+[data-theme="dark"] .cart-modal-content p.total {
+  color: #22d3ee;
+}
+
+/* 🛒 Floating Cart Button */
+.floating-cart-btn {
+  position: fixed;
+  bottom: 20px; right: 20px;
+  background: #3b82f6;
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 50px;
+  border: none;
+  font-size: 1.2rem;
+  z-index: 10001;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 50px;
+}
+.floating-cart-btn:hover {
+  background: #2563eb;
+}
+
+/* 🧮 Cart Count Badge */
+.cart-badge {
+  background: #facc15;
+  color: #000;
+  border-radius: 50%;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  display: inline-block;
+}
+
+/* Cart modal actions */
+.cart-checkout-btn,
+.cart-empty-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 0.65em 2em;
+  font-size: 1em;
+  min-width: 140px;
+  height: 44px;
+  border-radius: 0;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(37,99,235,0.10);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  margin-right: 1em;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.cart-checkout-btn {
+  background: #2563eb;
+}
+.cart-checkout-btn:hover {
+  background: #1d4ed8;
+}
+.cart-empty-btn {
+  background: #ff4d4f;
+  color: #fff;
+  margin-right: 0;
+}
+.cart-empty-btn:hover {
+  background: #d90429;
+  box-shadow: 0 4px 16px rgba(255,77,79,0.22);
+}
+.cart-empty-btn:focus {
+  outline: 2px solid #ff4d4f;
+  outline-offset: 2px;
+}
+.cart-empty-btn svg {
+  width: 1.1em;
+  height: 1.1em;
+  margin-right: 0.4em;
+  vertical-align: middle;
+  opacity: 0.85;
+}
+.checkout-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 0.5em;
+  margin-top: 2em;
+}
+
+@media (max-width: 600px) {
+  .cart-modal-content {
+    padding: 1.2rem;
+    width: 95%;
+  }
+
+  .cart-items-list li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cart-items-list img {
+    width: 100%;
+    max-width: 280px;
+    border-radius: 8px;
+  }
+
+  .cart-items-list button {
+    margin: 0.25rem 0;
+  }
+
+  .checkout-button {
+    width: 100%;
+    text-align: center;
+    display: inline-block;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    background: #10b981;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    margin-top: 1rem;
+  }
+
+  .checkout-button:hover {
+    background: #059669;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 1024px) {
+  .cart-modal-content {
+    padding: 1.5rem;
+    width: 85%;
+  }
+
+  .cart-items-list li {
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .cart-items-list img {
+    width: 90px;
+  }
+}

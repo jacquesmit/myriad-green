@@ -1,0 +1,60 @@
+/* Animate service card icons on scroll for mobile (simulate hover effect) */
+@media (hover: none) and (pointer: coarse) {
+  .service-card[data-aos][data-aos][data-aos][data-aos] .fa,
+  .service-card[data-aos][data-aos][data-aos][data-aos] .fas,
+  .service-card[data-aos][data-aos][data-aos][data-aos] .feature-icon {
+    /* fallback for specificity, but AOS will add aos-animate */
+  }
+  .service-card.aos-animate .fa,
+  .service-card.aos-animate .fas,
+  .service-card.aos-animate .feature-icon {
+    color: #7bbd1e;
+    transform: scale(1.15) rotate(-6deg);
+    transition: color 0.3s, transform 0.3s;
+    filter: drop-shadow(0 2px 8px rgba(135,230,75,0.12));
+  }
+}
+
+/* Animate service card icons on scroll into view for mobile */
+@media (max-width: 700px) {
+  .service-card i,
+  .service-card .fa,
+  .service-card .fas {
+    transition: color 0.3s, transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* Color change on scroll (already working) */
+  .service-card.aos-animate i,
+  .service-card.aos-animate .fa,
+  .service-card.aos-animate .fas {
+    color: #8bc34a;
+    transform: scale(1.18) translateY(-8px); /* Add movement/scale on scroll */
+  }
+
+  /* Keep tap/focus feedback for extra pop */
+  .service-card:active i,
+  .service-card:focus i,
+  .service-card:active .fa,
+  .service-card:focus .fa,
+  .service-card:active .fas,
+  .service-card:focus .fas {
+    color: #689f38;
+    transform: scale(1.22) translateY(-12px);
+  }
+}
+/* Animate service card icons on scroll for mobile (simulate hover effect) */
+@media (hover: none) and (pointer: coarse) {
+  .service-card[data-aos][data-aos][data-aos][data-aos] .fa,
+  .service-card[data-aos][data-aos][data-aos][data-aos] .fas,
+  .service-card[data-aos][data-aos][data-aos][data-aos] .feature-icon {
+    /* fallback for specificity, but AOS will add aos-animate */
+  }
+  .service-card.aos-animate .fa,
+  .service-card.aos-animate .fas,
+  .service-card.aos-animate .feature-icon {
+    color: #7bbd1e;
+    transform: scale(1.15) rotate(-6deg);
+    transition: color 0.3s, transform 0.3s;
+    filter: drop-shadow(0 2px 8px rgba(135,230,75,0.12));
+  }
+}

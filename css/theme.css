@@ -1,0 +1,845 @@
+/* Custom Scrollbar Styling for Xbox Green */
+::-webkit-scrollbar {
+  width: 12px;
+  background: #e9fbe5;
+}
+::-webkit-scrollbar-thumb {
+  background: #107c10;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #0e6a0e;
+}
+/* Firefox */
+* {
+  scrollbar-color: #107c10 #e9fbe5;
+  scrollbar-width: thin;
+}
+/* Hide placeholders in light mode for modal fields (must be last to prevent overwrites) */
+[data-theme="light"] .booking-modal-content input::placeholder,
+[data-theme="light"] .booking-modal-content textarea::placeholder {
+  color: transparent !important;
+  opacity: 1 !important;
+}
+/*==============================
+  1. Enhanced Light Mode (Default)
+==============================*/
+:root {
+  /* === Light Mode Background Gradient Options === */
+  /* Option 1: Blue-Green Soft Gradient */
+  --bg-gradient-1: radial-gradient(circle at 25% 25%, rgba(49,130,206,0.04) 0%, transparent 50%),
+                     radial-gradient(circle at 75% 75%, rgba(104,211,145,0.03) 0%, transparent 50%),
+                     linear-gradient(135deg, #75bcff4a 0%, #f1f5f9 100%);
+
+  /* Option 2: Pastel Green Fade */
+  --bg-gradient-2: linear-gradient(135deg, #e3fcec 0%, #f8fafc 100%);
+
+  /* Option 3: Warm Sand Fade */
+  --bg-gradient-3: linear-gradient(135deg, #fdf6e3 0%, #f8fafc 100%);
+
+  /* Option 4: Pale Blue Fade */
+  --bg-gradient-4: linear-gradient(135deg, #e6f0fa 0%, #f8fafc 100%);
+
+  /* Option 5: Misty Rose Fade */
+  --bg-gradient-5: linear-gradient(135deg, #fff5f7 0%, #f8fafc 100%);
+
+  /* To use, set [data-theme="light"] body { background: var(--bg-gradient-X); } */
+  /* === Light Mode Background Color Options === */
+  /*--color-bg: #f8fafc;         /* Option 1: Soft Warm White (default) */
+  /* --color-bg: #f4f6fb; */   /* Option 2: Gentle Gray */
+  /* --color-bg: #e3fcec; */   /* Option 3: Pastel Green */
+  /* --color-bg: #fdf6e3; */   /* Option 4: Light Sand */
+  /* --color-bg: #e6f0fa; */   /* Option 5: Pale Blue */
+  /* --color-bg: #ee133f; */   /* Option 6: Misty Rose */
+  
+  
+  /* Typography */
+  --font-primary: 'Poppins', sans-serif; /* NOTE: variable --font-primary */
+  --font-secondary: 'Cal Sans', sans-serif; /* NOTE: variable --font-secondary */
+  
+  /* Font Sizes */
+  --font-size-base: 16px; /* NOTE: variable --font-size-base */
+  --font-size-sm: 0.875rem; /* NOTE: variable --font-size-sm */
+  --font-size-md: 1rem; /* NOTE: variable --font-size-md */
+  --font-size-lg: 1.25rem; /* NOTE: variable --font-size-lg */
+  --font-size-xl: 2rem; /* NOTE: variable --font-size-xl */
+  --font-size-xxl: 3rem; /* NOTE: variable --font-size-xxl */
+  --line-height-base: 1.6; /* NOTE: variable --line-height-base */
+
+  /* Navigation */
+  --highlight-blue: #00a8e1; /* NOTE: variable --highlight-blue */
+
+  /* Form Elements */
+  --form-label-color: #374151; /* NOTE: variable --form-label-color */    /* Darker for form labels */
+  
+  /* Enhanced Text Colors - Warmer and Softer */
+  --color-text: #2d3748; /* NOTE: variable --color-text */           /* Warm dark gray for better readability */
+  --color-heading: #1a365d; /* NOTE: variable --color-heading */        /* Deep blue-gray for headers */
+  --color-subheading: #4a5568; /* NOTE: variable --color-subheading */     /* Medium gray for subheadings */
+  --heading-color: #021e44; /* NOTE: variable --heading-color */        /* Consistent with color-heading */
+  --color-link: #2b6cb0; /* NOTE: variable --color-link */          /* Warmer blue for links */
+  --color-link-hover: #107c10; /* Xbox Green for link hover */
+
+  /* Enhanced Backgrounds - Warmer and More Inviting */
+  --color-bg: #f8fafc; /* NOTE: variable --color-bg */
+  --color-bg-alt: #f1f5f9; /* NOTE: variable --color-bg-alt */
+  --color-section-bg: linear-gradient(135deg, 
+    rgba(47, 118, 188, 0.03) 0%, 
+    rgba(135, 230, 75, 0.02) 25%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(248, 250, 252, 1) 100%); /* NOTE: variable --color-section-bg */
+  --color-card-bg: rgba(255, 255, 255, 0.85); /* NOTE: variable --color-card-bg */
+
+  /* Enhanced Gradients */
+  --color-gradient-start: #e6fffa; /* NOTE: variable --color-gradient-start */
+  --color-gradient-mid: #81e6d9; /* NOTE: variable --color-gradient-mid */
+  --color-gradient-end: #2d3748; /* NOTE: variable --color-gradient-end */
+
+  /* Accents - Warmer and More Vibrant */
+  --color-accent: #107c10; /* Xbox Green */
+  --color-accent-rgb: 16, 124, 16; /* RGB values for rgba() usage */
+  --color-accent-hover: #0e6a0e; /* Darker Xbox Green for hover */
+  --color-border: rgba(113, 128, 150, 0.2); /* NOTE: variable --color-border */
+   --accent-color: #68d391; /* NOTE: variable --accent-color */
+
+  /* Navigation - Warmer Blues */
+  --nav-bg: #3182ce; /* NOTE: variable --nav-bg */
+  --nav-link: #ffffff; /* NOTE: variable --nav-link */
+  --menu-hover: #ed8936; /* NOTE: variable --menu-hover */
+  --nav-dropdown-bg: rgba(255, 255, 255, 0.98); /* NOTE: variable --nav-dropdown-bg */
+
+  /* Footer Colors - Warmer and Softer */
+    --footer-bg: #f1f5f9; /* NOTE: variable --footer-bg */
+  --footer-text: #2d3748; /* NOTE: variable --footer-text */
+  --footer-link: #2d3748; /* NOTE: variable --footer-link */
+  --footer-link-hover: #68d391; /* NOTE: variable --footer-link-hover */
+  --footer-heading: #3182ce; /* NOTE: variable --footer-heading */
+  --footer-icon: #3182ce; /* NOTE: variable --footer-icon */
+  --footer-gradient-bg: linear-gradient(to right, #f1f5f9, #f8fafc); /* NOTE: variable --footer-gradient-bg */
+ 
+
+  /* Enhanced Dropdown Colors - Warmer Tones */
+  --dropdown-bg-color: rgba(255, 255, 255, 0.98); /* NOTE: variable --dropdown-bg-color */
+  --dropdown-text-color: #2d3748; /* NOTE: variable --dropdown-text-color */     /* Warmer dropdown text */
+  --dropdown-heading-color: #2b6cb0; /* NOTE: variable --dropdown-heading-color */  /* Warmer dropdown headings */
+  --dropdown-border-color: rgba(113, 128, 150, 0.25); /* NOTE: variable --dropdown-border-color */
+  
+  /* Dropdown links */
+  --dropdown-link-color: #4a5568; /* NOTE: variable --dropdown-link-color */     /* Warmer dropdown links */
+  --dropdown-link-hover-color: #3182ce; /* NOTE: variable --dropdown-link-hover-color */
+  --dropdown-link-hover-bg: rgba(49, 130, 206, 0.08); /* NOTE: variable --dropdown-link-hover-bg */
+  
+  /* Dropdown text elements */
+  --dropdown-muted-text: #718096; /* NOTE: variable --dropdown-muted-text */
+  --dropdown-muted-hover: #3182ce; /* NOTE: variable --dropdown-muted-hover */
+  --dropdown-description-color: #5a6872; /* NOTE: variable --dropdown-description-color */ /* Warmer descriptions */
+  --dropdown-contact-color: #2d3748; /* NOTE: variable --dropdown-contact-color */  /* Warmer contact text */
+  --dropdown-contact-highlight: #3182ce; /* NOTE: variable --dropdown-contact-highlight */
+
+  /* Enhanced Booking Modal Colors - Warmer Tones */
+  --booking-bg-light: rgba(255, 255, 255, 0.98); /* NOTE: variable --booking-bg-light */
+  --booking-text-light: #2d3748; /* NOTE: variable --booking-text-light */      /* Warmer booking modal text */
+  --booking-heading-light: #1a365d; /* NOTE: variable --booking-heading-light */   /* Warmer booking headings */
+  --booking-label-light: #4a5568; /* NOTE: variable --booking-label-light */     /* Warmer booking labels */
+  --booking-border-light: rgba(113, 128, 150, 0.25); /* NOTE: variable --booking-border-light */
+  --booking-overlay-light: rgba(49, 130, 206, 0.1); /* NOTE: variable --booking-overlay-light */
+
+  /* Enhanced Shadows - Warmer and Softer */
+  --shadow-soft: 0 4px 16px rgba(113, 128, 150, 0.12); /* NOTE: variable --shadow-soft */
+  --shadow-medium: 0 8px 25px rgba(113, 128, 150, 0.18); /* NOTE: variable --shadow-medium */
+  --shadow-large: 0 15px 40px rgba(113, 128, 150, 0.25); /* NOTE: variable --shadow-large */
+
+  /* Border Radius */
+  --radius-sm: 6px; /* NOTE: variable --radius-sm */
+  --radius-md: 10px; /* NOTE: variable --radius-md */
+  --radius-lg: 18px; /* NOTE: variable --radius-lg */
+
+  /* Transitions */
+  --transition-default: all 0.3s ease; /* NOTE: variable --transition-default */
+
+  /* === Card Background Options for Light Mode === */
+  --card-bg-option-1: rgba(255,255,255,0.92); /* Default: Soft White */
+  --card-bg-option-2: var(--bg-gradient-2);   /* Pastel Green Gradient */
+  --card-bg-option-3: #e3fcec;                /* Pastel Green Solid */
+  --card-bg-option-4: var(--bg-gradient-3);   /* Warm Sand Gradient */
+  --card-bg-option-5: #fdf6e3;                /* Light Sand Solid */
+  /* To swap, set --card-bg to any option below */
+  --card-bg: var(--card-bg-option-1);         /* Active card background */
+}
+/*==============================
+  1. Light Mode Overrides cards*/
+[data-theme="light"] .testimonial-card,
+[data-theme="light"] .shop-card,
+[data-theme="light"] .about-card {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(113, 128, 150, 0.15);
+  box-shadow: 0 4px 20px rgba(113, 128, 150, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+[data-theme="light"] .how-it-works-card,
+[data-theme="light"] .why-choose-us-card {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(113, 128, 150, 0.15);
+  box-shadow: 0 4px 20px rgba(113, 128, 150, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+[data-theme="light"] .testimonial-card:hover,
+[data-theme="light"] .shop-card:hover,
+[data-theme="light"] .about-card:hover {
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(49, 130, 206, 0.3);
+  box-shadow: 0 8px 30px rgba(113, 128, 150, 0.2);
+  transform: translateY(-2px);
+}
+
+[data-theme="light"] .how-it-works-card:hover,
+[data-theme="light"] .why-choose-us-card:hover {
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(49, 130, 206, 0.3);
+  box-shadow: 0 8px 30px rgba(113, 128, 150, 0.2);
+  transform: translateY(-2px);
+}
+
+/*==============================
+  2. Dark Mode Overrides
+==============================*/
+[data-theme="dark"] {  /* === Dark Mode Background Gradient Options === */
+  /* Option 1: Deep Blue-Gray Radial Gradient */
+
+  --bg-gradient-dark-1: radial-gradient(circle at 30% 30%, rgba(26,54,93,0.12) 0%, transparent 60%),
+                        radial-gradient(circle at 70% 70%, rgba(var(--color-accent-rgb),0.08) 0%, transparent 60%),
+                        linear-gradient(135deg, #181818 0%, #232a34 100%);
+  /* Option 2: Subtle Green Fade */
+  --bg-gradient-dark-2: linear-gradient(135deg, #232a34 0%, #1a2e24 100%);
+  /* Option 3: Midnight Blue Fade */
+  --bg-gradient-dark-3: linear-gradient(135deg, #181818 0%, #1a365d 100%);
+  /* Option 4: Charcoal Fade */
+  --bg-gradient-dark-4: linear-gradient(135deg, #232a34 0%, #181818 100%);
+  /* Option 5: Deep Green Fade */
+  --bg-gradient-dark-5: linear-gradient(135deg, #1a2e24 0%, #181818 100%);
+  /* To use, set [data-theme=\"dark\"] body { background: var(--bg-gradient-dark-X); } */
+
+  /* === Dark Mode Fixed Background Color Options === */
+  /* Option 1: Pure Black */
+  --color-bg-dark-1: #181818;
+  /* Option 2: Charcoal Gray */
+  --color-bg-dark-2: #232a34;
+  /* Option 3: Deep Navy */
+  --color-bg-dark-3: #1a365d;
+  /* Option 4: Forest Green */
+  --color-bg-dark-4: #1a2e24;
+  /* Option 5: Slate Gray */
+  --color-bg-dark-5: #2a2a2a;
+  /* To use, set [data-theme="dark"] body { background: var(--color-bg-dark-X); } */
+
+  
+  /* Form Elements */
+  --form-label-color: #bbbbbb; /* NOTE: variable --form-label-color */
+  --text-primary: #f7fafc; /* Light white-gray */
+  
+  /* Text Colors - Softer and easier on the eyes */
+  --color-text: #e2e8f0; /* NOTE: variable --color-text */
+  --color-heading: #f7fafc; /* NOTE: variable --color-heading */
+  --color-subheading: #cbd5e0; /* NOTE: variable --color-subheading */
+  --heading-color: #f7fafc; /* NOTE: variable --heading-color */
+  --color-link: #a0aec0; /* NOTE: variable --color-link */
+  --color-link-hover: var(--color-accent); /* NOTE: variable --color-link-hover */
+  --text-muted: #a0aec0; /* NOTE: variable --text-muted */        /* Default icon color */
+  
+  /* Backgrounds - Pure dark grays */
+  --color-bg: #181818; /* NOTE: variable --color-bg */
+  --color-bg-alt: #2a2a2a; /* NOTE: variable --color-bg-alt */
+  --color-section-bg: #181818; /* NOTE: variable --color-section-bg */
+  --color-card-bg: #2a2a2a; /* NOTE: variable --color-card-bg */
+  --color-border: #404040; /* NOTE: variable --color-border */
+
+  /* Gradients - Pure dark grays */
+  --color-gradient-start: #2a2a2a; /* NOTE: variable --color-gradient-start */
+  --color-gradient-mid: #181818; /* NOTE: variable --color-gradient-mid */
+  --color-gradient-end: #181818; /* NOTE: variable --color-gradient-end */
+
+  /* Accents - More vibrant green for better contrast */
+  --color-accent: #107c10; /* Xbox Green */
+  --color-accent-rgb: 16, 124, 16; /* RGB values for rgba() usage */
+  --color-accent-hover: #0e6a0e; /* Darker Xbox Green for hover */
+  /* Ensure legacy accent-dependent components use Xbox green in dark mode */
+  --accent-color: var(--color-accent);
+
+  /* Navigation - Pure dark grays */
+  --nav-bg: #2a2a2a; /* NOTE: variable --nav-bg */
+  --nav-link: #e2e8f0; /* NOTE: variable --nav-link */
+  --menu-hover: var(--color-accent); /* NOTE: variable --menu-hover */
+  --nav-dropdown-bg: #2a2a2a; /* NOTE: variable --nav-dropdown-bg */
+
+  /* Dropdown specific colors - Better contrast */
+  --dropdown-bg-color: #2a2a2a; /* NOTE: variable --dropdown-bg-color */
+  --dropdown-text-color: #e2e8f0; /* NOTE: variable --dropdown-text-color */
+  --dropdown-heading-color: var(--color-accent); /* NOTE: variable --dropdown-heading-color */
+  --dropdown-border-color: rgba(var(--color-accent-rgb), 0.3); /* NOTE: variable --dropdown-border-color */
+  
+  /* Dropdown links - Better readability */
+  --dropdown-link-color: #cbd5e0; /* NOTE: variable --dropdown-link-color */
+  --dropdown-link-hover-color: var(--color-accent); /* NOTE: variable --dropdown-link-hover-color */
+  --dropdown-link-hover-bg: rgba(var(--color-accent-rgb), 0.15); /* NOTE: variable --dropdown-link-hover-bg */
+  
+  /* Dropdown text elements - Softer grays */
+  --dropdown-muted-text: #a0aec0; /* NOTE: variable --dropdown-muted-text */
+  --dropdown-muted-hover: var(--color-accent); /* NOTE: variable --dropdown-muted-hover */
+  --dropdown-description-color: #cbd5e0; /* NOTE: variable --dropdown-description-color */
+  --dropdown-contact-color: #e2e8f0; /* NOTE: variable --dropdown-contact-color */
+  --dropdown-contact-highlight: var(--color-accent); /* NOTE: variable --dropdown-contact-highlight */
+
+  /* Booking Modal Colors - Dark Mode - Pure dark grays */
+  --booking-bg-dark: #2a2a2a; /* NOTE: variable --booking-bg-dark */
+  --booking-text-dark: #e2e8f0; /* NOTE: variable --booking-text-dark */
+  --booking-heading-dark: #f7fafc; /* NOTE: variable --booking-heading-dark */
+  --booking-label-dark: #cbd5e0; /* NOTE: variable --booking-label-dark */
+  --booking-border-dark: #404040; /* NOTE: variable --booking-border-dark */
+  --booking-overlay-dark: rgba(24, 24, 24, 0.8); /* NOTE: variable --booking-overlay-dark */
+
+  /*footer - Pure dark grays */
+  --footer-bg: #2a2a2a; /* NOTE: variable --footer-bg */
+  --footer-text: #e2e8f0; /* NOTE: variable --footer-text */
+  --footer-link: #cbd5e0; /* NOTE: variable --footer-link */
+  --footer-link-hover: #0e6a0e; /* NOTE: variable --footer-link-hover */
+  --footer-heading: #107c10; /* NOTE: variable --footer-heading */
+  --footer-icon: #107c10; /* NOTE: variable --footer-icon */
+  --footer-gradient-bg: linear-gradient(to right, #2a2a2a, #404040); /* NOTE: variable --footer-gradient-bg */
+  
+  
+  /* === Card Background Options for Dark Mode === */
+  --card-bg-dark-option-1: rgba(42,42,42,0.95); /* Default: Deep Charcoal */
+  --card-bg-dark-option-2: var(--bg-gradient-dark-2); /* Subtle Green Gradient */
+  --card-bg-dark-option-3: #232a34;                /* Charcoal Gray Solid */
+  --card-bg-dark-option-4: var(--bg-gradient-dark-3); /* Midnight Blue Gradient */
+  --card-bg-dark-option-5: #1a365d;                /* Deep Navy Solid */
+  
+  --card-bg-dark-option-6: linear-gradient(135deg, #232a34 0%, var(--color-accent) 100%); /* Green Accent Gradient */
+  --card-bg-dark-option-7: linear-gradient(135deg, #181818 0%, #3182ce 100%); /* Blue Accent Gradient */
+  --card-bg-dark-option-8: #404040;                /* Slate Gray Solid */
+  --card-bg-dark-option-9: linear-gradient(135deg, #232a34 0%, #ed8936 100%); /* Orange Accent Gradient */
+  --card-bg-dark-option-10: linear-gradient(135deg, #181818 0%, #a0aec0 100%); /* Silver Fade Gradient */
+  
+  
+  /* To swap, set --card-bg to any option below */
+  --card-bg: var(--card-bg-dark-option-7);         /* Active card background: Blue Accent Gradient */
+  
+  
+  /* === Featured Product Card Background Options (Dark) === */
+  --featured-product-card-bg-dark-option-1: var(--card-bg-dark-option-1); /* Deep Charcoal */
+  --featured-product-card-bg-dark-option-2: var(--card-bg-dark-option-2); /* Subtle Green Gradient */
+  --featured-product-card-bg-dark-option-3: var(--card-bg-dark-option-3); /* Charcoal Gray Solid */
+  --featured-product-card-bg: var(--card-bg); /* Match other card backgrounds in dark mode */
+}
+
+/*==============================
+  Enhanced Card Styling for Dark Mode
+==============================*/
+[data-theme="dark"] .testimonial-card,
+[data-theme="dark"] .shop-card,
+[data-theme="dark"] .about-card {
+  background: var(--card-bg);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+}
+
+[data-theme="dark"] .how-it-works-card,
+[data-theme="dark"] .why-choose-us-card {
+  background: var(--card-bg);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+}
+
+[data-theme="dark"] .testimonial-card:hover,
+[data-theme="dark"] .shop-card:hover,
+[data-theme="dark"] .about-card:hover {
+  background: var(--card-bg-dark-option-1); /* Use theme variable for hover background */
+  border-color: rgba(var(--color-accent-rgb), 0.4);
+  box-shadow: 0 8px 30px rgba(var(--color-accent-rgb), 0.1);
+  transform: translateY(-2px);
+}
+
+[data-theme="dark"] .how-it-works-card:hover,
+[data-theme="dark"] .why-choose-us-card:hover {
+  background: var(--card-bg-dark-option-1); /* Use theme variable for hover background */
+  border-color: rgba(var(--color-accent-rgb), 0.4);
+  box-shadow: 0 8px 30px rgba(var(--color-accent-rgb), 0.1);
+  transform: translateY(-2px);
+}
+[data-theme="dark"] .testimonial-card,
+[data-theme="dark"] .testimonial-card * {
+  color: #e2e8f0 !important;
+}
+[data-theme="dark"] .testimonial-card h3,
+[data-theme="dark"] .testimonial-card p,
+[data-theme="dark"] .testimonial-card .testimonial-name,
+[data-theme="dark"] .testimonial-card .testimonial-content {
+  color: #e2e8f0 !important;
+}
+
+/* Enhanced Dark Mode About Page Styling */
+[data-theme="dark"] .about-commitment,
+[data-theme="dark"] .about-awards,
+[data-theme="dark"] .about-community {
+  background: linear-gradient(135deg, #2a2a2a 0%, #404040 100%) !important;
+  color: #e2e8f0 !important;
+  border: 1px solid rgba(var(--color-accent-rgb), 0.2) !important;
+}
+
+[data-theme="dark"] .about-commitment h2,
+[data-theme="dark"] .about-awards h2,
+[data-theme="dark"] .about-community h2 {
+  color: var(--color-accent) !important;
+}
+
+[data-theme="dark"] .about-commitment p,
+[data-theme="dark"] .about-awards p,
+[data-theme="dark"] .about-community p,
+[data-theme="dark"] .about-commitment li,
+[data-theme="dark"] .about-awards li,
+[data-theme="dark"] .about-community li {
+  color: #e2e8f0 !important;
+}
+
+/* Enhanced service cards in dark mode */
+/* Enhanced service cards in dark mode - now use theme variables for full swappability */
+[data-theme="dark"] .service-card {
+  background: var(--card-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .service-card h3,
+[data-theme="dark"] .service-card p {
+  color: var(--color-text);
+}
+
+/*==============================
+  3. Theme Application
+==============================*/
+[data-theme="light"] {
+  --booking-bg: var(--booking-bg-light); /* NOTE: variable --booking-bg */
+  --booking-text: var(--booking-text-light); /* NOTE: variable --booking-text */
+  --booking-heading: var(--booking-heading-light); /* NOTE: variable --booking-heading */
+  --booking-label: var(--booking-label-light); /* NOTE: variable --booking-label */
+  --booking-border: var(--booking-border-light); /* NOTE: variable --booking-border */
+  --booking-overlay: var(--booking-overlay-light); /* NOTE: variable --booking-overlay */
+  --color-background: var(--color-bg); /* NOTE: variable --color-background */
+}
+
+[data-theme="dark"] {
+  --booking-bg: var(--booking-bg-dark); /* NOTE: variable --booking-bg */
+  --booking-text: var(--booking-text-dark); /* NOTE: variable --booking-text */
+  --booking-heading: var(--booking-heading-dark); /* NOTE: variable --booking-heading */
+  --booking-label: var(--booking-label-dark); /* NOTE: variable --booking-label */
+  --booking-border: var(--booking-border-dark); /* NOTE: variable --booking-border */
+  --booking-overlay: var(--booking-overlay-dark); /* NOTE: variable --booking-overlay */
+  --color-background: var(--color-bg); /* NOTE: variable --color-background */
+}
+
+/*==============================
+  4. Base Styling
+==============================*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text);
+  background: var(--color-bg);
+  background-attachment: fixed;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Enhanced Light Mode Body - Warmer Background */
+[data-theme="light"] body {
+  background: var(--bg-gradient-1);
+  background-attachment: fixed;
+  background-attachment: fixed;
+}
+
+/* Enhanced Dark Mode Body - Gradient Background */
+[data-theme="dark"] body {
+  /* To swap backgrounds, use either a gradient or a fixed color below: */
+  /* background: var(--bg-gradient-dark-1); */  /* Use a gradient */
+  background: var(--color-bg-dark-1);           /* Use a fixed color */
+  background-attachment: fixed;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-secondary);
+  font-weight: 700;
+  color: var(--heading-color);
+}
+
+a {
+  color: var(--color-link);
+  text-decoration: none;
+  transition: var(--transition-default);
+}
+
+a:hover {
+  color: var(--color-link-hover);
+}
+
+ul, ol {
+  padding-left: 0;
+  margin-left: 0;
+  list-style: none;
+}
+
+li {
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
+  list-style: none;
+}
+
+
+/* General Card Styling */
+.card,
+.service-card,
+.testimonial-card,
+.shop-card,
+.about-card {
+  background: var(--card-bg);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+
+/* Footer: separate styling */
+.footer-menu,
+.main-footer {
+  background-color: var(--color-footer-bg);
+  color: var(--footer-text);
+  border-color: var(--color-border);
+}
+
+
+
+
+/* Enhanced card styling for light mode - Warmer Tones */
+[data-theme="light"] .card,
+[data-theme="light"] .service-card {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(113, 128, 150, 0.15);
+  box-shadow: 0 4px 20px rgba(113, 128, 150, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+[data-theme="light"] .card:hover,
+[data-theme="light"] .service-card:hover {
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(49, 130, 206, 0.3);
+  box-shadow: 0 8px 30px rgba(113, 128, 150, 0.2);
+  transform: translateY(-2px);
+}
+
+.sub-menu-headings,
+.footer-headings {
+  color: var(--color-subheading);
+}
+
+button {
+  background-color: var(--color-accent);
+  color: var(--color-heading);
+  border: 1px solid var(--color-border);
+}
+
+/* Enhanced button styling for light mode - Warmer Blues */
+[data-theme="light"] button {
+  background: linear-gradient(135deg, #3182ce 0%, #2b6cb0 100%);
+  color: white;
+  border: 1px solid rgba(49, 130, 206, 0.3);
+  box-shadow: 0 2px 8px rgba(113, 128, 150, 0.15);
+}
+
+[data-theme="light"] button:hover {
+  background: linear-gradient(135deg, #2b6cb0 0%, #2c5282 100%);
+  box-shadow: 0 4px 15px rgba(113, 128, 150, 0.25);
+  transform: translateY(-1px);
+}
+
+html, body, button, .card, .navbar, .footer, .modal, .floating-follow-bar {
+  transition: var(--transition-default);
+}
+
+input, textarea, select {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-primary);
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: 2px solid var(--color-accent);
+}
+
+.floating-follow-bar {
+  background-color: var(--color-card-bg);
+  color: var(--color-text);
+}
+
+/* Scrollbar Styling */
+/* Firefox */
+* {
+  scrollbar-color: var(--color-accent) var(--color-bg);
+}
+
+/* Chrome/Edge/Safari */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-accent);
+  border-radius: 8px;
+}
+
+/* Force visibility for hidden text in light mode */
+/* Removed heading color override so headings use --heading-color variable */
+
+/* Ensure service card text is visible */
+[data-theme="light"] .service-card h3,
+[data-theme="light"] .service-card p {
+  color: #1a202c !important;
+}
+
+/* Hero section text visibility */
+[data-theme="light"] .hero-text h1,
+[data-theme="light"] .hero-text p {
+  color: #1a202c !important;
+}
+
+/* Formspree Form Visibility in Light Mode */
+[data-theme="light"] form,
+[data-theme="light"] .form-container,
+[data-theme="light"] .contact-form {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(47, 118, 188, 0.2) !important;
+  padding: 2rem !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: 0 4px 20px rgba(47, 118, 188, 0.1) !important;
+}
+
+/* Form Labels */
+[data-theme="light"] label,
+[data-theme="light"] .form-label {
+  color: #374151 !important;
+  font-weight: 600 !important;
+  margin-bottom: 0.5rem !important;
+  display: block !important;
+}
+
+/* Form Inputs */
+[data-theme="light"] input,
+[data-theme="light"] textarea,
+[data-theme="light"] select {
+  background-color: #ffffff !important;
+  color: #1a202c !important;
+  border: 2px solid rgba(47, 118, 188, 0.2) !important;
+  padding: 0.75rem !important;
+  border-radius: var(--radius-sm) !important;
+  font-family: var(--font-primary) !important;
+  width: 100% !important;
+  margin-bottom: 1rem !important;
+}
+
+[data-theme="light"] input:focus,
+[data-theme="light"] textarea:focus,
+[data-theme="light"] select:focus {
+  outline: none !important;
+  border-color: #2f76bc !important;
+  box-shadow: 0 0 0 3px rgba(47, 118, 188, 0.1) !important;
+}
+
+/* Form Placeholders */
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: transparent !important;
+  opacity: 1 !important;
+}
+
+/* Form Submit Buttons */
+[data-theme="light"] form button,
+[data-theme="light"] .form-submit,
+[data-theme="light"] input[type="submit"] {
+  background: linear-gradient(135deg, #2f76bc 0%, #2c5282 100%) !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.75rem 2rem !important;
+  border-radius: var(--radius-sm) !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 2px 8px rgba(47, 118, 188, 0.15) !important;
+}
+
+[data-theme="light"] form button:hover,
+[data-theme="light"] .form-submit:hover,
+[data-theme="light"] input[type="submit"]:hover {
+  background: linear-gradient(135deg, #2c5282 0%, #2a4b7c 100%) !important;
+  box-shadow: 0 4px 15px rgba(47, 118, 188, 0.25) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Form Error Messages */
+[data-theme="light"] .form-error,
+[data-theme="light"] .error-message {
+  color: #dc2626 !important;
+  background: rgba(220, 38, 38, 0.1) !important;
+  border: 1px solid rgba(220, 38, 38, 0.2) !important;
+  padding: 0.5rem !important;
+  border-radius: var(--radius-sm) !important;
+  font-size: 0.875rem !important;
+}
+
+/* Form Success Messages */
+[data-theme="light"] .form-success,
+[data-theme="light"] .success-message {
+  color: #059669 !important;
+  background: rgba(5, 150, 105, 0.1) !important;
+  border: 1px solid rgba(5, 150, 105, 0.2) !important;
+  padding: 0.5rem !important;
+  border-radius: var(--radius-sm) !important;
+  font-size: 0.875rem !important;
+}
+
+/* Form Required Asterisks */
+[data-theme="light"] .required,
+[data-theme="light"] label .required {
+  color: #dc2626 !important;
+}
+
+/* Form Help Text */
+[data-theme="light"] .form-help,
+[data-theme="light"] .help-text,
+[data-theme="light"] small {
+  color: #718096 !important;
+  font-size: 0.875rem !important;
+}
+
+/* Checkbox and Radio Buttons */
+[data-theme="light"] input[type="checkbox"],
+[data-theme="light"] input[type="radio"] {
+  width: auto !important;
+  margin-right: 0.5rem !important;
+  accent-color: #2f76bc !important;
+}
+
+/* Select Dropdown Arrow */
+[data-theme="light"] select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
+  background-position: right 0.5rem center !important;
+  background-repeat: no-repeat !important;
+  background-size: 1.5em 1.5em !important;
+  padding-right: 2.5rem !important;
+}
+/* 🎯 Fix select dropdown & option visibility in dark mode */
+[data-theme="dark"] select,
+[data-theme="dark"] select option {
+  background-color: var(--color-card-bg) !important;
+  color: var(--color-text) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+/* 🎨 Amazon Blue caret for dark mode dropdown */
+[data-theme="dark"] select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23146eb4' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
+  background-position: right 0.5rem center !important;
+  background-repeat: no-repeat !important;
+  background-size: 1.5em 1.5em !important;
+  padding-right: 2.5rem !important;
+}
+/* Top and bottom icons inside service cards */
+.service-icon svg {
+  color: var(--color-accent);
+  transition: color 0.3s ease;
+}
+
+[data-theme="dark"] .service-icon svg {
+  color: #146eb4; /* Amazon Blue in dark mode */
+}
+
+:root {
+  /* === Card Background Options for Light Mode === */
+  --card-bg-option-1: rgba(255,255,255,0.92); /* Default: Soft White */
+  --card-bg-option-2: var(--bg-gradient-2);   /* Pastel Green Gradient */
+  --card-bg-option-3: #e3fcec;                /* Pastel Green Solid */
+  --card-bg-option-4: var(--bg-gradient-3);   /* Warm Sand Gradient */
+  --card-bg-option-5: #fdf6e3;                /* Light Sand Solid */
+  /* To swap, set --card-bg to any option below */
+  --card-bg: var(--card-bg-option-1);         /* Active card background */
+}
+[data-theme="dark"] {
+  /* === Card Background Options for Dark Mode === */
+  --card-bg-dark-option-1: rgba(42,42,42,0.95); /* Default: Deep Charcoal */
+  --card-bg-dark-option-2: var(--bg-gradient-dark-2); /* Subtle Green Gradient */
+  --card-bg-dark-option-3: #232a34;                /* Charcoal Gray Solid */
+  --card-bg-dark-option-4: var(--bg-gradient-dark-3); /* Midnight Blue Gradient */
+  --card-bg-dark-option-5: #1a365d;                /* Deep Navy Solid */
+  --card-bg-dark-option-6: linear-gradient(135deg, #232a34 0%, var(--color-accent) 100%); /* Green Accent Gradient */
+  --card-bg-dark-option-7: linear-gradient(135deg, #181818 0%, #3182ce 100%); /* Blue Accent Gradient */
+  --card-bg-dark-option-8: #404040;                /* Slate Gray Solid */
+  --card-bg-dark-option-9: linear-gradient(135deg, #232a34 0%, #ed8936 100%); /* Orange Accent Gradient */
+  --card-bg-dark-option-10: linear-gradient(135deg, #181818 0%, #a0aec0 100%); /* Silver Fade Gradient */
+  /* To swap, set --card-bg to any option below */
+  --card-bg: var(--card-bg-dark-option-1);         /* Active card background: Deep Charcoal */
+}
+
+/*==============================
+  Featured Product Card Styling
+==============================*/
+/* Light Mode */
+[data-theme="light"] .featured-product-card {
+  background: var(--featured-product-card-bg);
+  border: 1px solid rgba(113, 128, 150, 0.15);
+  box-shadow: 0 4px 20px rgba(113, 128, 150, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+[data-theme="light"] .featured-product-card:hover {
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(49, 130, 206, 0.3);
+  box-shadow: 0 8px 30px rgba(113, 128, 150, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Dark Mode */
+[data-theme="dark"] .featured-product-card {
+  background: var(--featured-product-card-bg);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+}
+
+[data-theme="dark"] .featured-product-card:hover {
+  background: var(--card-bg-dark-option-1); /* Use theme variable for hover background */
+  border-color: rgba(var(--color-accent-rgb), 0.4);
+  box-shadow: 0 8px 30px rgba(var(--color-accent-rgb), 0.1);
+  transform: translateY(-2px);
+}
+
+/* === Booking Modal Placeholder Hiding ===
+   This rule hides placeholders for modal fields in light mode. Uses --booking-placeholder-color for easy theme control. */
+:root {
+  --booking-placeholder-color: transparent;
+}
+[data-theme="light"] .booking-modal-content input::placeholder,
+[data-theme="light"] .booking-modal-content textarea::placeholder {
+  color: var(--booking-placeholder-color) !important;
+  opacity: 1 !important;
+}

@@ -1,0 +1,16 @@
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const orderId = params.get("orderId");
+
+  if (orderId) {
+    fetch(`http://localhost:3000/order/${orderId}`)
+      .then(res => res.json())
+      .then(data => {
+        // ✅ Display order summary here
+        document.getElementById("summary").innerText = JSON.stringify(data, null, 2);
+      })
+      .catch(err => {
+        console.error("❌ Failed to fetch order:", err);
+      });
+  }
+</script>

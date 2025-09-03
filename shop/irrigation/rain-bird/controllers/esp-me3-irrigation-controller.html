@@ -1,0 +1,175 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="utf-8">
+<link rel="stylesheet" href="/css/bundles/site.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rain Bird ESP-ME3 Irrigation Controller – Modular, Expandable, Wi-Fi Ready | Myriad Green</title>
+  <meta name="description" content="Rain Bird ESP-ME3 modular irrigation controller. Expandable up to 22 stations, flow monitoring, Wi-Fi ready (LNK2). Ideal for residential estates and light commercial.">
+  <link rel="canonical" href="https://www.myriadgreen.co.za/shop/irrigation/rain-bird/controllers/esp-me3-irrigation-controller.html">
+
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/shop.css">
+    <link rel="stylesheet" href="/css/shop-section.css">
+    <link rel="stylesheet" href="/css/product-page.css">
+    <link rel="stylesheet" href="/css/cart-modal.css">
+    <link rel="stylesheet" href="/css/checkout.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Injected Navigation -->
+  <header id="site-header" class="menu-header-container" data-inject="nav"></header>
+  <main>
+    <header class="product-hero">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/shop/">Shop</a> / <a href="/shop/irrigation/">Irrigation</a> / <a href="/shop/irrigation/rain-bird/">Rain Bird</a> / <span aria-current="page">ESP-ME3 Controller</span>
+      </nav>
+      <h1>Rain Bird ESP-ME3 Irrigation Controller – Modular, Expandable, Wi-Fi Ready</h1>
+      <p class="subhead">Modular design, expandable to 22 stations, flow monitoring, and Wi-Fi upgrade via LNK2.</p>
+    </header>
+
+    <section class="product-layout">
+      <div class="product-gallery">
+        <div class="gallery-main">
+          <img id="main-gallery-img" src="/shop/images/rainbird/controllers/rainbird-esp-me3-irrigation-controller-white.webp" alt="Rain Bird ESP-ME3 Controller White" width="800" height="800" loading="eager" onerror="this.src='/images/products/placeholder.svg'">
+        </div>
+        <div class="gallery-thumbs">
+          <img class="gallery-thumb active" src="/shop/images/rainbird/controllers/rainbird-esp-me3-irrigation-controller-white.webp" alt="White view" width="80" height="80">
+          <img class="gallery-thumb" src="/shop/images/rainbird/controllers/rainbird-esp-me3-irrigation-controller-open-white.webp" alt="Open white view" width="80" height="80">
+        </div>
+      </div>
+
+      <aside class="product-purchase" itemscope="" itemtype="https://schema.org/Offer">
+        <label for="me3-variation">Choose your model:</label>
+        <select id="me3-variation" title="Enter me3 variation">
+          <option value="4-base" data-price="3999.00" data-sku="ESP-ME3-4">4 Station Base (R3,999.00)</option>
+          <option value="8-expand" data-price="4499.00" data-sku="ESP-ME3-8">8 Station Expanded (R4,499.00)</option>
+          <option value="12-expand" data-price="4999.00" data-sku="ESP-ME3-12">12 Station Expanded (R4,999.00)</option>
+          <option value="22-expand" data-price="5499.00" data-sku="ESP-ME3-22">22 Station Expanded (R5,499.00)</option>
+        </select>
+        <p class="price">R <span id="me3-variation-price" data-price="" itemprop="price" content="3999.00">3,999.00</span></p>
+        <meta itemprop="priceCurrency" content="ZAR">
+        <link itemprop="availability" href="https://schema.org/InStock">
+        <p class="sku">SKU: <span id="me3-variation-sku" data-sku="">ESP-ME3-4</span></p>
+
+        <div class="purchase-actions">
+          <button class="add-to-cart-btn" data-id="esp-me3" data-sku="ESP-ME3-4" data-name="Rain Bird ESP-ME3 Irrigation Controller" data-price="3999.00" data-image="/shop/images/rainbird/rainbird-esp-me3-irrigation-controller.webp">
+            Add to Cart
+          </button>
+          <button class="buy-now-btn" data-id="esp-me3" data-sku="ESP-ME3-4" data-name="Rain Bird ESP-ME3 Irrigation Controller" data-price="3999.00" data-image="/shop/images/rainbird/rainbird-esp-me3-irrigation-controller.webp">
+            Buy Now
+          </button>
+        </div>
+
+        <ul class="trust-list">
+          <li>✓ Modular &amp; expandable (4–22 stations)</li>
+          <li>✓ Flow monitoring capable</li>
+          <li>✓ Wi-Fi ready (LNK2 module)</li>
+          <li>✓ Sensor compatible</li>
+        </ul>
+      </aside>
+    </section>
+
+    <section class="product-details">
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          // Gallery functionality
+          const mainImg = document.getElementById('main-gallery-img');
+          const thumbs = document.querySelectorAll('.gallery-thumb');
+          thumbs.forEach(thumb => {
+            thumb.addEventListener('click', function() {
+              thumbs.forEach(t => t.classList.remove('active'));
+              thumb.classList.add('active');
+              mainImg.src = thumb.src;
+              mainImg.alt = thumb.alt;
+            });
+          });
+          // Variation price update
+          const variationSelect = document.getElementById('me3-variation');
+          const priceSpan = document.getElementById('me3-variation-price');
+          const skuSpan = document.getElementById('me3-variation-sku');
+          const addToCartBtn = document.querySelector('.add-to-cart-btn');
+          const buyNowBtn = document.querySelector('.buy-now-btn');
+          variationSelect.addEventListener('change', function() {
+            const selected = variationSelect.options[variationSelect.selectedIndex];
+            const price = selected.getAttribute('data-price');
+            const sku = selected.getAttribute('data-sku');
+            priceSpan.textContent = Number(price).toLocaleString('en-ZA', {minimumFractionDigits:2});
+            priceSpan.setAttribute('content', price);
+            skuSpan.textContent = sku;
+            skuSpan.setAttribute('data-sku', sku);
+            addToCartBtn.setAttribute('data-sku', sku);
+            addToCartBtn.setAttribute('data-price', price);
+            buyNowBtn.setAttribute('data-sku', sku);
+            buyNowBtn.setAttribute('data-price', price);
+          });
+        });
+      </script>
+      <h2>What’s included</h2>
+      <ul>
+        <li>Rain Bird ESP-ME3 Controller (base)</li>
+        <li>Power supply &amp; enclosure</li>
+        <li>Quick start guide</li>
+      </ul>
+
+      <h2>Specs</h2>
+      <table class="specs">
+        <tbody><tr><th>Stations</th><td>4 base, expandable to 22</td></tr>
+        <tr><th>Expansion</th><td>4-station modules</td></tr>
+        <tr><th>Wi-Fi</th><td>LNK2 upgrade module</td></tr>
+        <tr><th>Flow</th><td>Flow sensor compatible</td></tr>
+        <tr><th>Enclosure</th><td>Indoor/Outdoor</td></tr>
+      </tbody></table>
+
+      <h2>Use cases</h2>
+      <p>Estates, medium to large residential sites, light commercial installations needing expansion and flow monitoring.</p>
+    </section>
+
+    <!-- JSON-LD Product -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": "Rain Bird ESP-ME3 Irrigation Controller – Modular, Expandable, Wi-Fi Ready",
+      "image": ["https://www.myriadgreen.co.za/shop/images/rainbird/rainbird-esp-me3-irrigation-controller.webp"],
+      "description": "Modular irrigation controller expandable to 22 stations with flow monitoring and Wi-Fi upgrade (LNK2).",
+      "brand": { "@type": "Brand", "name": "Rain Bird" },
+      "sku": "ESP-ME3",
+      "category": "Irrigation Controller",
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "ZAR",
+        "price": "4499.00",
+        "availability": "https://schema.org/InStock",
+        "url": "https://www.myriadgreen.co.za/shop/irrigation/rain-bird/controllers/esp-me3-irrigation-controller"
+      }
+    }
+    </script>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const mainImg = document.getElementById('main-gallery-img');
+      const thumbs = document.querySelectorAll('.gallery-thumb');
+      thumbs.forEach(thumb => {
+        thumb.addEventListener('click', function() {
+          mainImg.src = thumb.src;
+          mainImg.alt = thumb.alt;
+          thumbs.forEach(t => t.classList.remove('active'));
+          thumb.classList.add('active');
+        });
+      });
+    });
+  </script>
+
+  <!-- Shop functionality scripts -->
+  <script src="/js/site-init.js" defer=""></script>
+  <script src="/js/cart-modal.js" defer=""></script>
+  <script src="/js/checkout.js" defer=""></script>
+  <!-- Injected Footer -->
+  <footer id="site-footer" data-inject="footer"></footer>
+
+
+</body></html>

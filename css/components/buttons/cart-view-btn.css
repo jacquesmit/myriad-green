@@ -1,0 +1,32 @@
+.products-heading-wrap.center-align {
+  display: flex;
+  flex-direction: column; /* Stack vertically by default */
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.products-heading-wrap.center-align.row-layout {
+  flex-direction: row; /* Add this class if you want side-by-side */
+}
+
+.products-heading-wrap h2 {
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+.cart-view-btn {
+  background-color: #3b82f6;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.cart-view-btn:hover {
+  background-color: #2563eb;
+}

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Template: Service Page Master (complete structure). Replace tokens {{...}}. -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{PAGE_TITLE}}</title>
+  <style>
+    .hero-title, [data-hero-title] {
+      text-align: left;
+      color: #1a1a1a;
+      text-shadow: 0 2px 8px rgba(255,255,255,0.10), 0 1px 2px rgba(0,0,0,0.06);
+    }
+    .hero-intro, [data-hero-intro], .lead {
+      text-align: left;
+      color: #222;
+      text-shadow: 0 2px 8px rgba(255,255,255,0.08), 0 1px 2px rgba(0,0,0,0.05);
+      max-width: 700px;
+      margin-left: 0;
+      margin-right: auto;
+    }
+    @media (max-width: 600px) {
+      .hero-title, [data-hero-title], .hero-intro, [data-hero-intro], .lead {
+        text-align: left;
+        font-size: 1.1em;
+      }
+    }
+  </style>
+
+  <meta name="description" content="{{META_DESCRIPTION}}">
+  <link rel="canonical" href="{{CANONICAL_URL}}" />
+  <meta name="keywords" content="{{META_KEYWORDS}}">
+
+  <!-- Google Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Base Styles -->
+  <link rel="stylesheet" href="/css/reset.css" />
+  <link rel="stylesheet" href="/css/theme.css" />
+  <link rel="stylesheet" href="/css/utilities.css" />
+  <link rel="stylesheet" href="/css/main.css" />
+
+  <!-- Page Styles -->
+  <link rel="stylesheet" href="/css/landinghero.css" />
+  <link rel="stylesheet" href="/css/servicesection.css" />
+  <link rel="stylesheet" href="/css/booking-modal.css" />
+  <link rel="stylesheet" href="/css/services/{{SERVICE_SLUG}}-sections.css" />
+  <link rel="stylesheet" href="/css/faq-section.css" />
+  <link rel="stylesheet" href="/css/testimonials.css" />
+  <link rel="stylesheet" href="/css/about-us-section.css" />
+  <link rel="stylesheet" href="/css/components/buttons/book-now-button.css" />
+  <link rel="stylesheet" href="/css/components/buttons/floating-contact-bar.css" />
+  <link rel="stylesheet" href="/css/floating-bar-reopen-btn.css" />
+  <link rel="stylesheet" href="/css/main-navigation.css" />
+  <link rel="stylesheet" href="/css/mobile-nav.css" />
+  <link rel="stylesheet" href="/css/footer.css" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/theme-toggle.css" />
+  <link rel="stylesheet" href="/css/components/buttons/social-bar.css" />
+  <link rel="stylesheet" href="/css/contact-us-form.css">
+  <link rel="stylesheet" href="/css/mobile-tweaks.css" />
+  <link rel="stylesheet" href="/css/icon-strip-mobile.css" />
+  <link rel="stylesheet" href="/css/mobile-tap-feedback.css" />
+  <link rel="stylesheet" href="/css/mobile-scroll-icon-animate.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+  <link rel="stylesheet" href="/css/weather-widget.css">
+  <link rel="stylesheet" href="/css/cart-modal.css" />
+  <link rel="stylesheet" href="/css/checkout.css" />
+  <link rel="stylesheet" href="/css/shop-section.css" />
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/how-it-works.css">
+  <link rel="stylesheet" href="/css/{{SERVICE_SLUG}}-sections.css">
+</head>
+
+<body>
+  <!-- Social Bar & Navigation mounts -->
+  <div id="site-social-bar"></div>
+  <div id="site-nav"></div>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero-{{SERVICE_SLUG}}">
+      <div class="hero-grid">
+        <div class="hero-text" data-aos="fade-right">
+          <h1 id="page-h1" data-page-key="{{PAGE_KEY}}" data-city="{{CITY_NAME}}" data-suburb="{{SUBURB_NAME}}" data-hero-title>{{HERO_TITLE}}</h1>
+          <p data-hero-intro>{{HERO_INTRO}}</p>
+          <button class="btn book-now-button" id="hero-book-service">Book a Service</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Icon strip -->
+    <section class="icon-strip-horizontal section">
+      <div class="icon-strip-container">
+        <div class="icon-feature"><i class="fas fa-award"></i><p>14+ Years Irrigation Experience</p></div>
+        <div class="icon-feature"><i class="fas fa-recycle"></i><p>Eco-Friendly Irrigation Tech</p></div>
+        <div class="icon-feature"><i class="fas fa-tint"></i><p>Smart Water Saving Systems</p></div>
+        <div class="icon-feature"><i class="fas fa-map-marker-alt"></i><p>Gauteng-Based Installers</p></div>
+      </div>
+    </section>
+
+    <!-- Overview -->
+    <section class="overview section">
+      <div class="container grid-two-columns">
+        <div class="overview-image">
+          <figure>
+            <img src="{{OVERVIEW_IMAGE_URL}}" alt="{{OVERVIEW_IMAGE_ALT}}" loading="lazy" />
+            <figcaption class="sr-only">{{OVERVIEW_IMAGE_ALT}}</figcaption>
+          </figure>
+        </div>
+        <div class="overview-text">
+          <h2>{{OVERVIEW_HEADING}}</h2>
+          <p>{{OVERVIEW_INTRO}}</p>
+          <ul class="overview-list">
+            {{OVERVIEW_LIST_ITEMS}}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- About + Weather widget -->
+    <section id="about-us" class="about-us-section" aria-labelledby="about-heading">
+      <div class="container">
+        <div class="about-hero">
+          <article class="about-content">
+            <header>
+              <h2 id="about-heading">About Myriad Green</h2>
+              <p class="about-lead">{{ABOUT_LEAD}}</p>
+              <p>{{ABOUT_PARAGRAPH}}</p>
+            </header>
+            <section class="about-story">
+              <p>{{ABOUT_STORY}}</p>
+              <section class="core-services-summary" itemscope itemtype="https://schema.org/Service">{{CORE_SERVICES}}</section>
+              <div class="about-cta"></div>
+            </section>
+          </article>
+          <div class="about-visual" itemscope itemtype="https://schema.org/ImageObject" style="display: flex; flex-direction: column; align-items: flex-start;">
+            <img src="{{ABOUT_IMAGE_URL}}" alt="{{ABOUT_IMAGE_ALT}}" loading="lazy" width="600" height="400" itemprop="contentUrl" style="margin-bottom:1.2rem;max-width:100%;height:auto;" />
+            <figcaption class="sr-only" itemprop="caption">{{ABOUT_IMAGE_CAPTION}}</figcaption>
+            <h2 class="weather-widget-title" style="margin:0 0 0.7rem 0;font-size:1.15rem;font-weight:600;color:#3a7d3a;align-self:flex-start;">Today's Weather & Water Advice</h2>
+            <div id="weather-widget" class="weather-widget" data-suburb="{{WEATHER_SUBURB}}" data-country="ZA" data-units="metric" data-cache-mins="120" data-stale-mins="240" data-theme="xbox" data-tone="solid" data-icon="#ffffff"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials-section" aria-labelledby="testimonials-heading">
+      <div class="container">
+        <h2 id="testimonials-heading">{{TESTIMONIALS_HEADING}}</h2>
+        <p class="testimonials-intro">{{TESTIMONIALS_INTRO}}</p>
+        <div class="testimonial-grid">
+          {{TESTIMONIAL_CARDS}}
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features section">
+      <div class="container">
+        <h2 class="section-heading">{{FEATURES_HEADING}}</h2>
+        <p class="section-subheading">{{FEATURES_SUBHEADING}}</p>
+        <div class="grid">
+          {{FEATURE_CARDS}}
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="why-choose-us-section">
+      <div class="section-heading">
+        <h2>{{WHY_CHOOSE_HEADING}}</h2>
+        <p>{{WHY_CHOOSE_SUBHEADING}}</p>
+      </div>
+      <div class="why-cards">
+        {{WHY_CARDS}}
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works section">
+      <h2 class="section-heading">{{HOW_IT_WORKS_HEADING}}</h2>
+      <p class="section-subheading">{{HOW_IT_WORKS_SUBHEADING}}</p>
+      <div class="steps-progress-container">
+        <div class="animated-progress-line"></div>
+        <div class="grid-four-columns">
+          {{STEP_CARDS}}
+        </div>
+      </div>
+    </section>
+
+    <!-- Complete Services Grouped -->
+    <section class="{{SERVICE_SLUG}}-services-section" id="{{SERVICE_SLUG}}-services">
+      <div class="section-heading">
+        <h2>{{COMPLETE_SERVICES_HEADING}}</h2>
+        <p>{{COMPLETE_SERVICES_SUBHEADING}}</p>
+      </div>
+      {{SERVICE_GROUPS}}
+    </section>
+
+    <!-- One-off Pricing -->
+    <section class="pricing section">
+      <div class="container">
+        <h2 class="section-heading">{{PRICING_HEADING}}</h2>
+        <p class="section-subheading">{{PRICING_SUBHEADING}}</p>
+        <div class="pricing-cards">
+          {{PRICING_CARDS}}
+        </div>
+      </div>
+    </section>
+
+    <!-- Monthly Care Plans -->
+    <section class="monthly-pricing section alt-bg">
+      <div class="container">
+        <h2 class="section-heading">{{MONTHLY_PRICING_HEADING}}</h2>
+        <p class="section-subheading">{{MONTHLY_PRICING_SUBHEADING}}</p>
+        <div class="pricing-cards">
+          {{MONTHLY_PRICING_CARDS}}
+        </div>
+      </div>
+    </section>
+
+    <!-- Project Gallery -->
+    <section class="project-gallery-section">
+      <div class="section-heading">
+        <h2>{{PROJECT_GALLERY_HEADING}}</h2>
+        <p>{{PROJECT_GALLERY_SUBHEADING}}</p>
+      </div>
+      <div class="project-list">
+        {{PROJECT_ROWS}}
+      </div>
+    </section>
+
+    <!-- Trust Badges -->
+    <section class="trust-badges section">
+      <div class="trust-wrapper">
+        <div class="trust-heading"><h2>{{TRUST_HEADING}}</h2><p>{{TRUST_SUBHEADING}}</p></div>
+        <div class="trust-icons">
+          {{TRUST_ICON_ROWS}}
+        </div>
+      </div>
+    </section>
+
+    <!-- Design Packages -->
+    <section class="design-packages section">
+      <div class="container">
+        <h2 class="section-heading">{{DESIGN_PACKAGES_HEADING}}</h2>
+        <p class="section-subheading">{{DESIGN_PACKAGES_SUBHEADING}}</p>
+        <div class="pricing-cards">
+          {{DESIGN_PACKAGES_CARDS}}
+        </div>
+      </div>
+    </section>
+
+    <!-- Process Promise -->
+    <section class="process-promise section">
+      <div class="container">
+        <h2 class="section-heading">{{PROCESS_PROMISE_HEADING}}</h2>
+        <p class="section-subheading">{{PROCESS_PROMISE_SUBHEADING}}</p>
+        <div class="grid grid-three-columns">
+          {{PROCESS_PROMISE_CARDS}}
+        </div>
+      </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="map-section section" id="map">
+      <div class="container">
+        <h2 class="section-heading">{{MAP_HEADING}}</h2>
+        <p class="section-subheading">{{MAP_SUBHEADING}}</p>
+        <div class="map-box">
+          <iframe src="https://www.google.com/maps?q={{MAP_QUERY}},+South+Africa&output=embed" width="100%" height="400" style="border:0; border-radius:12px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- Local areas grid placeholder -->
+    <section class="local-service-areas section" id="local-areas">
+      <div class="container" data-aos="fade-up">
+        <h2 class="section-heading">{{LOCAL_AREAS_HEADING}}</h2>
+        <p class="section-subheading">{{LOCAL_AREAS_SUBHEADING}}</p>
+        <div class="suburb-list-grid">
+          {{LOCAL_SERVICES_LINKS}}
+        </div>
+      </div>
+    </section>
+
+    <!-- Products (optional keep) -->
+    <section id="featured-products" class="featured-products" aria-labelledby="{{PRODUCTS_HEADING_ID}}" data-product-count="{{PRODUCTS_COUNT}}">
+      <div class="container">
+        <div class="products-heading-wrap center-align">
+          <h2 id="{{PRODUCTS_HEADING_ID}}">{{PRODUCTS_HEADING}}</h2>
+        </div>
+        <div class="product-grid">
+          {{PRODUCT_GRID_ITEMS}}
+        </div>
+        <div style="display: flex; justify-content: center; margin-top: 2.5rem;">
+          <button class="cart-view-btn" id="inlineCartBtn">View Cart</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ (keep structure; replace Q&A content per page) -->
+    <section class="faq-section section" id="faq">
+      <div class="container">
+        <div class="faq-header" style="display:flex;align-items:center;gap:0.7rem;margin-bottom:1.2rem;">
+          <span class="faq-icon" aria-label="{{FAQ_ICON_LABEL}}" style="display:inline-flex;align-items:center;">
+            {{FAQ_ICON_SVG}}
+          </span>
+          <h2 style="margin:0;font-size:1.5rem;font-weight:700;color:var(--color-heading);">{{FAQ_HEADING}}</h2>
+        </div>
+        {{FAQ_ITEMS}}
+      </div>
+    </section>
+
+    <!-- Contact form -->
+    <section class="contact-form-section">
+      <div class="form-layout modern-form">
+        <div class="form-image">
+          <img src="{{CONTACT_IMAGE_URL}}" alt="{{CONTACT_IMAGE_ALT}}">
+        </div>
+        <div class="form-content">
+          <h2>{{CONTACT_HEADING}}</h2>
+          <p>{{CONTACT_INTRO}}</p>
+          <form id="form-{{SERVICE_SLUG}}" class="contact-form" method="POST" action="{{CONTACT_FORM_ACTION}}" novalidate>
+            <div class="form-group"><input type="text" id="name" name="name" placeholder=" " required><label for="name">Full Name</label></div>
+            <div class="form-group"><input type="email" id="email" name="email" placeholder=" " required><label for="email">Email Address</label></div>
+            <div class="form-group"><input type="tel" id="phone" name="phone" placeholder=" " required><label for="phone">Phone Number</label></div>
+            <div class="form-group"><input type="text" id="address" name="address" placeholder=" " required><label for="address">Suburb / Area / Address</label></div>
+            <div class="form-group"><textarea id="message" name="message" placeholder=" " rows="4" required></textarea><label for="message">How can we help?</label></div>
+            <div class="form-group"><select id="service" name="service" required></select></div>
+            <input type="hidden" name="page-source" value="{{PAGE_SOURCE}}">
+            <button type="submit" class="cta-btn">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Scroll-to-top -->
+    <button class="scroll-to-top" aria-label="Scroll to top"><i class="fas fa-arrow-up"></i></button>
+
+    <!-- Cart floating button and modal -->
+    <button id="openCartBtn" class="floating-cart-btn" aria-label="View cart"><i class="fas fa-shopping-cart"></i><span class="cart-badge" id="cartCount">0</span></button>
+    <div id="cartModal" class="cart-modal hidden">
+      <div class="cart-modal-content">
+        <button id="closeCartBtn" class="close-btn" aria-label="Close cart">&times;</button>
+        <h2>Your Cart</h2>
+        <ul id="cartItemsList" class="cart-items-list"></ul>
+        <p class="total">Total: R<span id="cartTotal">0.00</span></p>
+        <div class="checkout-actions"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer id="site-footer" aria-label="Site footer"></footer>
+
+  <!-- Booking/Cart/Checkout scripts -->
+  <div id="booking-modal-container"></div>
+  <script src="/js/booking-modal-loader.js" defer></script>
+  <script src="/js/cart-modal.js" defer></script>
+  <script src="/js/checkout.js" defer></script>
+  <script src="/js/site-init.js" defer></script>
+  <script src="/js/testimonial-carousel-{{SERVICE_SLUG}}.js" defer></script>
+  <script src="/js/how-it-works-animate.js" defer></script>
+  <script src="/js/weather-widget.js" defer></script>
+  <script src="/js/h1-injector.js" defer></script>
+  <script src="/js/weather-signal.js" defer></script>
+  <script src="/js/related-products.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script> AOS.init({ duration: 800, once: true }); </script>
+
+  <!-- LocalBusiness JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Myriad Green {{SERVICE_NAME}}",
+    "image": "https://www.myriadgreen.co.za/images/logo.png",
+    "url": "{{CANONICAL_URL}}",
+    "telephone": "+27 83 456 7890",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "123 Green Lane",
+      "addressLocality": "Gauteng",
+      "addressRegion": "Gauteng",
+      "postalCode": "",
+      "addressCountry": "ZA"
+    },
+    "priceRange": "R950 – R12,500+",
+    "description": "Professional {{SERVICE_NAME}} services, smart systems, repairs, and water-saving solutions for homes, estates, and businesses.",
+    "serviceType": "{{SERVICE_NAME}} Installation and Maintenance"
+  }
+  </script>
+</body>
+</html>

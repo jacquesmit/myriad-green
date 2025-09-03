@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book a Consultation</title>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/booking-modal.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/booking-page.css" />
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/reset.css" />
+  <link rel="stylesheet" href="/css/theme.css" />
+  <link rel="stylesheet" href="/css/utilities.css" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/landinghero.css" />
+  <link rel="stylesheet" href="/css/servicesection.css" />
+  <link rel="stylesheet" href="/css/booking-modal.css" />
+  <link rel="stylesheet" href="/css/faq-section.css" />
+  <link rel="stylesheet" href="/css/testimonials.css" />
+  <link rel="stylesheet" href="/css/about-us-section.css" />
+  <link rel="stylesheet" href="/css/main-navigation.css" />
+  <link rel="stylesheet" href="/css/mobile-nav.css" />
+  <link rel="stylesheet" href="/css/footer.css" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/theme-toggle.css" />
+  <link rel="stylesheet" href="/css/components/buttons/book-now-button.css" />
+  <link rel="stylesheet" href="/css/components/buttons/social-bar.css" />
+  <link rel="stylesheet" href="/css/floating-bar-reopen-btn.css" />
+  <link rel="stylesheet" href="/css/contact-us-form.css">
+  <link rel="stylesheet" href="/css/mobile-tweaks.css" />
+  <link rel="stylesheet" href="/css/icon-strip-mobile.css" />
+  <link rel="stylesheet" href="/css/mobile-tap-feedback.css" />
+  <link rel="stylesheet" href="/css/mobile-scroll-icon-animate.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+  <link rel="stylesheet" href="/css/weather-widget.css">
+  <link rel="stylesheet" href="/css/cart-modal.css" />
+  <link rel="stylesheet" href="/css/checkout.css" />
+  <link rel="stylesheet" href="/css/shop-section.css" />
+</head>
+<body>
+  <!-- Navigation Header -->
+  <nav class="booking-nav">
+    <a href="index.html" class="logo-link" title="Go to Homepage">
+      <img src="images/Myriadgreen_irrigation_logo-removebg-preview.png" alt="Myriad Green Logo" />
+      <span class="nav-title"></span>
+    </a>
+    <a href="index.html" class="close-btn" title="Back to Homepage">
+      <i class="fas fa-arrow-left"></i>
+      <span>Back to Home</span>
+    </a>
+  </nav>
+
+  <div class="booking-page">
+    <div class="header-row">
+      <h1>Book a Consultation</h1>
+      <input type="text" id="datetime" name="datetime" placeholder="Pick date & time" required />
+    </div>
+
+    <form id="booking-form">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" required />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required />
+
+      <label for="phone">Phone</label>
+      <input type="tel" id="phone" name="phone" required />
+
+      <label for="service">Service</label>
+      <select id="service" name="service" required>
+        <option value="">Choose a service</option>
+        <option>Irrigation</option><option>Boreholes</option><option>Plumbing</option>
+        <option>Electrical</option><option>Water Storage Tanks</option><option>Water Filtration</option>
+        <option>Pumps</option><option>Landscaping</option><option>Grey Water Systems</option>
+        <option>Rain Water Harvesting</option><option>Waste Water Systems</option><option>Leak Detection</option>
+        <option>Emergency Services</option><option>Solar Installations</option><option>Blocked Drainage</option>
+        <option>Gutter Solutions</option><option>Instant Lawn</option><option>Aggregates</option>
+        <option>Garden Substrates</option><option>Treefelling</option><option>Coc Certificates</option><option>Gas Installations</option>
+      </select>
+
+      <div class="form-checkbox-row">
+        <input type="checkbox" id="isEmergency" name="isEmergency" />
+        <label for="isEmergency">
+          <strong>Emergency Booking</strong><br />
+          <small>Subject to approval. Double standard fee applies.</small>
+        </label>
+      </div>
+
+      <label for="message">Message</label>
+      <textarea id="message" name="message" rows="4" placeholder="Tell us about your requirements..."></textarea>
+
+      <button type="submit">Submit Booking</button>
+    </form>
+  </div>
+
+  <a href="https://wa.me/27817216701" class="floating-whatsapp" target="_blank" aria-label="Chat on WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+
+  <script>
+    // Initialize Flatpickr
+    function initializeDatePicker() {
+      const dateInput = document.getElementById('datetime');
+      
+      flatpickr(dateInput, {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        minDate: "today",
+        maxDate: new Date().fp_incr(60), // 60 days from today
+        minuteIncrement: 30,
+        defaultHour: 9,
+        defaultMinute: 0,
+        time_24hr: false,
+        disable: [
+          // Disable Sundays
+          function(date) {
+            return (date.getDay() === 0);
+          }
+        ],
+        minTime: "08:00",
+        maxTime: "17:00",
+        locale: {
+          firstDayOfWeek: 1 // Start week on Monday
+        },
+        onChange: function(selectedDates, dateStr, instance) {
+          console.log('Date selected:', dateStr);
+        }
+      });
+    }
+
+    // Form submission
+    document.getElementById('booking-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      const datetime = document.getElementById('datetime').value;
+      
+      if (!datetime) {
+        alert('Please select a date and time for your appointment.');
+        return;
+      }
+      
+      // Add datetime to form data
+      formData.append('datetime', datetime);
+      
+      // Here you can handle the form submission
+      console.log('Form submitted with data:', Object.fromEntries(formData));
+      
+      // Example: Show success message
+      alert('Booking request submitted successfully! We will contact you shortly.');
+      
+      // Reset form
+      this.reset();
+      document.getElementById('datetime').value = '';
+    });
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeDatePicker();
+    });
+  </script>
+
+  <script type="module" src="js/booking-modal.js"></script>
+</body>
+</html>

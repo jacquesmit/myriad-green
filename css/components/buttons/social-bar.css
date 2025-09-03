@@ -1,0 +1,54 @@
+/* Light mode border and shadow for floating social bar */
+[data-theme="light"] .floating-follow-bar {
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+/* Always show brand color for each social icon */
+.social-bar a.facebook i { color: #1877f3; }
+.social-bar a.twitter i { color: #1da1f2; }
+.social-bar a.instagram i { color: #e4405f; }
+.social-bar a.linkedin i { color: #0077b5; }
+.social-bar a.whatsapp i { color: #25d366; }
+.social-bar a.youtube i { color: #ff0000; }
+/* Social Bar Styles */
+.social-bar a {
+  transition: color 0.2s, background 0.2s;
+}
+
+/* Example: Facebook */
+.social-bar a.facebook:hover i {
+  color: #1877f3;
+  background: #e7f0fd;
+}
+
+/* Example: Twitter/X */
+.social-bar a.twitter:hover i {
+  color: #1da1f2;
+  background: #e8f7fe;
+}
+
+/* Example: Instagram */
+.social-bar a.instagram:hover i {
+  color: #e4405f;
+  background: #fde7ed;
+}
+
+/* Example: LinkedIn */
+.social-bar a.linkedin:hover i {
+  color: #0077b5;
+  background: #e7f3fa;
+}
+
+/* Example: WhatsApp */
+.social-bar a.whatsapp:hover i {
+  color: #25d366;
+  background: #e6f9ef;
+}
+
+/* Add more as needed for your icons */
+
+.social-bar a i {
+  border-radius: 50%;
+  padding: 4px;
+  transition: color 0.2s, background 0.2s;
+}

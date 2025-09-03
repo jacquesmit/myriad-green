@@ -1,0 +1,241 @@
+/* Improved responsive h1 for hero section */
+.hero-heading {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+@media (min-width: 600px) {
+  .hero-heading {
+    font-size: 3.2rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .hero-heading {
+    font-size: 4rem;
+  }
+}
+.landing-hero {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 70vh;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+.landing-hero-text {
+  flex: 1 1 55%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding-left: 0;
+  margin-top: 0;
+}
+.landing-hero h1 {
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  margin-bottom: 0.7rem;
+  margin-top: 0.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  text-align: left;
+  margin-left: 1rem;
+}
+.landing-hero p[data-hero-intro] {
+  font-size: clamp(1.15rem, 2vw, 1.35rem);
+  margin: 0.7rem 0 1.1rem 0;
+  line-height: 1.6;
+  max-width: 600px;
+  text-align: left;
+  margin-left: 1rem;
+}
+.landing-hero-btn, .book-service-btn {
+  background-color: var(--color-accent, #87e64b);
+  color: var(--color-heading, #111827);
+  border: none;
+  padding: 14px 36px;
+  font-size: 1.15rem;
+  cursor: pointer;
+  border-radius: 50px;
+  box-shadow: 0 8px 25px rgba(135, 230, 75, 0.18);
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-left: 1rem;
+  text-align: left;
+}
+.landing-hero-img {
+  flex: 1 1 45%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 220px;
+  max-width: 420px;
+  margin-left: 2rem;
+}
+.landing-hero-img img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 8px 32px rgba(135,230,75,0.18));
+}
+
+/* Enhanced span colors for better readability */
+.blue-span {
+  color: var(--highlight-blue, #2f76bc);
+  font-weight: bold;
+}
+
+.red-span {
+  color: #e53e3e;
+  font-weight: bold;
+}
+
+.gold-span {
+  color: #d69e2e;
+  font-weight: bold;
+}
+
+.green-span {
+  color: var(--color-accent, #008000);
+  font-weight: bold;
+}
+
+
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .landing-hero {
+    flex-direction: column;
+    height: auto;
+    padding: 1rem;
+    z-index: 1; /* Keep positive z-index for mobile too */
+  }
+  
+  .landing-hero-text {
+    padding-left: 20px;
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .landing-hero h1 {
+    font-size: 2.2rem;
+    margin-top: -40px;
+    text-align: center;
+    margin-bottom: 0.5rem; /* Smaller gap on mobile */
+  z-index: 1;
+  }
+  
+  .landing-hero p {
+    font-size: 1.1rem;
+    text-align: center;
+    max-width: 100%;
+    margin-top: 0;
+  z-index: 1;
+  }
+  
+  .landing-hero-img {
+    margin-left: 0;
+    margin-bottom: 20px;
+    max-width: 400px;
+  z-index: 0;
+  }
+  
+  /* ✅ Ensure buttons work on mobile too */
+  .irrigation-contact-us-btn,
+  #book-consultation-btn,
+  .book-service-btn,
+  .landing-hero-btn {
+    z-index: 999 !important;
+    position: relative !important;
+    pointer-events: auto !important;
+  }
+
+  .landing-hero-text .landing-hero-btn {
+    font-size: clamp(1rem, 1.5vw, 1.25rem) !important;
+    padding: clamp(10px, 2vw, 18px) clamp(18px, 4vw, 36px) !important;
+  }
+}
+
+/* Extra large screens */
+@media (min-width: 1600px) {
+  .landing-hero-text {
+    padding-left: 120px;
+    max-width: 900px;
+  }
+  .landing-hero h1 {
+    font-size: clamp(2.5rem, 4vw, 5rem);
+  }
+  .landing-hero p {
+    font-size: clamp(1.2rem, 2vw, 2rem);
+  }
+}
+
+/* Small screens */
+@media (max-width: 600px) {
+  .landing-hero {
+    padding: 1.2rem 0 1.2rem 0;
+    min-height: 30vh;
+  }
+  .landing-hero-text {
+    padding: 0 0.5rem;
+    max-width: 100vw;
+  }
+  .landing-hero h1 {
+    font-size: clamp(1.1rem, 7vw, 2.2rem);
+    margin-top: 0.2rem;
+    margin-bottom: 0.5rem;
+    text-align: left;
+  }
+  .landing-hero p[data-hero-intro] {
+    font-size: clamp(0.95rem, 4vw, 1.1rem);
+    text-align: left;
+    max-width: 100vw;
+    margin-top: 0.2rem;
+  }
+  .landing-hero-img {
+    max-width: 220px;
+    min-width: 80px;
+  }
+  .landing-hero-btn, .book-service-btn {
+    font-size: clamp(0.95rem, 3vw, 1.1rem) !important;
+    padding: 12px 10px !important;
+    width: 95vw !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    margin-left: 0 !important;
+    text-align: left !important;
+    align-self: flex-start !important;
+    margin-top: 1.5rem !important;
+    display: block !important;
+  }
+}
+
+/* Glassmorphism blur for hero when nav dropdown is open */
+.landing-hero.hero-blur-active {
+  position: relative;
+  overflow: hidden;
+}
+.landing-hero.hero-blur-active::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.35);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  pointer-events: none;
+  z-index: 10;
+  border-radius: inherit;
+}

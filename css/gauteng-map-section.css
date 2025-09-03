@@ -1,0 +1,25 @@
+/* Gauteng Map Section Styles */
+.gauteng-map-section {
+  margin-top: 0;
+}
+.gauteng-map-section .container {
+  margin-left: 60px;
+  margin-right: 60px;
+  box-sizing: border-box;
+}
+#gauteng-map-heading {
+  margin-top: 3.5rem;
+}
+.map-embed {
+  margin: 2rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 16px rgba(23,106,58,0.10);
+  width: 100%;
+}
+.gauteng-map-section p {
+  text-align: center;
+  color: #176a3a;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}

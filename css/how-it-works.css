@@ -1,0 +1,226 @@
+/* Match card heading style and hover color to testimonial/shop cards */
+.how-it-works-steps li h3, .how-it-works-steps li h4 {
+  color: var(--heading-color, #1e293b);
+  font-size: 1.22rem;
+  font-weight: 600;
+  margin: 0.2rem 0 0.5rem 0;
+  letter-spacing: 0.01em;
+  transition: color 0.3s;
+}
+
+/* Match card <p> text style and hover color to testimonial/shop cards */
+.how-it-works-steps li p {
+  color: var(--color-text, #374151);
+  font-size: 1.08rem;
+  line-height: 1.7;
+  margin: 0.5rem 0 0 0;
+  transition: color 0.3s;
+}
+
+.how-it-works-section {
+  padding: 4rem 0;
+  background-color: var(--color-alt-bg);
+  color: var(--color-text);
+}
+
+.how-it-works-section > .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  box-sizing: border-box;
+}
+
+.how-it-works-section h2 {
+  font-size: var(--font-size-xxl);
+  color: var(--heading-color);
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.how-it-works-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  list-style: none;
+  padding: 0;
+  position: relative;
+}
+
+
+.how-it-works-steps::before {
+  content: "";
+  position: absolute;
+  top: 30%;
+  left: 5%;
+  right: 5%;
+  height: 2px;
+  background: linear-gradient(90deg, #2f76bc 0%, #2f76bc 48%, #87e64b 99%);
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: howItWorksLineGrow 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* How It Works card style, matches testimonial/shop cards */
+/* Unify How It Works card backgrounds with theme system */
+.how-it-works-steps li {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: var(--card-bg);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 20px rgba(113, 128, 150, 0.12);
+  backdrop-filter: blur(10px);
+  border-radius: 1.2rem;
+  transition: background 0.3s, border 0.3s, box-shadow 0.3s, transform 0.2s;
+}
+
+  
+  
+.how-it-works-steps li:hover {
+  background: inherit;
+  border-color: var(--color-card-border-hover, rgba(49,130,206,0.3));
+  box-shadow: 0 8px 30px rgba(113, 128, 150, 0.2);
+  transform: translateY(-2px);
+}
+
+
+
+
+/* All step icons default to blue */
+.how-it-works-steps .step-icon {
+  background: none !important;
+  border: none !important;
+  color: var(--how-icon-color, var(--accent-color, #2f76bc));
+  width: 100%;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+  font-size: 2.6rem;
+  opacity: 1;
+  transform: scale(1);
+  transition: color 0.3s, opacity 0.3s, transform 0.3s;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --how-icon-color: #90caf9;
+    --how-icon-shadow: #0d223a;
+  }
+  .how-it-works-section {
+    --color-surface: #1a222b;
+    --color-border: #263040;
+    --color-surface-hover: #232c39;
+  }
+  .how-it-works-steps .step-icon i {
+    color: #146eb4 !important;
+  }
+}
+
+
+/* Booking icon (first step) - larger, no circle, subtle shadow */
+.how-it-works-steps li.how-step-1 .step-icon {
+  background: none !important;
+  border: none !important;
+  box-shadow: 0 4px 24px 0 rgba(47, 118, 188, 0.10);
+  font-size: 3.2rem;
+  min-height: 100px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+
+/* Other icons - slightly smaller, centered */
+.how-it-works-steps li:not(.how-step-1) .step-icon {
+  background: none !important;
+  border: none !important;
+  width: 100%;
+  min-height: 80px;
+  font-size: 2.6rem;
+  margin: 0 auto 1.2rem auto;
+  box-shadow: none;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+
+.how-it-works-steps .step-icon i {
+  color: var(--accent-color, #2f76bc);
+  text-shadow: 0 1px 4px var(--color-shadow, #b3c6e0);
+}
+
+.how-it-works-steps .step-icon i {
+  color: #388e3c;
+  text-shadow: 0 2px 8px #c8e6c9, 0 1px 2px #fff;
+}
+
+.how-it-works-steps .step-icon:hover, .how-it-works-steps .step-icon:focus {
+  background: var(--color-surface-hover, #f5faff);
+  box-shadow: 0 4px 16px 0 rgba(47, 118, 188, 0.15);
+  border: 2.5px solid var(--accent-color, #2f76bc);
+}
+
+
+/* Only the last icon turns green when revealed */
+.how-it-works-steps[data-animate-icons] li:last-child .step-icon {
+  animation: iconReveal 0.3s 2.0s forwards, iconGreen 0.3s 2.0s forwards;
+}
+
+@keyframes iconGreen {
+  to {
+    background: #87e64b;
+  }
+}
+
+/* Remove gradient animation from other icons */
+/* No extra rules needed for non-last icons */
+
+
+/* Reveal icons as the line animates under them */
+.how-it-works-steps[data-animate-icons] li:nth-child(1) .step-icon { animation: iconReveal 0.3s 0.5s forwards; }
+.how-it-works-steps[data-animate-icons] li:nth-child(2) .step-icon { animation: iconReveal 0.3s 1.0s forwards; }
+.how-it-works-steps[data-animate-icons] li:nth-child(3) .step-icon { animation: iconReveal 0.3s 1.5s forwards; }
+.how-it-works-steps[data-animate-icons] li:nth-child(4) .step-icon { animation: iconReveal 0.3s 2.0s forwards; }
+
+@keyframes howItWorksLineGrow {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes iconReveal {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Mobile layout */
+@media (max-width: 768px) {
+  .how-it-works-steps {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .how-it-works-steps::before {
+    display: none;
+  }
+}
+
+/* Remove black solid borders from how-it-works cards */
+.how-step article {
+  border: none !important;
+  box-shadow: 0 2px 16px rgba(49,130,206,0.08);
+}
+.how-step article:hover {
+  border: none !important;
+  box-shadow: 0 4px 24px rgba(49,130,206,0.12);
+}
+

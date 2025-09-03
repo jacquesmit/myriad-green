@@ -1,0 +1,87 @@
+/* Dark mode support for legal pages */
+@media (prefers-color-scheme: dark) {
+  .legal-page {
+    background: #181c1f !important;
+    color: #f6fff8 !important;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.32);
+  }
+  .legal-page h1, .legal-page h2, .legal-page a {
+    color: #b6ffb0 !important;
+  }
+  .legal-page p, .legal-page ul, .legal-page li {
+    color: #e0fbe6 !important;
+  }
+}
+/* ================================
+   LEGAL PAGE STYLING
+   Light/Dark Mode Compatible
+   ================================ */
+
+.legal-page {
+  font-family: var(--font-family, 'Poppins', sans-serif);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  padding: 4rem 0;
+}
+
+/* Section Container */
+.legal-section {
+  padding: 2rem 1rem;
+}
+
+.legal-section .container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: var(--surface-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-medium);
+}
+
+/* Headings */
+.legal-section h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--heading-color);
+  text-align: center;
+}
+
+.legal-section h2 {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--heading-color);
+}
+
+/* Text */
+.legal-section p {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+  color: var(--text-color);
+}
+
+/* Lists */
+.legal-section ul {
+  margin-left: 1.5rem;
+  padding-left: 1rem;
+  list-style: disc;
+  color: var(--text-color);
+}
+
+/* Links */
+.legal-section a {
+  color: var(--link-color);
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.legal-section a:hover {
+  color: var(--link-hover);
+  text-decoration: none;
+}
+
+/* Scroll to Top */
+.scroll-to-top {
+  background-color: var(--accent-color);
+  color: #fff;
+}

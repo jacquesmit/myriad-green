@@ -1,0 +1,4 @@
+/* Remove border radius from footer */
+footer {
+  border-radius: 0 !important;
+}

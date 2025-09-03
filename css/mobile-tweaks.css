@@ -1,0 +1,86 @@
+/* Consolidated mobile-only patch */
+@media (max-width: 767px) {
+  h1 { font-size: clamp(1.6rem, 4.5vw, 2.1rem); line-height: 1.2; }
+  h2 { font-size: clamp(1.3rem, 4vw, 1.8rem);  line-height: 1.25; }
+  h3 { font-size: clamp(1.1rem, 3.6vw, 1.4rem); }
+  .container { width: min(100% - 1.5rem, var(--container, 1100px)); }
+  section, .section { padding-block: 1.5rem; }
+  .btn, button, [role="button"] { min-height: 44px; padding: .65em 1em; }
+  img, video { max-width: 100%; height: auto; }
+  .nav { gap: .3rem; }
+  .nav a { padding: .5rem .6rem; }
+  [class*="col-"], [class*="span-"], .table-wrap, .map, .gallery { max-width: 100%; overflow-x: auto; }
+}
+
+/* Mobile tweaks for irrigation services page */
+@media (max-width: 768px) {
+  .services-grid,
+  .features .grid,
+  .pricing-cards,
+  .why-cards,
+  .grid-four-columns,
+  .grid-three-columns {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .service-card,
+  .feature-card,
+  .pricing-card,
+  .why-card,
+  .step-card,
+  .promise-card {
+    width: 100%;
+    margin: 0 auto 1.5rem auto;
+    box-sizing: border-box;
+  }
+
+  section,
+  .container {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  h1, h2, h3, h4 {
+    font-size: 5vw;
+    line-height: 1.2;
+  }
+
+  .btn, button, .book-now-button, .cta-btn {
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 1.1rem;
+    padding: 0.75rem 1.5rem;
+  }
+
+  img, iframe {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    font-size: 1rem;
+    min-height: 44px;
+  }
+
+  .faq-question {
+    font-size: 1.1rem;
+    padding: 1rem;
+  }
+
+  .icon-strip-container {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .suburb-list-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+}
