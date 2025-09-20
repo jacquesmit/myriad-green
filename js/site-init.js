@@ -17,6 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   const basePath = computeBasePath(path);
+  
+  // ✅ Theme Initialization
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  
   // Weather/H1 enhancements for suburb and service pages
   ensureWeatherEnhancements();
 
@@ -156,18 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ✅ Back to Top
-  const backToTopBtn = document.querySelector('.scroll-to-top');
-  if (backToTopBtn) {
-    window.addEventListener('scroll', () => {
-      backToTopBtn.classList.toggle('show', window.scrollY > 200);
-    });
-    backToTopBtn.addEventListener('click', e => {
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  }
-
   // ✅ Inject NAV
   const navContainer = document.getElementById('site-nav');
   if (navContainer) {
@@ -175,6 +168,23 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(r => r.text())
       .then(html => {
         navContainer.innerHTML = html;
+        
+        // Fix absolute paths in nav to work with current basePath
+        if (basePath) {
+          // Fix image sources
+          navContainer.querySelectorAll('img[src^="/"]').forEach(img => {
+            img.src = basePath + img.getAttribute('src').substring(1);
+          });
+          
+          // Fix anchor hrefs (but preserve external links and fragments)
+          navContainer.querySelectorAll('a[href^="/"]').forEach(link => {
+            const href = link.getAttribute('href');
+            if (!href.startsWith('//') && !href.includes(':')) {
+              link.href = basePath + href.substring(1);
+            }
+          });
+        }
+        
         // Move the floating contact button outside nav/header for global float
         let contactBtn = navContainer.querySelector('.fixed-contact-btn');
         if (contactBtn) {
@@ -182,16 +192,49 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const toggleBtn = document.getElementById('theme-toggle');
         const icon = toggleBtn?.querySelector('i');
-        toggleBtn?.addEventListener('click', () => switchTheme(toggleBtn, icon));
+        
+        // Initialize icon based on current theme
+        if (toggleBtn && icon) {
+          const currentTheme = document.documentElement.getAttribute('data-theme');
+          icon.classList.remove('fa-moon', 'fa-sun');
+          icon.classList.add(currentTheme === 'light' ? 'fa-moon' : 'fa-sun');
+          
+          toggleBtn.addEventListener('click', () => switchTheme(toggleBtn, icon));
+        }
 
         function switchTheme(btn, icon) {
           const theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
           document.documentElement.setAttribute('data-theme', theme);
           localStorage.setItem('theme', theme);
-          icon?.classList.toggle('fa-moon', theme === 'light');
-          icon?.classList.toggle('fa-sun', theme === 'dark');
+          icon?.classList.remove('fa-moon', 'fa-sun');
+          icon?.classList.add(theme === 'light' ? 'fa-moon' : 'fa-sun');
         }
       });
+  }
+
+  // ✅ Scroll-to-Top Injection
+  if (!document.querySelector('.scroll-to-top')) {
+    fetch(`${basePath}partials/scroll-to-top.html`)
+      .then(r => {
+        if (!r.ok) throw new Error('Scroll-to-top failed to load');
+        return r.text();
+      })
+      .then(html => {
+        document.body.insertAdjacentHTML('beforeend', html);
+        
+        // Setup scroll-to-top functionality
+        const backToTopBtn = document.querySelector('.scroll-to-top');
+        if (backToTopBtn) {
+          window.addEventListener('scroll', () => {
+            backToTopBtn.classList.toggle('show', window.scrollY > 200);
+          });
+          backToTopBtn.addEventListener('click', e => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        }
+      })
+      .catch(err => console.warn('Scroll-to-top injection failed:', err));
   }
 
   // ✅ Footer Injection

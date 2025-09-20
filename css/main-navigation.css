@@ -51,6 +51,15 @@
   position: relative;
 }
 
+/* Fixed header when body has fixed header class */
+body.has-fixed-header .menu-header-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
 /* Navigation inside that container */
 .menu-header-container nav {
   display: flex;
