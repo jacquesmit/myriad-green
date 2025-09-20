@@ -1459,88 +1459,312 @@
       </div>
     </section>
 
-    <!-- Pricing Section -->
-    <section id="pricing" class="section section--pricing">
+    <!-- Pricing Section - Production Ready -->
+    <section id="pricing" class="section section--pricing" aria-labelledby="pricing-title" role="region">
       <div class="container">
-        <h2 class="pricing__title">Irrigation Services & Pricing</h2>
-        
-        <h3 class="pricing__group-title pricing__group-title--once">Once-off Services</h3>
-        <ul class="grid three pricing__once">
-          <li id="price-assessment" class="price price--assessment price-card card card--outlined">
-            <h4 class="price-card__title">System Assessment</h4>
-            <p class="price price-card__amount">From R450</p>
-            <ul class="bullets price-card__features">
-              <li>✓ Comprehensive system evaluation</li>
-              <li>✓ Optimization recommendations</li>
-              <li>✓ Repair quotes included</li>
-            </ul>
-            <button class="price-card__cta btn btn-primary btn--full book-now" data-service="Irrigation Tune-up">Book Assessment</button>
-          </li>
+        <!-- Section Header -->
+        <header class="pricing__header">
+          <h2 id="pricing-title" class="pricing__title">Irrigation Services & Pricing</h2>
+          <p class="pricing__subtitle">Professional irrigation solutions tailored to your needs</p>
+        </header>
 
-          <li id="price-repair" class="price price--repair price-card card card--outlined">
-            <h4 class="price-card__title">Repair Services</h4>
-            <p class="price price-card__amount">From R280</p>
-            <ul class="bullets price-card__features">
-              <li>✓ Professional valve repair</li>
-              <li>✓ Controller diagnostics</li>
-              <li>✓ Parts & labor warranty</li>
-            </ul>
-            <button class="price-card__cta btn btn-primary btn--full book-now" data-service="Irrigation Repair">Book Repair</button>
-          </li>
+        <!-- Once-off Services -->
+        <div class="pricing__group">
+          <h3 class="pricing__group-title pricing__group-title--once" id="once-off-services">
+            Once-off Services
+          </h3>
+          <p class="pricing__group-description">Single-visit professional services for your irrigation system</p>
 
-          <li id="price-installation" class="price price--installation price-card card card--outlined">
-            <h4 class="price-card__title">New Installation</h4>
-            <p class="price price-card__amount">From R12,500</p>
-            <ul class="bullets price-card__features">
-              <li>✓ Complete system design</li>
-              <li>✓ Professional installation</li>
-              <li>✓ Smart controller included</li>
-            </ul>
-            <button class="price-card__cta btn btn-primary btn--full book-now" data-service="Irrigation Installation">Get Quote</button>
-          </li>
-        </ul>
+          <div class="pricing__grid pricing__grid--services" role="list" aria-labelledby="once-off-services">
+            <!-- System Assessment Card -->
+            <article class="pricing-card pricing-card--service pricing-card--featured" role="listitem" id="service-assessment">
+              <div class="pricing-card__badge" aria-label="Most popular service">
+                <span class="pricing-card__badge-text">Most Popular</span>
+              </div>
+              <div class="pricing-card__header">
+                <h4 class="pricing-card__title">System Assessment</h4>
+                <div class="pricing-card__price">
+                  <span class="pricing-card__amount">R750</span>
+                  <span class="pricing-card__period">one-time</span>
+                </div>
+              </div>
 
-        <h3 class="pricing__group-title pricing__group-title--plans">Monthly Care Plans</h3>
-        <ul class="grid three pricing__plans">
-          <li id="tier-essential" class="tier tier--essential tier-card card card--outlined">
-            <h4 class="tier-card__title">Essential Care</h4>
-            <p class="tier-card__amount">R295<span class="period">/month</span></p>
-            <ul class="tier-card__features bullets">
-              <li>✓ Quarterly system checks</li>
-              <li>✓ Seasonal programming adjustments</li>
-              <li>✓ Basic leak detection</li>
-              <li>✓ Emergency repair priority</li>
-            </ul>
-            <button class="tier-card__cta btn btn-primary btn--full subscribe-now" data-plan="IRR-ESSENTIAL">Subscribe</button>
-          </li>
+              <div class="pricing-card__content">
+                <ul class="pricing-card__features" role="list">
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Comprehensive system evaluation
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Optimization recommendations
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Detailed repair quotes included
+                  </li>
+                </ul>
+              </div>
 
-          <li id="tier-smart" class="tier tier--smart featured tier-card card card--outlined">
-            <div class="badge badge--bestValue">Best Value</div>
-            <h4 class="tier-card__title">Smart Care</h4>
-            <p class="tier-card__amount">R495<span class="period">/month</span></p>
-            <ul class="tier-card__features bullets">
-              <li>✓ Monthly system monitoring</li>
-              <li>✓ Weather-based adjustments</li>
-              <li>✓ Priority repair response</li>
-              <li>✓ Annual system upgrades</li>
-              <li>✓ Water usage reporting</li>
-            </ul>
-            <button class="tier-card__cta btn btn-primary btn--full subscribe-now" data-plan="IRR-SMART">Subscribe</button>
-          </li>
+              <div class="pricing-card__actions">
+                <button class="btn btn--primary btn--full pricing-card__cta"
+                        data-service="assessment"
+                        data-price="750"
+                        aria-describedby="service-assessment">
+                  Book Assessment
+                </button>
+              </div>
+            </article>
 
-          <li id="tier-pro" class="tier tier--pro tier-card card card--outlined">
-            <h4 class="tier-card__title">Pro Care</h4>
-            <p class="tier-card__amount">R750<span class="period">/month</span></p>
-            <ul class="tier-card__features bullets">
-              <li>✓ 24/7 system monitoring</li>
-              <li>✓ Predictive maintenance</li>
-              <li>✓ Same-day repair guarantee</li>
-              <li>✓ Smart controller upgrades</li>
-              <li>✓ Dedicated account manager</li>
-            </ul>
-            <button class="tier-card__cta btn btn-primary btn--full subscribe-now" data-plan="IRR-PRO">Subscribe</button>
-          </li>
-        </ul>
+            <!-- Repair Services Card -->
+            <article class="pricing-card pricing-card--service" role="listitem" id="service-repair">
+              <div class="pricing-card__badge pricing-card__badge--popular" aria-label="Popular choice">
+                <span class="pricing-card__badge-text">Popular</span>
+              </div>
+              <div class="pricing-card__header">
+                <h4 class="pricing-card__title">Repair Services</h4>
+                <div class="pricing-card__price">
+                  <span class="pricing-card__amount">R420</span>
+                  <span class="pricing-card__period">starting from</span>
+                </div>
+                <div class="pricing-card__note">Excluding parts</div>
+              </div>
+
+              <div class="pricing-card__content">
+                <ul class="pricing-card__features" role="list">
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Professional valve repair
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Controller diagnostics & repair
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Parts & labor warranty
+                  </li>
+                </ul>
+              </div>
+
+              <div class="pricing-card__actions">
+                <button class="btn btn--primary btn--full pricing-card__cta"
+                        data-service="repair"
+                        data-price="420"
+                        aria-describedby="service-repair">
+                  Book Repair
+                </button>
+              </div>
+            </article>
+
+            <!-- New Installation Card -->
+            <article class="pricing-card pricing-card--service" role="listitem" id="service-installation">
+              <div class="pricing-card__badge pricing-card__badge--premium" aria-label="Premium service">
+                <span class="pricing-card__badge-text">Premium</span>
+              </div>
+              <div class="pricing-card__header">
+                <h4 class="pricing-card__title">New Installation</h4>
+                <div class="pricing-card__price">
+                  <span class="pricing-card__amount">R18,500</span>
+                  <span class="pricing-card__period">starting from</span>
+                </div>
+              </div>
+
+              <div class="pricing-card__content">
+                <ul class="pricing-card__features" role="list">
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Complete system design & CAD
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Professional installation
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Smart WiFi controller included
+                  </li>
+                </ul>
+              </div>
+
+              <div class="pricing-card__actions">
+                <button class="btn btn--primary btn--full pricing-card__cta"
+                        data-service="installation"
+                        data-price="18500"
+                        aria-describedby="service-installation">
+                  Get Quote
+                </button>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- Monthly Care Plans -->
+        <div class="pricing__group">
+          <h3 class="pricing__group-title pricing__group-title--plans" id="monthly-plans">
+            Monthly Care Plans
+          </h3>
+          <p class="pricing__group-description">Ongoing maintenance and monitoring for optimal system performance</p>
+
+          <div class="pricing__grid pricing__grid--plans" role="list" aria-labelledby="monthly-plans">
+            <!-- Essential Care Plan -->
+            <article class="pricing-card pricing-card--plan" role="listitem" id="plan-essential">
+              <div class="pricing-card__badge pricing-card__badge--popular" aria-label="Popular choice">
+                <span class="pricing-card__badge-text">Popular</span>
+              </div>
+              <div class="pricing-card__header">
+                <h4 class="pricing-card__title">Essential Care</h4>
+                <div class="pricing-card__price">
+                  <span class="pricing-card__amount">R450</span>
+                  <span class="pricing-card__period">/month</span>
+                </div>
+                <div class="pricing-card__note">Excluding parts</div>
+              </div>
+
+              <div class="pricing-card__content">
+                <ul class="pricing-card__features" role="list">
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Quarterly system inspections
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Seasonal programming adjustments
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Basic leak detection
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Emergency repair priority
+                  </li>
+                </ul>
+              </div>
+
+              <div class="pricing-card__actions">
+                <button class="btn btn--secondary btn--full pricing-card__cta"
+                        data-plan="essential"
+                        data-price="450"
+                        aria-describedby="plan-essential">
+                  Subscribe Now
+                </button>
+              </div>
+            </article>
+
+            <!-- Smart Care Plan - Featured -->
+            <article class="pricing-card pricing-card--plan pricing-card--featured" role="listitem" id="plan-smart">
+              <div class="pricing-card__badge" aria-label="Most popular plan">
+                <span class="pricing-card__badge-text">Most Popular</span>
+              </div>
+
+              <div class="pricing-card__header">
+                <h4 class="pricing-card__title">Smart Care</h4>
+                <div class="pricing-card__price">
+                  <span class="pricing-card__amount">R720</span>
+                  <span class="pricing-card__period">/month</span>
+                </div>
+                <div class="pricing-card__note">Excluding parts</div>
+              </div>
+
+              <div class="pricing-card__content">
+                <ul class="pricing-card__features" role="list">
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Monthly system monitoring
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Weather-based automatic adjustments
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Priority repair response (24h)
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Annual system upgrades
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Water usage reporting & analytics
+                  </li>
+                </ul>
+              </div>
+
+              <div class="pricing-card__actions">
+                <button class="btn btn--primary btn--full pricing-card__cta"
+                        data-plan="smart"
+                        data-price="720"
+                        aria-describedby="plan-smart">
+                  Subscribe Now
+                </button>
+              </div>
+            </article>
+
+            <!-- Pro Care Plan -->
+            <article class="pricing-card pricing-card--plan" role="listitem" id="plan-pro">
+              <div class="pricing-card__badge pricing-card__badge--premium" aria-label="Premium service">
+                <span class="pricing-card__badge-text">Premium</span>
+              </div>
+              <div class="pricing-card__header">
+                <h4 class="pricing-card__title">Pro Care</h4>
+                <div class="pricing-card__price">
+                  <span class="pricing-card__amount">R1,150</span>
+                  <span class="pricing-card__period">/month</span>
+                </div>
+                <div class="pricing-card__note">Excluding parts</div>
+              </div>
+
+              <div class="pricing-card__content">
+                <ul class="pricing-card__features" role="list">
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    24/7 real-time monitoring
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    AI-powered predictive maintenance
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Same-day repair guarantee
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Smart controller upgrades
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Dedicated account manager
+                  </li>
+                </ul>
+              </div>
+
+              <div class="pricing-card__actions">
+                <button class="btn btn--secondary btn--full pricing-card__cta"
+                        data-plan="pro"
+                        data-price="1150"
+                        aria-describedby="plan-pro">
+                  Subscribe Now
+                </button>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="pricing__cta-section">
+          <div class="pricing__cta-content">
+            <h3 class="pricing__cta-title">Need a Custom Solution?</h3>
+            <p class="pricing__cta-description">
+              Have a large property or complex irrigation needs? Let's discuss a tailored solution for your specific requirements.
+            </p>
+            <button class="btn btn--outline pricing__cta-button" data-action="custom-quote">
+              Get Custom Quote
+            </button>
+          </div>
+        </div>
       </div>
     </section>
 

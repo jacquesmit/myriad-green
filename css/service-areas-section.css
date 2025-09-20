@@ -1,12 +1,29 @@
-/* ============================================================================
-   SERVICE AREAS SECTION - ENHANCED DESIGN
-   ============================================================================ */
+/* Service Areas Section - Minimal styling */
+.service-areas-cta {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  margin-top: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
 
-.section--service-areas {
-  padding: 6rem 0 !important;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
-  position: relative;
-  overflow: hidden;
+.cta-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.cta-text {
+  margin-bottom: 1.5rem;
+  color: #666;
+}
+
+.cta-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .section--service-areas::before {
@@ -591,12 +608,10 @@
 
 /* Service Areas CTA */
 .service-areas-cta {
-  background: white;
+  background: transparent;
   border-radius: 20px;
   padding: 3rem;
   text-align: center;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border: 2px solid var(--color-primary);
   position: relative;
   z-index: 2;
 }
@@ -608,7 +623,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: var(--color-primary);
+  background: transparent;
   border-radius: 20px 20px 0 0;
 }
 
@@ -639,6 +654,97 @@
 
 .cta-actions .btn {
   min-width: 200px;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.cta-actions .btn-primary {
+  background: linear-gradient(135deg, #2d7a2d 0%, #4a9a4a 100%);
+  color: white;
+  border: 2px solid #2d7a2d;
+  box-shadow: 0 4px 12px rgba(45, 122, 45, 0.3);
+  position: relative;
+  z-index: 10; /* Safe level below floating bars */
+}
+
+.cta-actions .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(45, 122, 45, 0.4);
+  background: linear-gradient(135deg, #4a9a4a 0%, #2d7a2d 100%);
+}
+
+.cta-actions .btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(45, 122, 45, 0.3);
+}
+
+.cta-actions .btn-secondary {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  color: #2d7a2d;
+  border: 2px solid #2d7a2d;
+  box-shadow: 0 4px 12px rgba(45, 122, 45, 0.15);
+  position: relative;
+  z-index: 10; /* Safe level below floating bars */
+}
+
+.cta-actions .btn-secondary:hover {
+  background: #2d7a2d;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(45, 122, 45, 0.3);
+}
+
+.cta-actions .btn-secondary:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(45, 122, 45, 0.2);
+}
+
+.cta-actions .btn i {
+  font-size: 1.1rem;
+  transition: transform 0.3s ease;
+}
+
+.cta-actions .btn:hover i {
+  transform: scale(1.1);
+}
+
+.cta-actions .btn span {
+  font-weight: 600;
+}
+
+/* Enhanced button animations */
+.cta-actions .btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.cta-actions .btn:hover::before {
+  left: 100%;
+}
+
+/* Focus states for accessibility */
+.cta-actions .btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.3);
 }
 
 /* Mobile Responsiveness */
@@ -706,6 +812,32 @@
   
   .map-embed {
     height: 300px;
+  }
+  
+  .service-areas-cta {
+    padding: 2rem 1.5rem;
+    margin: 0 1rem;
+  }
+  
+  .cta-title {
+    font-size: 1.8rem;
+  }
+  
+  .cta-text {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .cta-actions {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .cta-actions .btn {
+    width: 100%;
+    min-width: auto;
+    padding: 1.2rem 2rem;
+    font-size: 1.1rem;
   }
   
   .map-container {
@@ -791,5 +923,31 @@
   .coverage-badge {
     font-size: 0.8rem;
     padding: 0.6rem 1rem;
+  }
+  
+  .service-areas-cta {
+    padding: 1.5rem 1rem;
+    margin: 0 0.5rem;
+    border-radius: 16px;
+  }
+  
+  .cta-title {
+    font-size: 1.6rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .cta-text {
+    font-size: 0.95rem;
+    margin-bottom: 1.8rem;
+  }
+  
+  .cta-actions .btn {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    gap: 0.5rem;
+  }
+  
+  .cta-actions .btn i {
+    font-size: 1rem;
   }
 }
