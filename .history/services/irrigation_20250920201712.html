@@ -1163,8 +1163,8 @@
                 </div>
               </div>
               <button class="btn btn-primary btn-weather-cta book-now" data-service="Smart Weather Integration">
-                <i class="fas fa-rocket"></i>
-                <span>Go Smart</span>
+                <i class="fas fa-calendar-plus"></i>
+                <span>Schedule Weather Assessment</span>
               </button>
             </div>
           </div>
@@ -1517,7 +1517,7 @@
         if (descEl) console.log('Current description content:', descEl.textContent);
         
         // Test API manually
-        fetch('http://localhost:3000/api/weather')
+        fetch('/api/weather')
           .then(response => {
             console.log('API response status:', response.status);
             return response.json();

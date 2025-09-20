@@ -60,10 +60,6 @@ router.get('/weather', async (req, res) => {
     return res.json({
       conditions,
       tempC: Number.isFinite(tempC) ? Math.round(tempC) : null,
-      feelsLikeC: Number.isFinite(feelsLikeC) ? Math.round(feelsLikeC) : null,
-      humidity,
-      pressure,
-      visibility,
       windKph,
       precipProb,
       drought: false

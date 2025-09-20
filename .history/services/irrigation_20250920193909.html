@@ -1008,7 +1008,7 @@
               <div class="weather-location-info">
                 <i class="fas fa-map-marker-alt"></i>
                 <span class="location-name">Johannesburg, Gauteng</span>
-                <span class="update-time" id="current-time">Loading...</span>
+                <span class="update-time" id="current-time">Live Data</span>
               </div>
             </div>
 
@@ -1018,43 +1018,43 @@
                   <i id="weather-icon" class="fas fa-sun"></i>
                 </div>
                 <div class="weather-temperature">
-                  <span id="current-temp" class="temp-value">--°</span>
+                  <span id="current-temp" class="temp-value">22°</span>
                   <span class="temp-unit">C</span>
                 </div>
               </div>
               <div class="weather-description-info">
-                <div id="weather-description" class="weather-condition">Loading...</div>
-                <div id="feels-like" class="feels-like-temp">Feels like --°C</div>
+                <div id="weather-description" class="weather-condition">Sunny</div>
+                <div id="feels-like" class="feels-like-temp">Feels like 24°C</div>
               </div>
             </div>
 
             <div class="weather-metrics-grid">
-              <div class="weather-metric" data-metric="humidity">
+              <div class="weather-metric">
                 <i class="fas fa-tint"></i>
                 <div class="metric-info">
                   <span class="metric-label">Humidity</span>
-                  <span id="humidity" class="metric-value">--%</span>
+                  <span id="humidity" class="metric-value">65%</span>
                 </div>
               </div>
-              <div class="weather-metric" data-metric="wind">
+              <div class="weather-metric">
                 <i class="fas fa-wind"></i>
                 <div class="metric-info">
                   <span class="metric-label">Wind</span>
-                  <span id="wind-speed" class="metric-value">-- km/h</span>
+                  <span id="wind-speed" class="metric-value">12 km/h</span>
                 </div>
               </div>
-              <div class="weather-metric" data-metric="pressure">
+              <div class="weather-metric">
                 <i class="fas fa-thermometer-half"></i>
                 <div class="metric-info">
                   <span class="metric-label">Pressure</span>
-                  <span id="pressure" class="metric-value">-- hPa</span>
+                  <span id="pressure" class="metric-value">1013 hPa</span>
                 </div>
               </div>
-              <div class="weather-metric" data-metric="visibility">
+              <div class="weather-metric">
                 <i class="fas fa-eye"></i>
                 <div class="metric-info">
                   <span class="metric-label">Visibility</span>
-                  <span id="visibility" class="metric-value">-- km</span>
+                  <span id="visibility" class="metric-value">10 km</span>
                 </div>
               </div>
             </div>
@@ -1065,7 +1065,7 @@
                 <span>Today's Irrigation Recommendation</span>
               </div>
               <div id="irrigation-recommendation" class="advice-text">
-                Loading irrigation recommendations...
+                Perfect weather for morning watering. Reduce timer by 15% due to moderate humidity.
               </div>
             </div>
 
@@ -1080,7 +1080,7 @@
             <!-- Hidden data for core weather widget -->
             <div
               id="weather-widget"
-              class="weather-widget"
+              class="weather-widget hidden"
               data-suburb="Johannesburg"
               data-country="ZA"
               data-units="metric"
@@ -1163,8 +1163,8 @@
                 </div>
               </div>
               <button class="btn btn-primary btn-weather-cta book-now" data-service="Smart Weather Integration">
-                <i class="fas fa-rocket"></i>
-                <span>Go Smart</span>
+                <i class="fas fa-calendar-plus"></i>
+                <span>Schedule Weather Assessment</span>
               </button>
             </div>
           </div>
@@ -1498,47 +1498,6 @@
           });
         });
       });
-
-      // Weather debugging - manual test after 3 seconds
-      setTimeout(() => {
-        console.log('=== MANUAL WEATHER DEBUG ===');
-        
-        // Check if weather widget element exists
-        const weatherWidget = document.getElementById('weather-widget');
-        console.log('Weather widget element found:', !!weatherWidget);
-        
-        // Check if new weather elements exist
-        const tempEl = document.getElementById('current-temp');
-        const descEl = document.getElementById('weather-description');
-        console.log('Temperature element found:', !!tempEl);
-        console.log('Description element found:', !!descEl);
-        
-        if (tempEl) console.log('Current temp content:', tempEl.textContent);
-        if (descEl) console.log('Current description content:', descEl.textContent);
-        
-        // Test API manually
-        fetch('http://localhost:3000/api/weather')
-          .then(response => {
-            console.log('API response status:', response.status);
-            return response.json();
-          })
-          .then(data => {
-            console.log('API returned weather data:', data);
-            
-            // Manual update test
-            if (tempEl && data.tempC) {
-              tempEl.textContent = data.tempC;
-              console.log('Manually updated temp to:', data.tempC);
-            }
-            if (descEl && data.conditions) {
-              descEl.textContent = data.conditions;
-              console.log('Manually updated description to:', data.conditions);
-            }
-          })
-          .catch(err => {
-            console.error('Manual weather API test failed:', err);
-          });
-      }, 3000);
     });
   </script>
 

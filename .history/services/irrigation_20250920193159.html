@@ -25,7 +25,6 @@
   <link rel="stylesheet" href="../css/main-navigation.css">
   <link rel="stylesheet" href="../css/irrigation-main-page.css">
   <link rel="stylesheet" href="../css/weather-widget.css">
-  <link rel="stylesheet" href="../css/weather-section-redesign.css">
   <link rel="stylesheet" href="../css/gauteng-map-section.css">
   <link rel="stylesheet" href="../css/mobile-nav.css">
   <link rel="stylesheet" href="../css/navbar.css">
@@ -985,102 +984,104 @@
       </div>
     </section>
 
-    <!-- Weather-Smart Irrigation Section -->
+    <!-- Weather Widget Section -->
     <section id="weather" class="section section--weather" aria-labelledby="weather-title">
       <div class="container">
-        <div class="weather-section-header">
-          <div class="weather-badge">
-            <i class="fas fa-cloud-sun"></i>
-            <span>Real-Time Weather Intelligence</span>
+        <div class="section-header">
+          <div class="section-eyebrow">
+            <i class="fas fa-cloud-sun" aria-hidden="true"></i>
+            Local Weather Data
           </div>
-          <h2 id="weather-title" class="weather-section-title">
-            Weather-Smart <span class="text-highlight">Irrigation</span> Solutions
+          <h2 id="weather-title" class="section-title">
+            Today's <span class="text-highlight">Weather</span> Conditions
           </h2>
-          <p class="weather-section-subtitle">
-            Our advanced irrigation systems automatically adapt to Johannesburg's weather conditions, ensuring optimal water efficiency and plant health year-round.
+          <p class="section-lead">
+            Real-time weather data for Johannesburg helps us optimize your irrigation schedule and water usage based on current conditions.
           </p>
         </div>
 
-        <div class="weather-grid">
-          <!-- Live Weather Card -->
-          <div class="weather-card weather-card--primary">
-            <div class="weather-card-header">
-              <div class="weather-location-info">
-                <i class="fas fa-map-marker-alt"></i>
-                <span class="location-name">Johannesburg, Gauteng</span>
-                <span class="update-time" id="current-time">Loading...</span>
+        <div class="weather-container">
+          <div class="weather-widget-wrapper">
+            <!-- Enhanced Weather Widget -->
+            <div class="enhanced-weather-widget">
+              <div class="weather-header">
+                <div class="weather-location">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <span>Johannesburg, Gauteng</span>
+                </div>
+                <div class="weather-time">
+                  <i class="fas fa-clock"></i>
+                  <span id="current-time">Loading...</span>
+                </div>
               </div>
-            </div>
 
-            <div class="weather-current-display">
-              <div class="weather-main-info">
-                <div class="weather-icon-large">
-                  <i id="weather-icon" class="fas fa-sun"></i>
+              <div class="weather-main">
+                <div class="weather-current">
+                  <div class="weather-icon-container">
+                    <div id="weather-icon" class="weather-icon">
+                      <i class="fas fa-sun"></i>
+                    </div>
+                  </div>
+                  <div class="weather-temp-info">
+                    <div id="current-temp" class="current-temperature">--°C</div>
+                    <div id="weather-description" class="weather-description">Loading...</div>
+                    <div id="feels-like" class="feels-like">Feels like --°C</div>
+                  </div>
                 </div>
-                <div class="weather-temperature">
-                  <span id="current-temp" class="temp-value">--°</span>
-                  <span class="temp-unit">C</span>
-                </div>
-              </div>
-              <div class="weather-description-info">
-                <div id="weather-description" class="weather-condition">Loading...</div>
-                <div id="feels-like" class="feels-like-temp">Feels like --°C</div>
-              </div>
-            </div>
 
-            <div class="weather-metrics-grid">
-              <div class="weather-metric" data-metric="humidity">
-                <i class="fas fa-tint"></i>
-                <div class="metric-info">
-                  <span class="metric-label">Humidity</span>
-                  <span id="humidity" class="metric-value">--%</span>
+                <div class="weather-details">
+                  <div class="detail-item">
+                    <i class="fas fa-eye"></i>
+                    <span class="detail-label">Visibility</span>
+                    <span id="visibility" class="detail-value">-- km</span>
+                  </div>
+                  <div class="detail-item">
+                    <i class="fas fa-tint"></i>
+                    <span class="detail-label">Humidity</span>
+                    <span id="humidity" class="detail-value">--%</span>
+                  </div>
+                  <div class="detail-item">
+                    <i class="fas fa-wind"></i>
+                    <span class="detail-label">Wind</span>
+                    <span id="wind-speed" class="detail-value">-- km/h</span>
+                  </div>
+                  <div class="detail-item">
+                    <i class="fas fa-thermometer-half"></i>
+                    <span class="detail-label">Pressure</span>
+                    <span id="pressure" class="detail-value">-- hPa</span>
+                  </div>
                 </div>
               </div>
-              <div class="weather-metric" data-metric="wind">
-                <i class="fas fa-wind"></i>
-                <div class="metric-info">
-                  <span class="metric-label">Wind</span>
-                  <span id="wind-speed" class="metric-value">-- km/h</span>
-                </div>
-              </div>
-              <div class="weather-metric" data-metric="pressure">
-                <i class="fas fa-thermometer-half"></i>
-                <div class="metric-info">
-                  <span class="metric-label">Pressure</span>
-                  <span id="pressure" class="metric-value">-- hPa</span>
-                </div>
-              </div>
-              <div class="weather-metric" data-metric="visibility">
-                <i class="fas fa-eye"></i>
-                <div class="metric-info">
-                  <span class="metric-label">Visibility</span>
-                  <span id="visibility" class="metric-value">-- km</span>
-                </div>
-              </div>
-            </div>
 
-            <div class="weather-advice-section">
-              <div class="advice-header">
-                <i class="fas fa-lightbulb"></i>
-                <span>Today's Irrigation Recommendation</span>
+              <div class="irrigation-advice">
+                <div class="advice-header">
+                  <i class="fas fa-lightbulb"></i>
+                  <span>Smart Irrigation Advice</span>
+                </div>
+                <div id="irrigation-recommendation" class="advice-content">
+                  <div class="advice-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Analyzing weather conditions...</span>
+                  </div>
+                </div>
               </div>
-              <div id="irrigation-recommendation" class="advice-text">
-                Loading irrigation recommendations...
-              </div>
-            </div>
 
-            <div class="weather-card-footer">
-              <button id="refresh-weather" class="weather-refresh-btn">
-                <i class="fas fa-sync-alt"></i>
-                <span>Refresh Data</span>
-              </button>
-              <span class="last-update">Updated just now</span>
+              <div class="weather-footer">
+                <div class="last-updated">
+                  <i class="fas fa-sync-alt"></i>
+                  <span id="last-updated">Last updated: --</span>
+                </div>
+                <button id="refresh-weather" class="refresh-btn">
+                  <i class="fas fa-redo"></i>
+                  Refresh
+                </button>
+              </div>
             </div>
 
             <!-- Hidden data for core weather widget -->
             <div
               id="weather-widget"
-              class="weather-widget"
+              class="weather-widget hidden"
               data-suburb="Johannesburg"
               data-country="ZA"
               data-units="metric"
@@ -1091,121 +1092,39 @@
               data-icon="#16a34a"
             ></div>
           </div>
-
-          <!-- Smart Features Card -->
-          <div class="weather-card weather-card--features">
-            <div class="features-header">
-              <i class="fas fa-microchip"></i>
-              <h3 class="features-title">Smart Weather Integration</h3>
-            </div>
-            <div class="features-grid">
-              <div class="feature-item">
-                <div class="feature-icon">
-                  <i class="fas fa-cloud-rain"></i>
-                </div>
-                <div class="feature-content">
-                  <h4 class="feature-name">Rain Detection</h4>
-                  <p class="feature-description">Automatically skips watering when rain is detected or forecast</p>
-                </div>
-              </div>
-              <div class="feature-item">
-                <div class="feature-icon">
+          
+          <div class="weather-benefits-column">
+            <div class="weather-benefits">
+              <h3 class="benefits-title">Smart Weather Integration</h3>
+              <ul class="benefits-list">
+                <li>
+                  <i class="fas fa-brain"></i>
+                  <span>Automatic rain delay when precipitation detected</span>
+                </li>
+                <li>
                   <i class="fas fa-thermometer-half"></i>
-                </div>
-                <div class="feature-content">
-                  <h4 class="feature-name">Temperature Adjustment</h4>
-                  <p class="feature-description">Increases watering duration during hot weather automatically</p>
-                </div>
-              </div>
-              <div class="feature-item">
-                <div class="feature-icon">
+                  <span>Temperature-based watering adjustments</span>
+                </li>
+                <li>
                   <i class="fas fa-wind"></i>
-                </div>
-                <div class="feature-content">
-                  <h4 class="feature-name">Wind Compensation</h4>
-                  <p class="feature-description">Adjusts spray patterns and timing based on wind conditions</p>
-                </div>
-              </div>
-              <div class="feature-item">
-                <div class="feature-icon">
+                  <span>Wind speed compensation for spray systems</span>
+                </li>
+                <li>
                   <i class="fas fa-tint"></i>
-                </div>
-                <div class="feature-content">
-                  <h4 class="feature-name">Humidity Awareness</h4>
-                  <p class="feature-description">Optimizes watering schedules based on atmospheric moisture</p>
-                </div>
-              </div>
+                  <span>Humidity-aware scheduling optimization</span>
+                </li>
+              </ul>
             </div>
           </div>
 
-          <!-- CTA Card -->
-          <div class="weather-card weather-card--cta">
-            <div class="cta-content">
-              <div class="cta-icon">
-                <i class="fas fa-robot"></i>
-              </div>
-              <h3 class="cta-title">Weather-Smart Installation</h3>
-              <p class="cta-description">
-                Upgrade to our intelligent irrigation system that automatically responds to weather conditions, saving water and protecting your landscape.
-              </p>
-              <div class="cta-benefits">
-                <div class="benefit-tag">
-                  <i class="fas fa-water"></i>
-                  <span>30% Water Savings</span>
-                </div>
-                <div class="benefit-tag">
-                  <i class="fas fa-shield-alt"></i>
-                  <span>Plant Protection</span>
-                </div>
-                <div class="benefit-tag">
-                  <i class="fas fa-mobile-alt"></i>
-                  <span>App Control</span>
-                </div>
-              </div>
-              <button class="btn btn-primary btn-weather-cta book-now" data-service="Smart Weather Integration">
-                <i class="fas fa-rocket"></i>
-                <span>Go Smart</span>
+          <div class="weather-cta-column">
+            <div class="weather-cta">
+              <h4 class="cta-subtitle">Weather-Smart Irrigation</h4>
+              <p class="cta-description">Our systems automatically adjust based on real-time weather data, saving water and protecting your landscape.</p>
+              <button class="btn btn-primary book-now" data-service="Smart Weather Integration">
+                <i class="fas fa-calendar-plus"></i>
+                Schedule Weather Assessment
               </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Weather Stats Bar -->
-        <div class="weather-stats-bar">
-          <div class="weather-stat">
-            <div class="stat-icon">
-              <i class="fas fa-chart-line"></i>
-            </div>
-            <div class="stat-info">
-              <span class="stat-value">30%</span>
-              <span class="stat-label">Water Savings</span>
-            </div>
-          </div>
-          <div class="weather-stat">
-            <div class="stat-icon">
-              <i class="fas fa-leaf"></i>
-            </div>
-            <div class="stat-info">
-              <span class="stat-value">98%</span>
-              <span class="stat-label">Plant Health</span>
-            </div>
-          </div>
-          <div class="weather-stat">
-            <div class="stat-icon">
-              <i class="fas fa-clock"></i>
-            </div>
-            <div class="stat-info">
-              <span class="stat-value">24/7</span>
-              <span class="stat-label">Monitoring</span>
-            </div>
-          </div>
-          <div class="weather-stat">
-            <div class="stat-icon">
-              <i class="fas fa-users"></i>
-            </div>
-            <div class="stat-info">
-              <span class="stat-value">500+</span>
-              <span class="stat-label">Smart Systems</span>
             </div>
           </div>
         </div>
@@ -1498,47 +1417,6 @@
           });
         });
       });
-
-      // Weather debugging - manual test after 3 seconds
-      setTimeout(() => {
-        console.log('=== MANUAL WEATHER DEBUG ===');
-        
-        // Check if weather widget element exists
-        const weatherWidget = document.getElementById('weather-widget');
-        console.log('Weather widget element found:', !!weatherWidget);
-        
-        // Check if new weather elements exist
-        const tempEl = document.getElementById('current-temp');
-        const descEl = document.getElementById('weather-description');
-        console.log('Temperature element found:', !!tempEl);
-        console.log('Description element found:', !!descEl);
-        
-        if (tempEl) console.log('Current temp content:', tempEl.textContent);
-        if (descEl) console.log('Current description content:', descEl.textContent);
-        
-        // Test API manually
-        fetch('http://localhost:3000/api/weather')
-          .then(response => {
-            console.log('API response status:', response.status);
-            return response.json();
-          })
-          .then(data => {
-            console.log('API returned weather data:', data);
-            
-            // Manual update test
-            if (tempEl && data.tempC) {
-              tempEl.textContent = data.tempC;
-              console.log('Manually updated temp to:', data.tempC);
-            }
-            if (descEl && data.conditions) {
-              descEl.textContent = data.conditions;
-              console.log('Manually updated description to:', data.conditions);
-            }
-          })
-          .catch(err => {
-            console.error('Manual weather API test failed:', err);
-          });
-      }, 3000);
     });
   </script>
 

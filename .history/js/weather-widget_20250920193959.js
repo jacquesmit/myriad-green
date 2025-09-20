@@ -328,17 +328,14 @@
     // Caching logic
     const cacheKey = `${suburb}|${country}|${units}`;
     if (weatherCache[cacheKey]) {
-      console.log('[fetchWeather] Using cached data for:', cacheKey, weatherCache[cacheKey]);
       return weatherCache[cacheKey];
     }
-    console.log('[fetchWeather] No cache found, fetching fresh data for:', cacheKey);
     // 1) Current conditions
     const q = encodeURIComponent(`${suburb},${country}`);
     const base = (apiBase || '').replace(/\/$/, '');
     const url = `${base}/api/weather?city=${q}&units=${units}`;
-    console.log('[WeatherWidget] Fetching weather from:', url);
     const current = await fetch(url).then(r => {
-      if (!r.ok) throw new Error(`weather not found: ${r.status}`);
+      if (!r.ok) throw new Error('weather not found');
       return r.json();
     });
 
@@ -357,8 +354,6 @@
       }
     } catch {}
 
-    console.log('[WeatherWidget] API Response:', current);
-    
     weatherCache[cacheKey] = {
       conditions,
       tempC: Number.isFinite(tempC) ? Math.round(tempC) : null,
@@ -370,8 +365,6 @@
       precipProb,
       drought: false
     };
-    
-    console.log('[WeatherWidget] Processed data:', weatherCache[cacheKey]);
     return weatherCache[cacheKey];
   }
 
@@ -402,10 +395,9 @@
 
   // Update enhanced weather widget
   function updateEnhancedWidget(el, suburb, w, headline) {
-    // Check for new weather section structure first (look in document, not within el)
-    const newWeatherSection = document.querySelector('.weather-grid');
+    // Check for new weather section structure first
+    const newWeatherSection = el.querySelector('.weather-grid');
     if (newWeatherSection) {
-      console.log('[updateEnhancedWidget] Found new weather section, calling updateNewWeatherSection');
       updateNewWeatherSection(el, suburb, w, headline);
       return;
     }
@@ -479,21 +471,12 @@
 
   // Update function for new weather section structure
   function updateNewWeatherSection(el, suburb, w, headline) {
-    console.log('[updateNewWeatherSection] Temperature data:', w.tempC, 'for suburb:', suburb);
-    
-    // Find the weather section in the document (not within el)
-    const weatherSection = document.querySelector('.weather-grid');
-    if (!weatherSection) {
-      console.log('[updateNewWeatherSection] Weather section not found');
-      return;
-    }
-    
     // Update location name
-    const locationEl = document.querySelector('.location-name');
+    const locationEl = el.querySelector('.location-name');
     if (locationEl) locationEl.textContent = suburb;
 
     // Update update time
-    const updateTimeEl = document.querySelector('.update-time');
+    const updateTimeEl = el.querySelector('.update-time');
     if (updateTimeEl) {
       const now = new Date();
       updateTimeEl.textContent = now.toLocaleTimeString('en-US', { 
@@ -503,58 +486,53 @@
     }
 
     // Update weather icon
-    const iconEl = document.querySelector('.weather-icon-large i, #weather-icon');
+    const iconEl = el.querySelector('.weather-icon-large i');
     if (iconEl) {
       const iconClass = getWeatherIconClass(w.conditions, w.tempC);
       iconEl.className = iconClass;
     }
 
     // Update temperature
-    const tempValueEl = document.querySelector('.temp-value, #current-temp');
-    if (tempValueEl) {
-      tempValueEl.textContent = Number.isFinite(w.tempC) ? w.tempC : '--';
-      console.log('[updateNewWeatherSection] Updated temperature display to:', w.tempC);
-    } else {
-      console.log('[updateNewWeatherSection] Temperature element not found');
-    }
+    const tempValueEl = el.querySelector('.temp-value');
+    if (tempValueEl) tempValueEl.textContent = Number.isFinite(w.tempC) ? w.tempC : '--';
 
     // Update weather condition
-    const conditionEl = document.querySelector('.weather-condition, #weather-description');
+    const conditionEl = el.querySelector('.weather-condition');
     if (conditionEl) conditionEl.textContent = w.conditions || 'Unknown';
 
     // Update feels like
-    const feelsLikeEl = document.querySelector('.feels-like-temp, #feels-like');
+    const feelsLikeEl = el.querySelector('.feels-like-temp');
     if (feelsLikeEl) {
       const feelsLike = w.feelsLikeC || w.tempC;
       feelsLikeEl.textContent = `Feels like ${feelsLike}°C`;
     }
 
     // Update weather metrics
-    const humidityEl = document.querySelector('.weather-metric[data-metric="humidity"] .metric-value, #humidity');
+    const humidityEl = el.querySelector('.weather-metric[data-metric="humidity"] .metric-value');
     if (humidityEl) humidityEl.textContent = `${w.humidity || 0}%`;
 
-    const windEl = document.querySelector('.weather-metric[data-metric="wind"] .metric-value, #wind-speed');
+    const windEl = el.querySelector('.weather-metric[data-metric="wind"] .metric-value');
     if (windEl) windEl.textContent = `${w.windKph || 0} km/h`;
 
-    const pressureEl = document.querySelector('.weather-metric[data-metric="pressure"] .metric-value, #pressure');
+    const pressureEl = el.querySelector('.weather-metric[data-metric="pressure"] .metric-value');
     if (pressureEl) pressureEl.textContent = `${w.pressure || 0} hPa`;
 
-    const visibilityEl = document.querySelector('.weather-metric[data-metric="visibility"] .metric-value, #visibility');
+    const visibilityEl = el.querySelector('.weather-metric[data-metric="visibility"] .metric-value');
     if (visibilityEl) visibilityEl.textContent = `${w.visibility || 0} km`;
 
     // Update irrigation advice
-    const adviceTextEl = document.querySelector('.advice-text, #irrigation-recommendation');
+    const adviceTextEl = el.querySelector('.advice-text');
     if (adviceTextEl) {
       const advice = generateIrrigationAdvice(w, suburb);
       adviceTextEl.textContent = advice.join('. ') + '.';
     }
 
     // Update last update time
-    const lastUpdateEl = document.querySelector('.last-update');
+    const lastUpdateEl = el.querySelector('.last-update');
     if (lastUpdateEl) lastUpdateEl.textContent = 'Updated just now';
 
     // Add refresh functionality
-    const refreshBtn = document.querySelector('.weather-refresh-btn');
+    const refreshBtn = el.querySelector('.weather-refresh-btn');
     if (refreshBtn) {
       refreshBtn.onclick = () => refreshWeatherData(el, suburb);
     }
@@ -612,25 +590,19 @@
 
   // Refresh weather data
   async function refreshWeatherData(el, suburb) {
-    const refreshBtn = el.querySelector('.refresh-btn, .weather-refresh-btn');
+    const refreshBtn = el.querySelector('.refresh-btn');
     const enhancedWidget = el.querySelector('.enhanced-weather-widget');
-    const newWeatherSection = el.querySelector('.weather-grid');
     
     if (refreshBtn) refreshBtn.disabled = true;
     if (enhancedWidget) enhancedWidget.classList.add('weather-loading');
-    if (newWeatherSection) newWeatherSection.classList.add('weather-loading');
 
     try {
       // Clear cache for this location
       const cacheKey = `${suburb}|ZA|metric`;
       delete weatherCache[cacheKey];
       
-      // Fetch fresh data with API base detection
-      let apiBase = '';
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        apiBase = 'http://localhost:3000';
-      }
-      const w = await fetchWeather(suburb, 'ZA', 'metric', apiBase);
+      // Fetch fresh data
+      const w = await fetchWeather(suburb, 'ZA', 'metric');
       const headline = generateBlendedHeadline({suburb, w, service: 'Irrigation'});
       
       updateEnhancedWidget(el, suburb, w, headline);
@@ -640,12 +612,10 @@
     } finally {
       if (refreshBtn) refreshBtn.disabled = false;
       if (enhancedWidget) enhancedWidget.classList.remove('weather-loading');
-      if (newWeatherSection) newWeatherSection.classList.remove('weather-loading');
     }
   }
 
   function renderWidget(el, suburb, w, headline, theme) {
-    console.log('[renderWidget] Temperature data:', w.tempC, 'for suburb:', suburb);
     const tempTxt = Number.isFinite(w.tempC) ? `${w.tempC}°C` : '--°C';
     const iconName = iconNameFor(w.conditions, w.tempC, w.windKph, w.precipProb);
     const svg = svgFor(iconName);
@@ -711,13 +681,11 @@
   }
 
   async function init() {
-    console.log('[WeatherWidget] Initializing...');
     const el = document.querySelector(SELECTORS.widget);
     if (!el) {
       console.error('[WeatherWidget] Widget element not found:', SELECTORS.widget);
       return;
     }
-    console.log('[WeatherWidget] Widget element found:', el);
 
     const suburb = el.getAttribute('data-suburb') || 'Johannesburg';
     const country = el.getAttribute('data-country') || 'ZA';
@@ -782,18 +750,14 @@
     applyVisuals();
 
     try {
-      console.log('[WeatherWidget] Starting weather fetch for:', suburb, country);
       const w = await fetchWeather(suburb, country, units, apiBase);
-      console.log('[WeatherWidget] Weather data received:', w);
       const headlineHTML = generateBlendedHeadline({suburb, w, service, trendKeyword});
       const headline = { h1: headlineHTML, intro: '' };
       updateHero(headline.h1, headline.intro, true); // pass true for HTML injection
       renderWidget(el, suburb, w, headline, theme);
       
       // Update enhanced widget if present
-      console.log('[WeatherWidget] About to call updateEnhancedWidget...');
       updateEnhancedWidget(el, suburb, w, headline);
-      console.log('[WeatherWidget] updateEnhancedWidget completed');
       
       applyVisuals();
       updateMetaTags(headline, suburb, service, w);

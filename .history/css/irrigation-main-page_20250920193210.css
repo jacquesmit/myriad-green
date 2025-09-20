@@ -4316,14 +4316,13 @@ details[open] .faq__caret {
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .weather-container {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+    flex-direction: column;
+    align-items: center;
   }
   
-  .weather-widget-wrapper,
-  .weather-benefits-column,
-  .weather-cta-column {
-    padding: 1.5rem;
+  .weather-widget-wrapper {
+    max-width: 100%;
+    padding: 0;
   }
   
   .section--weather .section-title {

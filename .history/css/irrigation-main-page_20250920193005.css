@@ -3800,6 +3800,11 @@ details[open] .faq__caret {
   background: var(--color-background-light);
 }
 
+.section--weather .container {
+  margin-left: 4rem;
+  margin-right: 4rem;
+}
+
 .section--weather .section-header {
   text-align: center;
   margin-bottom: 3rem;
@@ -3836,89 +3841,12 @@ details[open] .faq__caret {
 
 /* Weather Container */
 .weather-container {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: 3rem;
-  align-items: start;
   width: 100%;
 }
 
 /* Weather Widget */
 .weather-widget-wrapper {
   width: 100%;
-}
-
-/* Weather Benefits Column */
-.weather-benefits-column,
-.weather-cta-column {
-  padding: 2rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(230, 236, 241, 0.8);
-}
-
-.weather-benefits {
-  height: 100%;
-}
-
-.benefits-title {
-  font-size: 1.5rem;
-  color: var(--color-text-dark);
-  margin-bottom: 1.5rem;
-  font-weight: 700;
-}
-
-.benefits-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.benefits-list li {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-.benefits-list li i {
-  color: var(--color-primary);
-  margin-top: 0.2rem;
-  font-size: 1rem;
-  flex-shrink: 0;
-}
-
-.benefits-list li span {
-  color: var(--color-text-muted);
-}
-
-/* Weather CTA Column */
-.weather-cta {
-  text-align: center;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.cta-subtitle {
-  font-size: 1.3rem;
-  color: var(--color-text-dark);
-  margin-bottom: 1rem;
-  font-weight: 700;
-}
-
-.cta-description {
-  color: var(--color-text-muted);
-  margin-bottom: 2rem;
-  line-height: 1.6;
-}
-
-.weather-cta .btn {
-  align-self: center;
 }
 
 /* Enhanced Weather Widget */
@@ -4315,15 +4243,19 @@ details[open] .faq__caret {
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
+  .section--weather .container {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+
   .weather-container {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+    flex-direction: column;
+    align-items: center;
   }
   
-  .weather-widget-wrapper,
-  .weather-benefits-column,
-  .weather-cta-column {
-    padding: 1.5rem;
+  .weather-widget-wrapper {
+    max-width: 100%;
+    padding: 0;
   }
   
   .section--weather .section-title {

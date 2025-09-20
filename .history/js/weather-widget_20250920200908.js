@@ -402,10 +402,9 @@
 
   // Update enhanced weather widget
   function updateEnhancedWidget(el, suburb, w, headline) {
-    // Check for new weather section structure first (look in document, not within el)
-    const newWeatherSection = document.querySelector('.weather-grid');
+    // Check for new weather section structure first
+    const newWeatherSection = el.querySelector('.weather-grid');
     if (newWeatherSection) {
-      console.log('[updateEnhancedWidget] Found new weather section, calling updateNewWeatherSection');
       updateNewWeatherSection(el, suburb, w, headline);
       return;
     }

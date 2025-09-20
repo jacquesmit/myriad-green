@@ -402,10 +402,9 @@
 
   // Update enhanced weather widget
   function updateEnhancedWidget(el, suburb, w, headline) {
-    // Check for new weather section structure first (look in document, not within el)
-    const newWeatherSection = document.querySelector('.weather-grid');
+    // Check for new weather section structure first
+    const newWeatherSection = el.querySelector('.weather-grid');
     if (newWeatherSection) {
-      console.log('[updateEnhancedWidget] Found new weather section, calling updateNewWeatherSection');
       updateNewWeatherSection(el, suburb, w, headline);
       return;
     }
@@ -711,13 +710,11 @@
   }
 
   async function init() {
-    console.log('[WeatherWidget] Initializing...');
     const el = document.querySelector(SELECTORS.widget);
     if (!el) {
       console.error('[WeatherWidget] Widget element not found:', SELECTORS.widget);
       return;
     }
-    console.log('[WeatherWidget] Widget element found:', el);
 
     const suburb = el.getAttribute('data-suburb') || 'Johannesburg';
     const country = el.getAttribute('data-country') || 'ZA';
@@ -782,18 +779,14 @@
     applyVisuals();
 
     try {
-      console.log('[WeatherWidget] Starting weather fetch for:', suburb, country);
       const w = await fetchWeather(suburb, country, units, apiBase);
-      console.log('[WeatherWidget] Weather data received:', w);
       const headlineHTML = generateBlendedHeadline({suburb, w, service, trendKeyword});
       const headline = { h1: headlineHTML, intro: '' };
       updateHero(headline.h1, headline.intro, true); // pass true for HTML injection
       renderWidget(el, suburb, w, headline, theme);
       
       // Update enhanced widget if present
-      console.log('[WeatherWidget] About to call updateEnhancedWidget...');
       updateEnhancedWidget(el, suburb, w, headline);
-      console.log('[WeatherWidget] updateEnhancedWidget completed');
       
       applyVisuals();
       updateMetaTags(headline, suburb, service, w);

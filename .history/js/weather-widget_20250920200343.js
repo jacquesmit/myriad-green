@@ -372,6 +372,21 @@
     };
     
     console.log('[WeatherWidget] Processed data:', weatherCache[cacheKey]);
+    
+    // Add debug display to page
+    const debugEl = document.getElementById('weather-debug') || document.createElement('div');
+    debugEl.id = 'weather-debug';
+    debugEl.style.cssText = 'position:fixed;top:10px;right:10px;background:rgba(0,0,0,0.8);color:white;padding:10px;border-radius:5px;font-family:monospace;font-size:12px;z-index:9999;';
+    debugEl.innerHTML = `
+      <strong>Weather Debug:</strong><br>
+      Temp: ${weatherCache[cacheKey].tempC}°C<br>
+      Source: ${current ? 'API' : 'Cache'}<br>
+      Time: ${new Date().toLocaleTimeString()}
+    `;
+    if (!document.getElementById('weather-debug')) {
+      document.body.appendChild(debugEl);
+    }
+    
     return weatherCache[cacheKey];
   }
 
@@ -402,10 +417,9 @@
 
   // Update enhanced weather widget
   function updateEnhancedWidget(el, suburb, w, headline) {
-    // Check for new weather section structure first (look in document, not within el)
-    const newWeatherSection = document.querySelector('.weather-grid');
+    // Check for new weather section structure first
+    const newWeatherSection = el.querySelector('.weather-grid');
     if (newWeatherSection) {
-      console.log('[updateEnhancedWidget] Found new weather section, calling updateNewWeatherSection');
       updateNewWeatherSection(el, suburb, w, headline);
       return;
     }
@@ -554,7 +568,7 @@
     if (lastUpdateEl) lastUpdateEl.textContent = 'Updated just now';
 
     // Add refresh functionality
-    const refreshBtn = document.querySelector('.weather-refresh-btn');
+    const refreshBtn = el.querySelector('.weather-refresh-btn');
     if (refreshBtn) {
       refreshBtn.onclick = () => refreshWeatherData(el, suburb);
     }
@@ -711,13 +725,11 @@
   }
 
   async function init() {
-    console.log('[WeatherWidget] Initializing...');
     const el = document.querySelector(SELECTORS.widget);
     if (!el) {
       console.error('[WeatherWidget] Widget element not found:', SELECTORS.widget);
       return;
     }
-    console.log('[WeatherWidget] Widget element found:', el);
 
     const suburb = el.getAttribute('data-suburb') || 'Johannesburg';
     const country = el.getAttribute('data-country') || 'ZA';
@@ -782,18 +794,14 @@
     applyVisuals();
 
     try {
-      console.log('[WeatherWidget] Starting weather fetch for:', suburb, country);
       const w = await fetchWeather(suburb, country, units, apiBase);
-      console.log('[WeatherWidget] Weather data received:', w);
       const headlineHTML = generateBlendedHeadline({suburb, w, service, trendKeyword});
       const headline = { h1: headlineHTML, intro: '' };
       updateHero(headline.h1, headline.intro, true); // pass true for HTML injection
       renderWidget(el, suburb, w, headline, theme);
       
       // Update enhanced widget if present
-      console.log('[WeatherWidget] About to call updateEnhancedWidget...');
       updateEnhancedWidget(el, suburb, w, headline);
-      console.log('[WeatherWidget] updateEnhancedWidget completed');
       
       applyVisuals();
       updateMetaTags(headline, suburb, service, w);
