@@ -24,7 +24,7 @@
   --color-primary-light: #4a9a4a;
   --color-primary-dark: #1e5a1e;
   --color-secondary: #f0f8ff;
-  --color-accent: #ffa500;
+  --color-accent: #ffd700;
   --color-white: #ffffff;
   --color-gray-50: #f9fafb;
   --color-gray-100: #f3f4f6;
@@ -1100,16 +1100,16 @@ section[id] {
 
 /* Premium Badge - Gold theme */
 .pricing-card__badge--premium {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #f59e0b 100%);
+  background: linear-gradient(135deg, #ffd700 0%, #daa520 50%, #ffd700 100%);
   box-shadow:
-    0 6px 20px rgba(245, 158, 11, 0.4),
-    0 2px 8px rgba(245, 158, 11, 0.2),
+    0 6px 20px rgba(255, 215, 0, 0.4),
+    0 2px 8px rgba(255, 215, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .pricing-card__badge--premium::after {
-  border-top-color: #f59e0b;
-  filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.3));
+  border-top-color: #ffd700;
+  filter: drop-shadow(0 2px 4px rgba(255, 215, 0, 0.3));
 }
 
 .pricing-card__badge-text {
@@ -1691,7 +1691,7 @@ section[id] {
 }
 
 .insight-card--tertiary .insight-card__icon {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
+  background: linear-gradient(135deg, #ffd700, #daa520);
   color: white;
 }
 
@@ -2092,7 +2092,7 @@ section[id] {
 }
 
 .badge--featured {
-  background: linear-gradient(135deg, var(--color-accent), #ff8c00);
+  background: linear-gradient(135deg, var(--color-accent), #daa520);
   color: var(--color-white);
   box-shadow: var(--shadow-sm);
 }
@@ -2228,7 +2228,7 @@ section[id] {
 }
 
 .icon--accent {
-  background: linear-gradient(135deg, var(--color-accent), #ff8c00);
+  background: linear-gradient(135deg, var(--color-accent), #daa520);
   color: var(--color-white);
 }
 
@@ -3707,7 +3707,7 @@ details[open] .faq__caret {
 }
 
 .section--how-it-works .step-number--accent {
-  background: linear-gradient(135deg, var(--color-accent), #ffb347);
+  background: linear-gradient(135deg, var(--color-accent), #daa520);
 }
 
 .section--how-it-works .step-number__digit {

@@ -19,12 +19,12 @@
   <!-- External Fonts & Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   
-  <!-- Stylesheets -->
   <link rel="stylesheet" href="../css/theme.css">
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/main-navigation.css">
   <link rel="stylesheet" href="../css/irrigation-main-page.css">
   <link rel="stylesheet" href="../css/testimonials.css">
+  <link rel="stylesheet" href="../css/trends-widget.css">
   <link rel="stylesheet" href="../css/weather-widget.css">
   <link rel="stylesheet" href="../css/weather-section-redesign.css">
   <link rel="stylesheet" href="../css/service-areas-section.css">
@@ -35,6 +35,7 @@
   <link rel="stylesheet" href="../css/footer.css">
   <link rel="stylesheet" href="../css/components/buttons/social-bar.css">
   <link rel="stylesheet" href="../css/components/buttons/floating-contact-bar.css">
+  <link rel="stylesheet" href="../css/faq.css">
 </head>
 
 <body class="has-fixed-header" data-theme="light">
@@ -2087,37 +2088,383 @@
     </section>
 
     <!-- FAQ Section -->
+    <!-- Enhanced FAQ Section -->
     <section id="faq" class="section section--faq">
       <div class="container">
-        <h2 class="faq__title">Frequently Asked Questions</h2>
-        
-        <div class="faq__list">
-          <details class="faq faq__item card card--outlined">
-            <summary class="faq__summary">
-              <span>What areas do you cover for irrigation services?</span>
-            </summary>
-            <div class="faq__body">
-              <p>We provide irrigation services across all major areas of Gauteng, including Johannesburg (Sandton, Rosebank, Melrose, Houghton), Pretoria (Waterkloof, Faerie Glen, Brooklyn, Menlyn), and surrounding suburbs. Our technicians are strategically located for rapid response throughout the province.</p>
-            </div>
-          </details>
+        <div class="section-header">
+          <div class="section-eyebrow">
+            <i class="fas fa-question-circle" aria-hidden="true"></i>
+            Get Answers
+          </div>
+          <h2 class="faq__title">Frequently Asked Questions</h2>
+          <p class="section-lead">
+            Everything you need to know about our smart irrigation solutions. Can't find what you're looking for? <a href="#contact" class="faq__contact-link">Contact us directly</a>.
+          </p>
+        </div>
 
-          <details class="faq faq__item card card--outlined">
-            <summary class="faq__summary">
-              <span>How do smart irrigation controllers save water?</span>
-            </summary>
-            <div class="faq__body">
-              <p>Smart controllers use real-time weather data, soil moisture sensors, and seasonal programming to automatically adjust watering schedules. They skip watering when rain is forecast, reduce runtime during cooler months, and can be monitored remotely. Most clients see 30-50% water savings within the first year.</p>
-            </div>
-          </details>
+        <!-- FAQ Search -->
+        <div class="faq__search-container">
+          <div class="faq__search-wrapper">
+            <i class="fas fa-search faq__search-icon" aria-hidden="true"></i>
+            <input type="text" id="faq-search" class="faq__search-input" placeholder="Search questions..." aria-label="Search FAQ">
+            <button type="button" class="faq__search-clear" aria-label="Clear search">
+              <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div class="faq__search-results" id="faq-search-results">
+            <span id="faq-result-count"></span> questions found
+          </div>
+        </div>
 
-          <details class="faq faq__item card card--outlined">
-            <summary class="faq__summary">
-              <span>Do you service irrigation systems installed by other companies?</span>
-            </summary>
-            <div class="faq__body">
-              <p>Yes, we service and repair irrigation systems regardless of who installed them originally. Our technicians are experienced with all major brands including Rain Bird, Hunter, Orbit, and Irritrol. We provide diagnostic assessments and can upgrade older systems with modern components.</p>
+        <!-- FAQ Categories -->
+        <div class="faq__categories">
+          <button type="button" class="faq__category-btn faq__category-btn--active" data-category="all">
+            <i class="fas fa-list" aria-hidden="true"></i>
+            All Questions
+          </button>
+          <button type="button" class="faq__category-btn" data-category="services">
+            <i class="fas fa-tools" aria-hidden="true"></i>
+            Services
+          </button>
+          <button type="button" class="faq__category-btn" data-category="pricing">
+            <i class="fas fa-tags" aria-hidden="true"></i>
+            Pricing
+          </button>
+          <button type="button" class="faq__category-btn" data-category="technical">
+            <i class="fas fa-cogs" aria-hidden="true"></i>
+            Technical
+          </button>
+          <button type="button" class="faq__category-btn" data-category="maintenance">
+            <i class="fas fa-wrench" aria-hidden="true"></i>
+            Maintenance
+          </button>
+        </div>
+
+        <!-- FAQ List -->
+        <div class="faq__list" id="faq-list">
+          <!-- Services Category -->
+          <div class="faq__item-wrapper" data-category="services">
+            <details class="faq faq__item card card--elevated">
+              <summary class="faq__summary">
+                <div class="faq__summary-content">
+                  <span class="faq__question">What areas do you cover for irrigation services?</span>
+                  <div class="faq__meta">
+                    <span class="faq__category-badge">Services</span>
+                    <i class="fas fa-chevron-down faq__icon" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </summary>
+              <div class="faq__body">
+                <div class="faq__answer">
+                  <p>We provide comprehensive irrigation services across all major areas of Gauteng, including:</p>
+                  <div class="faq__highlight-box">
+                    <strong>Johannesburg:</strong> Sandton, Rosebank, Melrose, Houghton, Bedfordview, Parktown, Northcliff, Linden, Rivonia, Morningside, Greenside, and surrounding suburbs.
+                    <br><br>
+                    <strong>Pretoria:</strong> Waterkloof, Faerie Glen, Brooklyn, Menlyn, Garsfontein, Silver Lakes, Montana, Hatfield, Moreleta Park, Lynnwood, and surrounding areas.
+                  </div>
+                  <p>Our strategically located technicians ensure rapid response throughout the province. Same-day service available for emergency repairs.</p>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <div class="faq__item-wrapper" data-category="services">
+            <details class="faq faq__item card card--elevated">
+              <summary class="faq__summary">
+                <div class="faq__summary-content">
+                  <span class="faq__question">Do you service irrigation systems installed by other companies?</span>
+                  <div class="faq__meta">
+                    <span class="faq__category-badge">Services</span>
+                    <i class="fas fa-chevron-down faq__icon" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </summary>
+              <div class="faq__body">
+                <div class="faq__answer">
+                  <p>Absolutely! We service and repair irrigation systems regardless of the original installer or brand. Our certified technicians are experienced with all major manufacturers including:</p>
+                  <div class="faq__brand-grid">
+                    <span class="faq__brand">Rain Bird</span>
+                    <span class="faq__brand">Hunter</span>
+                    <span class="faq__brand">Orbit</span>
+                    <span class="faq__brand">Irritrol</span>
+                    <span class="faq__brand">Toro</span>
+                    <span class="faq__brand">Weathermatic</span>
+                  </div>
+                  <p>We provide comprehensive diagnostic assessments and can upgrade older systems with modern smart technology components.</p>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <!-- Technical Category -->
+          <div class="faq__item-wrapper" data-category="technical">
+            <details class="faq faq__item card card--elevated">
+              <summary class="faq__summary">
+                <div class="faq__summary-content">
+                  <span class="faq__question">How do smart irrigation controllers save water?</span>
+                  <div class="faq__meta">
+                    <span class="faq__category-badge faq__category-badge--technical">Technical</span>
+                    <i class="fas fa-chevron-down faq__icon" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </summary>
+              <div class="faq__body">
+                <div class="faq__answer">
+                  <p>Smart irrigation controllers use advanced technology to optimize water usage:</p>
+                  <ul class="faq__feature-list">
+                    <li><strong>Weather Integration:</strong> Automatically adjusts schedules based on local weather forecasts</li>
+                    <li><strong>Soil Sensors:</strong> Measures actual soil moisture to prevent overwatering</li>
+                    <li><strong>Seasonal Programming:</strong> Reduces watering during cooler months</li>
+                    <li><strong>Rain Skip:</strong> Postpones watering when rain is detected</li>
+                    <li><strong>Remote Monitoring:</strong> Control and monitor your system from anywhere</li>
+                  </ul>
+                  <div class="faq__stat-highlight">
+                    <div class="faq__stat">
+                      <span class="faq__stat-number">30-50%</span>
+                      <span class="faq__stat-label">Average Water Savings</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <div class="faq__item-wrapper" data-category="technical">
+            <details class="faq faq__item card card--elevated">
+              <summary class="faq__summary">
+                <div class="faq__summary-content">
+                  <span class="faq__question">What's the difference between drip irrigation and sprinkler systems?</span>
+                  <div class="faq__meta">
+                    <span class="faq__category-badge faq__category-badge--technical">Technical</span>
+                    <i class="fas fa-chevron-down faq__icon" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </summary>
+              <div class="faq__body">
+                <div class="faq__answer">
+                  <div class="faq__comparison">
+                    <div class="faq__comparison-item">
+                      <h4><i class="fas fa-tint" aria-hidden="true"></i> Drip Irrigation</h4>
+                      <ul>
+                        <li>Delivers water directly to plant roots</li>
+                        <li>Up to 50% water savings</li>
+                        <li>Ideal for vegetable gardens and flower beds</li>
+                        <li>Less evaporation and runoff</li>
+                        <li>Lower pressure requirements</li>
+                      </ul>
+                    </div>
+                    <div class="faq__comparison-item">
+                      <h4><i class="fas fa-cloud-rain" aria-hidden="true"></i> Sprinkler Systems</h4>
+                      <ul>
+                        <li>Overhead water distribution</li>
+                        <li>Better for large lawn areas</li>
+                        <li>Provides even coverage</li>
+                        <li>Good for cooling effect in hot weather</li>
+                        <li>Higher pressure requirements</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <p><strong>Best Practice:</strong> We often recommend hybrid systems combining both technologies for optimal results.</p>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <!-- Pricing Category -->
+          <div class="faq__item-wrapper" data-category="pricing">
+            <details class="faq faq__item card card--elevated">
+              <summary class="faq__summary">
+                <div class="faq__summary-content">
+                  <span class="faq__question">How much does a typical irrigation system installation cost?</span>
+                  <div class="faq__meta">
+                    <span class="faq__category-badge faq__category-badge--pricing">Pricing</span>
+                    <i class="fas fa-chevron-down faq__icon" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </summary>
+              <div class="faq__body">
+                <div class="faq__answer">
+                  <p>Installation costs vary based on system size, complexity, and features:</p>
+                  <div class="faq__pricing-grid">
+                    <div class="faq__pricing-item">
+                      <h4>Basic System</h4>
+                      <div class="faq__price">R15,000 - R25,000</div>
+                      <p>Small residential lawns, basic controller</p>
+                    </div>
+                    <div class="faq__pricing-item">
+                      <h4>Smart System</h4>
+                      <div class="faq__price">R25,000 - R45,000</div>
+                      <p>Weather sensors, WiFi controller, app control</p>
+                    </div>
+                    <div class="faq__pricing-item">
+                      <h4>Premium System</h4>
+                      <div class="faq__price">R45,000+</div>
+                      <p>Large estates, multiple zones, advanced features</p>
+                    </div>
+                  </div>
+                  <p><strong>Includes:</strong> Design, installation, programming, and 1-year warranty. Financing options available.</p>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <!-- Maintenance Category -->
+          <div class="faq__item-wrapper" data-category="maintenance">
+            <details class="faq faq__item card card--elevated">
+              <summary class="faq__summary">
+                <div class="faq__summary-content">
+                  <span class="faq__question">How often should irrigation systems be serviced?</span>
+                  <div class="faq__meta">
+                    <span class="faq__category-badge faq__category-badge--maintenance">Maintenance</span>
+                    <i class="fas fa-chevron-down faq__icon" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </summary>
+              <div class="faq__body">
+                <div class="faq__answer">
+                  <p>Regular maintenance ensures optimal performance and longevity:</p>
+                  <div class="faq__maintenance-schedule">
+                    <div class="faq__maintenance-item">
+                      <div class="faq__maintenance-frequency">Monthly</div>
+                      <div class="faq__maintenance-task">Visual inspection, check for leaks</div>
+                    </div>
+                    <div class="faq__maintenance-item">
+                      <div class="faq__maintenance-frequency">Bi-annually</div>
+                      <div class="faq__maintenance-task">Clean filters, adjust sprinklers</div>
+                    </div>
+                    <div class="faq__maintenance-item">
+                      <div class="faq__maintenance-frequency">Annually</div>
+                      <div class="faq__maintenance-task">Full system inspection & winterization</div>
+                    </div>
+                  </div>
+                  <div class="faq__cta-box">
+                    <p><strong>Pro Tip:</strong> Our maintenance plans include priority service and 10% discount on repairs.</p>
+                    <a href="#contact" class="faq__cta-link">Learn About Maintenance Plans</a>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <div class="faq__item-wrapper" data-category="maintenance">
+            <details class="faq faq__item card card--elevated">
+              <summary class="faq__summary">
+                <div class="faq__summary-content">
+                  <span class="faq__question">What are common irrigation system problems and solutions?</span>
+                  <div class="faq__meta">
+                    <span class="faq__category-badge faq__category-badge--maintenance">Maintenance</span>
+                    <i class="fas fa-chevron-down faq__icon" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </summary>
+              <div class="faq__body">
+                <div class="faq__answer">
+                  <div class="faq__problems-grid">
+                    <div class="faq__problem-item">
+                      <h4><i class="fas fa-exclamation-triangle" aria-hidden="true"></i> Low Water Pressure</h4>
+                      <p><strong>Cause:</strong> Clogged filters, leaks, or pump issues</p>
+                      <p><strong>Solution:</strong> Clean filters, repair leaks, check pump</p>
+                    </div>
+                    <div class="faq__problem-item">
+                      <h4><i class="fas fa-tint" aria-hidden="true"></i> Uneven Watering</h4>
+                      <p><strong>Cause:</strong> Misaligned sprinklers or blocked nozzles</p>
+                      <p><strong>Solution:</strong> Adjust sprinkler heads, clean nozzles</p>
+                    </div>
+                    <div class="faq__problem-item">
+                      <h4><i class="fas fa-clock" aria-hidden="true"></i> Controller Issues</h4>
+                      <p><strong>Cause:</strong> Dead batteries, wiring problems, or programming errors</p>
+                      <p><strong>Solution:</strong> Replace batteries, check wiring, reprogram</p>
+                    </div>
+                  </div>
+                  <p><strong>Emergency Service:</strong> Available 24/7 for critical irrigation failures.</p>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <!-- Additional FAQ Items -->
+          <div class="faq__item-wrapper" data-category="services">
+            <details class="faq faq__item card card--elevated">
+              <summary class="faq__summary">
+                <div class="faq__summary-content">
+                  <span class="faq__question">Do you offer emergency irrigation repairs?</span>
+                  <div class="faq__meta">
+                    <span class="faq__category-badge">Services</span>
+                    <i class="fas fa-chevron-down faq__icon" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </summary>
+              <div class="faq__body">
+                <div class="faq__answer">
+                  <p>Yes! We provide 24/7 emergency irrigation repair services for critical system failures. Our emergency response includes:</p>
+                  <ul class="faq__emergency-list">
+                    <li>Same-day response for broken pipes and major leaks</li>
+                    <li>After-hours support for controller failures</li>
+                    <li>Priority service for commercial properties</li>
+                    <li>Temporary solutions while repairs are completed</li>
+                  </ul>
+                  <div class="faq__emergency-contact">
+                    <strong>Emergency Hotline:</strong> <a href="tel:+27123456789">+27 12 345 6789</a>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <div class="faq__item-wrapper" data-category="technical">
+            <details class="faq faq__item card card--elevated">
+              <summary class="faq__summary">
+                <div class="faq__summary-content">
+                  <span class="faq__question">Can irrigation systems be controlled remotely?</span>
+                  <div class="faq__meta">
+                    <span class="faq__category-badge faq__category-badge--technical">Technical</span>
+                    <i class="fas fa-chevron-down faq__icon" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </summary>
+              <div class="faq__body">
+                <div class="faq__answer">
+                  <p>Absolutely! Modern irrigation systems offer comprehensive remote control capabilities:</p>
+                  <div class="faq__remote-features">
+                    <div class="faq__remote-item">
+                      <i class="fas fa-mobile-alt" aria-hidden="true"></i>
+                      <strong>Mobile Apps:</strong> iOS and Android apps for full system control
+                    </div>
+                    <div class="faq__remote-item">
+                      <i class="fas fa-globe" aria-hidden="true"></i>
+                      <strong>Web Portal:</strong> Browser-based control from any device
+                    </div>
+                    <div class="faq__remote-item">
+                      <i class="fas fa-robot" aria-hidden="true"></i>
+                      <strong>Voice Control:</strong> Integration with Alexa, Google Home, and Siri
+                    </div>
+                    <div class="faq__remote-item">
+                      <i class="fas fa-bell" aria-hidden="true"></i>
+                      <strong>Notifications:</strong> Alerts for system issues and maintenance needs
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <!-- FAQ Contact CTA -->
+        <div class="faq__contact-cta">
+          <div class="faq__contact-content">
+            <h3>Still Have Questions?</h3>
+            <p>Our irrigation experts are here to help. Get personalized answers for your specific situation.</p>
+            <div class="faq__contact-buttons">
+              <a href="#contact" class="btn btn-primary btn--large">
+                <i class="fas fa-phone" aria-hidden="true"></i>
+                Call for Free Consultation
+              </a>
+              <a href="mailto:info@myriadgreen.co.za" class="btn btn-secondary btn--large">
+                <i class="fas fa-envelope" aria-hidden="true"></i>
+                Email Our Experts
+              </a>
             </div>
-          </details>
+          </div>
         </div>
       </div>
     </section>
@@ -2193,6 +2540,7 @@
   <script src="../js/booking-modal.js" defer></script>
   <script src="../js/weather-signal.js" defer></script>
   <script src="../js/weather-widget.js" defer></script>
+  <script src="../js/trends-widget.js" defer></script>
   
   <!-- Product Filter JavaScript -->
   <script>
@@ -2263,6 +2611,9 @@
       }, 3000);
     });
   </script>
+
+  <!-- FAQ Functionality -->
+  <script src="../js/faq.js"></script>
 
   <!-- JSON-LD Schema -->
   <script type="application/ld+json">
