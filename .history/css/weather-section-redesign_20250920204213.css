@@ -17,35 +17,12 @@
   right: 0;
   bottom: 0;
   background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="15" cy="15" r="3" fill="%23059669" opacity="0.6"/><circle cx="75" cy="25" r="2" fill="%232e7d32" opacity="0.4"/><circle cx="35" cy="65" r="1.5" fill="%23e2e8f0" opacity="0.5"/><circle cx="85" cy="85" r="2.5" fill="%23cbd5e1" opacity="0.3"/><circle cx="25" cy="85" r="1" fill="%23059669" opacity="0.4"/><circle cx="65" cy="45" r="1.8" fill="%232e7d32" opacity="0.5"/></svg>') repeat;
-  animation: float-dots 15s linear infinite;
-  z-index: 1;
-}
-
-.section--weather::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><circle cx="90" cy="20" r="1.5" fill="%23059669" opacity="0.3"/><circle cx="30" cy="40" r="2.5" fill="%232e7d32" opacity="0.4"/><circle cx="110" cy="80" r="1.8" fill="%23e2e8f0" opacity="0.2"/><circle cx="10" cy="90" r="2.2" fill="%23cbd5e1" opacity="0.3"/></svg>') repeat;
-  animation: float-dots-slow 22s linear infinite reverse;
-  z-index: 1;
+  animation: float-dots 20s linear infinite;
 }
 
 @keyframes float-dots {
-  0% { transform: translateY(0px) translateX(0px); }
-  25% { transform: translateY(-25px) translateX(5px); }
-  50% { transform: translateY(-50px) translateX(-3px); }
-  75% { transform: translateY(-75px) translateX(8px); }
-  100% { transform: translateY(-120px) translateX(10px); }
-}
-
-@keyframes float-dots-slow {
-  0% { transform: translateY(0px) translateX(0px) scale(1); }
-  30% { transform: translateY(-30px) translateX(-8px) scale(1.1); }
-  60% { transform: translateY(-60px) translateX(12px) scale(0.9); }
-  100% { transform: translateY(-100px) translateX(-15px) scale(1); }
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-100px); }
 }
 
 /* Weather Section Header */
@@ -98,9 +75,6 @@
   margin-bottom: 3rem;
   position: relative;
   z-index: 2;
-  /* Respect floating bars spacing */
-  padding-left: var(--fb-left, 0);
-  padding-right: var(--fb-right, 0);
 }
 
 /* Weather Cards */

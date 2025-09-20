@@ -98,9 +98,6 @@
   margin-bottom: 3rem;
   position: relative;
   z-index: 2;
-  /* Respect floating bars spacing */
-  padding-left: var(--fb-left, 0);
-  padding-right: var(--fb-right, 0);
 }
 
 /* Weather Cards */
