@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Checkout – Myriad Green</title>
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/checkout.css">
+  <link rel="stylesheet" href="css/checkout-form.css">
+  <link rel="stylesheet" href="css/components/buttons/terms-conditions-btn.css">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="/css/reset.css" />
+  <link rel="stylesheet" href="/css/theme.css" />
+  <link rel="stylesheet" href="/css/utilities.css" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/landinghero.css" />
+  <link rel="stylesheet" href="/css/servicesection.css" />
+  <link rel="stylesheet" href="/css/booking-modal.css" />
+  <link rel="stylesheet" href="/css/faq-section.css" />
+  <link rel="stylesheet" href="/css/testimonials.css" />
+  <link rel="stylesheet" href="/css/about-us-section.css" />
+  <link rel="stylesheet" href="/css/main-navigation.css" />
+  <link rel="stylesheet" href="/css/mobile-nav.css" />
+  <link rel="stylesheet" href="/css/footer.css" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/theme-toggle.css" />
+  <link rel="stylesheet" href="/css/components/buttons/book-now-button.css" />
+  <link rel="stylesheet" href="/css/components/buttons/social-bar.css" />
+  <link rel="stylesheet" href="/css/floating-bar-reopen-btn.css" />
+  <link rel="stylesheet" href="/css/contact-us-form.css">
+  <link rel="stylesheet" href="/css/mobile-tweaks.css" />
+  <link rel="stylesheet" href="/css/icon-strip-mobile.css" />
+  <link rel="stylesheet" href="/css/mobile-tap-feedback.css" />
+  <link rel="stylesheet" href="/css/mobile-scroll-icon-animate.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+  <link rel="stylesheet" href="/css/weather-widget.css">
+  <link rel="stylesheet" href="/css/cart-modal.css" />
+  <link rel="stylesheet" href="/css/checkout.css" />
+  <link rel="stylesheet" href="/css/shop-section.css" />
+</head>
+<body>
+  <main class="checkout-container modern-layout">
+    <h1 class="checkout-title">Checkout</h1>
+    <div class="checkout-sidebyside">
+      <section class="cart-summary card">
+        <h2 class="cart-summary-title">Your Items</h2>
+        <ul id="checkoutCartList" class="checkout-cart-list"></ul>
+        <p class="checkout-total">Total: R<span id="checkoutCartTotal">0.00</span></p>
+      </section>
+      <form id="checkoutForm" class="checkout-form card">
+        <fieldset>
+          <legend class="form-legend">Contact Details</legend>
+          <label for="clientName">Full Name</label>
+          <input type="text" id="clientName" name="clientName" required placeholder="Your Name" autocomplete="name" />
+
+          <label for="clientEmail">Email Address</label>
+          <input type="email" id="clientEmail" name="clientEmail" required placeholder="you@example.com" autocomplete="email" />
+
+          <label for="clientAddress">Address</label>
+          <input type="text" id="clientAddress" name="clientAddress" required placeholder="123 Main St, Suburb, City" autocomplete="street-address" />
+
+          <label for="clientPhone">Phone Number</label>
+          <input type="tel" id="clientPhone" name="clientPhone" required placeholder="021 000 0000" autocomplete="tel" />
+        </fieldset>
+        <div class="payment-actions">
+            <button id="submitOrderBtn" class="submit-order-btn" type="submit">Submit Order</button>
+        </div>
+        <!-- Extra info below submit button -->
+        <div class="checkout-extras">
+          <div class="tc-agreement">
+            <input type="checkbox" id="agreeTcs" name="agreeTcs" required>
+            <label for="agreeTcs">I agree to the <a href="/terms-and-conditions" target="_blank">Terms &amp; Conditions</a></label>
+          </div>
+          <div class="order-summary-box">
+            <h3>Order Summary</h3>
+            <p>Your selected items and total are shown on the left. Please review before submitting.</p>
+          </div>
+          <div class="help-section">
+            <h3>Need Help?</h3>
+            <p>Contact us at <a href="mailto:support@myriadgreen.co.za">support@myriadgreen.co.za</a> or call 021 000 0000.</p>
+          </div>
+          <div class="payment-methods">
+            <h3>We Accept</h3>
+            <ul class="payment-list">
+              <li><i class="fas fa-money-bill-wave payment-icon"></i><strong>Cash</strong></li>
+              <li><i class="fas fa-credit-card payment-icon"></i><strong>Card</strong></li>
+              <li><i class="fas fa-university payment-icon"></i><strong>Finance</strong></li>
+              <li><span class="payment-icon" style="font-weight:bold; font-size:1.2em;">X</span><strong>XRP</strong></li>
+              <li><i class="fab fa-ethereum payment-icon"></i><strong>ETH</strong></li>
+              <li><i class="fab fa-bitcoin payment-icon"></i><strong>BTC</strong></li>
+            </ul>
+            <div class="finance-note">
+              <small><strong>Finance</strong> is available for installations and large repairs only.</small>
+            </div>
+            </ul>
+          </div>
+          <div class="delivery-info">
+            <h3>Delivery &amp; Pickup</h3>
+            <p>Estimated delivery: 2-5 business days. Pickup available at our Cape Town location.</p>
+          </div>
+          <div class="trust-badge">
+            <img src="images/icons/trust.png" alt="Trusted Service" style="max-width:80px; height:auto; margin-top:0.5rem;">
+            <span>Trusted by 1000+ customers</span>
+          </div>
+          <div class="checkout-testimonial">
+            <blockquote>
+              <span class="testimonial-quote">“Myriad Green made my irrigation upgrade seamless and affordable. Highly recommended!”</span>
+              <span class="testimonial-author">– Sarah M., Pretoria East</span>
+            </blockquote>
+          </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+  <script src="js/site-init.js" defer></script>
+  <script src="js/checkout.js" defer></script>
+  <script src="js/purchase-update-rotate.js" defer></script>
+</body>
+</html>

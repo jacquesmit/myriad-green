@@ -1,0 +1,47 @@
+{
+  "name": "myriad-green",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js",
+    "scaffold:irrigation": "node scripts/scaffold-irrigation.js",
+    "scaffold:suburb-services": "node scripts/scaffold-suburb-services.js",
+    "retrofit:suburb-links": "node scripts/retrofit-suburb-index-links.js",
+    "retrofit:page-markers": "node scripts/retrofit-page-markers.js",
+    "retrofit:css": "node scripts/retrofit-css-links.js",
+    "retrofit:dedupe-cards": "node scripts/dedupe-product-cards.js",
+    "content:inject:irrigation": "node scripts/inject-irrigation-template.js",
+    "content:resolve:irrigation": "node scripts/resolve-irrigation-placeholders.js",
+    "content:apply": "node scripts/apply-page-copy-and-products.js",
+    "content:enforce": "node scripts/enforce-product-grid-count-generic.js",
+    "content:links": "node scripts/check-internal-links.js",
+    "content:report": "node scripts/report-content-coverage.js",
+    "content:skeletons": "node scripts/generate-mapping-skeletons.js",
+    "seo:sitemap": "node scripts/generate-sitemap.js",
+    "seo:canonicals:boreholes": "node scripts/enforce-vertical-canonicals.js boreholes",
+    "seo:canonicals:leak-detection": "node scripts/enforce-vertical-canonicals.js leak-detection",
+    "links:normalize:boreholes": "node scripts/normalize-vertical-service-links.js boreholes",
+    "links:normalize:leak-detection": "node scripts/normalize-vertical-service-links.js leak-detection"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@emailjs/browser": "^4.4.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "emailjs-com": "^3.2.0",
+    "express": "^5.1.0",
+    "firebase-admin": "^13.4.0",
+    "google-trends-api": "^4.9.2",
+    "googleapis": "^153.0.0",
+    "nodemailer": "^7.0.5",
+    "stripe": "^18.4.0",
+    "twilio": "^5.7.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
