@@ -24,6 +24,7 @@
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/main-navigation.css">
   <link rel="stylesheet" href="../css/irrigation-main-page.css">
+  <link rel="stylesheet" href="../css/weather-widget.css">
   <link rel="stylesheet" href="../css/gauteng-map-section.css">
   <link rel="stylesheet" href="../css/mobile-nav.css">
   <link rel="stylesheet" href="../css/navbar.css">
@@ -866,50 +867,265 @@
     </section>
 
     <!-- Why Choose Us Section -->
-    <section id="why-us" class="section section--why-us">
+    <section id="why-us" class="section section--why-us" aria-labelledby="why-us-title">
       <div class="container">
-        <h2 class="why__title">Why Choose Myriad Green for Irrigation</h2>
-        
-        <ul class="grid three why__list">
-          <li id="why-experience" class="why-card card card--elevated">
-            <div class="eyebrow">Experience</div>
-            <div class="icon-circle">
-              <i class="fas fa-trophy"></i>
-            </div>
-            <h3 class="card__title">15+ Years Gauteng Expertise</h3>
-            <p class="card__text">Deep understanding of local soil conditions, water restrictions, and climate patterns. We've installed over 800 irrigation systems across Johannesburg and Pretoria.</p>
-          </li>
+        <div class="section-header">
+          <div class="section-eyebrow">
+            <i class="fas fa-star" aria-hidden="true"></i>
+            Excellence & Trust
+          </div>
+          <h2 id="why-us-title" class="section-title">
+            Why Choose <span class="text-highlight">Myriad Green</span> for Irrigation
+          </h2>
+          <p class="section-lead">
+            With over 15 years of experience and 800+ successful installations across Gauteng, we're the trusted choice for professional irrigation solutions.
+          </p>
+        </div>
 
-          <li id="why-water-savings" class="why-card card card--elevated">
-            <div class="eyebrow">Efficiency</div>
-            <div class="icon-circle">
-              <i class="fas fa-tint"></i>
+        <div class="why-us-grid">
+          <!-- Experience Card -->
+          <div class="why-us-card">
+            <div class="card-icon">
+              <div class="icon-background">
+                <i class="fas fa-trophy"></i>
+              </div>
             </div>
-            <h3 class="card__title">Proven Water Savings</h3>
-            <p class="card__text">Our smart systems typically reduce water usage by 30-50% while improving landscape health through rain sensors and weather-based scheduling.</p>
-          </li>
+            <div class="card-content">
+              <div class="card-eyebrow">Experience</div>
+              <h3 class="card-title">15+ Years Gauteng Expertise</h3>
+              <p class="card-description">
+                Deep understanding of local soil conditions, water restrictions, and climate patterns. We've installed over 800 irrigation systems across Johannesburg and Pretoria.
+              </p>
+              <div class="card-stats">
+                <div class="stat-item">
+                  <span class="stat-number">800+</span>
+                  <span class="stat-label">Installations</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number">15+</span>
+                  <span class="stat-label">Years</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
-          <li id="why-local" class="why-card card card--elevated">
-            <div class="eyebrow">Support</div>
-            <div class="icon-circle">
-              <i class="fas fa-tools"></i>
+          <!-- Water Savings Card -->
+          <div class="why-us-card">
+            <div class="card-icon">
+              <div class="icon-background">
+                <i class="fas fa-tint"></i>
+              </div>
             </div>
-            <h3 class="card__title">Local Support Network</h3>
-            <p class="card__text">Gauteng-based team provides rapid response for repairs and seasonal adjustments with quarterly tune-ups and priority service.</p>
-          </li>
-        </ul>
+            <div class="card-content">
+              <div class="card-eyebrow">Efficiency</div>
+              <h3 class="card-title">Proven Water Savings</h3>
+              <p class="card-description">
+                Our smart systems typically reduce water usage by 30-50% while improving landscape health through rain sensors and weather-based scheduling.
+              </p>
+              <div class="card-stats">
+                <div class="stat-item">
+                  <span class="stat-number">30-50%</span>
+                  <span class="stat-label">Water Savings</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number">Smart</span>
+                  <span class="stat-label">Technology</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Local Support Card -->
+          <div class="why-us-card">
+            <div class="card-icon">
+              <div class="icon-background">
+                <i class="fas fa-tools"></i>
+              </div>
+            </div>
+            <div class="card-content">
+              <div class="card-eyebrow">Support</div>
+              <h3 class="card-title">Local Support Network</h3>
+              <p class="card-description">
+                Gauteng-based team provides rapid response for repairs and seasonal adjustments with quarterly tune-ups and priority service.
+              </p>
+              <div class="card-stats">
+                <div class="stat-item">
+                  <span class="stat-number">24/7</span>
+                  <span class="stat-label">Support</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number">Local</span>
+                  <span class="stat-label">Team</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trust Indicators -->
+        <div class="trust-indicators">
+          <div class="trust-item">
+            <i class="fas fa-shield-alt"></i>
+            <span>Fully Insured</span>
+          </div>
+          <div class="trust-item">
+            <i class="fas fa-certificate"></i>
+            <span>Certified Installers</span>
+          </div>
+          <div class="trust-item">
+            <i class="fas fa-handshake"></i>
+            <span>5-Year Warranty</span>
+          </div>
+          <div class="trust-item">
+            <i class="fas fa-thumbs-up"></i>
+            <span>98% Satisfaction</span>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- Weather Widget Section -->
     <section id="weather" class="section section--weather" aria-labelledby="weather-title">
       <div class="container">
-        <h2 id="weather-title" class="weather__title">Today's Weather</h2>
-        <div id="weather-widget" class="weather__mount"
-             data-lat="-26.2041" 
-             data-lon="28.0473" 
-             data-city="Johannesburg" 
-             data-units="metric"></div>
+        <div class="section-header">
+          <div class="section-eyebrow">
+            <i class="fas fa-cloud-sun" aria-hidden="true"></i>
+            Local Weather Data
+          </div>
+          <h2 id="weather-title" class="section-title">
+            Today's <span class="text-highlight">Weather</span> Conditions
+          </h2>
+          <p class="section-lead">
+            Real-time weather data for Johannesburg helps us optimize your irrigation schedule and water usage based on current conditions.
+          </p>
+        </div>
+
+        <div class="weather-container">
+          <div class="weather-widget-wrapper">
+            <!-- Enhanced Weather Widget -->
+            <div class="enhanced-weather-widget">
+              <div class="weather-header">
+                <div class="weather-location">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <span>Johannesburg, Gauteng</span>
+                </div>
+                <div class="weather-time">
+                  <i class="fas fa-clock"></i>
+                  <span id="current-time">Loading...</span>
+                </div>
+              </div>
+
+              <div class="weather-main">
+                <div class="weather-current">
+                  <div class="weather-icon-container">
+                    <div id="weather-icon" class="weather-icon">
+                      <i class="fas fa-sun"></i>
+                    </div>
+                  </div>
+                  <div class="weather-temp-info">
+                    <div id="current-temp" class="current-temperature">--°C</div>
+                    <div id="weather-description" class="weather-description">Loading...</div>
+                    <div id="feels-like" class="feels-like">Feels like --°C</div>
+                  </div>
+                </div>
+
+                <div class="weather-details">
+                  <div class="detail-item">
+                    <i class="fas fa-eye"></i>
+                    <span class="detail-label">Visibility</span>
+                    <span id="visibility" class="detail-value">-- km</span>
+                  </div>
+                  <div class="detail-item">
+                    <i class="fas fa-tint"></i>
+                    <span class="detail-label">Humidity</span>
+                    <span id="humidity" class="detail-value">--%</span>
+                  </div>
+                  <div class="detail-item">
+                    <i class="fas fa-wind"></i>
+                    <span class="detail-label">Wind</span>
+                    <span id="wind-speed" class="detail-value">-- km/h</span>
+                  </div>
+                  <div class="detail-item">
+                    <i class="fas fa-thermometer-half"></i>
+                    <span class="detail-label">Pressure</span>
+                    <span id="pressure" class="detail-value">-- hPa</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="irrigation-advice">
+                <div class="advice-header">
+                  <i class="fas fa-lightbulb"></i>
+                  <span>Smart Irrigation Advice</span>
+                </div>
+                <div id="irrigation-recommendation" class="advice-content">
+                  <div class="advice-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Analyzing weather conditions...</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="weather-footer">
+                <div class="last-updated">
+                  <i class="fas fa-sync-alt"></i>
+                  <span id="last-updated">Last updated: --</span>
+                </div>
+                <button id="refresh-weather" class="refresh-btn">
+                  <i class="fas fa-redo"></i>
+                  Refresh
+                </button>
+              </div>
+            </div>
+
+            <!-- Hidden data for core weather widget -->
+            <div
+              id="weather-widget"
+              class="weather-widget hidden"
+              data-suburb="Johannesburg"
+              data-country="ZA"
+              data-units="metric"
+              data-cache-mins="120"
+              data-stale-mins="240"
+              data-theme="green"
+              data-tone="elevated"
+              data-icon="#16a34a"
+            ></div>
+          </div>
+          
+          <div class="weather-info">
+            <div class="weather-benefits">
+              <h3 class="benefits-title">Smart Weather Integration</h3>
+              <ul class="benefits-list">
+                <li>
+                  <i class="fas fa-brain"></i>
+                  <span>Automatic rain delay when precipitation detected</span>
+                </li>
+                <li>
+                  <i class="fas fa-thermometer-half"></i>
+                  <span>Temperature-based watering adjustments</span>
+                </li>
+                <li>
+                  <i class="fas fa-wind"></i>
+                  <span>Wind speed compensation for spray systems</span>
+                </li>
+                <li>
+                  <i class="fas fa-tint"></i>
+                  <span>Humidity-aware scheduling optimization</span>
+                </li>
+              </ul>
+            </div>
+            
+            <div class="weather-cta">
+              <h4 class="cta-subtitle">Weather-Smart Irrigation</h4>
+              <p class="cta-description">Our systems automatically adjust based on real-time weather data, saving water and protecting your landscape.</p>
+              <button class="btn btn-primary book-now" data-service="Smart Weather Integration">
+                <i class="fas fa-calendar-plus"></i>
+                Schedule Weather Assessment
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1170,6 +1386,8 @@
   <!-- Scripts -->
   <script src="../js/site-init.js" defer></script>
   <script src="../js/booking-modal.js" defer></script>
+  <script src="../js/weather-signal.js" defer></script>
+  <script src="../js/weather-widget.js" defer></script>
   
   <!-- Product Filter JavaScript -->
   <script>

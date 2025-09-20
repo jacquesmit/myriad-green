@@ -357,6 +357,10 @@
     weatherCache[cacheKey] = {
       conditions,
       tempC: Number.isFinite(tempC) ? Math.round(tempC) : null,
+      feelsLikeC: current?.feelsLikeC || tempC,
+      humidity: current?.humidity || 0,
+      pressure: current?.pressure || 0,
+      visibility: current?.visibility || 0,
       windKph,
       precipProb,
       drought: false
@@ -386,6 +390,151 @@
       else heroH1.textContent = h1;
       heroH1.setAttribute('aria-live', 'polite');
       heroH1.setAttribute('tabindex', '0');
+    }
+  }
+
+  // Update enhanced weather widget
+  function updateEnhancedWidget(el, suburb, w, headline) {
+    const enhancedWidget = el.querySelector('.enhanced-weather-widget');
+    if (!enhancedWidget) return;
+
+    // Update location
+    const locationEl = enhancedWidget.querySelector('.weather-location span:last-child');
+    if (locationEl) locationEl.textContent = suburb;
+
+    // Update time
+    const timeEl = enhancedWidget.querySelector('.weather-time span:last-child');
+    if (timeEl) timeEl.textContent = new Date().toLocaleTimeString();
+
+    // Update weather icon
+    const iconEl = enhancedWidget.querySelector('.weather-icon i');
+    if (iconEl) {
+      const iconClass = getWeatherIconClass(w.conditions, w.tempC);
+      iconEl.className = iconClass;
+    }
+
+    // Update temperature
+    const tempEl = enhancedWidget.querySelector('.current-temperature');
+    if (tempEl) tempEl.textContent = Number.isFinite(w.tempC) ? `${w.tempC}°` : '--°';
+
+    // Update description
+    const descEl = enhancedWidget.querySelector('.weather-description');
+    if (descEl) descEl.textContent = w.conditions || 'Unknown';
+
+    // Update feels like
+    const feelsLikeEl = enhancedWidget.querySelector('.feels-like');
+    if (feelsLikeEl) {
+      const feelsLike = w.feelsLikeC || w.tempC;
+      feelsLikeEl.textContent = `Feels like ${feelsLike}°`;
+    }
+
+    // Update detail values
+    const humidityEl = enhancedWidget.querySelector('[data-detail="humidity"] .detail-value');
+    if (humidityEl) humidityEl.textContent = `${w.humidity || 0}%`;
+
+    const windEl = enhancedWidget.querySelector('[data-detail="wind"] .detail-value');
+    if (windEl) windEl.textContent = `${w.windKph || 0} km/h`;
+
+    const pressureEl = enhancedWidget.querySelector('[data-detail="pressure"] .detail-value');
+    if (pressureEl) pressureEl.textContent = `${w.pressure || 0} hPa`;
+
+    const visibilityEl = enhancedWidget.querySelector('[data-detail="visibility"] .detail-value');
+    if (visibilityEl) visibilityEl.textContent = `${w.visibility || 0} km`;
+
+    // Update irrigation advice
+    const adviceContent = enhancedWidget.querySelector('.advice-content');
+    if (adviceContent) {
+      const advice = generateIrrigationAdvice(w, suburb);
+      adviceContent.innerHTML = advice.map(item => 
+        `<div class="advice-item"><i class="fas fa-droplet"></i><span>${item}</span></div>`
+      ).join('');
+    }
+
+    // Update last updated time
+    const lastUpdatedEl = enhancedWidget.querySelector('.last-updated span:last-child');
+    if (lastUpdatedEl) lastUpdatedEl.textContent = 'Just now';
+
+    // Add refresh functionality
+    const refreshBtn = enhancedWidget.querySelector('.refresh-btn');
+    if (refreshBtn) {
+      refreshBtn.onclick = () => refreshWeatherData(el, suburb);
+    }
+  }
+
+  // Get FontAwesome icon class for weather conditions
+  function getWeatherIconClass(conditions, temp) {
+    const c = (conditions || '').toLowerCase();
+    if (c.includes('sun') || c.includes('clear')) return 'fas fa-sun';
+    if (c.includes('cloud')) return 'fas fa-cloud';
+    if (c.includes('rain')) return 'fas fa-cloud-rain';
+    if (c.includes('storm') || c.includes('thunder')) return 'fas fa-bolt';
+    if (c.includes('snow')) return 'fas fa-snowflake';
+    if (c.includes('wind')) return 'fas fa-wind';
+    if (c.includes('fog') || c.includes('mist')) return 'fas fa-smog';
+    return 'fas fa-cloud-sun'; // default
+  }
+
+  // Generate irrigation advice based on weather
+  function generateIrrigationAdvice(w, suburb) {
+    const advice = [];
+    const temp = w.tempC || 0;
+    const conditions = (w.conditions || '').toLowerCase();
+    const humidity = w.humidity || 0;
+    const wind = w.windKph || 0;
+
+    if (temp > 30) {
+      advice.push('Water early morning (5-7 AM) to reduce evaporation');
+      advice.push('Increase watering frequency for stressed plants');
+    } else if (temp < 15) {
+      advice.push('Reduce watering frequency in cool weather');
+      advice.push('Water during warmest part of the day');
+    }
+
+    if (conditions.includes('rain')) {
+      advice.push('Skip scheduled watering after heavy rain');
+      advice.push('Check soil moisture before next watering cycle');
+    } else if (humidity < 30) {
+      advice.push('Low humidity increases water needs');
+      advice.push('Consider mulching to retain soil moisture');
+    }
+
+    if (wind > 20) {
+      advice.push('Windy conditions increase evaporation rates');
+      advice.push('Use drip irrigation to minimize wind interference');
+    }
+
+    if (advice.length === 0) {
+      advice.push('Maintain regular watering schedule');
+      advice.push('Check soil moisture levels regularly');
+    }
+
+    return advice;
+  }
+
+  // Refresh weather data
+  async function refreshWeatherData(el, suburb) {
+    const refreshBtn = el.querySelector('.refresh-btn');
+    const enhancedWidget = el.querySelector('.enhanced-weather-widget');
+    
+    if (refreshBtn) refreshBtn.disabled = true;
+    if (enhancedWidget) enhancedWidget.classList.add('weather-loading');
+
+    try {
+      // Clear cache for this location
+      const cacheKey = `${suburb}|ZA|metric`;
+      delete weatherCache[cacheKey];
+      
+      // Fetch fresh data
+      const w = await fetchWeather(suburb, 'ZA', 'metric');
+      const headline = generateBlendedHeadline({suburb, w, service: 'Irrigation'});
+      
+      updateEnhancedWidget(el, suburb, w, headline);
+      
+    } catch (error) {
+      console.error('Failed to refresh weather:', error);
+    } finally {
+      if (refreshBtn) refreshBtn.disabled = false;
+      if (enhancedWidget) enhancedWidget.classList.remove('weather-loading');
     }
   }
 
@@ -529,6 +678,10 @@
       const headline = { h1: headlineHTML, intro: '' };
       updateHero(headline.h1, headline.intro, true); // pass true for HTML injection
       renderWidget(el, suburb, w, headline, theme);
+      
+      // Update enhanced widget if present
+      updateEnhancedWidget(el, suburb, w, headline);
+      
       applyVisuals();
       updateMetaTags(headline, suburb, service, w);
     } catch (err) {
