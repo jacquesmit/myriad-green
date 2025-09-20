@@ -1524,14 +1524,283 @@ section[id] {
   opacity: .9; 
 }
 
-/* Trends Widget (optional) */
+/* ============================================================================
+   ENHANCED TRENDS SECTION
+   ============================================================================ */
+
+.section--trends {
+  padding: 5rem 0;
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f1f5f9 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.section--trends::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 70%, rgba(45, 122, 45, 0.03) 0%, transparent 50%),
+              radial-gradient(circle at 70% 30%, rgba(45, 122, 45, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Trends Header */
+.trends__header {
+  text-align: center;
+  margin-bottom: 4rem;
+  position: relative;
+  z-index: 1;
+}
+
+.trends__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #059669;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(5, 150, 105, 0.1);
+  border-radius: 20px;
+}
+
+.trends__eyebrow i {
+  color: #059669;
+}
+
+.trends__title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.trends__subtitle {
+  font-size: 1.125rem;
+  color: #64748b;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Trends Content Layout */
+.trends__content {
+  display: grid;
+  gap: 3rem;
+  margin-bottom: 4rem;
+}
+
+.trends__widget-container {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(45, 122, 45, 0.1);
+}
+
+.trends__widget-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.trends__widget-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.trends__widget-description {
+  color: #64748b;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* Enhanced Trends Widget */
 .section--trends #trends-widget,
-.section--trends .trends__mount { 
-  min-height: 380px; 
-  border-radius: var(--radius); 
-  overflow: hidden; 
-  border: 1px solid var(--color-border, #e5e7eb); 
-  box-shadow: var(--shadow); 
+.section--trends .trends__mount {
+  min-height: 400px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(45, 122, 45, 0.15);
+  box-shadow: 0 8px 32px rgba(45, 122, 45, 0.1);
+  background: white;
+}
+
+/* Hidden Trends Widget - For Internal Use Only */
+.trends__widget-container--hidden {
+  display: none !important;
+  visibility: hidden;
+}
+
+/* Trends Insights */
+.trends__insights {
+  margin-top: 2rem;
+}
+
+.insights__grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.insight-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(45, 122, 45, 0.1);
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.insight-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(45, 122, 45, 0.15);
+  border-color: rgba(45, 122, 45, 0.2);
+}
+
+.insight-card__icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.insight-card--primary .insight-card__icon {
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: white;
+}
+
+.insight-card--secondary .insight-card__icon {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+}
+
+.insight-card--tertiary .insight-card__icon {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+}
+
+.insight-card__content {
+  flex: 1;
+}
+
+.insight-card__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+.insight-card__text {
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Trends CTA */
+.trends__cta {
+  margin-top: 4rem;
+}
+
+.cta-card {
+  background: linear-gradient(135deg, #2d7a2d, #1e5e1e);
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  text-align: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="10" cy="50" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="30" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  opacity: 0.3;
+}
+
+.cta-card__title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: white;
+  position: relative;
+  z-index: 1;
+}
+
+.cta-card__text {
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+
+.trends__cta-button {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.trends__cta-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .trends__content {
+    gap: 2rem;
+  }
+
+  .insights__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .insight-card {
+    padding: 1.5rem;
+  }
+
+  .cta-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .cta-card__title {
+    font-size: 1.5rem;
+  }
 }
 
 /* Accessibility & Reduced Motion */

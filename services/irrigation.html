@@ -1771,10 +1771,87 @@
     <!-- Google Trends Section -->
     <section id="trends" class="section section--trends" aria-labelledby="trends-title">
       <div class="container">
-        <h2 id="trends-title" class="trends__title">What people search (Gauteng)</h2>
-        <div id="trends-widget" class="trends__mount"
-             data-geo="ZA-GT" 
-             data-queries='["irrigation","water tank","borehole"]'></div>
+        <header class="trends__header">
+          <div class="trends__eyebrow">
+            <i class="fas fa-chart-line" aria-hidden="true"></i>
+            Market Insights
+          </div>
+          <h2 id="trends-title" class="trends__title">
+            Gauteng Irrigation Trends & Demand
+          </h2>
+          <p class="trends__subtitle">
+            Real-time search data shows growing interest in water-efficient solutions across Johannesburg and Pretoria
+          </p>
+        </header>
+
+        <div class="trends__content">
+          <!-- Google Trends Widget - Hidden from Competitors -->
+          <div class="trends__widget-container trends__widget-container--hidden" aria-hidden="true">
+            <div class="trends__widget-header">
+              <h3 class="trends__widget-title">Search Interest Over Time</h3>
+              <p class="trends__widget-description">Google searches for irrigation-related terms in Gauteng (ZA-GT)</p>
+            </div>
+            <div id="trends-widget" class="trends__mount"
+                 data-geo="ZA-GT"
+                 data-queries='["irrigation","water tank","borehole","drip irrigation","smart irrigation","rainbird","hunter irrigation","wifi sprinkler controller","automatic irrigation","garden irrigation system","sprinkler repair","irrigation installation","borehole drilling","water pump","grey water system"]'></div>
+          </div>
+
+          <!-- Trends Insights -->
+          <div class="trends__insights">
+            <div class="insights__grid">
+              <div class="insight-card insight-card--primary">
+                <div class="insight-card__icon">
+                  <i class="fas fa-water" aria-hidden="true"></i>
+                </div>
+                <div class="insight-card__content">
+                  <h4 class="insight-card__title">Water Conservation Focus</h4>
+                  <p class="insight-card__text">
+                    Rising search interest in "smart irrigation" and "drip irrigation" reflects Gauteng's growing awareness of water-efficient technologies during municipal restrictions.
+                  </p>
+                </div>
+              </div>
+
+              <div class="insight-card insight-card--secondary">
+                <div class="insight-card__icon">
+                  <i class="fas fa-home" aria-hidden="true"></i>
+                </div>
+                <div class="insight-card__content">
+                  <h4 class="insight-card__title">Residential Demand</h4>
+                  <p class="insight-card__text">
+                    Homeowners in suburbs like Sandton and Waterkloof are increasingly searching for professional irrigation solutions to maintain beautiful gardens with less water.
+                  </p>
+                </div>
+              </div>
+
+              <div class="insight-card insight-card--tertiary">
+                <div class="insight-card__icon">
+                  <i class="fas fa-industry" aria-hidden="true"></i>
+                </div>
+                <div class="insight-card__content">
+                  <h4 class="insight-card__title">Commercial Interest</h4>
+                  <p class="insight-card__text">
+                    Businesses and estates are seeking advanced irrigation systems to reduce operational costs while complying with Johannesburg's water bylaws.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trends CTA -->
+        <div class="trends__cta">
+          <div class="cta-card">
+            <h3 class="cta-card__title">Stay Ahead of the Curve</h3>
+            <p class="cta-card__text">
+              Join the growing number of Gauteng property owners embracing smart irrigation technology.
+              Get expert advice on the latest water-efficient solutions.
+            </p>
+            <button class="btn btn-primary btn--large trends__cta-button" data-service="Trend Consultation">
+              <span>Get Expert Advice</span>
+              <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
       </div>
     </section>
 
