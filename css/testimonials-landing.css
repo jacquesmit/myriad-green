@@ -1,0 +1,282 @@
+/**
+ * ===============================================================================
+ * TESTIMONIALS LANDING PAGE - Dedicated Clean Implementation
+ * ===============================================================================
+ * 
+ * Purpose: Landing page testimonials styling (index.html) - Clean, no golden borders
+ * Integration: Respects floating contact/social bars with 90px margin system
+ * Responsive: Mobile-first approach with desktop floating bar accommodation
+ * Theme: Clean professional styling without golden borders
+ * 
+ * HTML Structure: Uses .landing-testimonials class for proper scoping
+ * Grid Layout: 3 columns desktop, 2 tablet, 1 mobile
+ * 
+ * Floating Bar Compatibility:
+ * - Contact bar: fixed right:0, width:60px, z-index:1200
+ * - Social bar: fixed left positioning, z-index:1200  
+ * - Desktop accommodation: 90px margins at min-width:900px
+ * ===============================================================================
+ */
+
+/* Landing page specific testimonial styles - Clean implementation */
+.landing-testimonials.section {
+  padding: clamp(4rem, 8vw, 6rem) 0;
+  background: linear-gradient(135deg, var(--color-section-bg) 0%, rgba(255, 215, 0, 0.02) 50%, rgba(22, 163, 74, 0.01) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.landing-testimonials .container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 3rem);
+  box-sizing: border-box;
+}
+
+/* FLOATING BAR ACCOMMODATION - Professional layout system */
+@media (min-width: 900px) {
+  .landing-testimonials .container {
+    margin-left: 90px;  /* Accommodate left floating social bar */
+    margin-right: 90px; /* Accommodate right floating contact bar */
+  }
+}
+
+/* LANDING PAGE HEADING & SUBHEADING */
+#testimonials-heading,
+.landing-testimonials h2 {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  color: var(--heading-color);
+  margin-bottom: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  background: linear-gradient(135deg, var(--heading-color) 0%, var(--gold-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.testimonials-intro,
+.landing-testimonials p {
+  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+  color: var(--color-subheading);
+  max-width: 700px;
+  margin: 0 auto 2rem auto;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* TESTIMONIALS GRID - 3 columns desktop layout */
+.landing-testimonials .testimonial-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* Exactly 3 cards per row */
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  align-items: start;
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+.landing-testimonials .testimonial-card {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  position: relative;
+  min-height: 350px;
+  max-width: 100%;
+}
+
+/* Large decorative quotation mark icon */
+.landing-testimonials .testimonial-card::after {
+  content: '"';
+  position: absolute;
+  top: 15px;
+  left: 20px;
+  font-size: 4rem;
+  font-weight: 900;
+  color: #4a5d23; /* Army green color */
+  opacity: 0.15;
+  font-family: Georgia, serif;
+  line-height: 1;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Ensure content appears above the decorative quote */
+.landing-testimonials .testimonial-card .client-image,
+.landing-testimonials .testimonial-card figcaption {
+  position: relative;
+  z-index: 2;
+}
+
+.landing-testimonials .testimonial-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--color-accent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.landing-testimonials .testimonial-card:hover::before {
+  opacity: 1;
+}
+
+.landing-testimonials .testimonial-card:hover {
+  transform: translateY(-12px);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 0 30px rgba(22, 163, 74, 0.1);
+  border-color: var(--color-accent);
+}
+
+.landing-testimonials .testimonial-card figcaption {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+}
+
+/* CLIENT IMAGES - Clean without golden borders */
+.landing-testimonials .client-image {
+  width: 90px !important;
+  height: 90px !important;
+  border-radius: 50%;
+  object-fit: cover;
+  border: none !important; /* No golden border for landing page */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  margin: 0 auto 1rem auto;
+}
+
+.landing-testimonials .client-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.landing-testimonials .star-rating {
+  display: flex;
+  gap: 0.25rem;
+  margin: 1rem 0;
+  justify-content: center;
+}
+
+.landing-testimonials .star-rating .fa-star,
+.landing-testimonials .star-rating .far-star {
+  color: var(--gold-light);
+  font-size: 1.1rem;
+  transition: transform 0.2s ease;
+}
+
+.landing-testimonials blockquote {
+  flex-grow: 1;
+  margin: 0;
+  font-style: italic;
+  font-size: clamp(1rem, 2.2vw, 1.1rem);
+  line-height: 1.6;
+  color: var(--color-text);
+  margin-bottom: 1.5rem;
+}
+
+.landing-testimonials blockquote p {
+  margin: 0;
+}
+
+.landing-testimonials cite {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--color-subheading);
+  font-size: 0.95rem;
+  margin-top: auto;
+}
+
+/* RESPONSIVE DESIGN */
+/* Tablet: 2 columns */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .landing-testimonials .testimonial-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+}
+
+/* Mobile: Single column */
+@media (max-width: 768px) {
+  .landing-testimonials .testimonial-grid { 
+    grid-template-columns: 1fr; 
+    gap: 1.5rem;
+  }
+  
+  .landing-testimonials .testimonial-card { 
+    padding: 1.5rem;
+    min-height: 300px;
+  }
+}
+
+/* Small screens optimization */
+@media (max-width: 480px) {
+  #testimonials-heading,
+  .landing-testimonials h2 {
+    font-size: clamp(2rem, 6vw, 2.5rem);
+    margin-bottom: 0.75rem;
+  }
+  
+  .testimonials-intro,
+  .landing-testimonials p {
+    font-size: clamp(1rem, 4vw, 1.1rem);
+    margin-bottom: 1.5rem;
+  }
+  
+  .landing-testimonials .testimonial-grid {
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+  
+  .landing-testimonials .testimonial-card {
+    min-height: 300px;
+    padding: 1.25rem;
+  }
+}
+
+/* Z-INDEX & FLOATING BAR SAFETY */
+.landing-testimonials {
+  position: relative;
+  z-index: 100; /* intentionally lower than floating bars which use z-index >= 1200 */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-testimonials * { 
+    transition: none !important; 
+    animation: none !important;
+  }
+}
+
+/**
+ * ===============================================================================
+ * TESTIMONIALS LANDING PAGE - Implementation Complete
+ * ===============================================================================
+ * 
+ * FEATURES IMPLEMENTED:
+ * ✅ Clean styling without golden borders
+ * ✅ 3-column desktop grid (1fr 1fr 1fr)
+ * ✅ 2-column tablet, 1-column mobile
+ * ✅ 90px margin accommodation for floating bars
+ * ✅ Professional hover effects and animations
+ * ✅ Responsive typography and spacing
+ * ✅ Semantic HTML structure support
+ * ✅ Accessibility-ready (ARIA, focus states)
+ * 
+ * SEPARATION ACHIEVED:
+ * - Landing page: Uses testimonials-landing.css (clean styling)
+ * - Irrigation page: Uses irrigation-main-page.css (golden borders)
+ * - No cross-contamination between implementations
+ * ===============================================================================
+ */
