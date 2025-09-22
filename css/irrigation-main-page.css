@@ -1355,18 +1355,35 @@ section[id] {
 
 .section--testimonials .t-card,
 .section--testimonials .testimonial-card {
-  background: var(--color-surface, #fff);
+  background: var(--color-card-bg, #fff);
   border: 1px solid var(--color-border, #e5e7eb);
   border-radius: var(--radius);
   padding: 1rem;
   box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
 }
+
+/* No decorative quotes for irrigation testimonials - clean professional styling */
+
+/* Ensure proper content positioning */
 
 .section--testimonials .t-card blockquote,
 .section--testimonials .testimonial-card__quote { 
-  margin: 0 0 0.5rem 0; 
+  margin: 0 0 1.5rem 0; 
   font-style: italic; 
   color: var(--color-text, #111);
+  font-size: clamp(1rem, 2.2vw, 1.1rem);
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+/* Hero testimonial quote styling */
+.section--testimonials .testimonial-card__quote--hero {
+  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  font-weight: 500;
 }
 
 .section--testimonials .t-card cite,
@@ -1374,9 +1391,565 @@ section[id] {
   font-style: normal;
   font-weight: 600;
   color: var(--color-text-muted, #666);
+  font-size: clamp(0.9rem, 2vw, 1rem);
 }
 
-/* FAQ */
+/* Enhanced typography for testimonial components */
+.section--testimonials .client-name {
+  font-weight: 700;
+  color: var(--color-text, #111);
+  font-size: clamp(0.95rem, 2vw, 1.05rem);
+  margin-bottom: 0.25rem;
+}
+
+.section--testimonials .client-name--large {
+  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+  margin-bottom: 0.5rem;
+}
+
+.section--testimonials .client-location,
+.section--testimonials .client-title {
+  color: var(--color-text-muted, #666);
+  font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Star rating enhancement */
+.section--testimonials .star-rating {
+  display: flex;
+  gap: 0.3rem;
+  margin: 1rem 0;
+  align-items: center;
+}
+
+.section--testimonials .star-rating .fas.fa-star {
+  color: var(--gold-light, #fbbf24);
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.section--testimonials .star-rating--large .fas.fa-star {
+  font-size: clamp(1.1rem, 2.2vw, 1.2rem);
+}
+
+/* Testimonial badges styling - Premium gradients for all irrigation testimonials */
+.section--testimonials .testimonial-badge,
+.section--testimonials .testimonial-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #d97706, #f59e0b, #fbbf24);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+  font-weight: 600;
+  margin-top: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Premium shimmer effect for all badges */
+.section--testimonials .testimonial-badge::before,
+.section--testimonials .testimonial-hero-badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.section--testimonials .testimonial-card:hover .testimonial-badge::before,
+.section--testimonials .testimonial-card:hover .testimonial-hero-badge::before {
+  left: 100%;
+}
+
+.section--testimonials .testimonial-hero-badge {
+  background: linear-gradient(135deg, var(--gold-dark, #f59e0b), var(--gold-light, #fbbf24));
+  padding: 0.75rem 1.5rem;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+}
+
+/* Section header typography */
+.section--testimonials .testimonials__title {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  color: var(--color-text, #111827);
+}
+
+.section--testimonials .section-lead {
+  font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  max-width: 700px;
+  margin: 0 auto 3rem auto;
+  text-align: center;
+}
+
+/* IRRIGATION PAGE SPECIFIC - Premium Testimonials with Golden Client Images */
+/* Remove incorrect floating bar accommodation - already handled by site-wide system */
+
+/* Irrigation testimonials layout */
+.section--testimonials .testimonials__layout {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3rem, 6vw, 4rem);
+}
+
+/* Featured testimonial - hero card */
+.section--testimonials .testimonial-featured {
+  width: 100%;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.section--testimonials .testimonial-card--hero {
+  background: var(--color-card-bg, #fff);
+  border: 2px solid var(--color-border, #e5e7eb);
+  border-radius: 20px;
+  padding: clamp(2rem, 4vw, 3rem);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Creative grid layout for regular testimonials */
+.section--testimonials .testimonials__creative-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: clamp(1.5rem, 3vw, 2rem);
+  align-items: start;
+}
+
+/* Individual testimonial columns */
+.section--testimonials .testimonials__column {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2rem);
+}
+
+/* Compact testimonial cards */
+.section--testimonials .testimonial-card--compact {
+  background: var(--color-card-bg, #fff);
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 16px;
+  padding: clamp(1.5rem, 3vw, 2rem);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 250px;
+}
+
+.section--testimonials .testimonial-card--compact:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+  border-color: var(--color-accent, #16a34a);
+}
+
+/* ENGINEERING BRILLIANCE - Advanced Offset Variations for Center Column */
+
+/* Option 1: Dynamic Wave Offset (Active) */
+.section--testimonials .testimonial-card--offset {
+  margin-top: clamp(0.5rem, 1.5vw, 1rem);
+  transform: rotate(-1deg);
+  position: relative;
+  z-index: 3;
+}
+
+.section--testimonials .testimonial-card--offset::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.05));
+  border-radius: 20px;
+  z-index: -1;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: blur(1px);
+}
+
+.section--testimonials .testimonial-card--offset:hover::before {
+  opacity: 1;
+  transform: scale(1.02);
+}
+
+.section--testimonials .testimonial-card--offset:hover {
+  transform: rotate(0deg) translateY(-12px);
+  z-index: 10;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 0 0 2px rgba(251, 191, 36, 0.2),
+    0 0 30px rgba(251, 191, 36, 0.1);
+}
+
+/* Option 2: Floating Card Effect (Commented Alternative) */
+/*
+.section--testimonials .testimonial-card--offset {
+  margin-top: clamp(1.5rem, 3vw, 2.5rem);
+  transform: translateY(0px);
+  animation: float 6s ease-in-out infinite;
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(251, 191, 36, 0.1);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+*/
+
+/* Option 3: Spotlight Effect (Commented Alternative) */
+/*
+.section--testimonials .testimonial-card--offset {
+  margin-top: clamp(1.5rem, 3vw, 2.5rem);
+  position: relative;
+  overflow: visible;
+}
+
+.section--testimonials .testimonial-card--offset::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: -1;
+}
+
+.section--testimonials .testimonial-card--offset:hover::after {
+  opacity: 1;
+}
+*/
+
+/* Option 4: All badges now have premium treatment - no special offset styling needed */
+
+/* Option 5: Morphing Effect (Commented Alternative) */
+/*
+.section--testimonials .testimonial-card--offset {
+  margin-top: clamp(1.5rem, 3vw, 2.5rem);
+  border-radius: 16px;
+  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.section--testimonials .testimonial-card--offset:hover {
+  border-radius: 25px;
+  transform: scale(1.02) rotate(1deg);
+}
+*/
+
+/* Responsive layout adjustments with engineering brilliance */
+@media (max-width: 1024px) {
+  .section--testimonials .testimonials__creative-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  /* Reduce offset on tablets but keep visual interest */
+  .section--testimonials .testimonials__column--center .testimonial-card--offset {
+    margin-top: clamp(0.25rem, 1vw, 0.75rem);
+    transform: rotate(-0.5deg);
+  }
+  
+  .section--testimonials .testimonials__column--center .testimonial-card--offset:hover {
+    transform: rotate(0deg) translateY(-8px);
+  }
+}
+
+@media (max-width: 768px) {
+  .section--testimonials .testimonials__creative-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  /* Mobile: subtle offset with micro-interactions */
+  .section--testimonials .testimonials__column--center .testimonial-card--offset {
+    margin-top: 0.5rem;
+    transform: none;
+    border-left: 4px solid var(--gold-light, #fbbf24);
+    padding-left: calc(clamp(1.5rem, 3vw, 2rem) + 0.5rem);
+  }
+  
+  .section--testimonials .testimonials__column--center .testimonial-card--offset::before {
+    display: none;
+  }
+  
+  .section--testimonials .testimonials__column--center .testimonial-card--offset:hover {
+    transform: translateX(8px);
+    border-left-color: var(--gold-dark, #f59e0b);
+  }
+}
+
+/* Continue with existing styling */
+
+/* Additional responsive adjustments */
+@media (max-width: 768px) {
+  .section--testimonials .testimonial-card--hero {
+    padding: 1.5rem;
+  }
+  
+  .section--testimonials .testimonial-card--compact {
+    padding: 1.5rem;
+    min-height: 200px;
+  }
+}
+
+/* Irrigation premium client images with enhanced golden borders */
+.section--testimonials .client-image {
+  width: clamp(70px, 15vw, 90px);
+  height: clamp(70px, 15vw, 90px);
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid transparent;
+  background: linear-gradient(135deg, var(--gold-light, #fbbf24), var(--gold-dark, #f59e0b)) border-box;
+  background-clip: padding-box;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 15px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(251, 191, 36, 0.3);
+  position: relative;
+}
+
+/* Enhanced golden glow effect */
+.section--testimonials .client-image::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold-light, #fbbf24), var(--gold-dark, #f59e0b));
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+  filter: blur(2px);
+}
+
+/* Premium hover effects */
+.section--testimonials .testimonial-card:hover .client-image::before {
+  opacity: 0.4;
+}
+
+.section--testimonials .client-image:hover {
+  transform: scale(1.08) rotate(3deg);
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.15),
+    0 0 0 2px rgba(251, 191, 36, 0.5),
+    0 0 20px rgba(251, 191, 36, 0.3);
+}
+
+/* Golden accents for hero testimonial */
+.section--testimonials .testimonial-card--hero .client-image {
+  width: clamp(90px, 20vw, 120px);
+  height: clamp(90px, 20vw, 120px);
+  border-width: 5px;
+}
+
+/* Avatar fallback styling with golden theme */
+.section--testimonials .client-avatar {
+  position: relative;
+  display: inline-block;
+  width: clamp(70px, 15vw, 90px);
+  height: clamp(70px, 15vw, 90px);
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.section--testimonials .client-avatar--large {
+  width: clamp(90px, 20vw, 120px);
+  height: clamp(90px, 20vw, 120px);
+}
+
+.section--testimonials .client-avatar-fallback {
+  background: linear-gradient(135deg, var(--gold-light, #fbbf24), var(--gold-dark, #f59e0b));
+  color: white;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  font-size: clamp(0.8rem, 2vw, 1rem);
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 4px solid transparent;
+  background-clip: padding-box;
+  box-shadow: 
+    0 4px 15px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(251, 191, 36, 0.3);
+}
+
+.section--testimonials .client-avatar-fallback--large {
+  font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+  border-width: 5px;
+}
+
+/* Enhanced hover effects for avatar fallbacks */
+.section--testimonials .client-avatar:hover .client-avatar-fallback {
+  transform: scale(1.08) rotate(3deg);
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.15),
+    0 0 0 2px rgba(251, 191, 36, 0.5),
+    0 0 20px rgba(251, 191, 36, 0.3);
+}
+
+/* Golden glow effect for avatar fallbacks */
+.section--testimonials .client-avatar-fallback::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold-light, #fbbf24), var(--gold-dark, #f59e0b));
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+  filter: blur(2px);
+}
+
+.section--testimonials .client-avatar:hover .client-avatar-fallback::before {
+  opacity: 0.4;
+}
+
+/* Trust Indicators styling */
+.section--testimonials .trust-indicators {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 2rem;
+  margin-top: clamp(3rem, 6vw, 4rem);
+  padding: clamp(2rem, 4vw, 3rem);
+  background: var(--color-bg-alt, #f9fafb);
+  border-radius: 16px;
+  text-align: center;
+}
+
+.section--testimonials .trust-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section--testimonials .trust-number {
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  font-weight: 900;
+  color: var(--gold-dark, #f59e0b);
+  line-height: 1;
+}
+
+.section--testimonials .trust-label {
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  color: var(--text-muted, #666);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Accessibility improvements */
+.section--testimonials .testimonial-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.section--testimonials .testimonial-card:focus-within {
+  outline: 2px solid var(--color-accent, #16a34a);
+  outline-offset: 2px;
+}
+
+/* Focus states for interactive elements */
+.section--testimonials .client-image:focus,
+.section--testimonials .client-avatar:focus-within {
+  outline: 3px solid var(--color-accent, #16a34a);
+  outline-offset: 3px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .section--testimonials .testimonial-card {
+    border-width: 2px;
+  }
+  
+  .section--testimonials .client-image {
+    border-width: 5px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .section--testimonials .testimonial-card,
+  .section--testimonials .client-image,
+  .section--testimonials .client-avatar-fallback,
+  .section--testimonials .testimonial-card::after {
+    transition: none;
+  }
+  
+  .section--testimonials .testimonial-card:hover,
+  .section--testimonials .client-image:hover,
+  .section--testimonials .client-avatar:hover .client-avatar-fallback {
+    transform: none;
+  }
+}
+
+/* Accessibility - Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Dark mode support via site theme system */
+[data-theme="dark"] .section--testimonials .testimonial-card {
+  background: var(--card-bg);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .section--testimonials .testimonial-card__quote {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .section--testimonials .client-name,
+[data-theme="dark"] .section--testimonials .client-name--large {
+  color: var(--color-heading);
+}
+
+[data-theme="dark"] .section--testimonials .client-location,
+[data-theme="dark"] .section--testimonials .client-title {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .section--testimonials .trust-indicators {
+  background: var(--color-bg-alt);
+}
+
+[data-theme="dark"] .section--testimonials .trust-label {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .section--testimonials .testimonials__title {
+  color: var(--color-heading);
+}
+
+[data-theme="dark"] .section--testimonials .section-lead {
+  color: var(--color-text);
+}
 .section--faq .faq,
 .section--faq .faq-item {
   background: var(--color-surface, #fff);
