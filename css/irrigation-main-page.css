@@ -603,7 +603,11 @@ section[id] {
 .section--products .btn-secondary:hover,
 .section--pricing .btn-secondary:hover,
 .section--cta .btn-secondary:hover {
-  background: var(--color-bg-alt, #f6f6f6);
+  background: var(--color-accent, #107c10) !important;
+  color: #ffffff !important;
+  border-color: var(--color-accent, #107c10) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .section--hero .btn-link,
@@ -4413,6 +4417,26 @@ details[open] .faq__caret {
   letter-spacing: 0.025em;
 }
 
+/* Dark Mode Support for Overlay Stats */
+[data-theme="dark"] .overlay-stat {
+  background: rgba(var(--color-bg-rgb, 26, 32, 44), 0.95) !important;
+  border-color: rgba(var(--color-border-rgb, 64, 64, 64), 0.3) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .overlay-stat__icon {
+  background: var(--color-accent, #107c10) !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .overlay-stat__number {
+  color: var(--color-text, #e2e8f0) !important;
+}
+
+[data-theme="dark"] .overlay-stat__label {
+  color: var(--color-text-muted, #a0aec0) !important;
+}
+
 /* Mobile Responsive Adjustments */
 @media (max-width: 900px) {
   .hero__badge-row {
@@ -6342,4 +6366,196 @@ details[open] .faq__caret {
   .section--weather .section-title {
     font-size: 2rem;
   }
+}
+
+/* ============================================================================
+   DARK MODE SUPPORT FOR BUTTONS AND INTERACTIVE ELEMENTS
+   Comprehensive dark mode styling for all buttons and UI elements
+   ============================================================================ */
+
+/* Dark Mode Button System */
+[data-theme="dark"] .btn {
+  background: var(--color-card-bg, #2a2a2a);
+  color: var(--color-text, #e2e8f0);
+  border-color: var(--color-border, #404040);
+}
+
+[data-theme="dark"] .btn-primary {
+  background: var(--color-accent, #107c10) !important;
+  color: #ffffff !important;
+  border-color: var(--color-accent, #107c10) !important;
+}
+
+[data-theme="dark"] .btn-secondary {
+  background: var(--color-card-bg, #2a2a2a) !important;
+  color: var(--color-text, #e2e8f0) !important;
+  border-color: var(--color-border, #404040) !important;
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  background: var(--color-bg-alt, #2a2a2a) !important;
+  color: var(--color-text, #e2e8f0) !important;
+  border-color: var(--color-accent, #107c10) !important;
+}
+
+/* Hero Section Dark Mode Buttons */
+[data-theme="dark"] .section--hero .btn {
+  color: var(--color-text, #e2e8f0) !important;
+}
+
+[data-theme="dark"] .section--hero .btn-primary {
+  background: var(--color-accent, #107c10) !important;
+  color: #ffffff !important;
+  border-color: var(--color-accent, #107c10) !important;
+}
+
+[data-theme="dark"] .section--hero .btn-secondary {
+  background: var(--color-card-bg, #2a2a2a) !important;
+  color: var(--color-text, #e2e8f0) !important;
+  border-color: var(--color-border, #404040) !important;
+}
+
+[data-theme="dark"] .section--hero .btn-secondary:hover {
+  background: var(--color-bg-alt, #2a2a2a) !important;
+  border-color: var(--color-accent, #107c10) !important;
+}
+
+/* Section Buttons Dark Mode */
+[data-theme="dark"] .section--how .btn,
+[data-theme="dark"] .section--products .btn,
+[data-theme="dark"] .section--pricing .btn,
+[data-theme="dark"] .section--cta .btn {
+  color: var(--color-text, #e2e8f0) !important;
+}
+
+[data-theme="dark"] .section--how .btn-primary,
+[data-theme="dark"] .section--products .btn-primary,
+[data-theme="dark"] .section--pricing .btn-primary,
+[data-theme="dark"] .section--cta .btn-primary {
+  background: var(--color-accent, #107c10) !important;
+  color: #ffffff !important;
+  border-color: var(--color-accent, #107c10) !important;
+}
+
+[data-theme="dark"] .section--how .btn-secondary,
+[data-theme="dark"] .section--products .btn-secondary,
+[data-theme="dark"] .section--pricing .btn-secondary,
+[data-theme="dark"] .section--cta .btn-secondary {
+  background: var(--color-card-bg, #2a2a2a) !important;
+  color: var(--color-text, #e2e8f0) !important;
+  border-color: var(--color-border, #404040) !important;
+}
+
+[data-theme="dark"] .section--how .btn-secondary:hover,
+[data-theme="dark"] .section--products .btn-secondary:hover,
+[data-theme="dark"] .section--pricing .btn-secondary:hover,
+[data-theme="dark"] .section--cta .btn-secondary:hover {
+  background: var(--color-bg-alt, #2a2a2a) !important;
+  border-color: var(--color-accent, #107c10) !important;
+}
+
+/* Badge Dark Mode */
+[data-theme="dark"] .badge {
+  background: var(--color-card-bg, #2a2a2a) !important;
+  color: var(--color-text, #e2e8f0) !important;
+  border-color: var(--color-border, #404040) !important;
+}
+
+[data-theme="dark"] .badge--premium,
+[data-theme="dark"] .badge--certified,
+[data-theme="dark"] .badge--featured,
+[data-theme="dark"] .badge--bestValue {
+  background: rgba(var(--color-accent-rgb, 16, 124, 16), 0.15) !important;
+  color: var(--color-accent, #107c10) !important;
+  border-color: var(--color-accent, #107c10) !important;
+}
+
+/* Weather Widget Dark Mode */
+[data-theme="dark"] .weather-cta .btn {
+  background: var(--color-card-bg, #2a2a2a) !important;
+  color: var(--color-accent, #107c10) !important;
+  border: 1px solid var(--color-border, #404040) !important;
+}
+
+[data-theme="dark"] .weather-cta .btn:hover {
+  background: var(--color-bg-alt, #2a2a2a) !important;
+  color: var(--color-accent, #107c10) !important;
+  border-color: var(--color-accent, #107c10) !important;
+}
+
+/* Enhanced Button Content Dark Mode */
+[data-theme="dark"] .btn__text,
+[data-theme="dark"] .btn__subtext {
+  color: inherit !important;
+}
+
+[data-theme="dark"] .btn-primary .btn__text,
+[data-theme="dark"] .btn-primary .btn__subtext {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .btn-secondary .btn__text,
+[data-theme="dark"] .btn-secondary .btn__subtext {
+  color: var(--color-text, #e2e8f0) !important;
+}
+
+/* Link Buttons Dark Mode */
+[data-theme="dark"] .btn-link {
+  color: var(--color-accent, #107c10) !important;
+}
+
+[data-theme="dark"] .btn-link:hover {
+  color: var(--color-accent-hover, #0e6a0e) !important;
+}
+
+/* Trust Indicators Dark Mode */
+[data-theme="dark"] .hero__trust-indicators .trust-item {
+  color: var(--color-text, #e2e8f0) !important;
+}
+
+[data-theme="dark"] .hero__trust-indicators .trust-item i {
+  color: var(--color-accent, #107c10) !important;
+}
+
+/* Hero Badge Row Dark Mode */
+[data-theme="dark"] .hero__badge-row .badge {
+  background: rgba(var(--color-accent-rgb, 16, 124, 16), 0.15) !important;
+  color: var(--color-accent, #107c10) !important;
+  border-color: var(--color-accent, #107c10) !important;
+}
+
+/* CTA Section Dark Mode Buttons */
+[data-theme="dark"] .cta__buttons .btn {
+  color: var(--color-text, #e2e8f0) !important;
+}
+
+[data-theme="dark"] .cta__buttons .btn-primary {
+  background: var(--color-accent, #107c10) !important;
+  color: #ffffff !important;
+  border-color: var(--color-accent, #107c10) !important;
+}
+
+[data-theme="dark"] .cta__buttons .btn-secondary {
+  background: var(--color-card-bg, #2a2a2a) !important;
+  color: var(--color-text, #e2e8f0) !important;
+  border-color: var(--color-border, #404040) !important;
+}
+
+/* Focus States Dark Mode */
+[data-theme="dark"] .btn:focus-visible {
+  outline: 2px solid var(--color-accent, #107c10) !important;
+  outline-offset: 2px !important;
+}
+
+/* Enhanced Button Icons Dark Mode */
+[data-theme="dark"] .btn__icon {
+  color: inherit !important;
+}
+
+[data-theme="dark"] .btn-primary .btn__icon {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .btn-secondary .btn__icon {
+  color: var(--color-text, #e2e8f0) !important;
 }
