@@ -4482,10 +4482,50 @@ details[open] .faq__caret {
    ENGINEER-LEVEL OVERVIEW SECTION
    ========================================== */
 
+/* 
+ * Z-INDEX HIERARCHY:
+ * 1200+ : Floating bars (contact, social)
+ * 1000  : Navigation, modals, overlays
+ * 100   : Section overlays, backgrounds
+ * 4     : Hovered interactive elements
+ * 3     : Interactive elements (cards, buttons)
+ * 2     : Section content containers
+ * 1     : Section base layers
+ * 0     : Default page content
+ * -1    : Background elements, decorative
+ */
+
+/* Overview Section Z-Index Management */
+.section--overview {
+  position: relative;
+  z-index: 1; /* Base layer, below floating elements */
+}
+
+/* Ensure overview content layers properly */
+.section--overview .container {
+  position: relative;
+  z-index: 2; /* Above section background */
+}
+
+/* Overview cards and interactive elements */
+.capability-card,
+.cert-item {
+  position: relative;
+  z-index: 3; /* Above container, below floating bars */
+}
+
+/* Hover states should be above other cards */
+.capability-card:hover,
+.cert-item:hover {
+  z-index: 4; /* Elevated on hover */
+}
+
 /* Section Header */
 .section-header {
   text-align: center;
   margin-bottom: 4rem;
+  position: relative;
+  z-index: 2; /* Same as container */
 }
 
 .section-eyebrow {
@@ -4566,7 +4606,7 @@ details[open] .faq__caret {
 
 .capabilities-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
   align-items: stretch; /* Ensures equal height cards */
 }
@@ -4873,6 +4913,13 @@ details[open] .faq__caret {
 }
 
 /* Mobile Responsive */
+@media (max-width: 1200px) {
+  .capabilities-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
 @media (max-width: 900px) {
   .overview__metrics {
     flex-direction: column;
@@ -4882,11 +4929,6 @@ details[open] .faq__caret {
   
   .metric-item {
     min-width: auto;
-  }
-  
-  .capabilities-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
   }
   
   .capability-card {
