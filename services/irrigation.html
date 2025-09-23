@@ -414,7 +414,7 @@
     </section>
 
     <!-- How It Works Section -->
-    <section id="how-it-works" class="section section--how-it-works" aria-labelledby="how-title">
+    <section id="how-it-works" class="section section--how-it-works" aria-labelledby="how-title" itemscope itemtype="https://schema.org/HowTo">
       <div class="container">
         <header class="section-header how__header">
           <div class="section-eyebrow">
@@ -424,16 +424,16 @@
             Professional Installation Process
           </div>
 
-          <h2 id="how-title" class="how__title">
+          <h2 id="how-title" class="how__title" itemprop="name">
             From Consultation to <span class="text-highlight">Complete System</span>
           </h2>
 
-          <p class="how__lead lead">
+          <p class="how__lead lead" itemprop="description">
             Our systematic approach ensures every irrigation system is perfectly designed for your property's unique requirements. From initial assessment to ongoing maintenance, we deliver professional results that exceed expectations.
           </p>
 
           <div class="how__timeline-summary">
-            <div class="timeline-metric">
+            <div class="timeline-metric" itemprop="totalTime" content="P14D">
               <span class="timeline-number">7-14</span>
               <span class="timeline-label">Days Total Timeline</span>
             </div>
@@ -451,11 +451,11 @@
         <div class="how__content">
           <div class="process-flow">
             <ol class="process-steps how__steps">
-              <li class="process-step step step--assessment card card--enhanced">
+              <li class="process-step step step--assessment card card--enhanced" itemprop="step" itemscope itemtype="https://schema.org/HowToStep">
                 <div class="step__header">
                   <div class="step-number step-number--primary">
                     <span class="step-number__digit">1</span>
-                    <i class="step-number__icon fas fa-search"></i>
+                    <i class="step-number__icon fas fa-search" aria-hidden="true"></i>
                   </div>
                   <div class="step__timing">
                     <span class="timing-badge">Day 1-2</span>
@@ -464,12 +464,12 @@
                 </div>
 
                 <div class="step__content">
-                  <h3 class="step__title">Comprehensive Site Assessment</h3>
+                  <h3 class="step__title" itemprop="name">Comprehensive Site Assessment</h3>
                   
                   <div class="step__details">
                     <div class="detail-group">
                       <h4 class="detail-title">
-                        <i class="fas fa-clipboard-list"></i>
+                        <i class="fas fa-clipboard-list" aria-hidden="true"></i>
                         Technical Evaluation
                       </h4>
                       <ul class="detail-list">
@@ -482,7 +482,7 @@
 
                     <div class="detail-group">
                       <h4 class="detail-title">
-                        <i class="fas fa-seedling"></i>
+                        <i class="fas fa-seedling" aria-hidden="true"></i>
                         Landscape Analysis
                       </h4>
                       <ul class="detail-list">
@@ -494,7 +494,7 @@
                     </div>
                   </div>
 
-                  <p class="step__description">
+                  <p class="step__description" itemprop="text">
                     Our certified technicians conduct a thorough property evaluation using professional tools to measure water pressure, analyze soil conditions, and map existing infrastructure. This detailed assessment ensures optimal system design.
                   </p>
 

@@ -122,38 +122,41 @@ class FAQManager {
     console.log('FAQ Manager: Performing search', { searchTerm, currentCategory: this.currentCategory });
     let visibleCount = 0;
 
-    this.faqItems.forEach(item => {
-      const question = item.querySelector('.faq__question');
-      const answer = item.querySelector('.faq__answer');
-      const category = item.dataset.category || 'general';
+    // Use requestAnimationFrame for better performance
+    requestAnimationFrame(() => {
+      this.faqItems.forEach(item => {
+        const question = item.querySelector('.faq__question');
+        const answer = item.querySelector('.faq__answer');
+        const category = item.dataset.category || 'general';
 
-      if (!question || !answer) return;
+        if (!question || !answer) return;
 
-      const questionText = question.textContent.toLowerCase();
-      const answerText = answer.textContent.toLowerCase();
-      const categoryText = category.toLowerCase();
+        const questionText = question.textContent.toLowerCase();
+        const answerText = answer.textContent.toLowerCase();
+        const categoryText = category.toLowerCase();
 
-      // Check if item matches search term and current category filter
-      const matchesSearch = !searchTerm ||
-        questionText.includes(searchTerm) ||
-        answerText.includes(searchTerm) ||
-        categoryText.includes(searchTerm);
+        // Check if item matches search term and current category filter
+        const matchesSearch = !searchTerm ||
+          questionText.includes(searchTerm) ||
+          answerText.includes(searchTerm) ||
+          categoryText.includes(searchTerm);
 
-      const matchesCategory = this.currentCategory === 'all' ||
-        category === this.currentCategory;
+        const matchesCategory = this.currentCategory === 'all' ||
+          category === this.currentCategory;
 
-      const shouldShow = matchesSearch && matchesCategory;
+        const shouldShow = matchesSearch && matchesCategory;
 
-      // Animate visibility change
-      this.animateItemVisibility(item, shouldShow);
+        // Animate visibility change
+        this.animateItemVisibility(item, shouldShow);
 
-      if (shouldShow) {
-        visibleCount++;
-      }
+        if (shouldShow) {
+          visibleCount++;
+        }
+      });
+
+      console.log('FAQ Manager: Search results', { visibleCount, totalItems: this.faqItems.length });
+      this.updateSearchResults(searchTerm, visibleCount);
     });
-
-    console.log('FAQ Manager: Search results', { visibleCount, totalItems: this.faqItems.length });
-    this.updateSearchResults(searchTerm, visibleCount);
   }
 
   animateItemVisibility(item, shouldShow) {
@@ -161,21 +164,27 @@ class FAQManager {
       item.style.display = 'block';
       item.setAttribute('data-visible', 'true');
 
-      // Stagger animation
-      setTimeout(() => {
-        item.style.opacity = '1';
-        item.style.transform = 'translateY(0)';
-      }, 50);
+      // Use requestAnimationFrame for smoother animations
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          item.style.opacity = '1';
+          item.style.transform = 'translateY(0)';
+        }, 50);
+      });
     } else {
       item.setAttribute('data-visible', 'false');
 
-      // Animate out
-      item.style.opacity = '0';
-      item.style.transform = 'translateY(-20px)';
+      // Animate out with better performance
+      requestAnimationFrame(() => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(-20px)';
 
-      setTimeout(() => {
-        item.style.display = 'none';
-      }, 300);
+        setTimeout(() => {
+          if (item.getAttribute('data-visible') === 'false') {
+            item.style.display = 'none';
+          }
+        }, 300);
+      });
     }
   }
 

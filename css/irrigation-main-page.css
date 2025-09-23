@@ -4830,8 +4830,18 @@ details[open] .faq__caret {
 
 .certifications-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
+  max-width: 800px; /* Prevent items from getting too wide */
+  margin: 0 auto; /* Center the grid */
+}
+
+/* For larger screens, show 4 items in a row */
+@media (min-width: 1200px) {
+  .certifications-grid {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 1000px;
+  }
 }
 
 .cert-item {
@@ -4920,6 +4930,13 @@ details[open] .faq__caret {
   }
 }
 
+@media (max-width: 768px) {
+  .certifications-grid {
+    grid-template-columns: 1fr;
+    max-width: none;
+  }
+}
+
 @media (max-width: 900px) {
   .overview__metrics {
     flex-direction: column;
@@ -4947,10 +4964,6 @@ details[open] .faq__caret {
   
   .certifications-panel {
     padding: 1.5rem;
-  }
-  
-  .certifications-grid {
-    grid-template-columns: 1fr;
   }
   
   .cert-item {
@@ -5039,7 +5052,7 @@ details[open] .faq__caret {
   padding: 0;
   margin: 0;
   position: relative;
-  z-index: 2;
+  z-index: 1;
 }
 
 /* Process Step Cards */
@@ -5218,7 +5231,7 @@ details[open] .faq__caret {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  background: var(--color-white);
+  background: var(--color-gray-50);
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--border-radius);
   border: 1px solid var(--color-gray-200);
@@ -5391,14 +5404,47 @@ details[open] .faq__caret {
   text-decoration: underline;
 }
 
-/* Responsive Design */
+/* Responsive Design - Enhanced */
+@media (max-width: 1024px) {
+  .section--how-it-works .step__details {
+    grid-template-columns: 1fr;
+  }
+  
+  .section--how-it-works .step-number {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .section--how-it-works .step-number__digit {
+    font-size: 1.25rem;
+  }
+}
+
 @media (max-width: 768px) {
+  .section--how-it-works .how__header {
+    margin-bottom: var(--spacing-3xl);
+  }
+  
+  .section--how-it-works .how__title {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+  }
+  
   .section--how-it-works .how__timeline-summary {
     gap: var(--spacing-lg);
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .section--how-it-works .timeline-metric {
+    flex-direction: row;
+    gap: var(--spacing-sm);
+    text-align: left;
+    min-width: 200px;
   }
   
   .section--how-it-works .timeline-number {
     font-size: 1.5rem;
+    min-width: 60px;
   }
   
   .section--how-it-works .process-steps {
@@ -5414,6 +5460,159 @@ details[open] .faq__caret {
     align-items: flex-start;
     gap: var(--spacing-md);
   }
+  
+  .section--how-it-works .step__timing {
+    align-items: flex-start;
+    width: 100%;
+  }
+  
+  .section--how-it-works .step-number {
+    width: 60px;
+    height: 60px;
+    align-self: flex-start;
+  }
+  
+  .section--how-it-works .step-number__digit {
+    font-size: 1.125rem;
+  }
+  
+  .section--how-it-works .step-number__icon {
+    font-size: 1rem;
+  }
+  
+  .section--how-it-works .detail-group {
+    padding: var(--spacing-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .section--how-it-works .how__timeline-summary {
+    gap: var(--spacing-md);
+  }
+  
+  .section--how-it-works .timeline-metric {
+    min-width: 180px;
+    justify-content: center;
+  }
+  
+  .section--how-it-works .process-step {
+    padding: var(--spacing-md);
+  }
+  
+  .section--how-it-works .step__title {
+    font-size: 1.25rem;
+  }
+  
+  .section--how-it-works .step-number {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .section--how-it-works .step-number__digit {
+    font-size: 1rem;
+  }
+  
+  .section--how-it-works .timing-badge {
+    padding: var(--spacing-xxs) var(--spacing-xs);
+    font-size: 0.6875rem;
+  }
+  
+  .section--how-it-works .contact-note__text {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--spacing-xs);
+  }
+}
+
+/* =======================================================================
+   HOW IT WORKS SECTION - Dark Mode Support
+   ======================================================================= */
+
+[data-theme="dark"] .section--how-it-works {
+  --section-bg: var(--color-gray-900);
+  background-color: var(--section-bg);
+}
+
+[data-theme="dark"] .section--how-it-works .how__title {
+  color: var(--color-gray-100);
+}
+
+[data-theme="dark"] .section--how-it-works .how__lead {
+  color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .section--how-it-works .timeline-number {
+  color: var(--color-primary-light);
+}
+
+[data-theme="dark"] .section--how-it-works .timeline-label {
+  color: var(--color-gray-400);
+}
+
+[data-theme="dark"] .section--how-it-works .process-step {
+  background: var(--color-gray-800);
+  border-color: var(--color-gray-700);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .section--how-it-works .process-step:hover {
+  background: var(--color-gray-750);
+  border-color: var(--color-primary-dark);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .section--how-it-works .step__title {
+  color: var(--color-gray-100);
+}
+
+[data-theme="dark"] .section--how-it-works .detail-group {
+  background: var(--color-gray-850);
+  border-color: var(--color-gray-600);
+}
+
+[data-theme="dark"] .section--how-it-works .detail-title {
+  color: var(--color-gray-200);
+}
+
+[data-theme="dark"] .section--how-it-works .detail-list li {
+  color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .section--how-it-works .step__description {
+  color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .section--how-it-works .outcome-item {
+  background: var(--color-gray-750);
+  border-color: var(--color-gray-600);
+  color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .section--how-it-works .outcome-item i {
+  color: var(--color-primary-light);
+}
+
+[data-theme="dark"] .section--how-it-works .timing-badge {
+  background: var(--color-primary-dark);
+  color: var(--color-gray-100);
+}
+
+[data-theme="dark"] .section--how-it-works .timing-duration {
+  color: var(--color-gray-400);
+}
+
+[data-theme="dark"] .section--how-it-works .contact-note {
+  background: var(--color-gray-800);
+  border-color: var(--color-gray-600);
+}
+
+[data-theme="dark"] .section--how-it-works .contact-note__text {
+  color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .section--how-it-works .contact-link {
+  color: var(--color-primary-light);
+}
   
   .section--how-it-works .step-number {
     width: 60px;
@@ -5461,6 +5660,64 @@ details[open] .faq__caret {
     text-align: center;
     gap: var(--spacing-xs);
   }
+}
+
+/* =======================================================================
+   HOW IT WORKS SECTION - Dark Mode Support
+   ======================================================================= */
+
+[data-theme="dark"] .section--how-it-works {
+  --section-bg: var(--color-gray-900);
+  background-color: var(--section-bg);
+}
+
+[data-theme="dark"] .section--how-it-works .how__title {
+  color: var(--color-gray-100);
+}
+
+[data-theme="dark"] .section--how-it-works .how__lead {
+  color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .section--how-it-works .timeline-number {
+  color: var(--color-primary-light);
+}
+
+[data-theme="dark"] .section--how-it-works .timeline-label {
+  color: var(--color-gray-400);
+}
+
+[data-theme="dark"] .section--how-it-works .process-step {
+  background: var(--color-gray-800);
+  border-color: var(--color-gray-700);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .section--how-it-works .process-step:hover {
+  background: var(--color-gray-750);
+  border-color: var(--color-primary-dark);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .section--how-it-works .step__title {
+  color: var(--color-gray-100);
+}
+
+[data-theme="dark"] .section--how-it-works .detail-group {
+  background: var(--color-gray-850);
+  border-color: var(--color-gray-600);
+}
+
+[data-theme="dark"] .section--how-it-works .detail-title {
+  color: var(--color-gray-200);
+}
+
+[data-theme="dark"] .section--how-it-works .detail-list li {
+  color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .section--how-it-works .contact-link {
+  color: var(--color-primary-light);
 }
 
 /* =======================================================================
