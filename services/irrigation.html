@@ -768,23 +768,30 @@
           </div>
         </div>
         
-        <div class="how__actions">
+        <div class="how__actions" role="region" aria-labelledby="actions-heading">
           <div class="btn-row how__buttons">
-            <button id="btn-hiw-book" class="btn btn-primary btn--large book-now" data-service="Irrigation Assessment">
+            <button id="btn-hiw-book" class="btn btn-primary btn--large book-now" 
+                    data-service="Irrigation Assessment"
+                    aria-describedby="cta-description">
               <span>Start Your Project</span>
-              <i class="fas fa-rocket"></i>
+              <i class="fas fa-rocket" aria-hidden="true"></i>
             </button>
-            <a id="btn-hiw-read-faqs" class="btn btn-secondary btn--large" href="#faq">
+            <a id="btn-hiw-read-faqs" class="btn btn-secondary btn--large" 
+               href="#faq"
+               aria-label="View frequently asked questions about our irrigation process">
               <span>View FAQ</span>
-              <i class="fas fa-question-circle"></i>
+              <i class="fas fa-question-circle" aria-hidden="true"></i>
             </a>
           </div>
 
-          <div class="how__contact-note">
-            <p class="contact-note__text">
-              <i class="fas fa-phone"></i>
+          <div class="how__contact-note" itemscope itemtype="https://schema.org/ContactPoint">
+            <p class="contact-note__text" id="cta-description">
+              <i class="fas fa-phone" aria-hidden="true"></i>
               Questions about our process? Call us at 
-              <a href="tel:+27123456789" class="contact-link">012 345 6789</a> 
+              <a href="tel:+27123456789" 
+                 class="contact-link"
+                 itemprop="telephone"
+                 aria-label="Call us at 012 345 6789 for a free consultation">012 345 6789</a> 
               for a free consultation.
             </p>
           </div>

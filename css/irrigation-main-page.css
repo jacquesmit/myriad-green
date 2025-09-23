@@ -5398,14 +5398,96 @@ details[open] .faq__caret {
   color: var(--color-gray-300);
 }
 
-/* Actions Section */
+/* Actions Section - Enhanced */
 .section--how-it-works .how__actions {
   text-align: center;
   margin-top: var(--spacing-4xl);
+  background: linear-gradient(135deg, var(--color-gray-50), var(--color-white));
+  padding: var(--spacing-3xl) var(--spacing-2xl);
+  border-radius: var(--border-radius-xl);
+  border: 1px solid var(--color-gray-200);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+
+.section--how-it-works .how__actions::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
 }
 
 .section--how-it-works .how__buttons {
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-2xl);
+  display: flex;
+  gap: var(--spacing-lg);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.section--how-it-works .how__buttons .btn {
+  min-width: 200px;
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.section--how-it-works .how__buttons .btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.section--how-it-works .how__buttons .btn:hover::before {
+  left: 100%;
+}
+
+.section--how-it-works .how__buttons .btn i {
+  margin-left: var(--spacing-sm);
+  transition: transform 0.3s ease;
+}
+
+.section--how-it-works .how__buttons .btn:hover i {
+  transform: translateX(3px);
+}
+
+.section--how-it-works .how__contact-note {
+  background: var(--color-white);
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--color-gray-200);
+  display: inline-block;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.section--how-it-works .how__contact-note::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -8px;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 40px;
+  background: var(--color-primary);
+  border-radius: 2px;
+}
+
+.section--how-it-works .how__contact-note:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .section--how-it-works .how__contact-note {
@@ -5417,26 +5499,36 @@ details[open] .faq__caret {
 }
 
 .section--how-it-works .contact-note__text {
-  font-size: 0.875rem;
-  color: var(--color-gray-600);
+  font-size: 0.9375rem;
+  color: var(--color-gray-700);
   margin: 0;
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  font-weight: 500;
+  line-height: 1.5;
 }
 
 .section--how-it-works .contact-note__text i {
   color: var(--color-primary);
+  font-size: 1.125rem;
+  flex-shrink: 0;
 }
 
 .section--how-it-works .contact-link {
   color: var(--color-primary);
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
+  padding: var(--spacing-xxs) var(--spacing-xs);
+  border-radius: var(--border-radius);
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .section--how-it-works .contact-link:hover {
-  text-decoration: underline;
+  background: var(--color-primary-light);
+  color: white;
+  transform: translateY(-1px);
 }
 
 /* Responsive Design - Enhanced */
@@ -5519,6 +5611,31 @@ details[open] .faq__caret {
     padding: var(--spacing-md);
   }
   
+  /* Actions Section Mobile */
+  .section--how-it-works .how__actions {
+    padding: var(--spacing-2xl) var(--spacing-lg);
+    margin-top: var(--spacing-3xl);
+  }
+  
+  .section--how-it-works .how__buttons {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .section--how-it-works .how__buttons .btn {
+    min-width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+  
+  .section--how-it-works .how__contact-note {
+    padding: var(--spacing-lg);
+  }
+  
+  .section--how-it-works .contact-note__text {
+    font-size: 0.875rem;
+  }
+  
   /* Quality Panel Mobile Styles */
   .section--how-it-works .quality-panel {
     padding: var(--spacing-lg);
@@ -5579,6 +5696,28 @@ details[open] .faq__caret {
   }
   
   .section--how-it-works .contact-note__text {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--spacing-xs);
+  }
+  
+  /* Actions Section Small Mobile */
+  .section--how-it-works .how__actions {
+    padding: var(--spacing-lg) var(--spacing-md);
+    margin-top: var(--spacing-2xl);
+  }
+  
+  .section--how-it-works .how__buttons .btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.875rem;
+  }
+  
+  .section--how-it-works .how__contact-note {
+    padding: var(--spacing-md);
+  }
+  
+  .section--how-it-works .contact-note__text {
+    font-size: 0.8125rem;
     flex-direction: column;
     text-align: center;
     gap: var(--spacing-xs);
@@ -5689,17 +5828,37 @@ details[open] .faq__caret {
   color: var(--color-gray-400);
 }
 
+[data-theme="dark"] .section--how-it-works .how__actions {
+  background: linear-gradient(135deg, var(--color-gray-850), var(--color-gray-800));
+  border-color: var(--color-gray-700);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .section--how-it-works .how__actions::before {
+  background: linear-gradient(90deg, var(--color-primary-dark), var(--color-accent));
+}
+
 [data-theme="dark"] .section--how-it-works .contact-note {
-  background: var(--color-gray-800);
+  background: var(--color-gray-750);
   border-color: var(--color-gray-600);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .section--how-it-works .how__contact-note::before {
+  background: var(--color-primary-light);
 }
 
 [data-theme="dark"] .section--how-it-works .contact-note__text {
-  color: var(--color-gray-300);
+  color: var(--color-gray-200);
 }
 
 [data-theme="dark"] .section--how-it-works .contact-link {
   color: var(--color-primary-light);
+}
+
+[data-theme="dark"] .section--how-it-works .contact-link:hover {
+  background: var(--color-primary-dark);
+  color: var(--color-gray-100);
 }
   
   .section--how-it-works .step-number {
