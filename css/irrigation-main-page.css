@@ -5363,6 +5363,41 @@ details[open] .faq__caret {
   line-height: 1.4;
 }
 
+/* Quality Panel - Dark Mode Support */
+[data-theme="dark"] .section--how-it-works .quality-panel {
+  background: var(--color-gray-800);
+  border-color: var(--color-gray-700);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .section--how-it-works .quality-panel__title {
+  color: var(--color-gray-100);
+}
+
+[data-theme="dark"] .section--how-it-works .guarantee-item {
+  background: var(--color-gray-750);
+  border-color: var(--color-gray-600);
+}
+
+[data-theme="dark"] .section--how-it-works .guarantee-item:hover {
+  background: var(--color-gray-700);
+  border-color: var(--color-primary-dark);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .section--how-it-works .guarantee-icon {
+  background: var(--color-primary-dark);
+  color: var(--color-gray-100);
+}
+
+[data-theme="dark"] .section--how-it-works .guarantee-title {
+  color: var(--color-gray-100);
+}
+
+[data-theme="dark"] .section--how-it-works .guarantee-desc {
+  color: var(--color-gray-300);
+}
+
 /* Actions Section */
 .section--how-it-works .how__actions {
   text-align: center;
@@ -5483,6 +5518,32 @@ details[open] .faq__caret {
   .section--how-it-works .detail-group {
     padding: var(--spacing-md);
   }
+  
+  /* Quality Panel Mobile Styles */
+  .section--how-it-works .quality-panel {
+    padding: var(--spacing-lg);
+    margin-top: var(--spacing-3xl);
+  }
+  
+  .section--how-it-works .quality-panel__title {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .section--how-it-works .guarantee-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+  
+  .section--how-it-works .guarantee-item {
+    padding: var(--spacing-md);
+  }
+  
+  .section--how-it-works .guarantee-icon {
+    width: 45px;
+    height: 45px;
+    font-size: 1.125rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -5521,6 +5582,33 @@ details[open] .faq__caret {
     flex-direction: column;
     text-align: center;
     gap: var(--spacing-xs);
+  }
+  
+  /* Quality Panel Small Mobile */
+  .section--how-it-works .quality-panel {
+    padding: var(--spacing-md);
+    margin-top: var(--spacing-2xl);
+  }
+  
+  .section--how-it-works .quality-panel__title {
+    font-size: 1.125rem;
+  }
+  
+  .section--how-it-works .guarantee-item {
+    flex-direction: column;
+    text-align: center;
+    padding: var(--spacing-sm);
+  }
+  
+  .section--how-it-works .guarantee-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .section--how-it-works .guarantee-content {
+    align-items: center;
   }
 }
 
