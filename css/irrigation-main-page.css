@@ -7212,3 +7212,119 @@ details[open] .faq__caret {
 [data-theme="dark"] .btn-secondary .btn__icon {
   color: var(--color-text, #e2e8f0) !important;
 }
+
+/* ================================ */
+/* DARK MODE - PRODUCTS SECTION    */
+/* ================================ */
+
+/* Product Cards Dark Mode */
+[data-theme="dark"] .product-item {
+  background: var(--color-card-bg, #2a2a2a) !important;
+  border: 1px solid var(--color-border, #404040) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .product-item:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4) !important;
+  border-color: var(--color-accent, #107c10) !important;
+}
+
+/* Product Content Dark Mode */
+[data-theme="dark"] .product-title {
+  color: var(--color-text, #e2e8f0) !important;
+}
+
+[data-theme="dark"] .product-description {
+  color: var(--color-text-muted, #94a3b8) !important;
+}
+
+/* Product Image Dark Mode */
+[data-theme="dark"] .product-image {
+  background: var(--color-bg-alt, #1a1a1a) !important;
+}
+
+/* Product Badge Dark Mode */
+[data-theme="dark"] .product-badge {
+  background: var(--color-accent, #107c10) !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .product-badge--pro {
+  background: var(--color-warning, #fbbf24) !important;
+  color: #1a1a1a !important;
+}
+
+[data-theme="dark"] .product-badge--essential {
+  background: var(--color-info, #3b82f6) !important;
+  color: #ffffff !important;
+}
+
+/* Product Features Dark Mode */
+[data-theme="dark"] .feature-tag {
+  background: var(--color-bg-alt, #1a1a1a) !important;
+  color: var(--color-text-muted, #94a3b8) !important;
+  border-color: var(--color-border, #404040) !important;
+}
+
+/* Product Pricing Dark Mode */
+[data-theme="dark"] .product-pricing {
+  background: var(--color-bg-alt, #1a1a1a) !important;
+  border-left-color: var(--color-accent, #107c10) !important;
+}
+
+[data-theme="dark"] .price {
+  color: var(--color-accent, #107c10) !important;
+}
+
+[data-theme="dark"] .price-note {
+  color: var(--color-text-muted, #94a3b8) !important;
+}
+
+/* Product Actions Dark Mode */
+[data-theme="dark"] .product-actions .btn-primary {
+  background: var(--color-accent, #107c10) !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .product-actions .btn-primary:hover {
+  background: var(--color-accent-dark, #0d5e0d) !important;
+}
+
+[data-theme="dark"] .product-actions .btn-secondary {
+  background: transparent !important;
+  color: var(--color-text-muted, #94a3b8) !important;
+  border-color: var(--color-border, #404040) !important;
+}
+
+[data-theme="dark"] .product-actions .btn-secondary:hover {
+  background: var(--color-bg-alt, #1a1a1a) !important;
+  color: var(--color-text, #e2e8f0) !important;
+  border-color: var(--color-accent, #107c10) !important;
+}
+
+/* Products CTA Dark Mode */
+[data-theme="dark"] .products-cta {
+  background: linear-gradient(135deg, #1a4a1a 0%, #2a5a2a 50%, #3a6a3a 100%) !important;
+  border: 1px solid var(--color-border, #404040) !important;
+}
+
+[data-theme="dark"] .cta-title {
+  color: var(--color-text, #e2e8f0) !important;
+}
+
+[data-theme="dark"] .cta-text {
+  color: var(--color-text-muted, #94a3b8) !important;
+}
+
+[data-theme="dark"] .products-cta .btn {
+  background: var(--color-card-bg, #2a2a2a) !important;
+  color: var(--color-text, #e2e8f0) !important;
+  border-color: var(--color-border, #404040) !important;
+}
+
+[data-theme="dark"] .products-cta .btn:hover {
+  background: white !important;
+  color: var(--color-primary-dark) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2) !important;
+}
