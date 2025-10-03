@@ -227,3 +227,40 @@
   font-size: 0.875rem;
   color: var(--last-update-color);
 }
+
+/* Styles for capability specs in irrigation section */
+.capability-specs .spec-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* Ensures long text wraps neatly */
+}
+
+.capability-specs .spec-label {
+  flex: 1; /* Ensures labels take up equal space */
+  font-weight: bold;
+  margin-right: 10px; /* Adds spacing between label and value */
+}
+
+.capability-specs .spec-value {
+  flex: 2; /* Allows values to take up more space */
+  text-align: left; /* Aligns text neatly */
+  word-wrap: break-word; /* Prevents overflow by wrapping long words */
+}
+
+/* Responsive styles for larger screens */
+@media (min-width: 1024px) {
+  .capability-specs .spec-item {
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* Ensures labels and values align neatly */
+    gap: 10px; /* Adds spacing between columns */
+  }
+
+  .capability-specs .spec-label {
+    text-align: right; /* Aligns labels to the right for better readability */
+  }
+
+  .capability-specs .spec-value {
+    text-align: left; /* Keeps values aligned to the left */
+  }
+}

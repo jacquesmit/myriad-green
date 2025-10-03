@@ -156,6 +156,32 @@
   font-weight: 600;
 }
 
+/* Dark Mode Adjustments for Coverage Stats */
+@media (prefers-color-scheme: dark) {
+  .coverage-stat {
+    background: var(--color-gray-800);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  .coverage-stat:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+    border-color: var(--color-primary-light);
+  }
+
+  .coverage-stat .stat-icon {
+    background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary-dark) 100%);
+  }
+
+  .coverage-stat .stat-number {
+    color: var(--color-gray-50);
+  }
+
+  .coverage-stat .stat-label {
+    color: var(--color-gray-400);
+  }
+}
+
 /* Map Content Grid - Improved Layout */
 .map-content-grid {
   display: grid;
