@@ -103,3 +103,127 @@
   font-size: 1.5rem;
   color: var(--trust-icon-color);
 }
+
+/* Scoped styles for the "Weather-Smart Irrigation" section */
+#weather {
+  padding: 4rem 1rem;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+#weather .weather-section-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+#weather .weather-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--badge-background-color);
+  color: var(--badge-text-color);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+}
+
+#weather .weather-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+#weather .weather-card {
+  background-color: var(--card-background-color);
+  border: 1px solid var(--card-border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#weather .weather-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+#weather .weather-metric {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--metric-background-color);
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+
+#weather .weather-metric i {
+  font-size: 1.5rem;
+  color: var(--metric-icon-color);
+}
+
+#weather .metric-info {
+  display: flex;
+  flex-direction: column;
+}
+
+#weather .metric-label {
+  font-size: 0.875rem;
+  color: var(--metric-label-color);
+}
+
+#weather .metric-value {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: var(--metric-value-color);
+}
+
+#weather .weather-advice-section {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: var(--advice-background-color);
+  border-radius: 8px;
+}
+
+#weather .advice-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--advice-header-color);
+}
+
+#weather .advice-text {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--advice-text-color);
+}
+
+#weather .weather-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+#weather .weather-refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--button-background-color);
+  color: var(--button-text-color);
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#weather .weather-refresh-btn:hover {
+  background-color: var(--button-hover-background-color);
+}
+
+#weather .last-update {
+  font-size: 0.875rem;
+  color: var(--last-update-color);
+}

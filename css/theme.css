@@ -165,6 +165,18 @@
   --card-bg-option-5: #fdf6e3;                /* Light Sand Solid */
   /* To swap, set --card-bg to any option below */
   --card-bg: var(--card-bg-option-1);         /* Active card background */
+
+  /* Light Mode Variables */
+  --background-color: #ffffff;
+  --text-color: #000000;
+  --badge-background-color: #e3fcec;
+  --badge-text-color: #107c10;
+  --card-background-color: #f8fafc;
+  --card-border-color: #e5e7eb;
+  --metric-background-color: #f1f5f9;
+  --metric-icon-color: #107c10;
+  --metric-label-color: #6b7280;
+  --metric-value-color: #374151;
 }
 /*==============================
   1. Light Mode Overrides cards*/
@@ -774,32 +786,6 @@ input:focus, textarea:focus, select:focus {
   color: #146eb4; /* Amazon Blue in dark mode */
 }
 
-:root {
-  /* === Card Background Options for Light Mode === */
-  --card-bg-option-1: rgba(255,255,255,0.92); /* Default: Soft White */
-  --card-bg-option-2: var(--bg-gradient-2);   /* Pastel Green Gradient */
-  --card-bg-option-3: #e3fcec;                /* Pastel Green Solid */
-  --card-bg-option-4: var(--bg-gradient-3);   /* Warm Sand Gradient */
-  --card-bg-option-5: #fdf6e3;                /* Light Sand Solid */
-  /* To swap, set --card-bg to any option below */
-  --card-bg: var(--card-bg-option-1);         /* Active card background */
-}
-[data-theme="dark"] {
-  /* === Card Background Options for Dark Mode === */
-  --card-bg-dark-option-1: rgba(42,42,42,0.95); /* Default: Deep Charcoal */
-  --card-bg-dark-option-2: var(--bg-gradient-dark-2); /* Subtle Green Gradient */
-  --card-bg-dark-option-3: #232a34;                /* Charcoal Gray Solid */
-  --card-bg-dark-option-4: var(--bg-gradient-dark-3); /* Midnight Blue Gradient */
-  --card-bg-dark-option-5: #1a365d;                /* Deep Navy Solid */
-  --card-bg-dark-option-6: linear-gradient(135deg, #232a34 0%, var(--color-accent) 100%); /* Green Accent Gradient */
-  --card-bg-dark-option-7: linear-gradient(135deg, #181818 0%, #3182ce 100%); /* Blue Accent Gradient */
-  --card-bg-dark-option-8: #404040;                /* Slate Gray Solid */
-  --card-bg-dark-option-9: linear-gradient(135deg, #232a34 0%, #ed8936 100%); /* Orange Accent Gradient */
-  --card-bg-dark-option-10: linear-gradient(135deg, #181818 0%, #a0aec0 100%); /* Silver Fade Gradient */
-  /* To swap, set --card-bg to any option below */
-  --card-bg: var(--card-bg-dark-option-1);         /* Active card background: Deep Charcoal */
-}
-
 /*==============================
   Featured Product Card Styling
 ==============================*/
@@ -842,4 +828,22 @@ input:focus, textarea:focus, select:focus {
 [data-theme="light"] .booking-modal-content textarea::placeholder {
   color: var(--booking-placeholder-color) !important;
   opacity: 1 !important;
+}
+
+/* Fix for Safari and iOS browsers */
+/* Safari compatibility fixes */
+[data-theme="dark"] {
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+/* Missing dark mode variables for the "Why Choose Us" section */
+[data-theme="dark"] {
+  --background-color: #121212;
+  --text-color: #ffffff;
+  --card-background-color: #1f2937;
+  --card-border-color: #374151;
+  --icon-background-color: #2d3748;
+  --icon-color: #4caf50;
+  --eyebrow-color: #9ca3af;
 }
