@@ -455,4 +455,21 @@ if (contactForm) {
     }
   }, 200);
   // End floating bars toggle logic
+
+  // Dynamically update the "Weather-Smart Irrigation" section heading
+  updateWeatherSmartHeading();
+
+  function updateWeatherSmartHeading() {
+    try {
+      const serviceName = document.body.getAttribute('data-service');
+      const heading = document.getElementById('weather-title');
+      const placeholder = document.getElementById('service-name-placeholder');
+
+      if (serviceName && heading && placeholder) {
+        placeholder.textContent = serviceName;
+      }
+    } catch (e) {
+      console.warn('Failed to update Weather-Smart heading:', e);
+    }
+  }
 });
