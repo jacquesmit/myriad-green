@@ -977,3 +977,68 @@
     font-size: 1rem;
   }
 }
+
+/* Dark Mode Adjustments */
+@media (prefers-color-scheme: dark) {
+  .map-container {
+    background: #1e1e1e;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  }
+
+  .map-container:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+  }
+
+  .map-icon {
+    background: linear-gradient(135deg, #059669 0%, #34d399 100%);
+  }
+
+  .map-title {
+    color: #ffffff;
+  }
+
+  .map-description {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .map-embed {
+    background: #121212;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .map-loading {
+    color: #ffffff;
+  }
+
+  /* Dark Mode Adjustments for Quick Stats Panel */
+  .quick-stats-panel {
+    background: #1e1e1e;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  }
+
+  .quick-stats-title {
+    color: #ffffff;
+  }
+
+  .quick-stat-item {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .quick-stat-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .quick-stat-icon {
+    background: var(--color-primary-dark, #059669);
+  }
+
+  .quick-stat-label {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .quick-stat-value {
+    color: #ffffff;
+  }
+}
