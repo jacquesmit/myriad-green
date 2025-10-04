@@ -479,7 +479,7 @@ if (contactForm) {
     // run after load to allow widget to mount
     function injector() {
       try {
-        const container = document.getElementById('trends-widget');
+  const container = document.getElementById('trends-widget') || document.querySelector('.trends-widget-container');
         if (!container) return;
         const iframe = container.querySelector('iframe');
         if (!iframe) return;
@@ -514,8 +514,8 @@ if (contactForm) {
   // MutationObserver: clear inline background styles inside trends widget when same-origin elements are added
   (function observeTrendsContainer() {
     try {
-      const container = document.getElementById('trends-widget');
-      if (!container) return;
+  const container = document.getElementById('trends-widget') || document.querySelector('.trends-widget-container');
+  if (!container) return;
 
       const observer = new MutationObserver(mutations => {
         for (const m of mutations) {
