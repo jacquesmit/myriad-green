@@ -115,6 +115,19 @@
   transition: all 0.3s ease;
 }
 
+/* Dark theme overrides for weather section and cards */
+[data-theme="dark"] .section--weather {
+  background: linear-gradient(135deg, var(--page-bg, #031226) 0%, rgba(3,18,38,0.8) 100%) !important;
+}
+
+[data-theme="dark"] .weather-card,
+[data-theme="dark"] .weather-card--primary {
+  background: var(--card-background-color, #071022) !important;
+  border-color: rgba(255,255,255,0.04) !important;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.6) !important;
+  color: var(--color-text, #e6eef8) !important;
+}
+
 .weather-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
