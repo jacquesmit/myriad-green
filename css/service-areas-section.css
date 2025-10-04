@@ -492,6 +492,14 @@
   backdrop-filter: blur(10px);
 }
 
+/* Dark theme overrides for small UI bits in Areas section */
+[data-theme="dark"] .coverage-badge {
+  background: rgba(255,255,255,0.03) !important;
+  color: var(--color-primary, #34d399) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.6) !important;
+}
+
 /* Service Areas Overview Cards */
 .area-region-card {
   background: white;
@@ -599,6 +607,10 @@
   transition: all 0.2s ease;
 }
 
+[data-theme="dark"] .region-area {
+  background: rgba(255,255,255,0.03) !important;
+}
+
 .region-area:hover {
   background: rgba(46, 125, 50, 0.1);
   transform: translateX(2px);
@@ -618,6 +630,12 @@
   padding: 0.3rem 0.8rem;
   border-radius: 12px;
   border: 1px solid rgba(46, 125, 50, 0.2);
+}
+
+[data-theme="dark"] .area-timing {
+  background: rgba(255,255,255,0.04) !important;
+  color: var(--color-text, #e6eef8) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
 }
 
 .region-cta {
@@ -823,6 +841,13 @@
   box-shadow: 0 4px 12px rgba(45, 122, 45, 0.15);
   position: relative;
   z-index: 10; /* Safe level below floating bars */
+}
+
+[data-theme="dark"] .cta-actions .btn-secondary {
+  background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%) !important;
+  color: var(--color-text, #e6eef8) !important;
+  border: 2px solid rgba(255,255,255,0.06) !important;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.6) !important;
 }
 
 .cta-actions .btn-secondary:hover {
