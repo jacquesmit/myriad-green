@@ -203,7 +203,34 @@ class TrendsWidgetManager {
         try {
             console.log('📊 Fetching Google Trends data...');
 
-            // Simulate API call (replace with actual Google Trends API)
+            // Try server-side API first (includes optional theme hint)
+            const theme = this.options.theme || (document.documentElement && document.documentElement.getAttribute('data-theme')) || 'light';
+            try {
+                const q = new URLSearchParams({ keyword: this.options.keywords[0], geo: this.options.region, theme });
+                const resp = await fetch(`/api/trends?${q.toString()}`);
+                if (resp.ok) {
+                    const json = await resp.json();
+                    // If the server returns a usable structure, adapt it; else fall back
+                    // Here we expect the mock shape used by renderWidget; map server response to that shape if possible
+                    // Minimal behavior: include topTrends as an array with the returned trend
+                    const trendsData = {
+                      topTrends: [{ keyword: json.trend || this.options.keywords[0], trend: 50, change: 0, volume: 10000, isRising: false }],
+                      risingKeywords: [],
+                      regionalData: { region: this.options.region, topSearches: [] },
+                      lastUpdated: new Date().toISOString()
+                    };
+                    // Cache and return
+                    const cacheData = { data: trendsData, timestamp: Date.now(), keywords: this.options.keywords.slice(0,5) };
+                    localStorage.setItem('trendsWidgetData', JSON.stringify(cacheData));
+                    this.cachedData = cacheData;
+                    console.log('✅ Trends data fetched from server and cached');
+                    return;
+                }
+            } catch (e) {
+                console.warn('⚠️ Server-side trends API failed, falling back to mock:', e);
+            }
+
+            // Fallback: Simulate API call (local mock)
             const trendsData = await this.mockTrendsAPI();
 
             // Cache the data
