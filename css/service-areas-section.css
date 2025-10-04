@@ -8,6 +8,17 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Dark theme overrides for service areas */
+[data-theme="dark"] .service-areas-cta,
+[data-theme="dark"] .coverage-stat,
+[data-theme="dark"] .trends__widget-container,
+[data-theme="dark"] .insight-card {
+  background: var(--card-background-color, #071022) !important;
+  color: var(--color-text, #e6eef8);
+  border-color: rgba(255,255,255,0.04) !important;
+  box-shadow: 0 6px 24px rgba(2,6,23,0.6) !important;
+}
+
 .cta-title {
   font-size: 1.5rem;
   font-weight: 600;
