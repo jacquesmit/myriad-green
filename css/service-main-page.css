@@ -2527,6 +2527,15 @@ section[id] {
   background: white;
 }
 
+/* Dark theme override: prefer CSS variables and avoid bright white blocks */
+[data-theme="dark"] .section--trends #trends-widget,
+[data-theme="dark"] .section--trends .trends__mount {
+  background: var(--card-background-color, #0f1724) !important;
+  color: var(--color-text, #e6eef8);
+  border-color: rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 8px 24px rgba(2,6,23,0.6) !important;
+}
+
 /* Hidden Trends Widget - For Internal Use Only */
 .trends__widget-container--hidden {
   display: none !important;
