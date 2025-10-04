@@ -214,6 +214,23 @@
   color: var(--color-text, #e2e8f0) !important;
 }
 
+/* Force embedded content to be transparent where possible (iframes, svg, canvas) so dark container shows through. */
+[data-theme="dark"] #trends-widget iframe,
+[data-theme="dark"] #trends-widget svg,
+[data-theme="dark"] #trends-widget canvas {
+  background: transparent !important;
+}
+
+[data-theme="dark"] #trends-widget svg rect,
+[data-theme="dark"] #trends-widget svg g rect {
+  fill: transparent !important;
+}
+
+[data-theme="dark"] #trends-widget iframe {
+  /* If the iframe is same-origin we can try to force styles via JS; else we keep container dark and mask with overlay (see next steps) */
+  background-color: transparent !important;
+}
+
 
 /* Trends List */
 .trends-list {
