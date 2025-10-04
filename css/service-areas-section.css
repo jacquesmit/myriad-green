@@ -1151,3 +1151,32 @@
 [data-theme="dark"] .coverage-stat .stat-number {
   color: var(--color-gray-50) !important;
 }
+
+/* Pricing Section - ensure dark theme uses dark card backgrounds and readable text */
+[data-theme="dark"] .section--pricing,
+[data-theme="dark"] .pricing__group,
+[data-theme="dark"] .pricing__grid,
+[data-theme="dark"] .pricing-card,
+[data-theme="dark"] .pricing__item,
+[data-theme="dark"] .product-pricing,
+[data-theme="dark"] .pricing__grid--services {
+  background: var(--color-card-bg, #121212) !important;
+  color: var(--color-text, #e2e8f0) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+}
+
+[data-theme="dark"] .pricing__title,
+[data-theme="dark"] .pricing__group-title,
+[data-theme="dark"] .pricing__subtitle,
+[data-theme="dark"] .pricing__group-description,
+[data-theme="dark"] .price-note,
+[data-theme="dark"] .product-pricing .price-note {
+  color: var(--color-text, #e2e8f0) !important;
+}
+
+[data-theme="dark"] .pricing-card .price,
+[data-theme="dark"] .pricing-card .price-amount,
+[data-theme="dark"] .price {
+  color: var(--color-primary, #34d399) !important;
+}
