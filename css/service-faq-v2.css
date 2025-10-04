@@ -849,3 +849,13 @@
     transition: none !important;
   }
 }
+
+/* Dark theme overrides for FAQ interactive elements */
+[data-theme="dark"] .faq__search-input,
+[data-theme="dark"] .faq__category-btn,
+[data-theme="dark"] .faq__contact-buttons .btn-secondary {
+  background: var(--card-background-color, #071022) !important;
+  color: var(--color-text, #e6eef8) !important;
+  border-color: rgba(255,255,255,0.06) !important;
+  box-shadow: 0 4px 18px rgba(2,6,23,0.6) !important;
+}
