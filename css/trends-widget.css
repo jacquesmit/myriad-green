@@ -222,7 +222,7 @@
 
 /* Stronger page-scope override to beat .section--trends .trends__mount (often loaded after this file) */
 [data-theme="dark"] .section--trends #trends-widget,
-[ata-theme="dark"] .section--trends .trends__mount,
+[data-theme="dark"] .section--trends .trends__mount,
 [data-theme="dark"] #trends-widget,
 [data-theme="dark"] .section--trends .trends__mount {
   background: var(--color-card-bg, #121212) !important;
