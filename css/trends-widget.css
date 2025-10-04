@@ -203,6 +203,17 @@
   color: var(--color-text, #e2e8f0) !important;
 }
 
+/* Stronger page-scope override to beat .section--trends .trends__mount (often loaded after this file) */
+[data-theme="dark"] .section--trends #trends-widget,
+[ata-theme="dark"] .section--trends .trends__mount,
+[data-theme="dark"] #trends-widget,
+[data-theme="dark"] .section--trends .trends__mount {
+  background: var(--color-card-bg, #121212) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6) !important;
+  color: var(--color-text, #e2e8f0) !important;
+}
+
 
 /* Trends List */
 .trends-list {
