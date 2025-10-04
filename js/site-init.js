@@ -473,3 +473,40 @@ if (contactForm) {
     }
   }
 });
+
+  // Attempt safe same-origin injection for trends iframe to set transparent background in dark mode
+  (function tryInjectTrendsIframe() {
+    // run after load to allow widget to mount
+    function injector() {
+      try {
+        const container = document.getElementById('trends-widget');
+        if (!container) return;
+        const iframe = container.querySelector('iframe');
+        if (!iframe) return;
+
+        // Only attempt if same-origin (no access will throw)
+        try {
+          const idoc = iframe.contentDocument || iframe.contentWindow?.document;
+          if (!idoc) return;
+          // Apply minimal dark tweaks
+          const style = idoc.createElement('style');
+          style.textContent = 'html,body{background:transparent !important;color:inherit !important;} svg rect{fill:transparent !important;}';
+          idoc.head?.appendChild(style);
+        } catch (e) {
+          // cross-origin iframes will throw - safe to ignore
+          return;
+        }
+      } catch (e) {
+        console.warn('trends iframe injection skipped:', e);
+      }
+    }
+
+    // Try a few times in case widget mounts after a delay
+    let attempts = 0;
+    const maxAttempts = 12;
+    const intv = setInterval(() => {
+      attempts++;
+      injector();
+      if (attempts >= maxAttempts) clearInterval(intv);
+    }, 500);
+  })();
