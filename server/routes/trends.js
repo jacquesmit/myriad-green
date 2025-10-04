@@ -8,6 +8,7 @@ const googleTrends = require('google-trends-api');
 router.get('/', async (req, res) => {
   const keyword = req.query.keyword || 'irrigation';
   const geo = req.query.geo || 'ZA';
+  const theme = req.query.theme || 'light';
   try {
     const results = await googleTrends.dailyTrends({
       geo,
@@ -19,7 +20,8 @@ router.get('/', async (req, res) => {
       // Find a trend matching the keyword, else use the top one
       topTrend = dayTrends.find(t => t.title.query.toLowerCase().includes(keyword.toLowerCase()))?.title.query || dayTrends[0].title.query;
     }
-    res.json({ trend: topTrend });
+    // Echo theme back so clients or downstream renderers can adjust if needed
+    res.json({ trend: topTrend, theme });
   } catch (err) {
     console.error('[Trends API] Error:', err);
     res.status(500).json({ error: 'Failed to fetch trends' });
