@@ -1216,3 +1216,21 @@
 [data-theme="dark"] .price {
   color: var(--color-primary, #34d399) !important;
 }
+
+/* Consolidated Areas dark overrides: ensures any leftover white backgrounds are replaced by dark tokens */
+[data-theme="dark"] .service-areas-cta,
+[data-theme="dark"] .coverage-stat,
+[data-theme="dark"] .map-container,
+[data-theme="dark"] .map-embed,
+[data-theme="dark"] .quick-stats-panel,
+[data-theme="dark"] .area-region-card,
+[data-theme="dark"] .coverage-badge,
+[data-theme="dark"] .region-area,
+[data-theme="dark"] .area-timing,
+[data-theme="dark"] .cta-actions .btn-secondary {
+  background: var(--card-background-color, #071022) !important;
+  color: var(--color-text, #e6eef8) !important;
+  border-color: rgba(255,255,255,0.06) !important;
+  box-shadow: 0 8px 28px rgba(2,6,23,0.6) !important;
+}
+
