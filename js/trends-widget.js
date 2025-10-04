@@ -146,6 +146,11 @@ class TrendsWidgetManager {
             mainContent.appendChild(container);
         }
 
+        // If the widget was created with theme option, reflect that with a class
+        if (this.options.theme === 'dark') {
+            container.classList.add('trends-widget--dark');
+        }
+
         this.container = container;
     }
 
@@ -256,9 +261,10 @@ class TrendsWidgetManager {
     renderWidget(data) {
         if (!this.container) return;
 
+        const darkClass = this.options.theme === 'dark' ? 'trends-widget--dark' : '';
         const html = `
             <div class="trends-widget">
-                <div class="trends-widget__header">
+                <div class="trends-widget__header ${darkClass}">
                     <h3 class="trends-widget__title">
                         <i class="fas fa-chart-line" aria-hidden="true"></i>
                         Market Trends Insights
@@ -273,17 +279,17 @@ class TrendsWidgetManager {
                     </div>
                 </div>
 
-                <div class="trends-widget__content">
+                    <div class="trends-widget__content ${darkClass}">
                     <div class="trends-widget__section">
                         <h4 class="trends-widget__section-title">🔥 Trending Now</h4>
-                        <div class="trends-list">
+                        <div class="trends-list ${darkClass}">
                             ${data.topTrends.map(trend => this.renderTrendItem(trend)).join('')}
                         </div>
                     </div>
 
                     <div class="trends-widget__section">
                         <h4 class="trends-widget__section-title">📈 Rising Searches</h4>
-                        <div class="trends-list trends-list--rising">
+                        <div class="trends-list trends-list--rising ${darkClass}">
                             ${data.risingKeywords.map(trend => this.renderTrendItem(trend, true)).join('')}
                         </div>
                     </div>
@@ -528,8 +534,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // Initialize trends widget
-    window.trendsWidget = new TrendsWidgetManager();
+    // Initialize trends widget with current theme (so widget can render dark visuals internally)
+    const currentTheme = document.documentElement.getAttribute('data-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    window.trendsWidget = new TrendsWidgetManager({ theme: currentTheme });
 
     // Add to global scope for debugging
     if (typeof window !== 'undefined') {

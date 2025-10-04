@@ -203,6 +203,23 @@
   color: var(--color-text, #e2e8f0) !important;
 }
 
+/* Internal widget dark class when TrendsWidgetManager is initialized with theme: 'dark' */
+.trends-widget--dark .trends-widget__header {
+  background: linear-gradient(135deg, rgba(16,124,16,0.9) 0%, rgba(10,70,45,0.9) 100%);
+  color: white;
+}
+
+.trends-widget--dark .trend-item {
+  background: rgba(255,255,255,0.02);
+  border-color: rgba(255,255,255,0.04);
+}
+
+.trends-widget--dark .trend-item__keyword,
+.trends-widget--dark .trends-widget__section-title,
+.trends-widget--dark .trends-widget__title {
+  color: var(--color-text, #e2e8f0);
+}
+
 /* Stronger page-scope override to beat .section--trends .trends__mount (often loaded after this file) */
 [data-theme="dark"] .section--trends #trends-widget,
 [ata-theme="dark"] .section--trends .trends__mount,
