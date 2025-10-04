@@ -510,3 +510,33 @@ if (contactForm) {
       if (attempts >= maxAttempts) clearInterval(intv);
     }, 500);
   })();
+
+  // MutationObserver: clear inline background styles inside trends widget when same-origin elements are added
+  (function observeTrendsContainer() {
+    try {
+      const container = document.getElementById('trends-widget');
+      if (!container) return;
+
+      const observer = new MutationObserver(mutations => {
+        for (const m of mutations) {
+          for (const node of m.addedNodes) {
+            try {
+              if (node.nodeType === Node.ELEMENT_NODE) {
+                // Clear background style on the node and its subtree where possible
+                node.querySelectorAll && node.querySelectorAll('*').forEach(el => {
+                  try { if (el.style && el.style.background) el.style.background = 'transparent'; } catch { }
+                  try { if (el.style && el.style.backgroundColor) el.style.backgroundColor = 'transparent'; } catch { }
+                });
+                try { if (node.style && node.style.background) node.style.background = 'transparent'; } catch { }
+                try { if (node.style && node.style.backgroundColor) node.style.backgroundColor = 'transparent'; } catch { }
+              }
+            } catch (e) { /* ignore */ }
+          }
+        }
+      });
+
+      observer.observe(container, { childList: true, subtree: true });
+    } catch (e) {
+      // ignore; this is best-effort
+    }
+  })();
