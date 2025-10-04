@@ -16,6 +16,17 @@
   overflow: hidden;
   box-shadow: 0 2px 16px rgba(23,106,58,0.10);
   width: 100%;
+  /* Neutral background in light mode; dark-mode overrides should apply when active */
+  background: var(--card-background-color, var(--color-gray-50, #ffffff));
+}
+
+[data-theme="light"] .map-embed {
+  background: var(--card-background-color, var(--color-gray-50, #ffffff)) !important;
+}
+
+[data-theme="dark"] .map-embed {
+  background: #121212 !important;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.5);
 }
 .gauteng-map-section p {
   text-align: center;

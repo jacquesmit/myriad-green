@@ -201,7 +201,8 @@
   grid-template-columns: 2fr 1fr;
   gap: 2rem;
   margin-bottom: 3rem;
-  align-items: start;
+  /* Stretch children so panels match height (map vs quick-stats) */
+  align-items: stretch;
 }
 
 /* Service Areas Overview */
@@ -222,6 +223,19 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(46, 125, 50, 0.1);
   transition: all 0.3s ease;
+}
+
+/* Ensure quick stats panel matches the map container height but remains narrower */
+.featured-map-section .quick-stats-panel {
+  align-self: stretch; /* take full height of the grid row */
+  width: 100%;
+  max-width: 420px; /* keep it narrower than the map */
+  box-sizing: border-box;
+}
+
+.featured-map-section .map-container {
+  /* Let map container take remaining width and naturally control height */
+  width: 100%;
 }
 
 .map-container:hover {
@@ -273,7 +287,22 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(46, 125, 50, 0.2);
   height: 400px;
-  background: var(--color-primary);
+  /* Use card background token for light mode; dark mode rules below will override when applicable */
+  background: var(--card-background-color, var(--color-gray-50, #ffffff));
+}
+
+/* Theme-scoped map backgrounds (prefer page theme via data-theme attribute). 
+   These override generic class rules and avoid relying solely on system preferences. */
+[data-theme="light"] .map-embed,
+[data-theme="light"] .map-container {
+  background: var(--card-background-color, var(--color-gray-50, #ffffff)) !important;
+  border-color: rgba(46, 125, 50, 0.15);
+}
+
+[data-theme="dark"] .map-embed,
+[data-theme="dark"] .map-container {
+  background: #121212 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
 }
 
 /* Quick Stats Panel */
@@ -343,11 +372,57 @@
   margin: 0 0 0.2rem 0;
 }
 
+/* Theme-scoped overrides for Quick Stats Panel to prevent dark backgrounds in light mode */
+[data-theme="light"] .quick-stats-panel {
+  background: var(--card-background-color, #ffffff) !important;
+  border: 1px solid rgba(46, 125, 50, 0.1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme="light"] .quick-stat-item {
+  /* Use neutral card background for better contrast, with a subtle left accent */
+  background: var(--card-background-color, #ffffff) !important;
+  border-left: 4px solid var(--color-primary, #16a34a) !important;
+  padding-left: 0.8rem !important;
+}
+
+[data-theme="light"] .quick-stat-icon {
+  background: var(--color-primary, #16a34a) !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .quick-stats-panel {
+  background: #1e1e1e !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="dark"] .quick-stat-item {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme="dark"] .quick-stat-icon {
+  background: var(--color-primary-dark, #059669) !important;
+}
+
 .quick-stat-value {
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--color-text-dark);
   margin: 0;
+}
+
+/* Ensure text is readable per theme */
+[data-theme="light"] .quick-stats-title,
+[data-theme="light"] .quick-stat-label,
+[data-theme="light"] .quick-stat-value {
+  color: var(--color-text-dark, #111827) !important;
+}
+
+[data-theme="dark"] .quick-stats-title,
+[data-theme="dark"] .quick-stat-label,
+[data-theme="dark"] .quick-stat-value {
+  color: var(--color-text, #e2e8f0) !important;
 }
 
 .map-loading {
@@ -1041,4 +1116,25 @@
   .quick-stat-value {
     color: #ffffff;
   }
+}
+
+/* Explicit theme-scoped overrides to avoid dark backgrounds leaking into light-themed pages */
+[data-theme="light"] .coverage-stat {
+  background: var(--card-background-color, #ffffff) !important;
+  border: 1px solid rgba(46, 125, 50, 0.1) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme="light"] .coverage-stat .stat-number {
+  color: var(--color-text-dark, #111827) !important;
+}
+
+[data-theme="dark"] .coverage-stat {
+  background: var(--color-gray-800) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="dark"] .coverage-stat .stat-number {
+  color: var(--color-gray-50) !important;
 }
