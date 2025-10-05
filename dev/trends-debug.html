@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Trends Debug Harness</title>
+  <style>
+    html,body{height:100%;margin:0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial}
+    .wrap{padding:24px}
+    .controls{display:flex;gap:12px;margin-bottom:16px}
+    .btn{padding:10px 14px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer}
+    .btn.primary{background:#059669;color:#fff;border:none}
+    .preview{border:1px solid #e5e7eb;padding:12px;border-radius:8px}
+    iframe{width:100%;height:420px;border:none;border-radius:8px}
+    .overlay-hint{margin-top:8px;color:#6b7280}
+    .status{margin-top:8px;font-size:13px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h2>Trends Debug Harness</h2>
+    <div class="controls">
+      <button class="btn primary" id="injectBtn">Try same-origin injection</button>
+      <button class="btn" id="toggleOverlay">Toggle overlay</button>
+      <button class="btn" id="toggleTheme">Toggle debug page theme</button>
+    </div>
+    <div class="preview">
+      <iframe id="mockIframe" src="/dev/trends-mock.html"></iframe>
+      <div class="overlay-hint">Overlay will cover iframe to mask its background when enabled.</div>
+      <div class="status" id="status">Status: idle</div>
+    </div>
+  </div>
+
+  <script>
+    const iframe = document.getElementById('mockIframe');
+    const status = document.getElementById('status');
+    let overlay = null;
+
+    document.getElementById('toggleOverlay').addEventListener('click', () => {
+      if(!overlay){
+        overlay = document.createElement('div');
+        overlay.style.position = 'absolute';
+        overlay.style.pointerEvents = 'none';
+        overlay.style.top = iframe.offsetTop + 'px';
+        overlay.style.left = iframe.offsetLeft + 'px';
+        overlay.style.width = iframe.offsetWidth + 'px';
+        overlay.style.height = iframe.offsetHeight + 'px';
+        overlay.style.background = 'rgba(7,16,34,0.6)';
+        overlay.style.borderRadius = '8px';
+        overlay.id = 'iframe-overlay';
+        document.querySelector('.preview').appendChild(overlay);
+        status.textContent = 'Status: overlay enabled';
+      } else {
+        overlay.remove(); overlay = null; status.textContent = 'Status: overlay disabled';
+      }
+    });
+
+    document.getElementById('injectBtn').addEventListener('click', async () => {
+      try{
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        // Try to remove inline background
+        const el = doc.getElementById('provider-widget');
+        if(el){
+          el.style.background = 'transparent';
+          status.textContent = 'Status: injection succeeded (same-origin)';
+        } else {
+          status.textContent = 'Status: provider widget element not found';
+        }
+      } catch(e){
+        status.textContent = 'Status: injection failed (cross-origin)';
+      }
+    });
+
+    document.getElementById('toggleTheme').addEventListener('click', () => {
+      const el = document.documentElement;
+      if(el.getAttribute('data-theme') === 'dark'){
+        el.removeAttribute('data-theme');
+      } else {
+        el.setAttribute('data-theme', 'dark');
+      }
+    });
+  </script>
+</body>
+</html>

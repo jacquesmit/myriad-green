@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Trends Provider Mock</title>
+  <style>
+    html,body{height:100%;margin:0}
+    body{background:white;color:#111;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;display:flex;align-items:center;justify-content:center}
+    .widget{width:520px;border-radius:12px;padding:20px;background:white;box-shadow:0 10px 30px rgba(0,0,0,0.08)}
+    .header{font-weight:700;margin-bottom:12px}
+    .chip{display:inline-block;padding:6px 10px;border-radius:999px;background:#f3f4f6;color:#0f172a;font-weight:600}
+    .inline-style-note{margin-top:12px;font-size:13px;color:#374151}
+    .mutate-btn{margin-top:16px;padding:8px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="widget" id="provider-widget" style="background: white;">
+    <div class="header">Provider Trends Widget (Mock)</div>
+    <div>
+      <span class="chip">Trending now</span>
+    </div>
+    <p class="inline-style-note">This mock simulates a third-party widget that forces a white background via inline styles.
+    Use the parent page's injector button to attempt same-origin injection or toggle the overlay on the debug page.</p>
+    <button class="mutate-btn" id="toggleInline">Toggle inline background</button>
+  </div>
+
+  <script>
+    const btn = document.getElementById('toggleInline');
+    const widget = document.getElementById('provider-widget');
+    let on = true;
+    btn.addEventListener('click', () => {
+      on = !on;
+      if(on) {
+        widget.style.background = 'white';
+        btn.textContent = 'Remove inline background';
+      } else {
+        widget.style.background = 'transparent';
+        btn.textContent = 'Restore inline background';
+      }
+    });
+  </script>
+</body>
+</html>
