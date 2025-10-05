@@ -70,6 +70,66 @@
   }
   </script>
 
+  <!-- FAQ Schema (moved to head to avoid rendering in body) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "name": "Leak Detection Services FAQ - Myriad Green",
+    "description": "Frequently asked questions about professional leak detection services in Johannesburg and Pretoria",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How much does a leak detection service cost?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Leak detection service costs vary based on property size and the complexity of the plumbing system. Residential services typically range from R750 to R2,500. We provide free assessments and detailed quotes."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which areas in Gauteng do you service?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We service all major areas of Gauteng including Johannesburg (Sandton, Rosebank, Melrose, Houghton, Bedfordview) and Pretoria (Waterkloof, Faerie Glen, Brooklyn, Menlyn, Garsfontein). Same-day emergency service available."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you repair leaks in systems installed by other companies?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes — we repair leaks regardless of who installed the system. We own professional leak-detection equipment (acoustic detectors, thermal cameras, pressure and tracer testing tools) and carry on-site repair kits to fix most common issues during the first visit."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do acoustic leak detectors work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Acoustic leak detectors use sensitive microphones to listen for the sound of water escaping from pipes. The device amplifies and analyzes the sound to pinpoint the location of the leak, even if it's underground or behind walls."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What equipment do you use to locate leaks?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We use acoustic leak detectors, thermal imaging cameras, electronic pressure and tracer testing tools, and CCTV inspection where needed. Our technicians combine methods to pinpoint leaks accurately while minimising excavation."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How often should leak detection systems be serviced?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We recommend annual servicing for leak detection systems to ensure all components are functioning correctly and to recalibrate sensors as needed. More frequent checks may be necessary for older systems or properties with a history of leaks."
+        }
+      }
+    ]
+  }
+  </script>
+
   <!-- External Fonts & Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
@@ -538,10 +598,10 @@
                         Technical Specifications
                       </h4>
                       <ul class="detail-list">
-                        <li>CAD-mapped irrigation zones</li>
-                        <li>Hydraulic calculations & flow rates</li>
-                        <li>Component specifications (Rain Bird/Hunter)</li>
-                        <li>Smart controller programming plan</li>
+                        <li>CAD-mapped leak locations and site plans</li>
+                        <li>Pressure profiling & flow measurements</li>
+                        <li>Equipment specifications (acoustic detectors, thermal cameras)</li>
+                        <li>Non-invasive repair & mitigation plan</li>
                       </ul>
                     </div>
 
@@ -761,8 +821,8 @@
                   <i class="fas fa-tools" aria-hidden="true"></i>
                 </div>
                 <div class="guarantee-content">
-                  <span class="guarantee-title" itemprop="name">Expert Installation</span>
-                  <span class="guarantee-desc" itemprop="description">Certified Rain Bird technicians</span>
+                  <span class="guarantee-title" itemprop="name">Expert Service</span>
+                  <span class="guarantee-desc" itemprop="description">Certified Leak Detection Technicians</span>
                 </div>
               </div>
             </div>
@@ -915,7 +975,7 @@
         <div class="products-cta">
           <div class="cta-content">
             <h3 class="cta-title">Need Help Choosing the Right Products?</h3>
-            <p class="cta-text">Our irrigation specialists can help you select the perfect components for your specific needs and budget.</p>
+            <p class="cta-text">Our leak detection specialists can diagnose problems, prioritise repairs, and recommend durable fixes for your property.</p>
             <div class="cta-actions">
               <button class="btn btn-primary book-now" data-service="Product Consultation">
                 <i class="fas fa-phone"></i>
@@ -959,7 +1019,7 @@
               <div class="card-eyebrow">Experience</div>
               <h3 class="card-title">15+ Years Gauteng Expertise</h3>
               <p class="card-description">
-                Deep understanding of local soil conditions, water restrictions, and climate patterns. We've installed over 800 irrigation systems across Johannesburg and Pretoria.
+                Deep understanding of local soil conditions, water restrictions, and pipe networks. We've completed over 800 leak investigations and repairs across Johannesburg and Pretoria.
               </p>
               <div class="card-stats">
                 <div class="stat-item">
@@ -985,7 +1045,7 @@
               <div class="card-eyebrow">Efficiency</div>
               <h3 class="card-title">Proven Water Savings</h3>
               <p class="card-description">
-                Our smart systems typically reduce water usage by 30-50% while improving landscape health through rain sensors and weather-based scheduling.
+                Our interventions typically reduce water loss by 30-50%, preventing property damage and reducing monthly water bills through targeted detection and repair.
               </p>
               <div class="card-stats">
                 <div class="stat-item">
@@ -993,7 +1053,7 @@
                   <span class="stat-label">Water Savings</span>
                 </div>
                 <div class="stat-item">
-                  <span class="stat-number">Smart</span>
+                  <span class="stat-number">Advanced</span>
                   <span class="stat-label">Technology</span>
                 </div>
               </div>
@@ -1049,8 +1109,8 @@
       </div>
     </section>
 
-    <!-- Weather-Smart Irrigation Section -->
-    <section id="weather" class="section section--weather" aria-labelledby="weather-title">
+  <!-- Environmental Monitoring & Leak Advisory Section -->
+  <section id="weather" class="section section--weather" aria-labelledby="weather-title">
       <div class="container">
         <div class="weather-section-header">
           <div class="weather-badge">
@@ -1058,10 +1118,10 @@
             <span>Real-Time Weather Intelligence</span>
           </div>
           <h2 id="weather-title" class="weather-section-title">
-            Weather-Smart <span id="service-name-placeholder">Service</span> Solutions
++            Environmental & Leak Monitoring Solutions
           </h2>
           <p class="weather-section-subtitle">
-            Our advanced irrigation systems automatically adapt to Johannesburg's weather conditions, ensuring optimal water efficiency and plant health year-round.
+            Our monitoring and advisory systems help detect leaks early and reduce water loss, protecting your property from damage.
           </p>
         </div>
 
@@ -1126,10 +1186,10 @@
             <div class="weather-advice-section">
               <div class="advice-header">
                 <i class="fas fa-lightbulb"></i>
-                <span>Today's Irrigation Recommendation</span>
+                <span>Today's Leak Advisory</span>
               </div>
-              <div id="irrigation-recommendation" class="advice-text">
-                Loading irrigation recommendations...
+              <div id="leak-recommendation" class="advice-text">
+                Loading leak detection advisory...
               </div>
             </div>
 
@@ -1146,6 +1206,7 @@
               id="weather-widget"
               class="weather-widget"
               data-suburb="Johannesburg"
+              data-service="Leak Detection"
               data-country="ZA"
               data-units="metric"
               data-cache-mins="120"
@@ -1165,38 +1226,38 @@
             <div class="features-grid">
               <div class="feature-item">
                 <div class="feature-icon">
-                  <i class="fas fa-cloud-rain"></i>
+                  <i class="fas fa-waves"></i>
                 </div>
                 <div class="feature-content">
-                  <h4 class="feature-name">Rain Detection</h4>
-                  <p class="feature-description">Automatically skips watering when rain is detected or forecast</p>
+                  <h4 class="feature-name">Acoustic Detection</h4>
+                  <p class="feature-description">High-sensitivity listening equipment pinpoints underground and in-wall leaks</p>
                 </div>
               </div>
               <div class="feature-item">
                 <div class="feature-icon">
-                  <i class="fas fa-thermometer-half"></i>
+                  <i class="fas fa-bolt"></i>
                 </div>
                 <div class="feature-content">
-                  <h4 class="feature-name">Temperature Adjustment</h4>
-                  <p class="feature-description">Increases watering duration during hot weather automatically</p>
+                  <h4 class="feature-name">Thermal Imaging</h4>
+                  <p class="feature-description">Thermal cameras detect temperature differences caused by escaping water</p>
                 </div>
               </div>
               <div class="feature-item">
                 <div class="feature-icon">
-                  <i class="fas fa-wind"></i>
+                  <i class="fas fa-tachometer-alt"></i>
                 </div>
                 <div class="feature-content">
-                  <h4 class="feature-name">Wind Compensation</h4>
-                  <p class="feature-description">Adjusts spray patterns and timing based on wind conditions</p>
+                  <h4 class="feature-name">Pressure Profiling</h4>
+                  <p class="feature-description">Pressure and tracer testing to isolate problematic zones</p>
                 </div>
               </div>
               <div class="feature-item">
                 <div class="feature-icon">
-                  <i class="fas fa-tint"></i>
+                  <i class="fas fa-wrench"></i>
                 </div>
                 <div class="feature-content">
-                  <h4 class="feature-name">Humidity Awareness</h4>
-                  <p class="feature-description">Optimizes watering schedules based on atmospheric moisture</p>
+                  <h4 class="feature-name">Non-invasive Repairs</h4>
+                  <p class="feature-description">Small-footprint repair methods to reduce excavation and restore service fast</p>
                 </div>
               </div>
             </div>
@@ -1208,27 +1269,27 @@
               <div class="cta-icon">
                 <i class="fas fa-robot"></i>
               </div>
-              <h3 class="cta-title">Weather-Smart Installation</h3>
+              <h3 class="cta-title">Rapid Leak Response & Monitoring</h3>
               <p class="cta-description">
-                Upgrade to our intelligent irrigation system that automatically responds to weather conditions, saving water and protecting your landscape.
+                Fast detection and targeted repairs to stop leaks quickly and reduce property damage. Our monitoring options give ongoing protection.
               </p>
               <div class="cta-benefits">
                 <div class="benefit-tag">
-                  <i class="fas fa-water"></i>
-                  <span>30% Water Savings</span>
+                  <i class="fas fa-search"></i>
+                  <span>Rapid Detection</span>
                 </div>
                 <div class="benefit-tag">
-                  <i class="fas fa-shield-alt"></i>
-                  <span>Plant Protection</span>
+                  <i class="fas fa-shovel"></i>
+                  <span>Minimised Excavation</span>
                 </div>
                 <div class="benefit-tag">
-                  <i class="fas fa-mobile-alt"></i>
-                  <span>App Control</span>
+                  <i class="fas fa-tools"></i>
+                  <span>On-site Repairs</span>
                 </div>
               </div>
-              <button class="btn btn-primary btn-weather-cta book-now" data-service="Smart Weather Integration">
-                <i class="fas fa-rocket"></i>
-                <span>Go Smart</span>
+              <button class="btn btn-primary btn-weather-cta book-now" data-service="Leak Detection Services">
+                <i class="fas fa-bolt"></i>
+                <span>Request Inspection</span>
               </button>
             </div>
           </div>
@@ -1242,7 +1303,7 @@
             </div>
             <div class="stat-info">
               <span class="stat-value">30%</span>
-              <span class="stat-label">Water Savings</span>
+              <span class="stat-label">Water Saved</span>
             </div>
           </div>
           <div class="weather-stat">
@@ -1250,8 +1311,8 @@
               <i class="fas fa-leaf"></i>
             </div>
             <div class="stat-info">
-              <span class="stat-value">98%</span>
-              <span class="stat-label">Plant Health</span>
+              <span class="stat-value">Minor</span>
+              <span class="stat-label">Damage Prevented</span>
             </div>
           </div>
           <div class="weather-stat">
@@ -1269,7 +1330,7 @@
             </div>
             <div class="stat-info">
               <span class="stat-value">500+</span>
-              <span class="stat-label">Smart Systems</span>
+              <span class="stat-label">Leak Investigations</span>
             </div>
           </div>
         </div>
@@ -1355,7 +1416,7 @@
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14297.96307328913!2d28.047305!3d-26.204102!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e950b0e3f7e6e2b%3A0x7c7b7b7b7b7b7b7b!2sGauteng!5e0!3m2!1sen!2sza!4v1691500000000!5m2!1sen!2sza"
                   class="gauteng-map-iframe"
-                  title="Myriad Green Service Areas Map - Professional Irrigation Services across Gauteng"
+                  title="Myriad Green Service Areas Map - Professional Leak Detection Services across Gauteng"
                   allowfullscreen
                   loading="lazy">
                 </iframe>
@@ -1506,7 +1567,7 @@
         <div class="service-areas-cta">
           <div class="cta-content">
             <h3 class="cta-title">Ready to Upgrade Your Leak Detection System?</h3>
-            <p class="cta-text">Join hundreds of Gauteng property owners who trust us with their irrigation systems. Fast response, professional service, guaranteed results.</p>
+            <p class="cta-text">Join hundreds of Gauteng property owners who trust us with leak detection and repairs. Fast response, professional service, guaranteed results.</p>
             <div class="cta-actions">
               <button class="btn btn-primary btn--large book-now" data-service="Leak Detection Assessment">
                 <i class="fas fa-calendar-check"></i>
@@ -1821,8 +1882,8 @@
           <div class="pricing__cta-content">
             <h3 class="pricing__cta-title">Need a Custom Solution?</h3>
             <p class="pricing__cta-description">
-              Have a large property or complex irrigation needs? Let's discuss a tailored solution for your specific requirements.
-            </p>
+                Have a large property or complex leak detection needs? Let's discuss a tailored solution for your specific requirements.
+              </p>
             <button class="btn btn--outline pricing__cta-button" data-action="custom-quote">
               Get Custom Quote
             </button>
@@ -1840,7 +1901,7 @@
             Market Insights
           </div>
           <h2 id="trends-title" class="trends__title">
-            Gauteng Irrigation Trends & Demand
+            Gauteng Water Loss & Leak Trends
           </h2>
           <p class="trends__subtitle">
             Real-time search data shows growing interest in water-efficient solutions across Johannesburg and Pretoria
@@ -1852,11 +1913,11 @@
           <div class="trends__widget-container trends__widget-container--hidden" aria-hidden="true">
             <div class="trends__widget-header">
               <h3 class="trends__widget-title">Search Interest Over Time</h3>
-              <p class="trends__widget-description">Google searches for irrigation-related terms in Gauteng (ZA-GT)</p>
+              <p class="trends__widget-description">Google searches for leak detection and water-loss terms in Gauteng (ZA-GT)</p>
             </div>
             <div id="trends-widget" class="trends__mount"
                  data-geo="ZA-GT"
-                 data-queries='["irrigation","water tank","borehole","drip irrigation","smart irrigation","rainbird","hunter irrigation","wifi sprinkler controller","automatic irrigation","garden irrigation system","sprinkler repair","irrigation installation","borehole drilling","water pump","grey water system"]'></div>
+                 data-queries='["leak detection","water leak","acoustic leak detection","thermal imaging","underground leak","burst pipe","water loss","plumbing leak","leak repair","pressure testing","tracer gas","leak detection services"]'></div>
           </div>
 
           <!-- Trends Insights -->
@@ -1869,7 +1930,7 @@
                 <div class="insight-card__content">
                   <h4 class="insight-card__title">Water Conservation Focus</h4>
                   <p class="insight-card__text">
-                    Rising search interest in "smart irrigation" and "drip irrigation" reflects Gauteng's growing awareness of water-efficient technologies during municipal restrictions.
+                    Rising search interest in "leak detection" and "water leak" shows growing concern about water loss and infrastructure issues across Gauteng.
                   </p>
                 </div>
               </div>
@@ -1881,7 +1942,7 @@
                 <div class="insight-card__content">
                   <h4 class="insight-card__title">Residential Demand</h4>
                   <p class="insight-card__text">
-                    Homeowners in suburbs like Sandton and Waterkloof are increasingly searching for professional irrigation solutions to maintain beautiful gardens with less water.
+                    Homeowners in suburbs like Sandton and Waterkloof are increasingly searching for professional leak detection and emergency repair services to protect their properties.
                   </p>
                 </div>
               </div>
@@ -1893,7 +1954,7 @@
                 <div class="insight-card__content">
                   <h4 class="insight-card__title">Commercial Interest</h4>
                   <p class="insight-card__text">
-                    Businesses and estates are seeking advanced irrigation systems to reduce operational costs while complying with Johannesburg's water bylaws.
+                    Businesses and estates are prioritising leak detection and compliance reporting to prevent costly downtime and regulatory issues.
                   </p>
                 </div>
               </div>
@@ -1906,8 +1967,8 @@
           <div class="cta-card">
             <h3 class="cta-card__title">Stay Ahead of the Curve</h3>
             <p class="cta-card__text">
-              Join the growing number of Gauteng property owners embracing smart irrigation technology.
-              Get expert advice on the latest water-efficient solutions.
+              Join the growing number of Gauteng property owners protecting their properties from hidden leaks.
+              Get expert advice on rapid detection and long-term prevention.
             </p>
             <button class="btn btn-primary btn--large trends__cta-button" data-service="Trend Consultation">
               <span>Get Expert Advice</span>
@@ -1938,10 +1999,10 @@
               "ratingValue": "5",
               "bestRating": "5"
             },
-            "reviewBody": "Myriad Green transformed our estate's water management with their professional irrigation installation. The smart sprinkler systems reduced our monthly water bill by 40% while keeping our gardens healthier than ever. Their drip irrigation maintenance team is responsive and professional.",
+            "reviewBody": "Myriad Green quickly located a hidden burst pipe under our driveway and repaired it with minimal excavation. Their team saved us thousands in water loss and avoided major structural damage.",
             "itemReviewed": {
               "@type": "Service",
-              "name": "Sprinkler Systems & Drip Irrigation Installation"
+              "name": "Leak Detection & Repair Services"
             }
           },
           {
@@ -1955,10 +2016,10 @@
               "ratingValue": "5",
               "bestRating": "5"
             },
-            "reviewBody": "The WiFi irrigation controller changed everything for our garden irrigation system. I can adjust sprinkler zones from my phone and the weather integration prevents water waste perfectly.",
+            "reviewBody": "The thermal imaging and acoustic tests pinpointed our underground leak in under an hour. The repair team replaced the damaged section and we were back to normal the same day.",
             "itemReviewed": {
               "@type": "Service",
-              "name": "WiFi Irrigation Controller & Garden Irrigation Systems"
+              "name": "Thermal & Acoustic Leak Detection"
             }
           },
           {
@@ -1972,10 +2033,10 @@
               "ratingValue": "5",
               "bestRating": "5"
             },
-            "reviewBody": "Water compliance is critical for commercial properties. Myriad Green's commercial irrigation systems keep us compliant with water restrictions while saving money on irrigation costs.",
+            "reviewBody": "For our commercial facility, Myriad Green detected multiple slow leaks that had gone unnoticed. Their detailed report and repairs helped avoid regulatory issues and reduced our monthly bills.",
             "itemReviewed": {
               "@type": "Service",
-              "name": "Commercial Irrigation Systems & Water Compliance"
+              "name": "Commercial Leak Detection & Reporting"
             }
           },
           {
@@ -1989,10 +2050,10 @@
               "ratingValue": "5",
               "bestRating": "5"
             },
-            "reviewBody": "Our automated irrigation system paid for itself within 8 months. The irrigation installation team was knowledgeable and provided excellent water-wise gardening education.",
+            "reviewBody": "After the repair, our meter readings returned to normal and the team provided clear advice on prevention. Highly recommended for emergency leak response.",
             "itemReviewed": {
               "@type": "Service",
-              "name": "Automated Irrigation System Installation & Water-Wise Gardening"
+              "name": "Emergency Leak Repair & Prevention"
             }
           }
         ]
@@ -2004,9 +2065,9 @@
             <i class="fas fa-star" aria-hidden="true"></i>
             Client Success Stories
           </div>
-          <h2 id="testimonials-heading" class="testimonials__title">What Our Clients Say About Myriad Green Irrigation Services</h2>
+          <h2 id="testimonials-heading" class="testimonials__title">What Our Clients Say About Myriad Green Leak Detection Services</h2>
           <p class="section-lead">
-            Join hundreds of satisfied Gauteng property owners who've transformed their landscapes with our smart irrigation solutions. From Johannesburg to Pretoria, our clients save water, reduce costs, and maintain beautiful gardens year-round.
+            Join hundreds of satisfied Gauteng property owners who've avoided major water loss thanks to our rapid leak detection and repair services. From Johannesburg to Pretoria, our clients save water and protect their properties.
           </p>
         </div>
 
@@ -2036,11 +2097,11 @@
                   </div>
                 </div>
                 <blockquote class="testimonial-card__quote testimonial-card__quote--hero">
-                  "Myriad Green transformed our estate's water management with their professional irrigation installation. The smart sprinkler systems reduced our monthly water bill by 40% while keeping our gardens healthier than ever. Their drip irrigation maintenance team is responsive and professional."
+                  "Myriad Green quickly located a hidden burst pipe under our driveway and repaired it with minimal excavation. Their team saved us thousands and prevented structural damage."
                 </blockquote>
                 <div class="testimonial-hero-badge">
                   <i class="fas fa-trophy"></i>
-                  <span>40% Water Savings Achieved</span>
+                  <span>Water Loss Prevented</span>
                 </div>
               </div>
             </div>
@@ -2065,7 +2126,7 @@
                   </div>
                 </div>
                 <blockquote class="testimonial-card__quote">
-                  "The WiFi irrigation controller changed everything for our garden irrigation system. I can adjust sprinkler zones from my phone and the weather integration prevents water waste perfectly."
+                  "The thermal imaging and acoustic tests pinpointed our underground leak in under an hour. The repair team fixed it the same day."
                 </blockquote>
                 <div class="testimonial-card__footer">
                   <div class="client-info">
@@ -2073,9 +2134,9 @@
                     <span class="client-location">Morningside</span>
                   </div>
                   <div class="testimonial-badge">
-                    <i class="fas fa-mobile-alt"></i>
-                    <span>Smart Control</span>
-                  </div>
+                      <i class="fas fa-wrench"></i>
+                      <span>Fast Repair</span>
+                    </div>
                 </div>
               </div>
 
@@ -2094,14 +2155,14 @@
                   </div>
                 </div>
                 <blockquote class="testimonial-card__quote">
-                  "Emergency irrigation repair response within hours. Professional sprinkler system diagnosis and quick repair service. Exceptional irrigation maintenance support."
+                  "Emergency leak repair response within hours. Fast diagnosis and durable repairs."
                 </blockquote>
                 <div class="testimonial-card__footer">
                   <div class="client-info">
                     <strong class="client-name">Linda Khumalo</strong>
                     <span class="client-location">Randburg</span>
                   </div>
-                  <div class="testimonial-badge">
+                    <div class="testimonial-badge">
                     <i class="fas fa-clock"></i>
                     <span>24h Response</span>
                   </div>
@@ -2126,7 +2187,7 @@
                   </div>
                 </div>
                 <blockquote class="testimonial-card__quote">
-                  "Water compliance is critical for commercial properties. Myriad Green's commercial irrigation systems keep us compliant with water restrictions while saving money on irrigation costs."
+                  "For our commercial facility, Myriad Green detected slow leaks that had gone unnoticed. Their detailed report and repairs helped avoid regulatory issues and reduced our monthly bills."
                 </blockquote>
                 <div class="testimonial-card__footer">
                   <div class="client-info">
@@ -2158,7 +2219,7 @@
                   </div>
                 </div>
                 <blockquote class="testimonial-card__quote">
-                  "Our automated irrigation system paid for itself within 8 months. The irrigation installation team was knowledgeable and provided excellent water-wise gardening education."
+                  "After the repair, our meter readings returned to normal and the team provided clear advice on prevention. Highly recommended for emergency leak response."
                 </blockquote>
                 <div class="testimonial-card__footer">
                   <div class="client-info">
@@ -2187,16 +2248,16 @@
                   </div>
                 </div>
                 <blockquote class="testimonial-card__quote">
-                  "Seamless irrigation installation process from start to finish. Perfect sprinkler system design and drip irrigation setup completed on time and within budget."
+                  "Professional leak repair with minimal disruption. The team completed the job on time and within budget."
                 </blockquote>
                 <div class="testimonial-card__footer">
                   <div class="client-info">
                     <strong class="client-name">Robert van der Merwe</strong>
                     <span class="client-location">Bryanston</span>
                   </div>
-                  <div class="testimonial-badge">
+                    <div class="testimonial-badge">
                     <i class="fas fa-tools"></i>
-                    <span>New Install</span>
+                    <span>Quick Repair</span>
                   </div>
                 </div>
               </div>
@@ -2206,7 +2267,7 @@
 
         <!-- Trust Indicators -->
         <div class="trust-indicators" role="region" aria-labelledby="trust-heading">
-          <h3 id="trust-heading" class="sr-only">Myriad Green Irrigation Services Trust and Performance Metrics</h3>
+          <h3 id="trust-heading" class="sr-only">Myriad Green Leak Detection Trust and Performance Metrics</h3>
           <div class="trust-indicator">
             <div class="trust-number" aria-label="500 plus happy clients">500+</div>
             <div class="trust-label">Happy Clients in Gauteng</div>
@@ -2230,111 +2291,53 @@
     <!-- FAQ Section -->
     <!-- Enhanced FAQ Section with Schema Markup -->
     <section id="faq" class="section section--faq" aria-labelledby="faq-title" role="region">
-      <!-- FAQ Schema for Rich Snippets -->
-      <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "name": "Leak Detection Services FAQ - Myriad Green",
-        "description": "Frequently asked questions about professional leak detection services in Johannesburg and Pretoria",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "How much does a leak detection service cost?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Leak detection service costs vary based on property size and the complexity of the plumbing system. Residential services typically range from R750 to R2,500. We provide free assessments and detailed quotes."
-            }
-          },
-          {
-            "@type": "Question", 
-            "name": "Which areas in Gauteng do you service?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "We service all major areas of Gauteng including Johannesburg (Sandton, Rosebank, Melrose, Houghton, Bedfordview) and Pretoria (Waterkloof, Faerie Glen, Brooklyn, Menlyn, Garsfontein). Same-day emergency service available."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Do you repair leaks in irrigation systems installed by other companies?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes! We repair leaks in irrigation systems regardless of the original installer. Our certified technicians work with all major brands including Rain Bird, Hunter, Orbit, Irritrol, Toro, and Weathermatic."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How do acoustic leak detectors work?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Acoustic leak detectors use sensitive microphones to listen for the sound of water escaping from pipes. The device amplifies and analyzes the sound to pinpoint the location of the leak, even if it's underground or behind walls."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What brands do you install and service?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "We are certified Rain Bird dealers and also work with Hunter, Orbit, Irritrol, Toro, and Weathermatic systems. We recommend the best brand based on your specific needs, soil type, and budget requirements."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How often should leak detection systems be serviced?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "We recommend annual servicing for leak detection systems to ensure all components are functioning correctly and to recalibrate sensors as needed. More frequent checks may be necessary for older systems or properties with a history of leaks."
-            }
-          }
-        ]
-      }
-      </script>
+      <!-- FAQ Schema moved to head to avoid rendering above nav -->
       <div class="container">
         <div class="section-header">
           <div class="section-eyebrow">
             <i class="fas fa-question-circle" aria-hidden="true"></i>
             Expert Answers
           </div>
-          <h2 id="faq-title" class="faq__title">Frequently Asked Questions</h2>
+          <h2 id="leak-faq-title" class="faq__title">Frequently Asked Questions</h2>
           <p class="section-lead">
             Everything you need to know about our professional leak detection solutions in Gauteng. Can't find what you're looking for? <a href="#contact" class="faq__contact-link" aria-label="Contact us for additional questions">Contact our experts directly</a>.
           </p>
         </div>
 
         <!-- FAQ Search -->
-        <div class="faq__search-container" role="search" aria-labelledby="faq-search-label">
-          <label id="faq-search-label" class="sr-only">Search FAQ questions</label>
+        <div class="faq__search-container" role="search" aria-labelledby="leak-faq-search-label">
+          <label id="leak-faq-search-label" class="sr-only">Search FAQ questions</label>
           <div class="faq__search-wrapper">
             <i class="fas fa-search faq__search-icon" aria-hidden="true"></i>
-            <input type="text" id="faq-search" class="faq__search-input" placeholder="Search leak detection questions..." aria-label="Search FAQ questions" aria-describedby="faq-search-results">
+            <input type="text" id="leak-faq-search" class="faq__search-input" placeholder="Search leak detection questions..." aria-label="Search FAQ questions" aria-describedby="leak-faq-search-results">
             <button type="button" class="faq__search-clear" aria-label="Clear search">
               <i class="fas fa-times" aria-hidden="true"></i>
             </button>
           </div>
-          <div class="faq__search-results" id="faq-search-results" aria-live="polite" aria-atomic="true">
-            <span id="faq-result-count"></span> questions found
+          <div class="faq__search-results" id="leak-faq-search-results" aria-live="polite" aria-atomic="true">
+            <span id="leak-faq-result-count"></span> questions found
           </div>
         </div>
 
         <!-- FAQ Categories -->
         <div class="faq__categories" role="tablist" aria-label="FAQ category filters">
-          <button type="button" class="faq__category-btn faq__category-btn--active" data-category="all" role="tab" aria-selected="true" aria-controls="faq-list" id="tab-all">
+          <button type="button" class="faq__category-btn faq__category-btn--active" data-category="all" role="tab" aria-selected="true" aria-controls="leak-faq-list" id="tab-all">
             <i class="fas fa-list" aria-hidden="true"></i>
             All Questions
           </button>
-          <button type="button" class="faq__category-btn" data-category="services" role="tab" aria-selected="false" aria-controls="faq-list" id="tab-services">
+          <button type="button" class="faq__category-btn" data-category="services" role="tab" aria-selected="false" aria-controls="leak-faq-list" id="tab-services">
             <i class="fas fa-tools" aria-hidden="true"></i>
             Services
           </button>
-          <button type="button" class="faq__category-btn" data-category="pricing" role="tab" aria-selected="false" aria-controls="faq-list" id="tab-pricing">
+          <button type="button" class="faq__category-btn" data-category="pricing" role="tab" aria-selected="false" aria-controls="leak-faq-list" id="tab-pricing">
             <i class="fas fa-tags" aria-hidden="true"></i>
             Pricing
           </button>
-          <button type="button" class="faq__category-btn" data-category="technical" role="tab" aria-selected="false" aria-controls="faq-list" id="tab-technical">
+          <button type="button" class="faq__category-btn" data-category="technical" role="tab" aria-selected="false" aria-controls="leak-faq-list" id="tab-technical">
             <i class="fas fa-cogs" aria-hidden="true"></i>
             Technical
           </button>
-          <button type="button" class="faq__category-btn" data-category="maintenance" role="tab" aria-selected="false" aria-controls="faq-list" id="tab-maintenance">
+          <button type="button" class="faq__category-btn" data-category="maintenance" role="tab" aria-selected="false" aria-controls="leak-faq-list" id="tab-maintenance">
             <i class="fas fa-wrench" aria-hidden="true"></i>
             Maintenance
           </button>
@@ -2342,17 +2345,17 @@
 
         <!-- PRODUCTION-GRADE FAQ CARDS v2.0 -->
         <!-- FAQ List with new structure -->
-        <div class="faq__list" id="faq-list" role="tabpanel" aria-labelledby="faq-title">
+  <div class="faq__list" id="leak-faq-list" role="tabpanel" aria-labelledby="leak-faq-title">
           
           <!-- Pricing Category -->
-          <div class="faq-card" data-category="pricing" role="article" aria-labelledby="faq-question-1">
+          <div class="faq-card" data-category="pricing" role="article" aria-labelledby="leak-faq-question-1">
             <button class="faq-card__header" 
                     aria-expanded="false" 
-                    aria-controls="faq-content-1"
-                    id="faq-button-1"
+                    aria-controls="leak-faq-content-1"
+                    id="leak-faq-button-1"
                     data-faq-toggle>
               <div class="faq-card__header-content">
-                <h3 class="faq-card__question" id="faq-question-1">
+                <h3 class="faq-card__question" id="leak-faq-question-1">
                   How much does a leak detection service cost?
                 </h3>
                 <div class="faq-card__meta">
@@ -2361,9 +2364,9 @@
                 </div>
               </div>
             </button>
-            <div class="faq-card__content" 
-                 id="faq-content-1" 
-                 aria-labelledby="faq-button-1"
+      <div class="faq-card__content" 
+        id="leak-faq-content-1" 
+        aria-labelledby="leak-faq-button-1"
                  role="region">
               <div class="faq-card__answer">
                 <p>Leak detection service costs vary based on property size, the complexity of the plumbing system, and the technology used. Here's our typical pricing structure:</p>
@@ -2385,14 +2388,14 @@
           </div>
 
           <!-- Services Category -->
-          <div class="faq-card" data-category="services" role="article" aria-labelledby="faq-question-2">
+          <div class="faq-card" data-category="services" role="article" aria-labelledby="leak-faq-question-2">
             <button class="faq-card__header" 
                     aria-expanded="false" 
-                    aria-controls="faq-content-2"
-                    id="faq-button-2"
+                    aria-controls="leak-faq-content-2"
+                    id="leak-faq-button-2"
                     data-faq-toggle>
               <div class="faq-card__header-content">
-                <h3 class="faq-card__question" id="faq-question-2">
+                <h3 class="faq-card__question" id="leak-faq-question-2">
                   Which areas in Gauteng do you service?
                 </h3>
                 <div class="faq-card__meta">
@@ -2401,9 +2404,9 @@
                 </div>
               </div>
             </button>
-            <div class="faq-card__content" 
-                 id="faq-content-2" 
-                 aria-labelledby="faq-button-2"
+      <div class="faq-card__content" 
+        id="leak-faq-content-2" 
+        aria-labelledby="leak-faq-button-2"
                  role="region">
               <div class="faq-card__answer">
                 <p>We provide comprehensive leak detection services across all major areas of Gauteng, including:</p>
@@ -2420,15 +2423,15 @@
           </div>
 
           <!-- Services Category -->
-          <div class="faq-card" data-category="services" role="article" aria-labelledby="faq-question-3">
+          <div class="faq-card" data-category="services" role="article" aria-labelledby="leak-faq-question-3">
             <button class="faq-card__header" 
                     aria-expanded="false" 
-                    aria-controls="faq-content-3"
-                    id="faq-button-3"
+                    aria-controls="leak-faq-content-3"
+                    id="leak-faq-button-3"
                     data-faq-toggle>
               <div class="faq-card__header-content">
-                <h3 class="faq-card__question" id="faq-question-3">
-                  Do you repair leaks in irrigation systems installed by other companies?
+                <h3 class="faq-card__question" id="leak-faq-question-3">
+                  Do you repair leaks in systems installed by other companies?
                 </h3>
                 <div class="faq-card__meta">
                   <span class="faq-card__category">Services</span>
@@ -2436,36 +2439,33 @@
                 </div>
               </div>
             </button>
-            <div class="faq-card__content" 
-                 id="faq-content-3" 
-                 aria-labelledby="faq-button-3"
+      <div class="faq-card__content" 
+        id="leak-faq-content-3" 
+        aria-labelledby="leak-faq-button-3"
                  role="region">
               <div class="faq-card__answer">
-                <p>Absolutely! We repair leaks in irrigation systems regardless of the original installer or brand. Our certified technicians are experienced with all major manufacturers including:</p>
+                <p>Yes — we repair leaks regardless of who installed the system. We own and operate professional leak-detection equipment (acoustic listening devices, thermal imaging cameras, pressure testing kits and tracer gas tools) and carry spares for common repairs. Our technicians will diagnose the fault, provide a clear repair plan, and carry out repairs on-site when possible.</p>
                 
-                <div class="faq-card__brand-grid">
-                  <span class="faq-card__brand">Rain Bird</span>
-                  <span class="faq-card__brand">Hunter</span>
-                  <span class="faq-card__brand">Orbit</span>
-                  <span class="faq-card__brand">Irritrol</span>
-                  <span class="faq-card__brand">Toro</span>
-                  <span class="faq-card__brand">Weathermatic</span>
+                <div class="faq-card__highlight-box">
+                  <strong>Equipment & Approach:</strong>
+                  <br>• Acoustic detectors and ground microphones for underground pipe detection
+                  <br>• Thermal imaging for concealed leaks behind walls or under floors
+                  <br>• Pressure testing and tracer methods for pipe integrity checks
+                  <br>• On-site repair kits for common faults (sleeves, couplers, clamps)
                 </div>
-                
-                <p>We provide comprehensive diagnostic assessments and can upgrade older systems with modern smart technology components.</p>
               </div>
             </div>
           </div>
 
           <!-- Technical Category -->
-          <div class="faq-card" data-category="technical" role="article" aria-labelledby="faq-question-4">
+          <div class="faq-card" data-category="technical" role="article" aria-labelledby="leak-faq-question-4">
             <button class="faq-card__header" 
                     aria-expanded="false" 
-                    aria-controls="faq-content-4"
-                    id="faq-button-4"
+                    aria-controls="leak-faq-content-4"
+                    id="leak-faq-button-4"
                     data-faq-toggle>
               <div class="faq-card__header-content">
-                <h3 class="faq-card__question" id="faq-question-4">
+                <h3 class="faq-card__question" id="leak-faq-question-4">
                   How do acoustic leak detectors work?
                 </h3>
                 <div class="faq-card__meta">
@@ -2474,9 +2474,9 @@
                 </div>
               </div>
             </button>
-            <div class="faq-card__content" 
-                 id="faq-content-4" 
-                 aria-labelledby="faq-button-4"
+      <div class="faq-card__content" 
+        id="leak-faq-content-4" 
+        aria-labelledby="leak-faq-button-4"
                  role="region">
               <div class="faq-card__answer">
                 <p>Acoustic leak detectors use sensitive microphones to listen for the sound of water escaping from pipes. The device amplifies and analyzes the sound to pinpoint the location of the leak, even if it's underground or behind walls.</p>
@@ -2494,14 +2494,14 @@
           </div>
 
           <!-- Technical Category -->
-          <div class="faq-card" data-category="technical" role="article" aria-labelledby="faq-question-5">
+          <div class="faq-card" data-category="technical" role="article" aria-labelledby="leak-faq-question-5">
             <button class="faq-card__header" 
                     aria-expanded="false" 
-                    aria-controls="faq-content-5"
-                    id="faq-button-5"
+                    aria-controls="leak-faq-content-5"
+                    id="leak-faq-button-5"
                     data-faq-toggle>
               <div class="faq-card__header-content">
-                <h3 class="faq-card__question" id="faq-question-5">
+                <h3 class="faq-card__question" id="leak-faq-question-5">
                   What brands do you install and service?
                 </h3>
                 <div class="faq-card__meta">
@@ -2510,38 +2510,25 @@
                 </div>
               </div>
             </button>
-            <div class="faq-card__content" 
-                 id="faq-content-5" 
-                 aria-labelledby="faq-button-5"
+      <div class="faq-card__content" 
+        id="leak-faq-content-5" 
+        aria-labelledby="leak-faq-button-5"
                  role="region">
               <div class="faq-card__answer">
-                <p>We are certified Rain Bird dealers and also work with all major irrigation brands:</p>
-                
-                <div class="faq-card__brand-grid">
-                  <span class="faq-card__brand">Rain Bird</span>
-                  <span class="faq-card__brand">Hunter</span>
-                  <span class="faq-card__brand">Orbit</span>
-                  <span class="faq-card__brand">Irritrol</span>
-                  <span class="faq-card__brand">Toro</span>
-                  <span class="faq-card__brand">Weathermatic</span>
-                  <span class="faq-card__brand">Nelson</span>
-                  <span class="faq-card__brand">K-Rain</span>
-                </div>
-                
-                <p>Our recommendation depends on your specific needs, soil type, landscape requirements, and budget. We'll assess your property and suggest the most suitable brands and components for optimal performance and longevity.</p>
+                <p>Our work focuses on locating and repairing leaks quickly and minimizing disruption. Because we own and maintain our detection and repair equipment, we can respond faster and keep downtime low. If replacements are required we will recommend appropriate parts and source them, but much of the common repair work is completed during the first visit.</p>
               </div>
             </div>
           </div>
 
           <!-- Maintenance Category -->
-          <div class="faq-card" data-category="maintenance" role="article" aria-labelledby="faq-question-6">
+          <div class="faq-card" data-category="maintenance" role="article" aria-labelledby="leak-faq-question-6">
             <button class="faq-card__header" 
                     aria-expanded="false" 
-                    aria-controls="faq-content-6"
-                    id="faq-button-6"
+                    aria-controls="leak-faq-content-6"
+                    id="leak-faq-button-6"
                     data-faq-toggle>
               <div class="faq-card__header-content">
-                <h3 class="faq-card__question" id="faq-question-6">
+                <h3 class="faq-card__question" id="leak-faq-question-6">
                   How often should leak detection systems be serviced?
                 </h3>
                 <div class="faq-card__meta">
@@ -2550,9 +2537,9 @@
                 </div>
               </div>
             </button>
-            <div class="faq-card__content" 
-                 id="faq-content-6" 
-                 aria-labelledby="faq-button-6"
+      <div class="faq-card__content" 
+        id="leak-faq-content-6" 
+        aria-labelledby="leak-faq-button-6"
                  role="region">
               <div class="faq-card__answer">
                 <p>We recommend annual servicing for leak detection systems to ensure all components are functioning correctly and to recalibrate sensors as needed. More frequent checks may be necessary for older systems or properties with a history of leaks.</p>
@@ -2571,14 +2558,14 @@
           </div>
 
           <!-- Pricing Category -->
-          <div class="faq-card" data-category="pricing" role="article" aria-labelledby="faq-question-7">
+          <div class="faq-card" data-category="pricing" role="article" aria-labelledby="leak-faq-question-7">
             <button class="faq-card__header" 
                     aria-expanded="false" 
-                    aria-controls="faq-content-7"
-                    id="faq-button-7"
+                    aria-controls="leak-faq-content-7"
+                    id="leak-faq-button-7"
                     data-faq-toggle>
               <div class="faq-card__header-content">
-                <h3 class="faq-card__question" id="faq-question-7">
+                <h3 class="faq-card__question" id="leak-faq-question-7">
                   Do you offer financing or payment plans?
                 </h3>
                 <div class="faq-card__meta">
@@ -2587,9 +2574,9 @@
                 </div>
               </div>
             </button>
-            <div class="faq-card__content" 
-                 id="faq-content-7" 
-                 aria-labelledby="faq-button-7"
+      <div class="faq-card__content" 
+        id="leak-faq-content-7" 
+        aria-labelledby="leak-faq-button-7"
                  role="region">
               <div class="faq-card__answer">
                 <p>Yes! We offer flexible payment options to make premium leak detection systems accessible:</p>
@@ -2608,14 +2595,14 @@
           </div>
 
           <!-- Services Category -->
-          <div class="faq-card" data-category="services" role="article" aria-labelledby="faq-question-8">
+          <div class="faq-card" data-category="services" role="article" aria-labelledby="leak-faq-question-8">
             <button class="faq-card__header" 
                     aria-expanded="false" 
-                    aria-controls="faq-content-8"
-                    id="faq-button-8"
+                    aria-controls="leak-faq-content-8"
+                    id="leak-faq-button-8"
                     data-faq-toggle>
               <div class="faq-card__header-content">
-                <h3 class="faq-card__question" id="faq-question-8">
+                <h3 class="faq-card__question" id="leak-faq-question-8">
                   What warranty do you provide on installations?
                 </h3>
                 <div class="faq-card__meta">
@@ -2624,9 +2611,9 @@
                 </div>
               </div>
             </button>
-            <div class="faq-card__content" 
-                 id="faq-content-8" 
-                 aria-labelledby="faq-button-8"
+      <div class="faq-card__content" 
+        id="leak-faq-content-8" 
+        aria-labelledby="leak-faq-button-8"
                  role="region">
               <div class="faq-card__answer">
                 <p>We stand behind our work with comprehensive warranty coverage:</p>
@@ -2933,6 +2920,7 @@
   <div id="site-footer"></div>
 
   <!-- Scripts -->
+  <script src="../js/service-faq-v2.js" defer></script>
   <script src="../js/site-init.js" defer></script>
   <script src="../js/booking-modal.js" defer></script>
   <script src="../js/weather-signal.js" defer></script>
