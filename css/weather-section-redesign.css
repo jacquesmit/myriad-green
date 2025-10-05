@@ -522,6 +522,13 @@
   z-index: 2;
 }
 
+[/* NOTE: Dark-mode tweaks added on 2025-10-05 (commit 654a24f) --
+  This block contains targeted overrides so the weather stats bar and its
+  child elements use theme-aware tokens (e.g. --card-background-color,
+  --color-text) instead of literal white backgrounds. These changes were
+  introduced to prevent bright/white panels showing in [data-theme="dark"].
+  See dev/DARK_MODE_ISSUE.md for diagnostics and follow-ups. */
+
 /* Dark-mode overrides for weather stats bar */
 [data-theme="dark"] .weather-stats-bar {
   background: var(--card-background-color, #071022) !important;
