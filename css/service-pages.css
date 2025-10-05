@@ -31,7 +31,9 @@
 }
 
 #why-us .card-icon {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 1rem;
 }
 
@@ -39,8 +41,17 @@
   background-color: var(--icon-background-color);
   color: var(--icon-color);
   border-radius: 50%;
-  padding: 1rem;
-  display: inline-block;
+  width: 56px; /* fixed size keeps visual rhythm */
+  height: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0; /* use fixed size instead of padding so icons align */
+}
+
+#why-us .card-icon .icon-background i {
+  font-size: 1.25rem;
+  color: var(--icon-color, #0b5fff);
 }
 
 #why-us .card-content .card-eyebrow {
@@ -65,17 +76,24 @@
 
 #why-us .card-stats {
   display: flex;
+  gap: 1rem; /* consistent spacing between stat items */
   justify-content: space-between;
+  align-items: center;
 }
 
 #why-us .card-stats .stat-item {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 
 #why-us .card-stats .stat-number {
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: 1.25rem; /* slightly smaller but consistent */
+  font-weight: 700;
   color: var(--stat-number-color);
+  line-height: 1;
 }
 
 #why-us .card-stats .stat-label {
