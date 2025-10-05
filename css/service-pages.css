@@ -133,25 +133,35 @@
   justify-content: center;
   gap: 1.5rem;
   margin-top: 2rem;
-}
-
+/* Colored trust indicators: give each item a distinct color and subtle circular background */
 #why-us .trust-item {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 1rem;
-  color: var(--trust-item-color);
 }
 
 #why-us .trust-item i {
-  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 1.1rem;
   color: var(--trust-icon-color, var(--text-color));
 }
 
-/* Ensure trust icons are visible in light theme (override if theme vars are not set) */
-body[data-theme="light"] #why-us .trust-item i {
-  color: var(--trust-icon-color, #111827);
-}
+/* Individual colors (fallbacks provided), with safe RGBA backgrounds */
+#why-us .trust-item:nth-child(1) i { color: var(--trust-icon-1, #0b5fff); background-color: rgba(11,95,255,0.08); }
+#why-us .trust-item:nth-child(2) i { color: var(--trust-icon-2, #059669); background-color: rgba(5,150,105,0.08); }
+#why-us .trust-item:nth-child(3) i { color: var(--trust-icon-3, #f59e0b); background-color: rgba(245,158,11,0.08); }
+#why-us .trust-item:nth-child(4) i { color: var(--trust-icon-4, #6b21a8); background-color: rgba(107,33,168,0.08); }
+
+/* Ensure good contrast in light theme where CSS variables may be missing */
+body[data-theme="light"] #why-us .trust-item:nth-child(1) i { color: var(--trust-icon-1, #0b5fff); }
+body[data-theme="light"] #why-us .trust-item:nth-child(2) i { color: var(--trust-icon-2, #059669); }
+body[data-theme="light"] #why-us .trust-item:nth-child(3) i { color: var(--trust-icon-3, #f59e0b); }
+body[data-theme="light"] #why-us .trust-item:nth-child(4) i { color: var(--trust-icon-4, #6b21a8); }
 
 /* Scoped styles for the "Weather-Smart Irrigation" section */
 #weather {
