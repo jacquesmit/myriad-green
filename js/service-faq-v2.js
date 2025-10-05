@@ -20,18 +20,43 @@ class ProductionFAQ {
 
   setup() {
     // Core elements
-    this.faqList = document.getElementById('faq-list');
-    this.searchInput = document.getElementById('faq-search');
-    this.searchClear = document.querySelector('.faq__search-clear');
-    this.searchResults = document.getElementById('faq-search-results');
-    this.resultCount = document.getElementById('faq-result-count');
-    this.categoryButtons = document.querySelectorAll('.faq__category-btn');
+    // Prefer a namespaced faq-list element (id ending with 'faq-list') so pages can have isolated FAQ blocks
+    this.faqList = document.querySelector('[id$="faq-list"]') || document.querySelector('.faq__list') || document.getElementById('faq-list');
+
+    // derive an optional id prefix from the faqList id (anything before 'faq-list')
+    this.idPrefix = '';
+    if (this.faqList && this.faqList.id && this.faqList.id.endsWith('faq-list')) {
+      this.idPrefix = this.faqList.id.replace(/faq-list$/, '');
+    }
+
+    // Scope query selectors to the faqList when present to avoid colliding with other pages
+    if (this.faqList) {
+      this.searchInput = this.faqList.querySelector('#' + this.idPrefix + 'faq-search') || this.faqList.querySelector('#faq-search');
+      this.searchClear = this.faqList.querySelector('.faq__search-clear');
+      this.searchResults = this.faqList.querySelector('#' + this.idPrefix + 'faq-search-results') || this.faqList.querySelector('#faq-search-results');
+      this.resultCount = this.faqList.querySelector('#' + this.idPrefix + 'faq-result-count') || this.faqList.querySelector('#faq-result-count');
+      this.categoryButtons = this.faqList.querySelectorAll('.faq__category-btn');
+
+      // FAQ cards
+      this.faqCards = this.faqList.querySelectorAll('.faq-card');
+      this.faqToggleButtons = this.faqList.querySelectorAll('[data-faq-toggle]');
+    } else {
+      // Document-wide fallback
+      this.searchInput = document.getElementById(this.idPrefix + 'faq-search') || document.getElementById('faq-search');
+      this.searchClear = document.querySelector('.faq__search-clear');
+      this.searchResults = document.getElementById(this.idPrefix + 'faq-search-results') || document.getElementById('faq-search-results');
+      this.resultCount = document.getElementById(this.idPrefix + 'faq-result-count') || document.getElementById('faq-result-count');
+      this.categoryButtons = document.querySelectorAll('.faq__category-btn');
+
+      // FAQ cards
+      this.faqCards = document.querySelectorAll('.faq-card');
+      this.faqToggleButtons = document.querySelectorAll('[data-faq-toggle]');
+    }
     
-    // FAQ cards
-    this.faqCards = document.querySelectorAll('.faq-card');
-    this.faqToggleButtons = document.querySelectorAll('[data-faq-toggle]');
-    
-    // State management
+  // If there's no FAQ list on this page, stop initialization quietly
+  if (!this.faqList) return;
+
+  // State management
     this.activeCategory = 'all';
     this.searchTerm = '';
     this.openCards = new Set();
@@ -73,9 +98,13 @@ class ProductionFAQ {
   toggleFAQCard(button) {
     const card = button.closest('.faq-card');
     const content = button.getAttribute('aria-controls');
-    const contentElement = document.getElementById(content);
+    // content may be namespaced (e.g. 'leak-faq-content-1')
+    const contentElement = document.getElementById(content) || document.getElementById(content.replace(this.idPrefix, ''));
     const isExpanded = button.getAttribute('aria-expanded') === 'true';
-    const cardId = content.replace('faq-content-', '');
+    // derive cardId by removing any prefix and the 'faq-content-' segment
+    let cardId = content;
+    if (cardId.startsWith(this.idPrefix)) cardId = cardId.replace(this.idPrefix, '');
+    cardId = cardId.replace('faq-content-', '');
     
     if (isExpanded) {
       // Close card
@@ -389,7 +418,8 @@ class ProductionFAQ {
    * Public API Methods
    */
   openQuestion(questionId) {
-    const button = document.getElementById(`faq-button-${questionId}`);
+    // Try both prefixed and unprefixed button ids
+    const button = document.getElementById(`${this.idPrefix}faq-button-${questionId}`) || document.getElementById(`faq-button-${questionId}`);
     if (button && button.getAttribute('aria-expanded') === 'false') {
       this.toggleFAQCard(button);
     }
