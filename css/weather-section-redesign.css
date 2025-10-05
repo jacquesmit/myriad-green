@@ -522,6 +522,29 @@
   z-index: 2;
 }
 
+/* Dark-mode overrides for weather stats bar */
+[data-theme="dark"] .weather-stats-bar {
+  background: var(--card-background-color, #071022) !important;
+  box-shadow: 0 6px 24px rgba(2,6,23,0.6) !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+}
+
+[data-theme="dark"] .weather-stat {
+  color: var(--color-text, #e6eef8) !important;
+}
+
+[data-theme="dark"] .stat-value {
+  color: var(--color-text, #e6eef8) !important;
+}
+
+[data-theme="dark"] .stat-label {
+  color: rgba(230,238,248,0.8) !important;
+}
+
+[data-theme="dark"] .stat-icon {
+  background: linear-gradient(135deg, var(--color-primary-dark, #059669) 0%, #0ea36b 100%) !important;
+}
+
 .weather-stat {
   display: flex;
   align-items: center;
