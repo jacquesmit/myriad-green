@@ -56,7 +56,7 @@ function overviewSection(imgAlt, heading, bullets){
 }
 
 function aboutWeather(){
-  return `\n<section id="about-us" class="about-us-section"><div class="container"><div class="about-hero"><article class="about-content"><header><h2>About Myriad Green</h2></header></article><div class="about-visual"><div id="weather-widget" class="weather-widget" data-suburb="" data-country="ZA" data-units="metric"></div></div></div></div></section>`;
+  return `\n<section id="about-us" class="about-us-section"><div class="container"><div class="about-hero"><article class="about-content"><header><h2>About Myriad Green</h2></header></article><div class="about-visual"><div id="weather-widget" class="weather-widget" data-suburb="" data-service="${targetVertical}" data-country="ZA" data-units="metric"></div></div></div></div></section>`;
 }
 
 function standardSections(){

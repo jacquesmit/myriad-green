@@ -136,6 +136,7 @@
   function chooseHeadline(suburb, w, service) {
     const c = (w.condition || '').toLowerCase();
     const t = w.tempC;
+    const s = (service || '').toLowerCase();
     if (service === 'Leak Detection') {
       if (c.includes('rain') || c.includes('drizzle') || w.precipProb >= 50) {
         return {
@@ -188,6 +189,28 @@
     return {
       h1: `Irrigation & Watering in ${suburb}`,
       intro: `Adjust schedules for seasonal changes and check for leaks.`
+    };
+  }
+
+  // Accept alternative service names and return Backup/Storage specific headlines
+  function chooseBackupHeadline(suburb, w) {
+    const c = (w.condition || '').toLowerCase();
+    const t = w.tempC;
+    if (c.includes('rain') || w.precipProb >= 50) {
+      return {
+        h1: `Rain & Water Storage Advice for ${suburb}`,
+        intro: `Heavy rain can help refill tanks — ensure inlet filters and overflow paths are clear.`
+      };
+    }
+    if (t >= 32) {
+      return {
+        h1: `Hot Weather Storage Care in ${suburb}`,
+        intro: `Check tank lids and vents; high temperatures can affect water quality — consider covers and shading.`
+      };
+    }
+    return {
+      h1: `Backup Water Systems & Tank Advice for ${suburb}`,
+      intro: `Regularly inspect pumps, sensors and connections to ensure uninterrupted backup supply.`
     };
   }
 
@@ -314,6 +337,22 @@
       } else {
         base = `Irrigation & Watering in ${suburb}`;
       }
+    }
+    // If service string suggests backup/storage, override with backup-specific headline
+    const sNormalized = (service || '').toLowerCase();
+    if (sNormalized.includes('backup') || sNormalized.includes('storage') || sNormalized.includes('water storage')) {
+      const backup = chooseBackupHeadline(suburb, w);
+      base = backup.h1;
+      // put a short intro from backup function
+      const shortIntro = backup.intro;
+      // set intro later when we construct headline
+      let intro = shortIntro;
+      // Continue to apply trend and products below but ensure intro is available
+      // 2. Add Google Trends keyword if available
+      let trend = trendKeyword ? ` – Trending: ${trendKeyword}` : '';
+      const products = getProductsForScenario(w.conditions || '', service, trendKeyword);
+      let prodSentence = products && products.length ? ' ' + productAdviceSentence(products) : '';
+      return { h1: `${base}${trend}.${prodSentence}`, intro: intro };
     }
     // 2. Add Google Trends keyword if available
     let trend = trendKeyword ? ` – Trending: ${trendKeyword}` : '';

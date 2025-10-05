@@ -94,7 +94,7 @@ function ensureH1(html, ctx){
 
 function ensureWeather(html, ctx){
   if (/<div[^>]*id=["']weather-widget["'][^>]*>/i.test(html)) return html;
-  const w = `\n<div id="weather-widget" class="weather-widget" data-suburb="${ctx.suburb}" data-country="ZA" data-units="metric" data-cache-mins="120" data-stale-mins="240" data-theme="xbox" data-tone="solid" data-icon="#ffffff"></div>\n`;
+  const w = `\n<div id="weather-widget" class="weather-widget" data-suburb="${ctx.suburb}" data-service="Irrigation" data-country="ZA" data-units="metric" data-cache-mins="120" data-stale-mins="240" data-theme="xbox" data-tone="solid" data-icon="#ffffff"></div>\n`;
   // Try to append near end of body
   if (/<\/main>/i.test(html)) return html.replace(/<\/main>/i, w + '</main>');
   if (/<\/body>/i.test(html)) return html.replace(/<\/body>/i, w + '</body>');
