@@ -105,7 +105,7 @@
 
 /* Weather Cards */
 .weather-card {
-  background: white;
+  background: var(--card-background, white);
   border-radius: 16px;
   padding: 2rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -135,7 +135,9 @@
 
 /* Primary Weather Card */
 .weather-card--primary {
-  background: linear-gradient(135deg, white 0%, #f8fafc 100%);
+  /* Keep the primary light gradient for light theme but fall back to --card-background
+     so dark theme can override without layout changes */
+  background: linear-gradient(135deg, var(--card-background, white) 0%, #f8fafc 100%);
   border: 2px solid var(--color-primary);
 }
 

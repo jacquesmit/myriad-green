@@ -1,6 +1,6 @@
 /* Service Areas Section - Minimal styling */
 .service-areas-cta {
-  background: white;
+  background: var(--card-background, white);
   border-radius: 8px;
   padding: 2rem;
   text-align: center;
@@ -116,7 +116,7 @@
 }
 
 .coverage-stat {
-  background: white;
+  background: var(--card-background, white);
   padding: 2rem;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
