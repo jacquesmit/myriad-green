@@ -773,11 +773,16 @@
     }
 
     const el = getPreferredWidget();
-    // Hide any duplicate widgets on the page to avoid visual collisions
+    // Hide/remove duplicate widgets on the page to avoid visual collisions
     try {
       const allWidgets = Array.from(document.querySelectorAll('.weather-widget'));
       allWidgets.forEach(w => {
         if (w === el) return;
+        // If the duplicate is an index partial, remove it entirely when a service widget is present
+        if (el.getAttribute('data-service') && w.getAttribute('data-partial') === 'index') {
+          w.remove();
+          return;
+        }
         // remove duplicate id to avoid getElementById collisions
         if (w.id) w.removeAttribute('id');
         // hide from accessibility tree and visually
@@ -787,7 +792,7 @@
       });
     } catch (e) {
       // non-critical
-      console.warn('[WeatherWidget] Could not hide duplicate widgets', e);
+      console.warn('[WeatherWidget] Could not hide/remove duplicate widgets', e);
     }
     if (!el) {
       console.error('[WeatherWidget] Widget element not found:', SELECTORS.widget);
