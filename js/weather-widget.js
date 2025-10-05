@@ -751,7 +751,49 @@
 
   async function init() {
     console.log('[WeatherWidget] Initializing...');
-    const el = document.querySelector(SELECTORS.widget);
+    // Preferred selection logic:
+    // 1) find widgets inside <main> that declare a data-service (page-specific)
+    // 2) fallback to the first .weather-widget inside <main>
+    // 3) fallback to a global #weather-widget anywhere on the page
+    function getPreferredWidget() {
+      try {
+        const main = document.querySelector('main');
+        if (main) {
+          const widgetsInMain = Array.from(main.querySelectorAll('.weather-widget'));
+          // prefer widget with explicit data-service defined
+          const serviceWidget = widgetsInMain.find(w => (w.getAttribute('data-service') || '').trim());
+          if (serviceWidget) return serviceWidget;
+          if (widgetsInMain.length) return widgetsInMain[0];
+        }
+        // global fallback
+        return document.getElementById('weather-widget') || document.querySelector('.weather-widget');
+      } catch (e) {
+        return document.getElementById('weather-widget') || document.querySelector('.weather-widget');
+      }
+    }
+
+    const el = getPreferredWidget();
+    // Hide/remove duplicate widgets on the page to avoid visual collisions
+    try {
+      const allWidgets = Array.from(document.querySelectorAll('.weather-widget'));
+      allWidgets.forEach(w => {
+        if (w === el) return;
+        // If the duplicate is an index partial, remove it entirely when a service widget is present
+        if (el.getAttribute('data-service') && w.getAttribute('data-partial') === 'index') {
+          w.remove();
+          return;
+        }
+        // remove duplicate id to avoid getElementById collisions
+        if (w.id) w.removeAttribute('id');
+        // hide from accessibility tree and visually
+        w.setAttribute('aria-hidden', 'true');
+        w.style.display = 'none';
+        w.classList.add('weather-widget--hidden-duplicate');
+      });
+    } catch (e) {
+      // non-critical
+      console.warn('[WeatherWidget] Could not hide/remove duplicate widgets', e);
+    }
     if (!el) {
       console.error('[WeatherWidget] Widget element not found:', SELECTORS.widget);
       return;
