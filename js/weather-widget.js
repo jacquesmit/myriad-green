@@ -751,7 +751,28 @@
 
   async function init() {
     console.log('[WeatherWidget] Initializing...');
-    const el = document.querySelector(SELECTORS.widget);
+    // Preferred selection logic:
+    // 1) find widgets inside <main> that declare a data-service (page-specific)
+    // 2) fallback to the first .weather-widget inside <main>
+    // 3) fallback to a global #weather-widget anywhere on the page
+    function getPreferredWidget() {
+      try {
+        const main = document.querySelector('main');
+        if (main) {
+          const widgetsInMain = Array.from(main.querySelectorAll('.weather-widget'));
+          // prefer widget with explicit data-service defined
+          const serviceWidget = widgetsInMain.find(w => (w.getAttribute('data-service') || '').trim());
+          if (serviceWidget) return serviceWidget;
+          if (widgetsInMain.length) return widgetsInMain[0];
+        }
+        // global fallback
+        return document.getElementById('weather-widget') || document.querySelector('.weather-widget');
+      } catch (e) {
+        return document.getElementById('weather-widget') || document.querySelector('.weather-widget');
+      }
+    }
+
+    const el = getPreferredWidget();
     if (!el) {
       console.error('[WeatherWidget] Widget element not found:', SELECTORS.widget);
       return;
