@@ -54,6 +54,32 @@
   color: var(--icon-color, #0b5fff);
 }
 
+/* Make card content stretch so stats can sit at the bottom consistently */
+#why-us .why-us-card {
+  display: flex;
+  flex-direction: column;
+}
+
+#why-us .card-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+/* Limit description length so cards align visually without changing card size */
+#why-us .card-content .card-description {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* show up to 3 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 0.75rem; /* allow breathing room above stats */
+}
+
+/* Push stats to the bottom of the card content for consistent vertical alignment */
+#why-us .card-stats {
+  margin-top: auto;
+}
+
 #why-us .card-content .card-eyebrow {
   font-size: 0.875rem;
   font-weight: bold;
@@ -119,7 +145,12 @@
 
 #why-us .trust-item i {
   font-size: 1.5rem;
-  color: var(--trust-icon-color);
+  color: var(--trust-icon-color, var(--text-color));
+}
+
+/* Ensure trust icons are visible in light theme (override if theme vars are not set) */
+body[data-theme="light"] #why-us .trust-item i {
+  color: var(--trust-icon-color, #111827);
 }
 
 /* Scoped styles for the "Weather-Smart Irrigation" section */
