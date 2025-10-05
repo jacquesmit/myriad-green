@@ -843,6 +843,34 @@
   z-index: 10; /* Safe level below floating bars */
 }
 
+/* Dark theme CTA overrides for the Areas CTA */
+[data-theme="dark"] .service-areas-cta {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 30px rgba(2,6,23,0.6) !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+}
+
+[data-theme="dark"] .service-areas-cta .cta-title {
+  color: var(--color-text, #e6eef8) !important;
+}
+
+[data-theme="dark"] .service-areas-cta .cta-text {
+  color: rgba(230,238,248,0.85) !important;
+}
+
+[data-theme="dark"] .cta-actions .btn-primary {
+  background: linear-gradient(135deg, #1f5f1f 0%, #2a7a2a 100%) !important;
+  color: white !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+
+[data-theme="dark"] .cta-actions .btn-secondary {
+  background: transparent !important;
+  color: var(--color-text, #e6eef8) !important;
+  border: 2px solid rgba(255,255,255,0.06) !important;
+}
+
 [data-theme="dark"] .cta-actions .btn-secondary {
   background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%) !important;
   color: var(--color-text, #e6eef8) !important;
