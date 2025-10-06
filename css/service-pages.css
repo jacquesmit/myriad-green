@@ -300,10 +300,16 @@ body[data-theme="light"] #why-us .trust-item:nth-child(4) i { color: var(--trust
      description paragraphs start at the same vertical position.
    - small, service-scoped rule so layout is preserved. */
 .capabilities-grid .capability-specs {
-  min-height: 6.5rem; /* adjust if needed for very large fonts */
+  min-height: 10rem; /* increase so description paragraphs align across cards on desktop */
 }
 .capabilities-grid .capability-card__description {
   margin-top: 0.75rem;
+}
+
+@media (max-width: 800px) {
+  .capabilities-grid .capability-specs {
+    min-height: 0; /* allow specs to size naturally on small screens */
+  }
 }
 
 .capability-specs .spec-label {
