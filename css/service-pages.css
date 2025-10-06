@@ -295,6 +295,17 @@ body[data-theme="light"] #why-us .trust-item:nth-child(4) i { color: var(--trust
   flex-wrap: wrap; /* Ensures long text wraps neatly */
 }
 
+/* Align capability card descriptions across the grid
+   - gives the specs area a consistent min-height so the following
+     description paragraphs start at the same vertical position.
+   - small, service-scoped rule so layout is preserved. */
+.capabilities-grid .capability-specs {
+  min-height: 6.5rem; /* adjust if needed for very large fonts */
+}
+.capabilities-grid .capability-card__description {
+  margin-top: 0.75rem;
+}
+
 .capability-specs .spec-label {
   flex: 1; /* Ensures labels take up equal space */
   font-weight: bold;
