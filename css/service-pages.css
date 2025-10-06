@@ -299,9 +299,6 @@ body[data-theme="light"] #why-us .trust-item:nth-child(4) i { color: var(--trust
    - gives the specs area a consistent min-height so the following
      description paragraphs start at the same vertical position.
    - small, service-scoped rule so layout is preserved. */
-.capabilities-grid .capability-specs {
-  min-height: 10rem; /* increase so description paragraphs align across cards on desktop */
-}
 .capabilities-grid .capability-card__description {
   margin-top: 0.75rem;
 }
@@ -338,6 +335,11 @@ body[data-theme="light"] #why-us .trust-item:nth-child(4) i { color: var(--trust
 
   .capability-specs .spec-value {
     text-align: left; /* Keeps values aligned to the left */
+  }
+
+  /* Apply alignment min-height only on large screens */
+  .capabilities-grid .capability-specs {
+    min-height: 10rem;
   }
 }
 
