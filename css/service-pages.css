@@ -324,25 +324,3 @@ body[data-theme="light"] #why-us .trust-item:nth-child(4) i { color: var(--trust
   }
 }
 
-/* Minimal breadcrumb styles (small, unobtrusive, matches site rhythm) */
-.breadcrumbs {
-  margin: 0 0 1rem 0;
-  font-size: 0.9rem;
-  color: var(--muted-text-color, #6b7280);
-}
-.breadcrumbs ol {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-.breadcrumbs li + li:before {
-  content: ">";
-  margin-right: 0.5rem;
-  color: currentColor;
-  opacity: 0.6;
-}
-.breadcrumbs a { text-decoration: none; color: inherit; }
-.breadcrumbs a:hover { text-decoration: underline; }
