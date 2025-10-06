@@ -330,6 +330,11 @@ body[data-theme="light"] #why-us .trust-item:nth-child(4) i { color: var(--trust
   word-wrap: break-word; /* Prevents overflow by wrapping long words */
 }
 
+/* Page-scoped utility: hide the weather widget via class (moves inline style into CSS) */
+.weather-widget--page-hidden {
+  display: none !important;
+}
+
 /* Responsive styles for larger screens */
 @media (min-width: 1024px) {
   .capability-specs .spec-item {
