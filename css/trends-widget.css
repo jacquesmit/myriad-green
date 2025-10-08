@@ -257,19 +257,9 @@
 /* Dark overlay to visually blend external white iframes when cross-origin */
 [data-theme="dark"] #trends-widget,
 [data-theme="dark"] .trends-widget-container {
-  position: relative;
-}
-
-[data-theme="dark"] #trends-widget::after,
-[data-theme="dark"] .trends-widget-container::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  /* stronger, near-opaque overlay to mask aggressive white iframe backgrounds; pointer-events:none so interactions pass through */
-  background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85));
-  pointer-events: none;
-  z-index: 9999;
-  border-radius: 8px;
+  /* Keep container dark via variables; avoid heavy overlays that hide embedded content */
+  background: var(--color-card-bg, #0b1220);
+  color: var(--color-text, #e2e8f0);
 }
 
 
@@ -292,7 +282,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.25rem 1.5rem;
-  background: rgba(255, 255, 255, 0.5);
+  background: color-mix(in srgb, var(--color-card-bg, rgba(255,255,255,0.95)) 80%, rgba(255,255,255,1) 20%);
   border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: 12px;
   transition: all 0.3s ease;
@@ -300,10 +290,10 @@
 }
 
 .trend-item:hover {
-  background: rgba(255, 255, 255, 0.8);
+  background: color-mix(in srgb, var(--color-card-bg, rgba(255,255,255,0.95)) 70%, rgba(255,255,255,1) 30%);
   border-color: var(--color-accent);
   transform: translateX(4px);
-  box-shadow: 0 4px 15px rgba(16, 124, 16, 0.1);
+  box-shadow: 0 4px 15px rgba(16, 124, 16, 0.08);
 }
 
 .trend-item--rising {

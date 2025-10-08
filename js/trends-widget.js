@@ -40,12 +40,80 @@ class TrendsWidgetManager {
             ...options
         };
 
+        // Optional explicit mount element (DOM node) where the widget should be placed
+        this.mountElement = this.options.mountElement || null;
+
+        // Observe theme changes to update widget styling dynamically
+        this.themeObserver = null;
+
         this.cache = new Map();
         this.isInitialized = false;
         this.updateTimer = null;
         this.retryCount = 0;
 
         this.init();
+    }
+
+    /**
+     * Setup a MutationObserver to watch for data-theme changes on <html>
+     * and update the widget's dark/light styling at runtime.
+     */
+    setupThemeObserver() {
+        try {
+            const root = document.documentElement;
+            if (!root) return;
+
+            // Initial apply
+            this.updateTheme(root.getAttribute('data-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+
+            // Observe attribute changes
+            this.themeObserver = new MutationObserver(mutations => {
+                for (const m of mutations) {
+                    if (m.type === 'attributes' && m.attributeName === 'data-theme') {
+                        const newTheme = root.getAttribute('data-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                        this.updateTheme(newTheme);
+                    }
+                }
+            });
+
+            this.themeObserver.observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+
+            // Also listen to OS-level changes for completeness
+            if (window.matchMedia) {
+                const mql = window.matchMedia('(prefers-color-scheme: dark)');
+                if (typeof mql.addEventListener === 'function') {
+                    mql.addEventListener('change', e => this.updateTheme(e.matches ? 'dark' : 'light'));
+                } else if (typeof mql.addListener === 'function') {
+                    mql.addListener(e => this.updateTheme(e.matches ? 'dark' : 'light'));
+                }
+            }
+        } catch (e) {
+            // Non-fatal - just skip theme reactivity
+            console.warn('⚠️ Trends widget theme observer failed to initialize', e);
+        }
+    }
+
+    /**
+     * Apply theme to widget elements (adds/removes dark class and dataset)
+     */
+    updateTheme(theme) {
+        this.options.theme = theme === 'dark' ? 'dark' : 'light';
+        if (!this.container) return;
+
+        const darkClass = 'trends-widget--dark';
+        if (this.options.theme === 'dark') {
+            this.container.classList.add(darkClass);
+            this.container.setAttribute('data-theme', 'dark');
+        } else {
+            this.container.classList.remove(darkClass);
+            this.container.setAttribute('data-theme', 'light');
+        }
+
+        // Also update internal widget elements if already rendered
+        const inner = this.container.querySelector('.trends-widget');
+        if (inner) {
+            if (this.options.theme === 'dark') inner.classList.add(darkClass); else inner.classList.remove(darkClass);
+        }
     }
 
     /**
@@ -61,9 +129,18 @@ class TrendsWidgetManager {
                 return;
             }
 
-            // Initialize widget container FIRST
-            // Initialize widget container
-            this.createWidgetContainer();
+            // Only initialize the widget container when a page-specific mount exists.
+            // If a mountElement option is provided use it, otherwise look for common mount points.
+            const mountPoint = this.mountElement || document.querySelector('#trends-widget') || document.querySelector('.trends__mount') || document.querySelector('.section--trends');
+
+            if (!mountPoint) {
+                // No explicit mount on this page: do not inject the trends widget to avoid leaking market intel.
+                console.log('📭 No trends mount found on this page — skipping widget injection');
+                return;
+            }
+
+            // Create widget container inside the mount point
+            this.createWidgetContainer(mountPoint);
             console.log('📦 Widget container created');
 
             // Load cached data if available
@@ -80,6 +157,9 @@ class TrendsWidgetManager {
 
             // Start periodic updates (disabled for testing)
             this.startPeriodicUpdates();
+
+            // Setup theme observer so the widget reacts to light/dark changes
+            this.setupThemeObserver();
 
             this.isInitialized = true;
             console.log('✅ Google Trends Widget initialized successfully');
@@ -118,13 +198,21 @@ class TrendsWidgetManager {
     /**
      * Create widget container if it doesn't exist
      */
-    createWidgetContainer() {
-        if (document.querySelector('.trends-widget-container')) {
+    /**
+     * Create widget container if it doesn't exist and mount into mountPoint
+     * @param {HTMLElement} mountPoint Optional element to mount inside
+     */
+    createWidgetContainer(mountPoint = null) {
+        // Prefer existing container if one already exists
+        const existing = document.querySelector('.trends-widget-container');
+        if (existing) {
+            this.container = existing;
             return; // Container already exists
         }
 
         const container = document.createElement('div');
         container.className = 'trends-widget-container';
+        container.id = 'trends-widget-container';
         container.setAttribute('role', 'complementary');
         container.setAttribute('aria-label', 'Market Trends Insights');
 
@@ -136,14 +224,49 @@ class TrendsWidgetManager {
             </div>
         `;
 
-        // Insert after hero section or at the end of main content
-        const heroSection = document.querySelector('#hero');
-        const mainContent = document.querySelector('main');
+        // If an explicit mountPoint was supplied, mount inside it. Otherwise try common fallbacks.
+        let target = null;
+        if (mountPoint instanceof HTMLElement) {
+            target = mountPoint;
 
-        if (heroSection) {
-            heroSection.insertAdjacentElement('afterend', container);
-        } else if (mainContent) {
-            mainContent.appendChild(container);
+            // Capture per-page data attributes (service-specific queries & geo)
+            try {
+                this.mountElementRef = mountPoint;
+
+                // data-queries: can be JSON array or comma-separated string
+                const rawQueries = mountPoint.getAttribute('data-queries') || mountPoint.dataset && mountPoint.dataset.queries;
+                if (rawQueries) {
+                    let parsed;
+                    try {
+                        parsed = JSON.parse(rawQueries);
+                    } catch (e) {
+                        // fallback: comma-separated
+                        parsed = rawQueries.split(',').map(s => s.trim()).filter(Boolean);
+                    }
+                    if (Array.isArray(parsed) && parsed.length) {
+                        this.options.keywords = parsed;
+                    }
+                }
+
+                // data-geo: region code
+                const geo = mountPoint.getAttribute('data-geo') || (mountPoint.dataset && mountPoint.dataset.geo);
+                if (geo) this.options.region = geo;
+            } catch (e) {
+                console.warn('⚠️ Failed to read mount data attributes for trends widget:', e);
+            }
+        } else {
+            const heroSection = document.querySelector('#hero');
+            const mainContent = document.querySelector('main');
+            target = heroSection || mainContent || document.body;
+        }
+
+        // Append container inside the target. If target is .section--trends use its inner mount area
+        if (target.classList && target.classList.contains('section--trends')) {
+            // prefer mounting into a dedicated mount element if present
+            const inner = target.querySelector('.trends__mount') || target;
+            inner.appendChild(container);
+        } else {
+            target.appendChild(container);
         }
 
         // If the widget was created with theme option, reflect that with a class
@@ -545,25 +668,41 @@ class TrendsWidgetManager {
 
 // Auto-initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    // Check if static trends widget already exists
-    const staticTrendsWidget = document.querySelector('.trends__widget-container');
-    if (staticTrendsWidget) {
-        console.log('📊 Static trends widget found, skipping JavaScript initialization');
-        return;
-    }
+    // Only initialize the trends widget when the page explicitly opts-in or has a mount point.
+    // Detect server-rendered/static widget container or common mount selectors.
+    const staticTrendsWidget = document.querySelector('#trends-widget-container') || document.querySelector('.trends__widget-container') || document.querySelector('.trends__mount') || document.querySelector('#trends-widget');
+
+    // Allow opt-in via data attribute on <body> or <html>: data-has-trends="true"
+    const optIn = document.body.getAttribute('data-has-trends') === 'true' || document.documentElement.getAttribute('data-has-trends') === 'true';
+
+    // Admin override: allow admins to see the full widget even when server markup hides it
+    const adminOverride = new URLSearchParams(window.location.search).get('admin') === 'true' || localStorage.getItem('showTrendsForAdmin') === 'true';
 
     // Check if trends widget should be disabled entirely
-    const disableTrends = localStorage.getItem('disableTrendsWidget') === 'true' ||
-                         new URLSearchParams(window.location.search).get('disableTrends') === 'true';
+    const disableTrends = localStorage.getItem('disableTrendsWidget') === 'true' || new URLSearchParams(window.location.search).get('disableTrends') === 'true';
 
     if (disableTrends) {
         console.log('🚫 Trends widget disabled via localStorage or URL parameter');
         return;
     }
 
+    // If a server-rendered container exists but is intentionally hidden, do not initialize
+    if (staticTrendsWidget) {
+        const hidden = staticTrendsWidget.classList && staticTrendsWidget.classList.contains('trends__widget-container--hidden');
+        if (hidden && !adminOverride && !optIn) {
+            console.log('🔒 Server-rendered trends container is hidden; skipping interactive widget (admin override not present)');
+            return;
+        }
+    }
+
+    if (!staticTrendsWidget && !optIn && !adminOverride) {
+        console.log('📭 No trends mount or opt-in flag found — skipping widget auto-initialization');
+        return;
+    }
+
     // Initialize trends widget with current theme (so widget can render dark visuals internally)
     const currentTheme = document.documentElement.getAttribute('data-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    window.trendsWidget = new TrendsWidgetManager({ theme: currentTheme });
+    window.trendsWidget = new TrendsWidgetManager({ theme: currentTheme, mountElement: staticTrendsWidget });
 
     // Add to global scope for debugging
     if (typeof window !== 'undefined') {

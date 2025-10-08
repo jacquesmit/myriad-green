@@ -1,0 +1,26 @@
+{
+  "service": "backup-water-systems",
+  "path": "services/backup-water-systems.html",
+  "snapshot": {
+    "fetchedAt": "2025-10-08T10:06:14.879Z",
+    "geo": "ZA-GT",
+    "topTerms": [
+      {
+        "rank": 1,
+        "query": "backup water systems",
+        "score": 36
+      },
+      {
+        "rank": 2,
+        "query": "water tank",
+        "score": 39
+      },
+      {
+        "rank": 3,
+        "query": "rainwater harvesting",
+        "score": 65
+      }
+    ],
+    "summary": "backup water systems is the most-searched term this week in ZA-GT."
+  }
+}

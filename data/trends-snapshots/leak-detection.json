@@ -1,0 +1,26 @@
+{
+  "service": "leak-detection",
+  "path": "services/leak-detection.html",
+  "snapshot": {
+    "fetchedAt": "2025-10-08T10:06:12.812Z",
+    "geo": "ZA-GT",
+    "topTerms": [
+      {
+        "rank": 1,
+        "query": "leak detection",
+        "score": 98
+      },
+      {
+        "rank": 2,
+        "query": "water leak",
+        "score": 63
+      },
+      {
+        "rank": 3,
+        "query": "acoustic leak detection",
+        "score": 36
+      }
+    ],
+    "summary": "leak detection is the most-searched term this week in ZA-GT."
+  }
+}

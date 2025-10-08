@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "trends:fetch": "node scripts/fetch-trends-snapshots.js",
+    "trends:inject": "node scripts/inject-trends-snapshots.js",
+    "trends:run": "node scripts/fetch-trends-snapshots.js && node scripts/inject-trends-snapshots.js",
     "start": "node server/index.js",
     "dev": "nodemon server/index.js",
     "scaffold:irrigation": "node scripts/scaffold-irrigation.js",
@@ -38,6 +41,8 @@
     "google-trends-api": "^4.9.2",
     "googleapis": "^153.0.0",
     "nodemailer": "^7.0.5",
+    "playwright": "^1.55.1",
+    "puppeteer": "^24.23.0",
     "stripe": "^18.4.0",
     "twilio": "^5.7.3"
   },

@@ -1,0 +1,26 @@
+{
+  "service": "irrigation",
+  "path": "services/irrigation.html",
+  "snapshot": {
+    "fetchedAt": "2025-10-08T10:06:09.818Z",
+    "geo": "ZA-GT",
+    "topTerms": [
+      {
+        "rank": 1,
+        "query": "irrigation",
+        "score": 3
+      },
+      {
+        "rank": 2,
+        "query": "water tank",
+        "score": 5
+      },
+      {
+        "rank": 3,
+        "query": "borehole",
+        "score": 31
+      }
+    ],
+    "summary": "irrigation is the most-searched term this week in ZA-GT."
+  }
+}
