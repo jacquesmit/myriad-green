@@ -110,6 +110,52 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Allow per-page overrides for social links (e.g. different Facebook page per service)
+  // Usage: set <body data-facebook="https://www.facebook.com/your-page"> or
+  // set <body data-service="Backup Water Systems"> and provide a mapping below.
+  function applyPerPageSocialOverrides(container) {
+    try {
+      const root = container || document.getElementById('site-social-bar') || document.body;
+      if (!root) return;
+
+      // Determine the desired Facebook URL: explicit body attribute wins, then mapping by service
+      const fbAttr = document.body.getAttribute('data-facebook') || document.body.getAttribute('data-social-facebook');
+      const serviceName = document.body.getAttribute('data-service');
+      const fbMap = {
+        // Add more mappings here as needed
+        'Backup Water Systems': 'https://www.facebook.com/profile.php?id=100065157684438',
+        'Myriad Green': 'https://facebook.com/MyriadGreen'
+      };
+
+      const desired = fbAttr || (serviceName ? fbMap[serviceName] : null);
+      if (!desired) return;
+
+      // Find all possible facebook anchors inside the container or common social bar selectors
+      let anchors = Array.from(root.querySelectorAll('a.facebook'));
+      if (anchors.length === 0) {
+        anchors = Array.from(document.querySelectorAll('#site-social-bar a.facebook, .floating-follow-bar a.facebook'));
+      }
+
+      if (anchors.length === 0) {
+        // If nothing found yet, try once more shortly (some pages inject later)
+        setTimeout(() => applyPerPageSocialOverrides(container), 200);
+        return;
+      }
+
+      anchors.forEach(a => {
+        try {
+          const old = a.href;
+          a.href = desired;
+          console.info('[social-bar] set facebook href from', old, 'to', desired);
+        } catch (e) {
+          // Continue on errors
+        }
+      });
+    } catch (e) {
+      console.warn('applyPerPageSocialOverrides failed:', e);
+    }
+  }
+
   // Inject Contact Bar
   fetch(`${basePath}partials/floating-contact-bar.html`)
     .then(r => {
@@ -134,6 +180,8 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(html => {
       const container = document.getElementById('site-social-bar');
       if (container) container.innerHTML = html;
+      // Apply any per-page social overrides (e.g. different FB pages per service)
+      applyPerPageSocialOverrides(document.getElementById('site-social-bar'));
       barsLoaded++;
       checkBarsReady();
     })
@@ -250,7 +298,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (socialBarContainer) {
     fetch(`${basePath}partials/social-bar.html`)
       .then(r => r.text())
-      .then(html => socialBarContainer.innerHTML = html);
+      .then(html => {
+        socialBarContainer.innerHTML = html;
+        // Ensure overrides are applied here as well (some pages use this injection path)
+        applyPerPageSocialOverrides(socialBarContainer);
+      });
   }
 
   // ✅ Services Swiper
