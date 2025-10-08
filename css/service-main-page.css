@@ -5327,7 +5327,7 @@ details[open] .faq__caret {
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
-  padding: calc(var(--spacing-md) + 0.25rem) var(--spacing-lg);
+  padding: var(--spacing-lg);
   background: var(--color-gray-50);
   border-radius: var(--border-radius-lg);
   border: 1px solid var(--color-gray-200);
@@ -5345,32 +5345,13 @@ details[open] .faq__caret {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  width: 50px;
+  height: 50px;
   background: var(--color-primary);
   color: white;
   border-radius: 50%;
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   flex-shrink: 0;
-}
-
-/* Page-specific tweak: slightly tighter guarantees and larger icons on wide screens.
-   Keep mobile behavior unchanged. */
-@media (min-width: 1100px) {
-  .section--how-it-works .guarantee-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: calc(var(--spacing-lg));
-  }
-
-  .section--how-it-works .guarantee-item {
-    padding: var(--spacing-md) var(--spacing-lg);
-  }
-
-  .section--how-it-works .guarantee-icon {
-    width: 64px;
-    height: 64px;
-    font-size: 1.5rem;
-  }
 }
 
 .section--how-it-works .guarantee-content {
