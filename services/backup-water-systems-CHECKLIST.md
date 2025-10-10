@@ -22,7 +22,8 @@ This file tracks work to finish and polish the `services/backup-water-systems.ht
 - [x] Update CTA headings and copy that mention "Smart Irrigation" → "Smart Water Monitoring" or similar
 - [x] Update `trust-heading` sr-only text referencing "Irrigation" to "Backup Water Services"
 - [x] Fix testimonial image alt text mismatches
-- [ ] Reconcile installation numbers (500+ vs 800+) across the page
+- [x] Reconcile installation numbers (500+ vs 800+) across the page
+- [x] Scan & replace remaining 'irrigation' mentions on page
 - [ ] Review and update any remaining product descriptions that imply irrigation scheduling
 - [ ] Remove or gate the manual weather debug script (optional)
 - [ ] Run a local build / smoke test of site (if applicable)
