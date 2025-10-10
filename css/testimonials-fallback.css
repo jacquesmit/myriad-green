@@ -60,6 +60,18 @@
   color: var(--color-text, #374151);
 }
 
+/* Clamp testimonial quote text to a fixed number of lines so cards stay uniform */
+.testimonial-card blockquote,
+.testimonial-card__quote {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4; /* limit to 4 lines */
+  line-clamp: 4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: calc(1.2em * 4); /* approximate height guard */
+}
+
 .testimonial-card cite {
   font-style: normal;
   font-weight: 600;
