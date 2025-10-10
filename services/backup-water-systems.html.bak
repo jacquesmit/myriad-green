@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Leak Detection Services | Myriad Green | Johannesburg & Pretoria</title>
-  <meta name="description" content="⭐ Professional leak detection services in Johannesburg & Pretoria. Advanced technology to locate and fix leaks efficiently. 500+ happy clients, 4.9/5 rating. Book online today!">
-  <meta name="keywords" content="leak detection Johannesburg, leak repairs Pretoria, water leak detection Gauteng, acoustic leak detection, thermal imaging, water management">
-  <link rel="canonical" href="https://myriadgreen.co.za/services/leak-detection.html">
+  <title>Backup Water Systems — Tanks & Pumps | Myriad Green (Johannesburg & Pretoria)</title>
+  <meta name="description" content="Backup water systems in Johannesburg & Pretoria — tanks, pumps, filtration and smart controls. Free technical assessments, fast emergency support and tailored quotes. 15+ years local experience.">
+  <meta name="keywords" content="backup water systems Johannesburg, water tanks Pretoria, rainwater harvesting Gauteng, emergency water supply, tank installation, pump maintenance">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://myriadgreen.co.za/services/backup-water-systems.html">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Professional Leak Detection Services | Myriad Green | Johannesburg & Pretoria">
-  <meta property="og:description" content="⭐ Advanced leak detection technology for Gauteng homes & businesses. 500+ satisfied clients, 4.9/5 rating. Expert water management solutions.">
+  <meta property="og:title" content="Backup Water Systems — Tanks & Pumps | Myriad Green">
+  <meta property="og:description" content="Tanks, pumps, filtration and smart controls for reliable backup water supply in Johannesburg & Pretoria. Free assessments and emergency support.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://myriadgreen.co.za/services/leak-detection.html">
-  <meta property="og:image" content="https://myriadgreen.co.za/images/work/leak-detection-equipment.jpg">
+  <meta property="og:url" content="https://myriadgreen.co.za/services/backup-water-systems.html">
+  <meta property="og:image" content="https://myriadgreen.co.za/images/work/backup-water-systems.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:locale" content="en_ZA">
@@ -21,18 +22,18 @@
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Professional Leak Detection Services | Myriad Green">
-  <meta name="twitter:description" content="⭐ Advanced leak detection technology for Gauteng homes & businesses. 500+ happy clients, 4.9/5 rating. Expert water management solutions.">
-  <meta name="twitter:image" content="https://myriadgreen.co.za/images/work/leak-detection-equipment.jpg">
+  <meta name="twitter:title" content="Backup Water Systems — Myriad Green">
+  <meta name="twitter:description" content="Reliable backup water systems in Gauteng — tanks, pumps and smart monitoring. Book a free technical assessment today.">
+  <meta name="twitter:image" content="https://myriadgreen.co.za/images/work/backup-water-systems.jpg">
 
   <!-- Local Business Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    "name": "Myriad Green Leak Detection Services",
-    "description": "Professional leak detection services using advanced technology in Johannesburg and Pretoria",
-    "url": "https://myriadgreen.co.za/services/leak-detection.html",
+    "name": "Myriad Green Backup Water Systems",
+    "description": "Reliable backup water systems for Johannesburg and Pretoria",
+    "url": "https://myriadgreen.co.za/services/backup-water-systems.html",
     "telephone": "+27-11-123-4567",
     "address": {
       "@type": "PostalAddress",
@@ -54,7 +55,7 @@
         "name": "Gauteng"
       }
     ],
-    "serviceType": "Leak Detection Services",
+    "serviceType": "Backup Water Systems",
     "aggregateRating": {
       "@type": "AggregateRating",
       "ratingValue": "4.9",
@@ -64,26 +65,26 @@
     },
     "offers": {
       "@type": "Offer",
-      "name": "Professional Leak Detection Services",
-      "description": "Advanced acoustic and thermal imaging technology for precise leak detection"
+      "name": "Reliable Backup Water Systems",
+      "description": "Advanced backup water solutions for uninterrupted supply"
     }
   }
   </script>
 
-  <!-- FAQ Schema (moved to head to avoid rendering in body) -->
+  <!-- FAQPage Schema (page-unique for Backup Water Systems) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "name": "Leak Detection Services FAQ - Myriad Green",
-    "description": "Frequently asked questions about professional leak detection services in Johannesburg and Pretoria",
+    "name": "Backup Water Systems FAQ - Myriad Green",
+    "description": "Frequently asked questions about backup water systems, tanks, pumps, filtration and maintenance in Johannesburg & Pretoria.",
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "How much does a leak detection service cost?",
+        "name": "How much does a backup water system cost?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Leak detection service costs vary based on property size and the complexity of the plumbing system. Residential services typically range from R750 to R2,500. We provide free assessments and detailed quotes."
+          "text": "Costs vary by property size and complexity. Residential systems typically range R15,000–R45,000; commercial systems R50,000–R200,000+. Quotes include on-site assessment, design and installation."
         }
       },
       {
@@ -91,39 +92,55 @@
         "name": "Which areas in Gauteng do you service?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "We service all major areas of Gauteng including Johannesburg (Sandton, Rosebank, Melrose, Houghton, Bedfordview) and Pretoria (Waterkloof, Faerie Glen, Brooklyn, Menlyn, Garsfontein). Same-day emergency service available."
+          "text": "We service all major Gauteng areas including Johannesburg (Sandton, Rosebank, Melrose, Bedfordview) and Pretoria (Waterkloof, Menlyn, Centurion). Same-day emergency support is available in primary areas."
         }
       },
       {
         "@type": "Question",
-        "name": "Do you repair leaks in systems installed by other companies?",
+        "name": "Do you service systems installed by other companies?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes — we repair leaks regardless of who installed the system. We own professional leak-detection equipment (acoustic detectors, thermal cameras, pressure and tracer testing tools) and carry on-site repair kits to fix most common issues during the first visit."
+          "text": "Yes. Our technicians service and repair backup systems regardless of the original installer. We work with pumps, tanks, filtration and controls from most major brands."
         }
       },
       {
         "@type": "Question",
-        "name": "How do acoustic leak detectors work?",
+        "name": "How do backup system controls and pumps maintain supply and protect equipment?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Acoustic leak detectors use sensitive microphones to listen for the sound of water escaping from pipes. The device amplifies and analyzes the sound to pinpoint the location of the leak, even if it's underground or behind walls."
+          "text": "Controls use automatic transfer switches, pump protection (dry-run and pressure controls) and optional remote monitoring. Filtration and UV treatment protect water quality. These features ensure reliable supply and extend equipment life."
         }
       },
       {
         "@type": "Question",
-        "name": "What equipment do you use to locate leaks?",
+        "name": "What tank, pump and filtration brands do you supply and service?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "We use acoustic leak detectors, thermal imaging cameras, electronic pressure and tracer testing tools, and CCTV inspection where needed. Our technicians combine methods to pinpoint leaks accurately while minimising excavation."
+          "text": "We supply and install JoJo, GRAF, Tigertank and Rondawel tanks and commonly use DAB and Grundfos pumps. Filtration/UV options are available depending on reuse and potable requirements."
         }
       },
       {
         "@type": "Question",
-        "name": "How often should leak detection systems be serviced?",
+        "name": "How often should water systems be serviced?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "We recommend annual servicing for leak detection systems to ensure all components are functioning correctly and to recalibrate sensors as needed. More frequent checks may be necessary for older systems or properties with a history of leaks."
+          "text": "We recommend bi-annual professional servicing (spring and autumn) and monthly basic checks during peak season: tank inlets, pump pressure, automatic transfer tests and filter inspection."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you offer financing or payment plans?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. We offer interest-free payment plans (6–12 months), seasonal schedules and commercial financing options. Contact us for tailored payment arrangements."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What warranty do you provide on installations?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We provide a 12-month workmanship warranty plus manufacturer warranties on major components. Longer warranties (2–5 years) apply to selected parts depending on the manufacturer."
         }
       }
     ]
@@ -152,68 +169,69 @@
   <link rel="stylesheet" href="../css/service-pages.css">
 </head>
 
-<body class="has-fixed-header" data-theme="light" data-service="Leak Detection">
+<body class="has-fixed-header" data-theme="light" data-service="Backup Water Systems" data-facebook="https://www.facebook.com/profile.php?id=100065157684438">
   <!-- Injection placeholders -->
   <div id="site-nav"></div>
   <div id="site-social-bar"></div>
   <div id="booking-modal-root"></div>
 
   <main id="content">
+    
     <!-- Hero Section -->
     <section id="hero" class="section section--hero" aria-labelledby="hero-title">
       <div class="container">
         <div class="grid-2 hero__grid">
           <div class="hero__content">
             <div class="hero__badge-row">
-              <span class="badge badge--premium">15+ Years Gauteng Expertise</span>
-              <span class="badge badge--certified">Certified Leak Detection</span>
+              <span class="badge badge--premium">15+ Years Gauteng Backup Expertise</span>
+              <span class="badge badge--certified">Tank &amp; Pump Specialists</span>
             </div>
-            
+
             <div class="eyebrow eyebrow--enhanced">
-              <i class="fas fa-leaf" aria-hidden="true"></i>
-              Professional Leak Detection Systems
+              <i class="fas fa-water" aria-hidden="true"></i>
+              Backup Water Systems &amp; Rainwater Harvesting
             </div>
-            
+
             <h1 id="hero-title" class="hero__title" data-hero-title>
-              Advanced Leak Detection That <span class="highlight">Prevents Water Damage</span>
+              Backup Water Systems for Homes &amp; Estates — <span class="highlight">Always-on Water Supply</span>
             </h1>
-            
+
             <p class="lead hero__lead" data-hero-intro>
-              Professional leak detection solutions for Gauteng properties. Our advanced systems use acoustic and thermal imaging technology to locate leaks quickly and accurately.
+              We design, install and maintain backup water systems — tanks, pumps, filtration and intelligent controls — to keep your property supplied during outages. Free technical assessments, tailored quotes and financing options available.
             </p>
 
             <div class="hero__stats-row">
               <div class="stat-item">
                 <span class="stat-number">500+</span>
-                <span class="stat-label">Leaks Detected</span>
+                <span class="stat-label">Systems Installed</span>
               </div>
               <div class="stat-item">
-                <span class="stat-number">90%</span>
-                <span class="stat-label">Same-Day Repairs</span>
+                <span class="stat-number">24/7</span>
+                <span class="stat-label">Emergency Support</span>
               </div>
               <div class="stat-item">
-                <span class="stat-number">24h</span>
-                <span class="stat-label">Typical Response</span>
+                <span class="stat-number">15+</span>
+                <span class="stat-label">Years Expertise</span>
               </div>
             </div>
-            
+
             <div class="btn-row hero__buttons">
-              <button id="btn-hero-book-assessment" class="btn btn-primary btn--large btn--enhanced book-now" data-service="Leak Detection Assessment">
+              <button id="btn-hero-book-assessment" class="btn btn-primary btn--large btn--enhanced book-now" data-service="Backup Water Assessment" aria-label="Book free technical assessment for backup water systems">
                 <span class="btn__icon">
                   <i class="fas fa-calendar-check"></i>
                 </span>
                 <span class="btn__content">
-                  <span class="btn__text">Free Leak Assessment</span>
-                  <span class="btn__subtext">We'll contact you same day</span>
+                  <span class="btn__text">Book Free Assessment</span>
+                  <span class="btn__subtext">Same-day contact from our team</span>
                 </span>
               </button>
-              
+
               <a id="btn-hero-emergency" class="btn btn-secondary btn--large btn--enhanced" href="tel:+27123456789">
                 <span class="btn__icon">
                   <i class="fas fa-phone-alt"></i>
                 </span>
                 <span class="btn__content">
-                  <span class="btn__text">Emergency Repairs</span>
+                  <span class="btn__text">Emergency Support</span>
                   <span class="btn__subtext">Fast response available</span>
                 </span>
               </a>
@@ -222,7 +240,7 @@
             <div class="hero__trust-indicators">
               <div class="trust-item">
                 <i class="fas fa-shield-alt" aria-hidden="true"></i>
-                <span>100% Satisfaction Guarantee</span>
+                <span>Up to 5-year Workmanship &amp; Parts Warranty</span>
               </div>
               <div class="trust-item">
                 <i class="fas fa-certificate" aria-hidden="true"></i>
@@ -234,35 +252,35 @@
               </div>
             </div>
           </div>
-          
+
           <div class="hero__media">
             <div class="ratio-5x4">
-              <img class="hero__image media__img" 
-                   src="../images/work/leak-detection-equipment.jpg" 
-                   alt="Advanced leak detection equipment used for precise water leak identification in Johannesburg and Pretoria - premium quality service" 
-                   loading="eager"
-                   width="600"
-                   height="480">
+        <img class="hero__image media__img" 
+          src="../images/work/backup-water-systems.jpg" 
+          alt="Backup water systems: tanks, pumps and smart controls installed across Gauteng" 
+          loading="eager"
+          width="600"
+          height="480">
             </div>
-            
+
             <div class="hero__overlay-stats">
               <div class="overlay-stat">
                 <span class="overlay-stat__icon">
                   <i class="fas fa-tint"></i>
                 </span>
                 <div class="overlay-stat__content">
-                  <span class="overlay-stat__number">90%</span>
-                  <span class="overlay-stat__label">Same-Day Repairs</span>
+                  <span class="overlay-stat__number">24/7</span>
+                  <span class="overlay-stat__label">Emergency Support</span>
                 </div>
               </div>
-              
+
               <div class="overlay-stat">
                 <span class="overlay-stat__icon">
                   <i class="fas fa-mobile-alt"></i>
                 </span>
                 <div class="overlay-stat__content">
-                  <span class="overlay-stat__number">24h</span>
-                  <span class="overlay-stat__label">Response Time</span>
+                  <span class="overlay-stat__number">Smart</span>
+                  <span class="overlay-stat__label">Monitoring</span>
                 </div>
               </div>
             </div>
@@ -279,29 +297,29 @@
             <span class="eyebrow-icon">
               <i class="fas fa-cogs" aria-hidden="true"></i>
             </span>
-            Complete Professional Leak Detection Solutions
+            Complete Backup Water Solutions
           </div>
-          
+
           <h2 id="overview-title" class="overview__title">
-            Advanced Leak Detection Systems for <span class="text-highlight">Gauteng Properties</span>
+            Advanced Water Systems for <span class="text-highlight">Reliable Supply</span>
           </h2>
-          
+
           <p class="overview__lead lead">
-            Our leak detection specialists use cutting-edge technology to quickly and accurately locate and repair leaks in residential and commercial properties. Protect your property from water damage with our expert services.
+            Our water specialists design, install, and maintain advanced backup water systems for homes, estates, and businesses. Every system is tailored to Gauteng's unique climate and water availability challenges.
           </p>
-          
+
           <div class="overview__metrics">
             <div class="metric-item">
-              <span class="metric-number">15+</span>
-              <span class="metric-label">Years Professional Experience</span>
+              <span class="metric-number">20+</span>
+              <span class="metric-label">Years Backup Water Experience</span>
             </div>
             <div class="metric-item">  
               <span class="metric-number">500+</span>
-              <span class="metric-label">Leaks Detected & Repaired</span>
+              <span class="metric-label">Backup Systems Installed</span>
             </div>
             <div class="metric-item">
-              <span class="metric-number">R2.5M+</span>
-              <span class="metric-label">Savings from Leak Repairs</span>
+              <span class="metric-number">24/7</span>
+              <span class="metric-label">Emergency Backup Support</span>
             </div>
           </div>
         </header>
@@ -319,31 +337,31 @@
                 </div>
               </div>
               
-              <h3 class="capability-card__title">Precision Leak Detection</h3>
-              
+              <h3 class="capability-card__title">Tailored Tank & Pump Design</h3>
+
               <div class="capability-specs">
                 <div class="spec-item">
-                  <span class="spec-label">Technology:</span>
-                  <span class="spec-value">Acoustic & Thermal Imaging</span>
+                  <span class="spec-label">Source Assessment:</span>
+                  <span class="spec-value">Borehole, municipal or rainwater</span>
                 </div>
                 <div class="spec-item">
-                  <span class="spec-label">Coverage:</span>
-                  <span class="spec-value">Indoor & Outdoor</span>
+                  <span class="spec-label">Tank Capacity:</span>
+                  <span class="spec-value">Sized for household & estate needs</span>
                 </div>
                 <div class="spec-item">
-                  <span class="spec-label">Response Time:</span>
-                  <span class="spec-value">24 hours</span>
+                  <span class="spec-label">Pump Configuration:</span>
+                  <span class="spec-value">Boosters, submersible & pressure setups</span>
                 </div>
               </div>
-              
+
               <p class="capability-card__description">
-                Our certified technicians use advanced acoustic and thermal imaging technology to accurately locate and diagnose leaks without invasive procedures. Fast, effective, and minimally disruptive.
+                We design tank and pump systems to match your property's water demand and supply source — from compact domestic setups to estate-scale installations with redundancy and smart controls.
               </p>
-              
+
               <ul class="capability-benefits">
-                <li><i class="fas fa-check-circle"></i> Non-invasive leak detection</li>
-                <li><i class="fas fa-check-circle"></i> Accurate and fast results</li>
-                <li><i class="fas fa-check-circle"></i> Comprehensive property protection</li>
+                <li><i class="fas fa-check-circle"></i> Correctly sized tanks & pumps</li>
+                <li><i class="fas fa-check-circle"></i> Reduced outages and improved pressure</li>
+                <li><i class="fas fa-check-circle"></i> Installation-ready engineering drawings</li>
               </ul>
             </article>
 
@@ -357,115 +375,115 @@
                 </div>
               </div>
               
-              <h3 class="capability-card__title">Intelligent Leak Monitoring</h3>
-              
+              <h3 class="capability-card__title">Smart Monitoring & Controls</h3>
+
               <div class="capability-specs">
                 <div class="spec-item">
-                  <span class="spec-label">Technology:</span>
-                  <span class="spec-value">IoT Sensors & Cloud Analytics</span>
+                  <span class="spec-label">Control Panels:</span>
+                  <span class="spec-value">Automatic transfer & pump controllers</span>
                 </div>
                 <div class="spec-item">
-                  <span class="spec-label">Real-Time Alerts:</span>
-                  <span class="spec-value">24/7 Monitoring</span>
+                  <span class="spec-label">Monitoring:</span>
+                  <span class="spec-value">Remote tank-level & pump status</span>
                 </div>
                 <div class="spec-item">
-                  <span class="spec-label">Integration:</span>
-                  <span class="spec-value">Smart Home Systems</span>
+                  <span class="spec-label">Alerts:</span>
+                  <span class="spec-value">Low-level, fault and maintenance alerts</span>
                 </div>
               </div>
-              
+
               <p class="capability-card__description">
-                Stay ahead of potential water damage with our intelligent leak monitoring systems. Receive real-time alerts and insights to prevent costly repairs and ensure peace of mind.
+                Intelligent controls automatically manage transfers between sources, protect pumps against dry-run, and provide remote status and alerts so you always know system health.
               </p>
-              
+
               <ul class="capability-benefits">
-                <li><i class="fas fa-check-circle"></i> 24/7 real-time monitoring</li>
-                <li><i class="fas fa-check-circle"></i> Preventative maintenance insights</li>
-                <li><i class="fas fa-check-circle"></i> Seamless smart home integration</li>
+                <li><i class="fas fa-check-circle"></i> Automated failover between water sources</li>
+                <li><i class="fas fa-check-circle"></i> Remote monitoring & mobile alerts</li>
+                <li><i class="fas fa-check-circle"></i> Pump protection and diagnostics</li>
               </ul>
             </article>
 
             <article class="capability-card card card--enhanced">
-          <div class="capability-card__header">
-            <div class="capability-icon capability-icon--eco">
-              <i class="fas fa-water"></i>
-            </div>
-            <div class="capability-badge">
-              <span class="badge badge--eco">Eco-Friendly</span>
-            </div>
-          </div>
-          
-          <h3 class="capability-card__title">Eco-Friendly Leak Solutions</h3>
-          
-          <div class="capability-specs">
-            <div class="spec-item">
-              <span class="spec-label">Focus:</span>
-              <span class="spec-value">Water Conservation</span>
-            </div>
-            <div class="spec-item">
-              <span class="spec-label">Technology:</span>
-              <span class="spec-value">Sustainable Practices</span>
-            </div>
-            <div class="spec-item">
-              <span class="spec-label">Impact:</span>
-              <span class="spec-value">Reduced Water Waste</span>
-            </div>
-          </div>
-          
-          <p class="capability-card__description">
-            Our eco-friendly leak detection solutions prioritize water conservation and sustainability. By using advanced techniques, we help reduce water waste and promote environmental responsibility.
-          </p>
-          
-          <ul class="capability-benefits">
-            <li><i class="fas fa-check-circle"></i> Promotes sustainability</li>
-            <li><i class="fas fa-check-circle"></i> Reduces water waste</li>
-            <li><i class="fas fa-check-circle"></i> Environmentally responsible</li>
-          </ul>
-        </article>
+              <div class="capability-card__header">
+                <div class="capability-icon capability-icon--service">
+                  <i class="fas fa-tools"></i>
+                </div>
+                <div class="capability-badge">
+                  <span class="badge badge--support">Fast Support</span>
+                </div>
+              </div>
+              
+              <h3 class="capability-card__title">Service & Maintenance Plans</h3>
+
+              <div class="capability-specs">
+                <div class="spec-item">
+                  <span class="spec-label">Response Time:</span>
+                  <span class="spec-value">Same-day contact for emergencies</span>
+                </div>
+                <div class="spec-item">
+                  <span class="spec-label">Service Intervals:</span>
+                  <span class="spec-value">Monthly, Quarterly or Annual plans</span>
+                </div>
+                <div class="spec-item">
+                  <span class="spec-label">Warranty Support:</span>
+                  <span class="spec-value">Workmanship & parts coordination</span>
+                </div>
+              </div>
+
+              <p class="capability-card__description">
+                Full maintenance and support packages — preventative servicing, filter and UV checks, pump servicing, and fast emergency repairs to keep your backup system reliable year-round.
+              </p>
+
+              <ul class="capability-benefits">
+                <li><i class="fas fa-check-circle"></i> Scheduled preventative maintenance</li>
+                <li><i class="fas fa-check-circle"></i> Fast emergency repairs & spare parts</li>
+                <li><i class="fas fa-check-circle"></i> Service reports and performance checks</li>
+              </ul>
+            </article>
           </div>
 
           <!-- Technical Certifications & Standards -->
           <div class="certifications-panel">
             <h3 class="certifications__title">Professional Certifications & Standards</h3>
-            
+
             <div class="certifications-grid">
               <div class="cert-item">
                 <div class="cert-logo">
                   <i class="fas fa-award"></i>
                 </div>
                 <div class="cert-details">
-                  <span class="cert-name">Certified Leak Detection Specialist</span>
-                  <span class="cert-desc">Expertise in advanced leak detection technologies</span>
+                  <span class="cert-name">Manufacturer Partnerships</span>
+                  <span class="cert-desc">JoJo, GRAF, Tigertank & leading pump brands</span>
                 </div>
               </div>
-              
-              <div class="cert-item">
-                <div class="cert-logo">
-                  <i class="fas fa-shield-alt"></i>
-                </div>
-                <div class="cert-details">
-                  <span class="cert-name">Quality Assured</span>
-                  <span class="cert-desc">Commitment to quality workmanship</span>
-                </div>
-              </div>
-              
+
               <div class="cert-item">
                 <div class="cert-logo">
                   <i class="fas fa-water"></i>
                 </div>
                 <div class="cert-details">
-                  <span class="cert-name">WaterSense Products</span>
-                  <span class="cert-desc">EPA certified water-efficient equipment</span>
+                  <span class="cert-name">Water Quality & Treatment</span>
+                  <span class="cert-desc">Filtration & UV compliance for safe reuse or potable backup</span>
                 </div>
               </div>
-              
+
               <div class="cert-item">
                 <div class="cert-logo">
                   <i class="fas fa-shield-alt"></i>
                 </div>
                 <div class="cert-details">
-                  <span class="cert-name">Safety Focused</span>
-                  <span class="cert-desc">Professional safety protocols & best practices</span>
+                  <span class="cert-name">Accredited Installers</span>
+                  <span class="cert-desc">Certified technicians trained in electrical, plumbing & pressure systems</span>
+                </div>
+              </div>
+
+              <div class="cert-item">
+                <div class="cert-logo">
+                  <i class="fas fa-certificate"></i>
+                </div>
+                <div class="cert-details">
+                  <span class="cert-name">Warranty & Aftercare</span>
+                  <span class="cert-desc">Workmanship warranties and scheduled maintenance plans</span>
                 </div>
               </div>
             </div>
@@ -482,15 +500,15 @@
             <span class="eyebrow-icon">
               <i class="fas fa-route" aria-hidden="true"></i>
             </span>
-            Professional Leak Detection Process
+            Professional Installation Process
           </div>
 
           <h2 id="how-title" class="how__title" itemprop="name">
-            From Consultation to <span class="text-highlight">Leak Repair</span>
+            From Consultation to <span class="text-highlight">Complete System</span>
           </h2>
 
           <p class="how__lead lead" itemprop="description">
-            Our systematic approach ensures every leak is accurately detected and efficiently repaired. From initial assessment to ongoing maintenance, we deliver professional results that exceed expectations.
+            Our systematic approach ensures every backup water system is perfectly designed for your property's unique requirements. From initial assessment to ongoing maintenance, we deliver professional results that exceed expectations.
           </p>
 
           <div class="how__timeline-summary">
@@ -525,7 +543,7 @@
                 </div>
 
                 <div class="step__content">
-                  <h3 class="step__title" itemprop="name">Comprehensive Property Assessment</h3>
+                  <h3 class="step__title" itemprop="name">Comprehensive Site Assessment</h3>
                   
                   <div class="step__details">
                     <div class="detail-group">
@@ -534,10 +552,10 @@
                         Technical Evaluation
                       </h4>
                       <ul class="detail-list">
-                        <li>Water pressure testing (0.5-6.0 bar analysis)</li>
-                        <li>Soil composition & drainage assessment</li>
-                        <li>Existing infrastructure mapping</li>
-                        <li>Municipal compliance verification</li>
+              <li>Confirm primary water source (borehole, municipal, rainwater)</li>
+              <li>Water quality sampling & flow/pressure tests</li>
+              <li>Electrical supply location and capacity for pumps</li>
+              <li>Site access, tank siting and drainage considerations</li>
                       </ul>
                     </div>
 
@@ -547,16 +565,16 @@
                         Landscape Analysis
                       </h4>
                       <ul class="detail-list">
-                        <li>Plant water requirements by zone</li>
-                        <li>Sun/shade pattern evaluation</li>
-                        <li>Slope & microclimatic factors</li>
-                        <li>Coverage optimization planning</li>
+              <li>Roof area & downpipe locations for rainwater capture</li>
+              <li>Tank placement options and concealment/visibility</li>
+              <li>Pipe routing, pump foundation and service access</li>
+              <li>Neighbouring constraints and municipal connection points</li>
                       </ul>
                     </div>
                   </div>
 
                   <p class="step__description" itemprop="text">
-                    Our certified technicians conduct a thorough property evaluation using professional tools to measure water pressure, analyze soil conditions, and map existing infrastructure. This detailed assessment ensures optimal system design.
+                    Certified technicians carry out an on-site assessment of water sources, site layout and existing infrastructure to produce accurate demand calculations and an installation-ready report.
                   </p>
 
                   <div class="step__outcomes">
@@ -566,11 +584,11 @@
                     </div>
                     <div class="outcome-item">
                       <i class="fas fa-check-circle"></i>
-                      <span>Water pressure optimization plan</span>
+                      <span>Water source optimization plan</span>
                     </div>
                     <div class="outcome-item">
                       <i class="fas fa-check-circle"></i>
-                      <span>Zone coverage recommendations</span>
+                      <span>System coverage recommendations</span>
                     </div>
                   </div>
                 </div>
@@ -589,7 +607,7 @@
                 </div>
 
                 <div class="step__content">
-                  <h3 class="step__title">Professional Leak Detection Design & Quote</h3>
+                  <h3 class="step__title">Professional System Design & Quote</h3>
                   
                   <div class="step__details">
                     <div class="detail-group">
@@ -598,10 +616,10 @@
                         Technical Specifications
                       </h4>
                       <ul class="detail-list">
-                        <li>CAD-mapped leak locations and site plans</li>
-                        <li>Pressure profiling & flow measurements</li>
-                        <li>Equipment specifications (acoustic detectors, thermal cameras)</li>
-                        <li>Non-invasive repair & mitigation plan</li>
+              <li>CAD-mapped tank & pump layout with routing</li>
+              <li>Hydraulic calculations: peak demand, pump duty & storage sizing</li>
+              <li>Filtration, UV treatment and component specification</li>
+              <li>Control strategy: auto-transfer, alarms and remote monitoring</li>
                       </ul>
                     </div>
 
@@ -611,16 +629,16 @@
                         Transparent Pricing
                       </h4>
                       <ul class="detail-list">
-                        <li>Itemized component & labor costs</li>
-                        <li>Installation timeline breakdown</li>
-                        <li>Warranty terms & maintenance options</li>
-                        <li>Municipal permit requirements</li>
+              <li>Itemised components, installation and labor costs</li>
+              <li>Installation timeline, commissioning & testing plan</li>
+              <li>Warranty coverage, spare parts and service options</li>
+              <li>Permits, inspections and municipal coordination</li>
                       </ul>
                     </div>
                   </div>
 
                   <p class="step__description">
-                    Professional CAD design with precise zone mapping, hydraulic calculations, and component specifications. Detailed proposal includes transparent pricing, timeline, and comprehensive warranty coverage.
+                    We deliver CAD designs and hydraulic calculations plus a detailed proposal with itemised costs, installation timeline and warranty terms so you can approve with confidence.
                   </p>
 
                   <div class="step__outcomes">
@@ -662,10 +680,10 @@
                         Professional Installation
                       </h4>
                       <ul class="detail-list">
-                        <li>Certified technician installation team</li>
-                        <li>Minimal landscape disruption methods</li>
-                        <li>Pressure testing & system validation</li>
-                        <li>Smart controller configuration</li>
+              <li>Tank foundation/excavation and secure mounting</li>
+              <li>Plumbing connections, overflow and drainage installation</li>
+              <li>Electrical installation and pump wiring</li>
+              <li>Pressure, leak and safety testing with commissioning</li>
                       </ul>
                     </div>
 
@@ -675,16 +693,16 @@
                         Smart System Setup
                       </h4>
                       <ul class="detail-list">
-                        <li>WiFi controller connectivity</li>
-                        <li>Weather station integration</li>
-                        <li>Mobile app configuration</li>
-                        <li>Automated scheduling setup</li>
+              <li>Controller programming & automatic transfer testing</li>
+              <li>Remote monitoring setup and mobile alerts</li>
+              <li>Sensor calibration (level, pressure) and alarm thresholds</li>
+              <li>User handover, basic training and documentation</li>
                       </ul>
                     </div>
                   </div>
 
                   <p class="step__description">
-                    Professional installation by certified technicians using industry best practices. Minimal disruption to existing landscaping while ensuring optimal coverage, proper pressure, and smart system integration.
+                    Our installation team fits tanks, pumps and controls with minimal disruption, completes pressure and safety tests, and configures smart controllers for reliable operation.
                   </p>
 
                   <div class="step__outcomes">
@@ -726,10 +744,10 @@
                         Maintenance Programs
                       </h4>
                       <ul class="detail-list">
-                        <li>Quarterly system inspections</li>
-                        <li>Seasonal programming adjustments</li>
-                        <li>Component replacement & upgrades</li>
-                        <li>Weather sensor calibration</li>
+              <li>Scheduled filter and UV replacements</li>
+              <li>Pump servicing and wear inspections</li>
+              <li>Control firmware updates and remote diagnostics</li>
+              <li>Performance reports and optimisation recommendations</li>
                       </ul>
                     </div>
 
@@ -739,16 +757,16 @@
                         Emergency Support
                       </h4>
                       <ul class="detail-list">
-                        <li>Emergency repair service available</li>
-                        <li>Fast response for urgent issues</li>
-                        <li>Remote diagnostics capability</li>
-                        <li>Priority parts replacement</li>
+              <li>Rapid response for system failures and outages</li>
+              <li>Priority parts supply and onsite repairs</li>
+              <li>Remote troubleshooting and fault diagnosis</li>
+              <li>Service records, reporting and warranty claim support</li>
                       </ul>
                     </div>
                   </div>
 
                   <p class="step__description">
-                    Comprehensive maintenance programs with quarterly inspections, seasonal adjustments, and emergency support. Our proactive approach ensures high system reliability and optimal water efficiency.
+                    Scheduled servicing, preventive checks and fast emergency response keep systems reliable year-round. All maintenance visits include a short report and recommended actions.
                   </p>
 
                   <div class="step__outcomes">
@@ -821,8 +839,8 @@
                   <i class="fas fa-tools" aria-hidden="true"></i>
                 </div>
                 <div class="guarantee-content">
-                  <span class="guarantee-title" itemprop="name">Expert Service</span>
-                  <span class="guarantee-desc" itemprop="description">Certified Leak Detection Technicians</span>
+                  <span class="guarantee-title" itemprop="name">Expert Installation</span>
+                  <span class="guarantee-desc" itemprop="description">Certified Rain Bird technicians</span>
                 </div>
               </div>
             </div>
@@ -832,14 +850,14 @@
         <div class="how__actions" role="region" aria-labelledby="actions-heading">
           <div class="btn-row how__buttons">
             <button id="btn-hiw-book" class="btn btn-primary btn--large book-now" 
-                    data-service="Leak Detection Assessment"
+                    data-service="Backup Water Assessment"
                     aria-describedby="cta-description">
               <span>Start Your Project</span>
               <i class="fas fa-rocket" aria-hidden="true"></i>
             </button>
             <a id="btn-hiw-read-faqs" class="btn btn-secondary btn--large" 
                href="#faq"
-               aria-label="View frequently asked questions about our leak detection process">
+               aria-label="View frequently asked questions about our backup water systems">
               <span>View FAQ</span>
               <i class="fas fa-question-circle" aria-hidden="true"></i>
             </a>
@@ -866,37 +884,37 @@
         <div class="section-header">
           <div class="section-eyebrow">
             <i class="fas fa-cogs" aria-hidden="true"></i>
-            Professional Leak Detection Equipment
+            Professional Water Equipment
           </div>
           <h2 id="products-title" class="section-title">
-            Premium <span class="text-highlight">Leak Detection Products</span>
+            Premium <span class="text-highlight">Water Products</span>
           </h2>
           <p class="section-lead">
-            We use only professional-grade leak detection equipment from industry-leading manufacturers. Every component is selected for durability and optimal performance in Gauteng's climate.
+            We use only professional-grade water equipment from industry-leading manufacturers. Every component is selected for durability and optimal performance in Gauteng's climate.
           </p>
         </div>
 
         <div class="products-grid">
-          <!-- Acoustic Leak Detector -->
-          <div class="product-item" data-category="detectors">
+          <!-- Water Tank -->
+          <div class="product-item" data-category="tanks">
             <div class="product-image">
-              <img src="../images/products/placeholder.svg" alt="Acoustic Leak Detector" loading="lazy">
+              <img src="../images/products/placeholder.svg" alt="Water Storage Tank" loading="lazy">
               <div class="product-badge">Best Seller</div>
             </div>
             <div class="product-content">
-              <h3 class="product-title">Acoustic Leak Detector</h3>
-              <p class="product-description">Advanced acoustic technology to accurately locate underground leaks.</p>
+              <h3 class="product-title">Durable Water Storage Tank</h3>
+              <p class="product-description">High-capacity water tank for reliable storage and rainwater harvesting.</p>
               <div class="product-features">
-                <span class="feature-tag">Digital Display</span>
-                <span class="feature-tag">Headphones Included</span>
-                <span class="feature-tag">Rechargeable Battery</span>
+                <span class="feature-tag">UV Resistant</span>
+                <span class="feature-tag">Corrosion Proof</span>
+                <span class="feature-tag">Multiple Sizes</span>
               </div>
               <div class="product-pricing">
-                <div class="price">R3,500</div>
+                <div class="price">R2,500</div>
                 <div class="price-note">+ Installation from R450</div>
               </div>
               <div class="product-actions">
-                <button class="btn btn-primary buy-now" data-sku="ACOUSTIC-LEAK-01">
+                <button class="btn btn-primary buy-now" data-sku="TANK-01">
                   <i class="fas fa-shopping-cart"></i>
                   Add to Cart
                 </button>
@@ -908,26 +926,26 @@
             </div>
           </div>
 
-          <!-- Thermal Imaging Camera -->
-          <div class="product-item" data-category="cameras">
+          <!-- Pressure Pump -->
+          <div class="product-item" data-category="pumps">
             <div class="product-image">
-              <img src="../images/products/placeholder.svg" alt="Thermal Imaging Camera" loading="lazy">
+              <img src="../images/products/placeholder.svg" alt="Pressure Pump" loading="lazy">
               <div class="product-badge product-badge--pro">Pro Grade</div>
             </div>
             <div class="product-content">
-              <h3 class="product-title">Thermal Imaging Camera</h3>
-              <p class="product-description">High-resolution thermal camera for precise temperature differential detection.</p>
+              <h3 class="product-title">High-Pressure Water Pump</h3>
+              <p class="product-description">Reliable pump for boosting water pressure and ensuring consistent flow.</p>
               <div class="product-features">
-                <span class="feature-tag">Infrared Technology</span>
-                <span class="feature-tag">Image Storage</span>
-                <span class="feature-tag">WiFi Connectivity</span>
+                <span class="feature-tag">Stainless Steel</span>
+                <span class="feature-tag">Self-Priming</span>
+                <span class="feature-tag">Thermal Protection</span>
               </div>
               <div class="product-pricing">
-                <div class="price">R12,000</div>
-                <div class="price-note">+ Training included</div>
+                <div class="price">R1,200</div>
+                <div class="price-note">+ Installation from R150</div>
               </div>
               <div class="product-actions">
-                <button class="btn btn-primary buy-now" data-sku="THERMAL-CAM-01">
+                <button class="btn btn-primary buy-now" data-sku="PUMP-01">
                   <i class="fas fa-shopping-cart"></i>
                   Add to Cart
                 </button>
@@ -939,26 +957,26 @@
             </div>
           </div>
 
-          <!-- Leak Repair Clamp -->
-          <div class="product-item" data-category="repairs">
+          <!-- Filtration System -->
+          <div class="product-item" data-category="filters">
             <div class="product-image">
-              <img src="../images/products/placeholder.svg" alt="Leak Repair Clamp" loading="lazy">
+              <img src="../images/products/placeholder.svg" alt="Water Filtration System" loading="lazy">
               <div class="product-badge product-badge--essential">Essential</div>
             </div>
             <div class="product-content">
-              <h3 class="product-title">Leak Repair Clamp</h3>
-              <p class="product-description">Heavy-duty clamp for quick and effective leak repairs on pipes and hoses.</p>
+              <h3 class="product-title">Advanced Water Filtration System</h3>
+              <p class="product-description">Professional-grade filtration system for clean and safe water.</p>
               <div class="product-features">
-                <span class="feature-tag">Stainless Steel</span>
-                <span class="feature-tag">Easy Installation</span>
-                <span class="feature-tag">Durable</span>
+                <span class="feature-tag">5-Stage Filtration</span>
+                <span class="feature-tag">UV Sterilization</span>
+                <span class="feature-tag">Flow Rate: 3000L/h</span>
               </div>
               <div class="product-pricing">
-                <div class="price">R150</div>
-                <div class="price-note">Bulk pricing available</div>
+                <div class="price">R3,500</div>
+                <div class="price-note">+ Installation from R250</div>
               </div>
               <div class="product-actions">
-                <button class="btn btn-primary buy-now" data-sku="REPAIR-CLAMP-01">
+                <button class="btn btn-primary buy-now" data-sku="FILTER-01">
                   <i class="fas fa-shopping-cart"></i>
                   Add to Cart
                 </button>
@@ -975,7 +993,7 @@
         <div class="products-cta">
           <div class="cta-content">
             <h3 class="cta-title">Need Help Choosing the Right Products?</h3>
-            <p class="cta-text">Our leak detection specialists can diagnose problems, prioritise repairs, and recommend durable fixes for your property.</p>
+            <p class="cta-text">Our water specialists can help you select the perfect components for your specific needs and budget.</p>
             <div class="cta-actions">
               <button class="btn btn-primary book-now" data-service="Product Consultation">
                 <i class="fas fa-phone"></i>
@@ -1000,10 +1018,10 @@
             Excellence & Trust
           </div>
           <h2 id="why-us-title" class="section-title">
-            Why Choose <span class="text-highlight">Myriad Green</span> for Leak Detection
+            Why Choose <span class="text-highlight">Myriad Green</span> for Backup Water Systems
           </h2>
           <p class="section-lead">
-            With over 15 years of experience and 800+ successful installations across Gauteng, we're the trusted choice for professional leak detection solutions.
+            With over 15 years of experience and 800+ successful installations across Gauteng, we're the trusted choice for professional backup water solutions.
           </p>
         </div>
 
@@ -1019,7 +1037,7 @@
               <div class="card-eyebrow">Experience</div>
               <h3 class="card-title">15+ Years Gauteng Expertise</h3>
               <p class="card-description">
-                Deep understanding of local soil conditions, water restrictions, and pipe networks. We've completed over 800 leak investigations and repairs across Johannesburg and Pretoria.
+                Deep understanding of local soil conditions, water restrictions, and climate patterns. We've installed over 800 backup water systems across Johannesburg and Pretoria.
               </p>
               <div class="card-stats">
                 <div class="stat-item">
@@ -1045,7 +1063,7 @@
               <div class="card-eyebrow">Efficiency</div>
               <h3 class="card-title">Proven Water Savings</h3>
               <p class="card-description">
-                Our interventions typically reduce water loss by 30-50%, preventing property damage and reducing monthly water bills through targeted detection and repair.
+                Our systems typically reduce water usage by 30-50% while improving landscape health through rain sensors and weather-based scheduling.
               </p>
               <div class="card-stats">
                 <div class="stat-item">
@@ -1053,7 +1071,7 @@
                   <span class="stat-label">Water Savings</span>
                 </div>
                 <div class="stat-item">
-                  <span class="stat-number">Advanced</span>
+                  <span class="stat-number">Smart</span>
                   <span class="stat-label">Technology</span>
                 </div>
               </div>
@@ -1109,8 +1127,8 @@
       </div>
     </section>
 
-  <!-- Environmental Monitoring & Leak Advisory Section -->
-  <section id="weather" class="section section--weather" aria-labelledby="weather-title">
+    <!-- Weather-Smart Irrigation Section -->
+    <section id="weather" class="section section--weather" aria-labelledby="weather-title">
       <div class="container">
         <div class="weather-section-header">
           <div class="weather-badge">
@@ -1118,10 +1136,10 @@
             <span>Real-Time Weather Intelligence</span>
           </div>
           <h2 id="weather-title" class="weather-section-title">
-+            Environmental & Leak Monitoring Solutions
+            Weather-Smart <span class="text-highlight">Irrigation</span> Solutions
           </h2>
           <p class="weather-section-subtitle">
-            Our monitoring and advisory systems help detect leaks early and reduce water loss, protecting your property from damage.
+            Our advanced irrigation systems automatically adapt to Johannesburg's weather conditions, ensuring optimal water efficiency and plant health year-round.
           </p>
         </div>
 
@@ -1186,10 +1204,10 @@
             <div class="weather-advice-section">
               <div class="advice-header">
                 <i class="fas fa-lightbulb"></i>
-                <span>Today's Leak Advisory</span>
+                <span>Today's Irrigation Recommendation</span>
               </div>
-              <div id="leak-recommendation" class="advice-text">
-                Loading leak detection advisory...
+              <div id="irrigation-recommendation" class="advice-text">
+                Loading irrigation recommendations...
               </div>
             </div>
 
@@ -1201,7 +1219,22 @@
               <span class="last-update">Updated just now</span>
             </div>
 
-            <!-- Weather widget intentionally removed on service pages to avoid duplicate injection from index -->
+            <!-- Hidden data for core weather widget -->
+            <div
+              id="weather-widget"
+              class="weather-widget weather-widget--page-hidden"
+              data-partial="index"
+              data-service="Backup Water Systems"
+              data-suburb="Johannesburg"
+              data-country="ZA"
+              data-units="metric"
+              data-cache-mins="120"
+              data-stale-mins="240"
+              data-theme="green"
+              data-tone="elevated"
+              data-icon="#16a34a"
+              aria-hidden="true"
+            ></div>
           </div>
 
           <!-- Smart Features Card -->
@@ -1213,38 +1246,38 @@
             <div class="features-grid">
               <div class="feature-item">
                 <div class="feature-icon">
-                  <i class="fas fa-waves"></i>
+                  <i class="fas fa-cloud-rain"></i>
                 </div>
                 <div class="feature-content">
-                  <h4 class="feature-name">Acoustic Detection</h4>
-                  <p class="feature-description">High-sensitivity listening equipment pinpoints underground and in-wall leaks</p>
+                  <h4 class="feature-name">Rain Detection</h4>
+                  <p class="feature-description">Automatically skips watering when rain is detected or forecast</p>
                 </div>
               </div>
               <div class="feature-item">
                 <div class="feature-icon">
-                  <i class="fas fa-bolt"></i>
+                  <i class="fas fa-thermometer-half"></i>
                 </div>
                 <div class="feature-content">
-                  <h4 class="feature-name">Thermal Imaging</h4>
-                  <p class="feature-description">Thermal cameras detect temperature differences caused by escaping water</p>
+                  <h4 class="feature-name">Temperature Adjustment</h4>
+                  <p class="feature-description">Increases watering duration during hot weather automatically</p>
                 </div>
               </div>
               <div class="feature-item">
                 <div class="feature-icon">
-                  <i class="fas fa-tachometer-alt"></i>
+                  <i class="fas fa-wind"></i>
                 </div>
                 <div class="feature-content">
-                  <h4 class="feature-name">Pressure Profiling</h4>
-                  <p class="feature-description">Pressure and tracer testing to isolate problematic zones</p>
+                  <h4 class="feature-name">Wind Compensation</h4>
+                  <p class="feature-description">Adjusts spray patterns and timing based on wind conditions</p>
                 </div>
               </div>
               <div class="feature-item">
                 <div class="feature-icon">
-                  <i class="fas fa-wrench"></i>
+                  <i class="fas fa-tint"></i>
                 </div>
                 <div class="feature-content">
-                  <h4 class="feature-name">Non-invasive Repairs</h4>
-                  <p class="feature-description">Small-footprint repair methods to reduce excavation and restore service fast</p>
+                  <h4 class="feature-name">Humidity Awareness</h4>
+                  <p class="feature-description">Optimizes watering schedules based on atmospheric moisture</p>
                 </div>
               </div>
             </div>
@@ -1256,27 +1289,27 @@
               <div class="cta-icon">
                 <i class="fas fa-robot"></i>
               </div>
-              <h3 class="cta-title">Rapid Leak Response & Monitoring</h3>
+              <h3 class="cta-title">Weather-Smart Installation</h3>
               <p class="cta-description">
-                Fast detection and targeted repairs to stop leaks quickly and reduce property damage. Our monitoring options give ongoing protection.
+                Upgrade to our intelligent irrigation system that automatically responds to weather conditions, saving water and protecting your landscape.
               </p>
               <div class="cta-benefits">
                 <div class="benefit-tag">
-                  <i class="fas fa-search"></i>
-                  <span>Rapid Detection</span>
+                  <i class="fas fa-water"></i>
+                  <span>30% Water Savings</span>
                 </div>
                 <div class="benefit-tag">
-                  <i class="fas fa-shovel"></i>
-                  <span>Minimised Excavation</span>
+                  <i class="fas fa-shield-alt"></i>
+                  <span>Plant Protection</span>
                 </div>
                 <div class="benefit-tag">
-                  <i class="fas fa-tools"></i>
-                  <span>On-site Repairs</span>
+                  <i class="fas fa-mobile-alt"></i>
+                  <span>App Control</span>
                 </div>
               </div>
-              <button class="btn btn-primary btn-weather-cta book-now" data-service="Leak Detection Services">
-                <i class="fas fa-bolt"></i>
-                <span>Request Inspection</span>
+              <button class="btn btn-primary btn-weather-cta book-now" data-service="Smart Weather Integration">
+                <i class="fas fa-rocket"></i>
+                <span>Go Smart</span>
               </button>
             </div>
           </div>
@@ -1290,7 +1323,7 @@
             </div>
             <div class="stat-info">
               <span class="stat-value">30%</span>
-              <span class="stat-label">Water Saved</span>
+              <span class="stat-label">Water Savings</span>
             </div>
           </div>
           <div class="weather-stat">
@@ -1298,8 +1331,8 @@
               <i class="fas fa-leaf"></i>
             </div>
             <div class="stat-info">
-              <span class="stat-value">Minor</span>
-              <span class="stat-label">Damage Prevented</span>
+              <span class="stat-value">98%</span>
+              <span class="stat-label">Plant Health</span>
             </div>
           </div>
           <div class="weather-stat">
@@ -1317,7 +1350,7 @@
             </div>
             <div class="stat-info">
               <span class="stat-value">500+</span>
-              <span class="stat-label">Leak Investigations</span>
+              <span class="stat-label">Smart Systems</span>
             </div>
           </div>
         </div>
@@ -1330,13 +1363,13 @@
         <div class="service-areas-header">
           <div class="section-eyebrow">
             <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
-            Professional Leak Detection Coverage
+            Professional Water Coverage
           </div>
           <h2 id="service-areas-title" class="service-areas-title">
             Serving <span class="text-highlight">All of Gauteng</span> with Expert Care
           </h2>
           <p class="service-areas-subtitle">
-            From Johannesburg's luxury estates to Pretoria's heritage gardens, our certified leak detection specialists provide comprehensive coverage across Gauteng with guaranteed response times and local expertise.
+            From Johannesburg's luxury estates to Pretoria's heritage gardens, our certified water specialists provide comprehensive coverage across Gauteng with guaranteed response times and local expertise.
           </p>
         </div>
 
@@ -1403,7 +1436,7 @@
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14297.96307328913!2d28.047305!3d-26.204102!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e950b0e3f7e6e2b%3A0x7c7b7b7b7b7b7b7b!2sGauteng!5e0!3m2!1sen!2sza!4v1691500000000!5m2!1sen!2sza"
                   class="gauteng-map-iframe"
-                  title="Myriad Green Service Areas Map - Professional Leak Detection Services across Gauteng"
+                  title="Myriad Green Service Areas Map - Professional Irrigation Services across Gauteng"
                   allowfullscreen
                   loading="lazy">
                 </iframe>
@@ -1553,10 +1586,10 @@
         <!-- Call to Action -->
         <div class="service-areas-cta">
           <div class="cta-content">
-            <h3 class="cta-title">Ready to Upgrade Your Leak Detection System?</h3>
-            <p class="cta-text">Join hundreds of Gauteng property owners who trust us with leak detection and repairs. Fast response, professional service, guaranteed results.</p>
+            <h3 class="cta-title">Ready to Upgrade Your Water System?</h3>
+            <p class="cta-text">Join hundreds of Gauteng property owners who trust us with their backup water systems. Fast response, professional service, guaranteed results.</p>
             <div class="cta-actions">
-              <button class="btn btn-primary btn--large book-now" data-service="Leak Detection Assessment">
+              <button class="btn btn-primary btn--large book-now" data-service="Backup Water Assessment">
                 <i class="fas fa-calendar-check"></i>
                 <span>Book Free Assessment</span>
               </button>
@@ -1575,8 +1608,8 @@
       <div class="container">
         <!-- Section Header -->
         <header class="pricing__header">
-          <h2 id="pricing-title" class="pricing__title">Leak Detection Services & Pricing</h2>
-          <p class="pricing__subtitle">Professional leak detection solutions tailored to your needs</p>
+          <h2 id="pricing-title" class="pricing__title">Backup Water Systems & Pricing</h2>
+          <p class="pricing__subtitle">Professional backup water solutions tailored to your needs</p>
         </header>
 
         <!-- Once-off Services -->
@@ -1584,18 +1617,18 @@
           <h3 class="pricing__group-title pricing__group-title--once" id="once-off-services">
             Once-off Services
           </h3>
-          <p class="pricing__group-description">Single-visit professional services for your leak detection needs</p>
+          <p class="pricing__group-description">Single-visit professional services for your water system</p>
 
           <div class="pricing__grid pricing__grid--services" role="list" aria-labelledby="once-off-services">
-            <!-- Leak Detection Assessment Card -->
+            <!-- Backup System Assessment Card -->
             <article class="pricing-card pricing-card--service pricing-card--featured" role="listitem" id="service-assessment">
               <div class="pricing-card__badge" aria-label="Most popular service">
                 <span class="pricing-card__badge-text">Most Popular</span>
               </div>
               <div class="pricing-card__header">
-                <h4 class="pricing-card__title">Leak Detection Assessment</h4>
+                <h4 class="pricing-card__title">Backup System Assessment</h4>
                 <div class="pricing-card__price">
-                  <span class="pricing-card__amount">R750</span>
+                  <span class="pricing-card__amount">R950</span>
                   <span class="pricing-card__period">one-time</span>
                 </div>
               </div>
@@ -1604,38 +1637,42 @@
                 <ul class="pricing-card__features" role="list">
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Comprehensive leak evaluation
+                    Full tank & inlet integrity inspection
                   </li>
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Acoustic & thermal imaging scan
+                    Pump, ATS and pressure system diagnostics
                   </li>
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Detailed repair quote included
+                    Water quality & filtration check (UV/cartridge)
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Written recommendations & no-obligation quote
                   </li>
                 </ul>
               </div>
 
               <div class="pricing-card__actions">
                 <button class="btn btn--primary btn--full pricing-card__cta"
-                        data-service="assessment"
-                        data-price="750"
+                        data-service="backup-assessment"
+                        data-price="950"
                         aria-describedby="service-assessment">
-                  Book Assessment
+                  Book Backup Assessment
                 </button>
               </div>
             </article>
 
-            <!-- Leak Repair Services Card -->
+            <!-- Pump & Control Repair Card -->
             <article class="pricing-card pricing-card--service" role="listitem" id="service-repair">
               <div class="pricing-card__badge pricing-card__badge--popular" aria-label="Popular choice">
                 <span class="pricing-card__badge-text">Popular</span>
               </div>
               <div class="pricing-card__header">
-                <h4 class="pricing-card__title">Leak Repair Services</h4>
+                <h4 class="pricing-card__title">Pump & Control Repair</h4>
                 <div class="pricing-card__price">
-                  <span class="pricing-card__amount">R420</span>
+                  <span class="pricing-card__amount">R550</span>
                   <span class="pricing-card__period">starting from</span>
                 </div>
                 <div class="pricing-card__note">Excluding parts</div>
@@ -1645,38 +1682,42 @@
                 <ul class="pricing-card__features" role="list">
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Professional valve repair
+                    Pump replacement & commissioning (DAB/Grundfos)
                   </li>
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Controller diagnostics & repair
+                    Automatic Transfer Switch (ATS) repairs
                   </li>
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Parts & labor warranty
+                    Leak sealing and minor plumbing repairs
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Parts & labor warranty on repaired components
                   </li>
                 </ul>
               </div>
 
               <div class="pricing-card__actions">
                 <button class="btn btn--primary btn--full pricing-card__cta"
-                        data-service="repair"
-                        data-price="420"
+                        data-service="backup-repair"
+                        data-price="550"
                         aria-describedby="service-repair">
                   Book Repair
                 </button>
               </div>
             </article>
 
-            <!-- New Installation Card -->
+            <!-- Tank & Pump Installation Card -->
             <article class="pricing-card pricing-card--service" role="listitem" id="service-installation">
               <div class="pricing-card__badge pricing-card__badge--premium" aria-label="Premium service">
                 <span class="pricing-card__badge-text">Premium</span>
               </div>
               <div class="pricing-card__header">
-                <h4 class="pricing-card__title">New Leak Detection System Installation</h4>
+                <h4 class="pricing-card__title">Tank & Pump Installation</h4>
                 <div class="pricing-card__price">
-                  <span class="pricing-card__amount">R18,500</span>
+                  <span class="pricing-card__amount">R19,500</span>
                   <span class="pricing-card__period">starting from</span>
                 </div>
               </div>
@@ -1685,23 +1726,27 @@
                 <ul class="pricing-card__features" role="list">
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Complete system design & CAD
+                    Supply & install JoJo / Tigertank options
                   </li>
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Professional installation
+                    Pump selection, installation & commissioning (DAB / Grundfos)
                   </li>
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Smart WiFi controller included
+                    Filtration & UV commissioning (where required)
+                  </li>
+                  <li class="pricing-card__feature" role="listitem">
+                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
+                    Handover, testing & 12-month workmanship warranty
                   </li>
                 </ul>
               </div>
 
               <div class="pricing-card__actions">
                 <button class="btn btn--primary btn--full pricing-card__cta"
-                        data-service="installation"
-                        data-price="18500"
+                        data-service="backup-installation"
+                        data-price="19500"
                         aria-describedby="service-installation">
                   Get Quote
                 </button>
@@ -1713,9 +1758,9 @@
         <!-- Monthly Care Plans -->
         <div class="pricing__group">
           <h3 class="pricing__group-title pricing__group-title--plans" id="monthly-plans">
-            Monthly Care Plans
+            Monthly Care Plans — Backup Systems
           </h3>
-          <p class="pricing__group-description">Ongoing maintenance and monitoring for optimal system performance</p>
+          <p class="pricing__group-description">Maintenance packages tailored for backup tanks, pumps and automatic transfer systems.</p>
 
           <div class="pricing__grid pricing__grid--plans" role="list" aria-labelledby="monthly-plans">
             <!-- Essential Care Plan -->
@@ -1724,31 +1769,31 @@
                 <span class="pricing-card__badge-text">Popular</span>
               </div>
               <div class="pricing-card__header">
-                <h4 class="pricing-card__title">Essential Care</h4>
+                <h4 class="pricing-card__title">Essential Backup Care</h4>
                 <div class="pricing-card__price">
                   <span class="pricing-card__amount">R450</span>
                   <span class="pricing-card__period">/month</span>
                 </div>
-                <div class="pricing-card__note">Excluding parts</div>
+                <div class="pricing-card__note">Includes monthly pump checks — excluding parts</div>
               </div>
 
               <div class="pricing-card__content">
                 <ul class="pricing-card__features" role="list">
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Quarterly system inspections
+                    Monthly pump & ATS functional checks
                   </li>
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Seasonal programming adjustments
+                    Remote tank level monitoring (if fitted)
                   </li>
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Basic leak detection
+                    Priority business-hours repair response
                   </li>
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Emergency repair priority
+                    Annual system health report
                   </li>
                 </ul>
               </div>
@@ -1758,7 +1803,7 @@
                         data-plan="essential"
                         data-price="450"
                         aria-describedby="plan-essential">
-                  Subscribe Now
+                  Start Essential
                 </button>
               </div>
             </article>
@@ -1770,35 +1815,31 @@
               </div>
 
               <div class="pricing-card__header">
-                <h4 class="pricing-card__title">Smart Care</h4>
+                <h4 class="pricing-card__title">Standard Backup Care</h4>
                 <div class="pricing-card__price">
-                  <span class="pricing-card__amount">R720</span>
+                  <span class="pricing-card__amount">R850</span>
                   <span class="pricing-card__period">/month</span>
                 </div>
-                <div class="pricing-card__note">Excluding parts</div>
+                <div class="pricing-card__note">Includes quarterly filter / UV cartridge changes</div>
               </div>
 
               <div class="pricing-card__content">
                 <ul class="pricing-card__features" role="list">
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Monthly system monitoring
+                    Bi-annual on-site pump servicing (DAB / Grundfos)
                   </li>
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Weather-based automatic adjustments
+                    Quarterly filter / UV cartridge replacement
                   </li>
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Priority repair response (24h)
+                    Remote monitoring & 24/7 emergency support
                   </li>
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Annual system upgrades
-                  </li>
-                  <li class="pricing-card__feature" role="listitem">
-                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Water usage reporting & analytics
+                    Priority parts replacement
                   </li>
                 </ul>
               </div>
@@ -1806,9 +1847,9 @@
               <div class="pricing-card__actions">
                 <button class="btn btn--primary btn--full pricing-card__cta"
                         data-plan="smart"
-                        data-price="720"
+                        data-price="850"
                         aria-describedby="plan-smart">
-                  Subscribe Now
+                  Start Standard
                 </button>
               </div>
             </article>
@@ -1819,35 +1860,31 @@
                 <span class="pricing-card__badge-text">Premium</span>
               </div>
               <div class="pricing-card__header">
-                <h4 class="pricing-card__title">Pro Care</h4>
+                <h4 class="pricing-card__title">Premium Backup Care</h4>
                 <div class="pricing-card__price">
-                  <span class="pricing-card__amount">R1,150</span>
+                  <span class="pricing-card__amount">R1,350</span>
                   <span class="pricing-card__period">/month</span>
                 </div>
-                <div class="pricing-card__note">Excluding parts</div>
+                <div class="pricing-card__note">Comprehensive coverage & priority replacements</div>
               </div>
 
               <div class="pricing-card__content">
                 <ul class="pricing-card__features" role="list">
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    24/7 real-time monitoring
+                    On-site technician visits every 2 months
                   </li>
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    AI-powered predictive maintenance
+                    Annual tank clean & sediment flush
                   </li>
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Same-day repair guarantee
+                    Same-day repair priority & parts discounts
                   </li>
                   <li class="pricing-card__feature" role="listitem">
                     <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Smart controller upgrades
-                  </li>
-                  <li class="pricing-card__feature" role="listitem">
-                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Dedicated account manager
+                    Dedicated account manager & annual review
                   </li>
                 </ul>
               </div>
@@ -1855,9 +1892,9 @@
               <div class="pricing-card__actions">
                 <button class="btn btn--secondary btn--full pricing-card__cta"
                         data-plan="pro"
-                        data-price="1150"
+                        data-price="1350"
                         aria-describedby="plan-pro">
-                  Subscribe Now
+                  Start Premium
                 </button>
               </div>
             </article>
@@ -1869,8 +1906,8 @@
           <div class="pricing__cta-content">
             <h3 class="pricing__cta-title">Need a Custom Solution?</h3>
             <p class="pricing__cta-description">
-                Have a large property or complex leak detection needs? Let's discuss a tailored solution for your specific requirements.
-              </p>
+              Have a large property or complex water needs? Let's discuss a tailored solution for your specific requirements.
+            </p>
             <button class="btn btn--outline pricing__cta-button" data-action="custom-quote">
               Get Custom Quote
             </button>
@@ -1888,10 +1925,10 @@
             Market Insights
           </div>
           <h2 id="trends-title" class="trends__title">
-            Gauteng Water Loss & Leak Trends
+            Gauteng Water System Trends & Demand
           </h2>
           <p class="trends__subtitle">
-            Real-time search data shows growing interest in water-efficient solutions across Johannesburg and Pretoria
+            Real-time search data shows growing interest in backup water solutions across Johannesburg and Pretoria
           </p>
         </header>
 
@@ -1900,80 +1937,62 @@
           <div class="trends__widget-container trends__widget-container--hidden" aria-hidden="true">
             <div class="trends__widget-header">
               <h3 class="trends__widget-title">Search Interest Over Time</h3>
-              <p class="trends__widget-description">Google searches for leak detection and water-loss terms in Gauteng (ZA-GT)</p>
+              <p class="trends__widget-description">Google searches for water-related terms in Gauteng (ZA-GT)</p>
             </div>
             <div id="trends-widget" class="trends__mount"
                  data-geo="ZA-GT"
-                 data-queries='["leak detection","water leak","acoustic leak detection","thermal imaging","underground leak","burst pipe","water loss","plumbing leak","leak repair","pressure testing","tracer gas","leak detection services"]'></div>
+                 data-queries='["backup water systems","water tank","rainwater harvesting","emergency water supply","water storage solutions","water management"]'></div>
           </div>
 
           <!-- Trends Insights -->
-          
-          
           <div class="trends__insights">
             <div class="insights__grid">
-
               <div class="insight-card insight-card--primary">
-                <div class="insight-card__icon"><i class="fas fa-water" aria-hidden="true"></i></div>
+                <div class="insight-card__icon">
+                  <i class="fas fa-water" aria-hidden="true"></i>
+                </div>
                 <div class="insight-card__content">
-                  <h4 class="insight-card__title">Market Snapshot</h4>
-                  <p class="insight-card__text">leak detection is the most-searched term this week in ZA-GT.</p>
-                  <time class="insight-card__time" datetime="2025-10-08T10:06:12.812Z">Updated 8/10/2025</time>
+                  <h4 class="insight-card__title">Water Conservation Focus</h4>
+                  <p class="insight-card__text">
+                    Rising search interest in "rainwater harvesting" and "water tanks" reflects Gauteng's growing awareness of water conservation solutions.
+                  </p>
                 </div>
               </div>
 
               <div class="insight-card insight-card--secondary">
-                <div class="insight-card__icon"><i class="fas fa-search" aria-hidden="true"></i></div>
+                <div class="insight-card__icon">
+                  <i class="fas fa-home" aria-hidden="true"></i>
+                </div>
                 <div class="insight-card__content">
-                  <h4 class="insight-card__title">Top Search</h4>
-                  <p class="insight-card__text">leak detection — 98 interest score</p>
+                  <h4 class="insight-card__title">Residential Demand</h4>
+                  <p class="insight-card__text">
+                    Homeowners in suburbs like Sandton and Waterkloof are increasingly searching for backup water systems to ensure a reliable water supply.
+                  </p>
                 </div>
               </div>
 
               <div class="insight-card insight-card--tertiary">
-                <div class="insight-card__icon"><i class="fas fa-list" aria-hidden="true"></i></div>
+                <div class="insight-card__icon">
+                  <i class="fas fa-industry" aria-hidden="true"></i>
+                </div>
                 <div class="insight-card__content">
-                  <h4 class="insight-card__title">Top Terms</h4>
-                  <p class="insight-card__text">leak detection, water leak, acoustic leak detection</p>
+                  <h4 class="insight-card__title">Commercial Interest</h4>
+                  <p class="insight-card__text">
+                    Businesses and estates are seeking advanced water systems to reduce operational costs and ensure compliance with water regulations.
+                  </p>
                 </div>
               </div>
-
             </div>
-            <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  "name": "Trends snapshot for leak-detection",
-  "numberOfItems": 3,
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "leak detection"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "water leak"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "acoustic leak detection"
-    }
-  ],
-  "dateModified": "2025-10-08T10:06:12.812Z"
-}
-            </script>
           </div>
+        </div>
 
-          <!-- Trends CTA -->
+        <!-- Trends CTA -->
         <div class="trends__cta">
           <div class="cta-card">
             <h3 class="cta-card__title">Stay Ahead of the Curve</h3>
             <p class="cta-card__text">
-              Join the growing number of Gauteng property owners protecting their properties from hidden leaks.
-              Get expert advice on rapid detection and long-term prevention.
+              Join the growing number of Gauteng property owners embracing smart water solutions.
+              Get expert advice on the latest backup water systems and technologies.
             </p>
             <button class="btn btn-primary btn--large trends__cta-button" data-service="Trend Consultation">
               <span>Get Expert Advice</span>
@@ -1993,75 +2012,75 @@
         "@type": "Organization",
         "name": "Myriad Green",
         "review": [
-          {
-            "@type": "Review",
-            "author": {
-              "@type": "Person",
-              "name": "Sarah Mitchell"
+            {
+              "@type": "Review",
+              "author": {
+                "@type": "Person",
+                "name": "Sarah Mitchell"
+              },
+              "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": "5",
+                "bestRating": "5"
+              },
+              "reviewBody": "Myriad Green installed a JoJo 10,000L tank with a Grundfos booster pump and a complete filtration unit. During municipal outages our estate stayed fully operational. Professional installation and fast aftercare.",
+              "itemReviewed": {
+                "@type": "Product",
+                "name": "JoJo 10000L Tank + Grundfos Booster Pump"
+              }
             },
-            "reviewRating": {
-              "@type": "Rating",
-              "ratingValue": "5",
-              "bestRating": "5"
+            {
+              "@type": "Review", 
+              "author": {
+                "@type": "Person",
+                "name": "David Chen"
+              },
+              "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": "5",
+                "bestRating": "5"
+              },
+              "reviewBody": "We had a Tigertank installed plus a DAB tank booster pump and the difference is night and day. The automatic transfer switch and pump protection work flawlessly.",
+              "itemReviewed": {
+                "@type": "Product",
+                "name": "Tigertank 5000L + DAB Booster Pump"
+              }
             },
-            "reviewBody": "Myriad Green quickly located a hidden burst pipe under our driveway and repaired it with minimal excavation. Their team saved us thousands in water loss and avoided major structural damage.",
-            "itemReviewed": {
-              "@type": "Service",
-              "name": "Leak Detection & Repair Services"
+            {
+              "@type": "Review",
+              "author": {
+                "@type": "Person", 
+                "name": "Michelle Rodriguez"
+              },
+              "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": "5",
+                "bestRating": "5"
+              },
+              "reviewBody": "Myriad Green's backup system with Africattank and a Grundfos submersible provided reliable backup for our commercial property and helped us maintain operations during load-shedding.",
+              "itemReviewed": {
+                "@type": "Product",
+                "name": "Africattank 15000L + Grundfos Submersible Pump"
+              }
+            },
+            {
+              "@type": "Review",
+              "author": {
+                "@type": "Person",
+                "name": "James Patel"
+              },
+              "reviewRating": {
+                "@type": "Rating", 
+                "ratingValue": "5",
+                "bestRating": "5"
+              },
+              "reviewBody": "Our backup water system paid for itself by preventing costly downtime. The JoJo tank, DAB booster and professional installation meant zero interruption during outages.",
+              "itemReviewed": {
+                "@type": "Product",
+                "name": "JoJo 5000L + DAB Booster Pump"
+              }
             }
-          },
-          {
-            "@type": "Review", 
-            "author": {
-              "@type": "Person",
-              "name": "David Chen"
-            },
-            "reviewRating": {
-              "@type": "Rating",
-              "ratingValue": "5",
-              "bestRating": "5"
-            },
-            "reviewBody": "The thermal imaging and acoustic tests pinpointed our underground leak in under an hour. The repair team replaced the damaged section and we were back to normal the same day.",
-            "itemReviewed": {
-              "@type": "Service",
-              "name": "Thermal & Acoustic Leak Detection"
-            }
-          },
-          {
-            "@type": "Review",
-            "author": {
-              "@type": "Person", 
-              "name": "Michelle Rodriguez"
-            },
-            "reviewRating": {
-              "@type": "Rating",
-              "ratingValue": "5",
-              "bestRating": "5"
-            },
-            "reviewBody": "For our commercial facility, Myriad Green detected multiple slow leaks that had gone unnoticed. Their detailed report and repairs helped avoid regulatory issues and reduced our monthly bills.",
-            "itemReviewed": {
-              "@type": "Service",
-              "name": "Commercial Leak Detection & Reporting"
-            }
-          },
-          {
-            "@type": "Review",
-            "author": {
-              "@type": "Person",
-              "name": "James Patel"
-            },
-            "reviewRating": {
-              "@type": "Rating", 
-              "ratingValue": "5",
-              "bestRating": "5"
-            },
-            "reviewBody": "After the repair, our meter readings returned to normal and the team provided clear advice on prevention. Highly recommended for emergency leak response.",
-            "itemReviewed": {
-              "@type": "Service",
-              "name": "Emergency Leak Repair & Prevention"
-            }
-          }
-        ]
+          ]
       }
       </script>
       <div class="container">
@@ -2070,9 +2089,9 @@
             <i class="fas fa-star" aria-hidden="true"></i>
             Client Success Stories
           </div>
-          <h2 id="testimonials-heading" class="testimonials__title">What Our Clients Say About Myriad Green Leak Detection Services</h2>
+          <h2 id="testimonials-heading" class="testimonials__title">Client Success Stories — Backup Tanks & Pumps</h2>
           <p class="section-lead">
-            Join hundreds of satisfied Gauteng property owners who've avoided major water loss thanks to our rapid leak detection and repair services. From Johannesburg to Pretoria, our clients save water and protect their properties.
+            Our clients rely on professional backup water systems featuring JoJo, Tigertank, Africattank, Grundfos and DAB pumps. Read how our installations kept estates and businesses operational during outages.
           </p>
         </div>
 
@@ -2083,7 +2102,7 @@
               <div class="testimonial-card__hero-content">
                 <div class="testimonial-card__hero-header">
                   <div class="client-avatar client-avatar--large">
-                    <img src="../images/testimonials/sarah-mitchell.jpg" alt="Sarah Mitchell, Estate Manager" class="client-image" onerror="this.style.display='none'">
+                    <img src="../images/testimonials/sarah-mitchell.jpg" alt="Thandi Mokoena, Estate Manager" class="client-image" onerror="this.style.display='none'">
                     <div class="client-avatar-fallback client-avatar-fallback--large" aria-hidden="true">SM</div>
                   </div>
                   <div class="hero-testimonial-meta">
@@ -2095,18 +2114,18 @@
                       <i class="fas fa-star"></i>
                     </div>
                     <div class="hero-client-info">
-                      <strong class="client-name client-name--large">Sarah Mitchell</strong>
+                      <strong class="client-name client-name--large">Thandi Mokoena</strong>
                       <span class="client-title">Estate Manager</span>
                       <span class="client-location">Waterkloof Heights</span>
                     </div>
                   </div>
                 </div>
                 <blockquote class="testimonial-card__quote testimonial-card__quote--hero">
-                  "Myriad Green quickly located a hidden burst pipe under our driveway and repaired it with minimal excavation. Their team saved us thousands and prevented structural damage."
+                  "Myriad Green installed a JoJo 10,000L tank, Grundfos booster pump and filtration system. During municipal outages our estate stayed fully operational — the installation and follow-up service were excellent."
                 </blockquote>
                 <div class="testimonial-hero-badge">
                   <i class="fas fa-trophy"></i>
-                  <span>Water Loss Prevented</span>
+                  <span>Reliable Backup During Outages</span>
                 </div>
               </div>
             </div>
@@ -2119,7 +2138,7 @@
               <div class="testimonial-card testimonial-card--compact">
                 <div class="testimonial-card__header">
                   <div class="client-avatar">
-                    <img src="../images/testimonials/david-chen.jpg" alt="David Chen" class="client-image" onerror="this.style.display='none'">
+                    <img src="../images/testimonials/david-chen.jpg" alt="Pieter van Zyl" class="client-image" onerror="this.style.display='none'">
                     <div class="client-avatar-fallback">DC</div>
                   </div>
                   <div class="star-rating">
@@ -2131,24 +2150,24 @@
                   </div>
                 </div>
                 <blockquote class="testimonial-card__quote">
-                  "The thermal imaging and acoustic tests pinpointed our underground leak in under an hour. The repair team fixed it the same day."
+                  "After Myriad Green installed a JoJo tank with a Grundfos booster and remote level monitoring, we remained operational through loadshedding. The app shows tank levels and pump status—very reassuring."
                 </blockquote>
                 <div class="testimonial-card__footer">
                   <div class="client-info">
-                    <strong class="client-name">David Chen</strong>
+                    <strong class="client-name">Pieter van Zyl</strong>
                     <span class="client-location">Morningside</span>
                   </div>
                   <div class="testimonial-badge">
-                      <i class="fas fa-wrench"></i>
-                      <span>Fast Repair</span>
-                    </div>
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>Remote Monitoring</span>
+                  </div>
                 </div>
               </div>
 
               <div class="testimonial-card testimonial-card--compact">
                 <div class="testimonial-card__header">
                   <div class="client-avatar">
-                    <img src="../images/testimonials/linda-khumalo.jpg" alt="Linda Khumalo" class="client-image" onerror="this.style.display='none'">
+                    <img src="../images/testimonials/linda-khumalo.jpg" alt="Nandi Dlamini" class="client-image" onerror="this.style.display='none'">
                     <div class="client-avatar-fallback">LK</div>
                   </div>
                   <div class="star-rating">
@@ -2160,16 +2179,16 @@
                   </div>
                 </div>
                 <blockquote class="testimonial-card__quote">
-                  "Emergency leak repair response within hours. Fast diagnosis and durable repairs."
+                  "When our old pump failed, Myriad Green replaced it with a DAB unit the same day and tested the automatic transfer. Their emergency response prevented major disruption to our property."
                 </blockquote>
                 <div class="testimonial-card__footer">
                   <div class="client-info">
-                    <strong class="client-name">Linda Khumalo</strong>
+                    <strong class="client-name">Nandi Dlamini</strong>
                     <span class="client-location">Randburg</span>
                   </div>
-                    <div class="testimonial-badge">
+                  <div class="testimonial-badge">
                     <i class="fas fa-clock"></i>
-                    <span>24h Response</span>
+                    <span>24/7 Emergency</span>
                   </div>
                 </div>
               </div>
@@ -2180,7 +2199,7 @@
               <div class="testimonial-card testimonial-card--compact testimonial-card--offset">
                 <div class="testimonial-card__header">
                   <div class="client-avatar">
-                    <img src="../images/testimonials/michelle-rodriguez.jpg" alt="Michelle Rodriguez" class="client-image" onerror="this.style.display='none'">
+                    <img src="../images/testimonials/michelle-rodriguez.jpg" alt="Sipho Nkosi" class="client-image" onerror="this.style.display='none'">
                     <div class="client-avatar-fallback">MR</div>
                   </div>
                   <div class="star-rating">
@@ -2192,16 +2211,16 @@
                   </div>
                 </div>
                 <blockquote class="testimonial-card__quote">
-                  "For our commercial facility, Myriad Green detected slow leaks that had gone unnoticed. Their detailed report and repairs helped avoid regulatory issues and reduced our monthly bills."
+                  "We installed Tigertank storage with UV filtration and a Grundfos booster for our office park. The system keeps our operations compliant and ensured uninterrupted service during supply interruptions."
                 </blockquote>
                 <div class="testimonial-card__footer">
                   <div class="client-info">
-                    <strong class="client-name">Michelle Rodriguez</strong>
+                    <strong class="client-name">Sipho Nkosi</strong>
                     <span class="client-location">Sandton Office Park</span>
                   </div>
                   <div class="testimonial-badge">
                     <i class="fas fa-building"></i>
-                    <span>Commercial</span>
+                    <span>Commercial Backup</span>
                   </div>
                 </div>
               </div>
@@ -2212,7 +2231,7 @@
               <div class="testimonial-card testimonial-card--compact">
                 <div class="testimonial-card__header">
                   <div class="client-avatar">
-                    <img src="../images/testimonials/james-patel.jpg" alt="James Patel" class="client-image" onerror="this.style.display='none'">
+                    <img src="../images/testimonials/james-patel.jpg" alt="Lebo Maseko" class="client-image" onerror="this.style.display='none'">
                     <div class="client-avatar-fallback">JP</div>
                   </div>
                   <div class="star-rating">
@@ -2224,16 +2243,16 @@
                   </div>
                 </div>
                 <blockquote class="testimonial-card__quote">
-                  "After the repair, our meter readings returned to normal and the team provided clear advice on prevention. Highly recommended for emergency leak response."
+                  "The backup tank and pump paid for itself the first time we had a multi-day outage. Myriad Green fitted an Africattank and automated transfer system that saved our business downtime and stress."
                 </blockquote>
                 <div class="testimonial-card__footer">
                   <div class="client-info">
-                    <strong class="client-name">James Patel</strong>
+                    <strong class="client-name">Lebo Maseko</strong>
                     <span class="client-location">Fourways</span>
                   </div>
                   <div class="testimonial-badge">
-                    <i class="fas fa-leaf"></i>
-                    <span>8 Months ROI</span>
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Outage Protection</span>
                   </div>
                 </div>
               </div>
@@ -2241,7 +2260,7 @@
               <div class="testimonial-card testimonial-card--compact">
                 <div class="testimonial-card__header">
                   <div class="client-avatar">
-                    <img src="../images/testimonials/robert-van-der-merwe.jpg" alt="Robert van der Merwe" class="client-image" onerror="this.style.display='none'">
+                    <img src="../images/testimonials/robert-van-der-merwe.jpg" alt="Johan Smit" class="client-image" onerror="this.style.display='none'">
                     <div class="client-avatar-fallback">RvdM</div>
                   </div>
                   <div class="star-rating">
@@ -2253,16 +2272,16 @@
                   </div>
                 </div>
                 <blockquote class="testimonial-card__quote">
-                  "Professional leak repair with minimal disruption. The team completed the job on time and within budget."
+                  "Seamless tank and pump installation from start to finish. The team fitted a Rondawel tank and Grundfos booster on schedule and provided excellent handover and maintenance advice."
                 </blockquote>
                 <div class="testimonial-card__footer">
                   <div class="client-info">
-                    <strong class="client-name">Robert van der Merwe</strong>
+                    <strong class="client-name">Johan Smit</strong>
                     <span class="client-location">Bryanston</span>
                   </div>
-                    <div class="testimonial-badge">
+                  <div class="testimonial-badge">
                     <i class="fas fa-tools"></i>
-                    <span>Quick Repair</span>
+                    <span>New Install</span>
                   </div>
                 </div>
               </div>
@@ -2272,7 +2291,7 @@
 
         <!-- Trust Indicators -->
         <div class="trust-indicators" role="region" aria-labelledby="trust-heading">
-          <h3 id="trust-heading" class="sr-only">Myriad Green Leak Detection Trust and Performance Metrics</h3>
+          <h3 id="trust-heading" class="sr-only">Myriad Green Irrigation Services Trust and Performance Metrics</h3>
           <div class="trust-indicator">
             <div class="trust-number" aria-label="500 plus happy clients">500+</div>
             <div class="trust-label">Happy Clients in Gauteng</div>
@@ -2293,56 +2312,57 @@
       </div>
     </section>
 
+    <!-- duplicate Monthly Care Plans removed (original pricing grid kept earlier on the page) -->
+
     <!-- FAQ Section -->
-    <!-- Enhanced FAQ Section with Schema Markup -->
+    <!-- Enhanced FAQ Section (visible) -->
     <section id="faq" class="section section--faq" aria-labelledby="faq-title" role="region">
-      <!-- FAQ Schema moved to head to avoid rendering above nav -->
       <div class="container">
         <div class="section-header">
           <div class="section-eyebrow">
             <i class="fas fa-question-circle" aria-hidden="true"></i>
             Expert Answers
           </div>
-          <h2 id="leak-faq-title" class="faq__title">Frequently Asked Questions</h2>
+          <h2 id="faq-title" class="faq__title">Frequently Asked Questions</h2>
           <p class="section-lead">
-            Everything you need to know about our professional leak detection solutions in Gauteng. Can't find what you're looking for? <a href="#contact" class="faq__contact-link" aria-label="Contact us for additional questions">Contact our experts directly</a>.
+            Everything you need to know about our professional backup water solutions in Gauteng. Can't find what you're looking for? <a href="#contact" class="faq__contact-link" aria-label="Contact us for additional questions">Contact our experts directly</a>.
           </p>
         </div>
 
         <!-- FAQ Search -->
-        <div class="faq__search-container" role="search" aria-labelledby="leak-faq-search-label">
-          <label id="leak-faq-search-label" class="sr-only">Search FAQ questions</label>
+        <div class="faq__search-container" role="search" aria-labelledby="faq-search-label">
+          <label id="faq-search-label" class="sr-only">Search FAQ questions</label>
           <div class="faq__search-wrapper">
             <i class="fas fa-search faq__search-icon" aria-hidden="true"></i>
-            <input type="text" id="leak-faq-search" class="faq__search-input" placeholder="Search leak detection questions..." aria-label="Search FAQ questions" aria-describedby="leak-faq-search-results">
+            <input type="text" id="faq-search" class="faq__search-input" placeholder="Search backup water questions..." aria-label="Search FAQ questions" aria-describedby="faq-search-results">
             <button type="button" class="faq__search-clear" aria-label="Clear search">
               <i class="fas fa-times" aria-hidden="true"></i>
             </button>
           </div>
-          <div class="faq__search-results" id="leak-faq-search-results" aria-live="polite" aria-atomic="true">
-            <span id="leak-faq-result-count"></span> questions found
+          <div class="faq__search-results" id="faq-search-results" aria-live="polite" aria-atomic="true">
+            <span id="faq-result-count"></span> questions found
           </div>
         </div>
 
         <!-- FAQ Categories -->
         <div class="faq__categories" role="tablist" aria-label="FAQ category filters">
-          <button type="button" class="faq__category-btn faq__category-btn--active" data-category="all" role="tab" aria-selected="true" aria-controls="leak-faq-list" id="tab-all">
+          <button type="button" class="faq__category-btn faq__category-btn--active" data-category="all" role="tab" aria-selected="true" aria-controls="backup-faq-list" id="tab-all">
             <i class="fas fa-list" aria-hidden="true"></i>
             All Questions
           </button>
-          <button type="button" class="faq__category-btn" data-category="services" role="tab" aria-selected="false" aria-controls="leak-faq-list" id="tab-services">
+          <button type="button" class="faq__category-btn" data-category="services" role="tab" aria-selected="false" aria-controls="backup-faq-list" id="tab-services">
             <i class="fas fa-tools" aria-hidden="true"></i>
             Services
           </button>
-          <button type="button" class="faq__category-btn" data-category="pricing" role="tab" aria-selected="false" aria-controls="leak-faq-list" id="tab-pricing">
+          <button type="button" class="faq__category-btn" data-category="pricing" role="tab" aria-selected="false" aria-controls="backup-faq-list" id="tab-pricing">
             <i class="fas fa-tags" aria-hidden="true"></i>
             Pricing
           </button>
-          <button type="button" class="faq__category-btn" data-category="technical" role="tab" aria-selected="false" aria-controls="leak-faq-list" id="tab-technical">
+          <button type="button" class="faq__category-btn" data-category="technical" role="tab" aria-selected="false" aria-controls="backup-faq-list" id="tab-technical">
             <i class="fas fa-cogs" aria-hidden="true"></i>
             Technical
           </button>
-          <button type="button" class="faq__category-btn" data-category="maintenance" role="tab" aria-selected="false" aria-controls="leak-faq-list" id="tab-maintenance">
+          <button type="button" class="faq__category-btn" data-category="maintenance" role="tab" aria-selected="false" aria-controls="backup-faq-list" id="tab-maintenance">
             <i class="fas fa-wrench" aria-hidden="true"></i>
             Maintenance
           </button>
@@ -2350,18 +2370,18 @@
 
         <!-- PRODUCTION-GRADE FAQ CARDS v2.0 -->
         <!-- FAQ List with new structure -->
-  <div class="faq__list" id="leak-faq-list" role="tabpanel" aria-labelledby="leak-faq-title">
+          <div class="faq__list" id="backup-faq-list" role="tabpanel" aria-labelledby="faq-title">
           
           <!-- Pricing Category -->
-          <div class="faq-card" data-category="pricing" role="article" aria-labelledby="leak-faq-question-1">
+          <div class="faq-card" data-category="pricing" role="article" aria-labelledby="backup-faq-question-1">
             <button class="faq-card__header" 
                     aria-expanded="false" 
-                    aria-controls="leak-faq-content-1"
-                    id="leak-faq-button-1"
+                    aria-controls="backup-faq-content-1"
+                    id="backup-faq-button-1"
                     data-faq-toggle>
               <div class="faq-card__header-content">
-                <h3 class="faq-card__question" id="leak-faq-question-1">
-                  How much does a leak detection service cost?
+                <h3 class="faq-card__question" id="backup-faq-question-1">
+                  How much does a backup water system cost?
                 </h3>
                 <div class="faq-card__meta">
                   <span class="faq-card__category faq-card__category--pricing">Pricing</span>
@@ -2369,22 +2389,22 @@
                 </div>
               </div>
             </button>
-      <div class="faq-card__content" 
-        id="leak-faq-content-1" 
-        aria-labelledby="leak-faq-button-1"
+            <div class="faq-card__content" 
+                 id="backup-faq-content-1" 
+                 aria-labelledby="backup-faq-button-1"
                  role="region">
               <div class="faq-card__answer">
-                <p>Leak detection service costs vary based on property size, the complexity of the plumbing system, and the technology used. Here's our typical pricing structure:</p>
+                <p>Backup water system costs vary based on property size, complexity, and features selected. Here's our typical pricing structure:</p>
                 
                 <div class="faq-card__highlight-box">
                   <strong>Residential Properties:</strong>
-                  <br>• Basic inspection: R750 - R1,500
-                  <br>• Detailed assessment (acoustic & thermal): R1,500 - R3,000
-                  <br>• Comprehensive report & quote: R300 (deductible from repair cost)
+                  <br>• Basic systems: R15,000 - R25,000
+                  <br>• Smart controller upgrades: R25,000 - R35,000
+                  <br>• Premium automated systems: R35,000 - R45,000
                   <br><br>
                   <strong>Commercial Properties:</strong>
-                  <br>• Small commercial: R2,500 - R5,000
-                  <br>• Large estates/complexes: R5,000 - R10,000+
+                  <br>• Small commercial: R50,000 - R100,000
+                  <br>• Large estates/complexes: R100,000 - R200,000+
                 </div>
                 
                 <p>All quotes include free on-site assessment, system design, professional installation, and 12-month warranty. We also offer flexible payment plans and maintenance packages.</p>
@@ -2393,14 +2413,14 @@
           </div>
 
           <!-- Services Category -->
-          <div class="faq-card" data-category="services" role="article" aria-labelledby="leak-faq-question-2">
+          <div class="faq-card" data-category="services" role="article" aria-labelledby="backup-faq-question-2">
             <button class="faq-card__header" 
                     aria-expanded="false" 
-                    aria-controls="leak-faq-content-2"
-                    id="leak-faq-button-2"
+                    aria-controls="backup-faq-content-2"
+                    id="backup-faq-button-2"
                     data-faq-toggle>
               <div class="faq-card__header-content">
-                <h3 class="faq-card__question" id="leak-faq-question-2">
+                <h3 class="faq-card__question" id="backup-faq-question-2">
                   Which areas in Gauteng do you service?
                 </h3>
                 <div class="faq-card__meta">
@@ -2410,11 +2430,11 @@
               </div>
             </button>
       <div class="faq-card__content" 
-        id="leak-faq-content-2" 
-        aria-labelledby="leak-faq-button-2"
+        id="backup-faq-content-2" 
+        aria-labelledby="backup-faq-button-2"
                  role="region">
               <div class="faq-card__answer">
-                <p>We provide comprehensive leak detection services across all major areas of Gauteng, including:</p>
+                <p>We provide comprehensive backup water system services across all major areas of Gauteng, including:</p>
                 
                 <div class="faq-card__highlight-box">
                   <strong>Johannesburg:</strong> Sandton, Rosebank, Melrose, Houghton, Bedfordview, Parktown, Northcliff, Linden, Rivonia, Morningside, Greenside, and surrounding suburbs.
@@ -2428,15 +2448,15 @@
           </div>
 
           <!-- Services Category -->
-          <div class="faq-card" data-category="services" role="article" aria-labelledby="leak-faq-question-3">
+          <div class="faq-card" data-category="services" role="article" aria-labelledby="backup-faq-question-3">
             <button class="faq-card__header" 
                     aria-expanded="false" 
-                    aria-controls="leak-faq-content-3"
-                    id="leak-faq-button-3"
+                    aria-controls="backup-faq-content-3"
+                    id="backup-faq-button-3"
                     data-faq-toggle>
               <div class="faq-card__header-content">
-                <h3 class="faq-card__question" id="leak-faq-question-3">
-                  Do you repair leaks in systems installed by other companies?
+                <h3 class="faq-card__question" id="backup-faq-question-3">
+                  Do you service water systems installed by other companies?
                 </h3>
                 <div class="faq-card__meta">
                   <span class="faq-card__category">Services</span>
@@ -2445,33 +2465,36 @@
               </div>
             </button>
       <div class="faq-card__content" 
-        id="leak-faq-content-3" 
-        aria-labelledby="leak-faq-button-3"
+        id="backup-faq-content-3" 
+        aria-labelledby="backup-faq-button-3"
                  role="region">
               <div class="faq-card__answer">
-                <p>Yes — we repair leaks regardless of who installed the system. We own and operate professional leak-detection equipment (acoustic listening devices, thermal imaging cameras, pressure testing kits and tracer gas tools) and carry spares for common repairs. Our technicians will diagnose the fault, provide a clear repair plan, and carry out repairs on-site when possible.</p>
+                <p>Absolutely! We service and repair backup water systems regardless of the original installer or brand. Our certified technicians are experienced with tanks, pumps, filtration systems and major manufacturers including:</p>
                 
-                <div class="faq-card__highlight-box">
-                  <strong>Equipment & Approach:</strong>
-                  <br>• Acoustic detectors and ground microphones for underground pipe detection
-                  <br>• Thermal imaging for concealed leaks behind walls or under floors
-                  <br>• Pressure testing and tracer methods for pipe integrity checks
-                  <br>• On-site repair kits for common faults (sleeves, couplers, clamps)
+                  <div class="faq-card__brand-grid">
+                  <span class="faq-card__brand">JoJo</span>
+                  <span class="faq-card__brand">GRAF</span>
+                  <span class="faq-card__brand">Tigertank</span>
+                  <span class="faq-card__brand">Rondawel</span>
+                  <span class="faq-card__brand">DAB Pumps</span>
+                  <span class="faq-card__brand">Grundfos</span>
                 </div>
+                
+                <p>We provide comprehensive diagnostic assessments and can upgrade older systems with modern smart technology components.</p>
               </div>
             </div>
           </div>
 
           <!-- Technical Category -->
-          <div class="faq-card" data-category="technical" role="article" aria-labelledby="leak-faq-question-4">
+          <div class="faq-card" data-category="technical" role="article" aria-labelledby="backup-faq-question-4">
             <button class="faq-card__header" 
                     aria-expanded="false" 
-                    aria-controls="leak-faq-content-4"
-                    id="leak-faq-button-4"
+                    aria-controls="backup-faq-content-4"
+                    id="backup-faq-button-4"
                     data-faq-toggle>
               <div class="faq-card__header-content">
-                <h3 class="faq-card__question" id="leak-faq-question-4">
-                  How do acoustic leak detectors work?
+                <h3 class="faq-card__question" id="backup-faq-question-4">
+                  How do backup system controls and pumps maintain supply and protect equipment?
                 </h3>
                 <div class="faq-card__meta">
                   <span class="faq-card__category faq-card__category--technical">Technical</span>
@@ -2480,34 +2503,36 @@
               </div>
             </button>
       <div class="faq-card__content" 
-        id="leak-faq-content-4" 
-        aria-labelledby="leak-faq-button-4"
+        id="backup-faq-content-4" 
+        aria-labelledby="backup-faq-button-4"
                  role="region">
               <div class="faq-card__answer">
-                <p>Acoustic leak detectors use sensitive microphones to listen for the sound of water escaping from pipes. The device amplifies and analyzes the sound to pinpoint the location of the leak, even if it's underground or behind walls.</p>
-                
+                <p>Backup system controls and components are designed to ensure reliable water availability while protecting water quality and equipment:</p>
+
+                <ul>
+                  <li><strong>Automatic Transfer Switches:</strong> Seamlessly switch from municipal to backup sources when required</li>
+                  <li><strong>Pump Protection:</strong> Dry-run protection and pressure controls to lengthen pump life</li>
+                  <li><strong>Filtration & UV:</strong> Optional filtration and UV sterilisation for potable reuse from tanks</li>
+                  <li><strong>Remote Monitoring:</strong> Alerts for low levels, pump faults and maintenance reminders</li>
+                </ul>
+
                 <div class="faq-card__highlight-box">
-                  <strong>Typical Detection Capabilities:</strong>
-                  <br>• Detects leaks as small as 0.3 liters per hour
-                  <br>• Accurate location within 10 cm
-                  <br>• Works on all types of pipes (PVC, copper, etc.)
+                  <strong>System Benefits:</strong> Reliable supply during outages, extended pump lifespan with proper protection, and improved water quality when filtration is included.
                 </div>
-                
-                <p>Our technicians are trained to use these advanced tools to provide the most accurate and efficient leak detection service available.</p>
               </div>
             </div>
           </div>
 
           <!-- Technical Category -->
-          <div class="faq-card" data-category="technical" role="article" aria-labelledby="leak-faq-question-5">
+          <div class="faq-card" data-category="technical" role="article" aria-labelledby="backup-faq-question-5">
             <button class="faq-card__header" 
                     aria-expanded="false" 
-                    aria-controls="leak-faq-content-5"
-                    id="leak-faq-button-5"
+                    aria-controls="backup-faq-content-5"
+                    id="backup-faq-button-5"
                     data-faq-toggle>
               <div class="faq-card__header-content">
-                <h3 class="faq-card__question" id="leak-faq-question-5">
-                  What brands do you install and service?
+                <h3 class="faq-card__question" id="backup-faq-question-5">
+                  What tank, pump and filtration brands do you supply and service?
                 </h3>
                 <div class="faq-card__meta">
                   <span class="faq-card__category faq-card__category--technical">Technical</span>
@@ -2516,25 +2541,36 @@
               </div>
             </button>
       <div class="faq-card__content" 
-        id="leak-faq-content-5" 
-        aria-labelledby="leak-faq-button-5"
+        id="backup-faq-content-5" 
+        aria-labelledby="backup-faq-button-5"
                  role="region">
               <div class="faq-card__answer">
-                <p>Our work focuses on locating and repairing leaks quickly and minimizing disruption. Because we own and maintain our detection and repair equipment, we can respond faster and keep downtime low. If replacements are required we will recommend appropriate parts and source them, but much of the common repair work is completed during the first visit.</p>
+                <p>We supply and install a range of professional tank, pump and filtration brands suitable for Gauteng conditions:</p>
+
+                <div class="faq-card__brand-grid">
+                  <span class="faq-card__brand">JoJo</span>
+                  <span class="faq-card__brand">GRAF</span>
+                  <span class="faq-card__brand">Tigertank</span>
+                  <span class="faq-card__brand">Rondawel</span>
+                  <span class="faq-card__brand">DAB Pumps</span>
+                  <span class="faq-card__brand">Grundfos</span>
+                </div>
+
+                <p>We tailor brand and component recommendations to your property's water usage, space constraints, and budget, ensuring a durable, compliant, and low-maintenance system.</p>
               </div>
             </div>
           </div>
 
           <!-- Maintenance Category -->
-          <div class="faq-card" data-category="maintenance" role="article" aria-labelledby="leak-faq-question-6">
+          <div class="faq-card" data-category="maintenance" role="article" aria-labelledby="backup-faq-question-6">
             <button class="faq-card__header" 
                     aria-expanded="false" 
-                    aria-controls="leak-faq-content-6"
-                    id="leak-faq-button-6"
+                    aria-controls="backup-faq-content-6"
+                    id="backup-faq-button-6"
                     data-faq-toggle>
               <div class="faq-card__header-content">
-                <h3 class="faq-card__question" id="leak-faq-question-6">
-                  How often should leak detection systems be serviced?
+                <h3 class="faq-card__question" id="backup-faq-question-6">
+                  How often should water systems be serviced?
                 </h3>
                 <div class="faq-card__meta">
                   <span class="faq-card__category faq-card__category--maintenance">Maintenance</span>
@@ -2543,34 +2579,37 @@
               </div>
             </button>
       <div class="faq-card__content" 
-        id="leak-faq-content-6" 
-        aria-labelledby="leak-faq-button-6"
+        id="backup-faq-content-6" 
+        aria-labelledby="backup-faq-button-6"
                  role="region">
               <div class="faq-card__answer">
-                <p>We recommend annual servicing for leak detection systems to ensure all components are functioning correctly and to recalibrate sensors as needed. More frequent checks may be necessary for older systems or properties with a history of leaks.</p>
-                
+                <p>We recommend a maintenance schedule tailored to backup water systems to maximise reliability:</p>
+
                 <div class="faq-card__highlight-box">
-                  <strong>Annual Maintenance Includes:</strong>
-                  <br>• Comprehensive system inspection
-                  <br>• Sensor calibration and testing
-                  <br>• Software updates for smart controllers
-                  <br>• Replacement of worn or damaged parts
+                  <strong>Bi-Annual Professional Service:</strong>
+                  <br>• Spring service (August-September): Tank inspection, pump servicing, and filtration checks
+                  <br>• Autumn service (March-April): Winterisation, valve checks and controller firmware updates
+                  <br><br>
+                  <strong>Monthly Checks:</strong>
+                  <br>• Inspect tank inlets/outlets and overflow
+                  <br>• Check pump pressure and test automatic transfer
+                  <br>• Verify filter condition and UV lamp health (if fitted)
                 </div>
-                
-                <p>Our maintenance packages include priority scheduling, discounted rates, and immediate attention for any system issues that arise between scheduled services.</p>
+
+                <p>Our maintenance packages include priority scheduling, discounted parts, and rapid response for any emergent issues.</p>
               </div>
             </div>
           </div>
 
           <!-- Pricing Category -->
-          <div class="faq-card" data-category="pricing" role="article" aria-labelledby="leak-faq-question-7">
+          <div class="faq-card" data-category="pricing" role="article" aria-labelledby="backup-faq-question-7">
             <button class="faq-card__header" 
                     aria-expanded="false" 
-                    aria-controls="leak-faq-content-7"
-                    id="leak-faq-button-7"
+                    aria-controls="backup-faq-content-7"
+                    id="backup-faq-button-7"
                     data-faq-toggle>
               <div class="faq-card__header-content">
-                <h3 class="faq-card__question" id="leak-faq-question-7">
+                <h3 class="faq-card__question" id="backup-faq-question-7">
                   Do you offer financing or payment plans?
                 </h3>
                 <div class="faq-card__meta">
@@ -2580,11 +2619,11 @@
               </div>
             </button>
       <div class="faq-card__content" 
-        id="leak-faq-content-7" 
-        aria-labelledby="leak-faq-button-7"
+        id="backup-faq-content-7" 
+        aria-labelledby="backup-faq-button-7"
                  role="region">
               <div class="faq-card__answer">
-                <p>Yes! We offer flexible payment options to make premium leak detection systems accessible:</p>
+                <p>Yes! We offer flexible payment options to make premium irrigation systems accessible:</p>
                 
                 <div class="faq-card__highlight-box">
                   <strong>Payment Options:</strong>
@@ -2594,20 +2633,20 @@
                   <br>• Insurance claim assistance
                 </div>
                 
-                <p>Our goal is to work with your budget while ensuring you get the quality leak detection system your property deserves. Contact us to discuss the best payment arrangement for your situation.</p>
+                <p>Our goal is to work with your budget while ensuring you get the quality irrigation system your property deserves. Contact us to discuss the best payment arrangement for your situation.</p>
               </div>
             </div>
           </div>
 
           <!-- Services Category -->
-          <div class="faq-card" data-category="services" role="article" aria-labelledby="leak-faq-question-8">
+          <div class="faq-card" data-category="services" role="article" aria-labelledby="backup-faq-question-8">
             <button class="faq-card__header" 
                     aria-expanded="false" 
-                    aria-controls="leak-faq-content-8"
-                    id="leak-faq-button-8"
+                    aria-controls="backup-faq-content-8"
+                    id="backup-faq-button-8"
                     data-faq-toggle>
               <div class="faq-card__header-content">
-                <h3 class="faq-card__question" id="leak-faq-question-8">
+                <h3 class="faq-card__question" id="backup-faq-question-8">
                   What warranty do you provide on installations?
                 </h3>
                 <div class="faq-card__meta">
@@ -2617,8 +2656,8 @@
               </div>
             </button>
       <div class="faq-card__content" 
-        id="leak-faq-content-8" 
-        aria-labelledby="leak-faq-button-8"
+        id="backup-faq-content-8" 
+        aria-labelledby="backup-faq-button-8"
                  role="region">
               <div class="faq-card__answer">
                 <p>We stand behind our work with comprehensive warranty coverage:</p>
@@ -2645,8 +2684,8 @@
         <!-- Enhanced FAQ Contact CTA -->
         <div class="faq__contact-cta">
           <div class="faq__contact-content">
-            <h3>Still Have Questions About Your Leak Detection Project?</h3>
-            <p>Our certified leak detection specialists are standing by to provide personalized guidance for your specific landscape needs. Get expert advice, detailed quotes, and professional recommendations—completely free.</p>
+            <h3>Still Have Questions About Your Water System Project?</h3>
+            <p>Our certified water specialists are standing by to provide personalized guidance for your specific landscape needs. Get expert advice, detailed quotes, and professional recommendations—completely free.</p>
             <div class="faq__contact-buttons">
               <a href="#contact" class="btn btn-primary btn--large">
                 <i class="fas fa-phone" aria-hidden="true"></i>
@@ -2672,7 +2711,7 @@
           </div>
           <h2 class="areas__title">Areas We Service in Gauteng</h2>
           <p class="areas__subtitle">
-            Professional leak detection services across Johannesburg and Pretoria. Same-day response guaranteed.
+            Professional irrigation services across Johannesburg and Pretoria. Same-day response guaranteed.
           </p>
         </div>
 
@@ -2843,11 +2882,11 @@
             </div>
 
             <h2 class="cta__title">
-              Detect and Repair Leaks with <span class="highlight">Expert Precision</span>
+              Transform Your Landscape with <span class="highlight">Smart Irrigation</span>
             </h2>
 
             <p class="cta__text">
-              Join over 500 Gauteng property owners who've protected their properties from water damage with our professional leak detection services. Fast, reliable, and effective solutions tailored to your needs.
+              Join over 500 Gauteng property owners who've reduced their water bills by 40% while creating healthier, more beautiful landscapes. Our expert team delivers professional irrigation solutions tailored to your property's unique needs.
             </p>
 
             <div class="cta__features">
@@ -2857,11 +2896,11 @@
               </div>
               <div class="feature-item">
                 <i class="fas fa-check-circle"></i>
-                <span>Advanced leak detection technology</span>
+                <span>Custom system design</span>
               </div>
               <div class="feature-item">
                 <i class="fas fa-check-circle"></i>
-                <span>Professional repair services</span>
+                <span>Professional installation</span>
               </div>
               <div class="feature-item">
                 <i class="fas fa-check-circle"></i>
@@ -2875,19 +2914,19 @@
                 <span class="stat-label">Happy Customers</span>
               </div>
               <div class="stat-item">
-                <span class="stat-number">4.9/5</span>
-                <span class="stat-label">Google Rating</span>
+                <span class="stat-number">40%</span>
+                <span class="stat-label">Average Savings</span>
               </div>
               <div class="stat-item">
-                <span class="stat-number">15+</span>
-                <span class="stat-label">Years Experience</span>
+                <span class="stat-number">24h</span>
+                <span class="stat-label">Response Time</span>
               </div>
             </div>
           </div>
 
           <div class="cta__actions">
             <div class="cta__buttons">
-              <button id="btn-cta-book-final-leak" class="btn btn-primary btn--large book-now" data-service="Leak Detection Assessment">
+              <button id="btn-cta-book-final" class="btn btn-primary btn--large book-now" data-service="Backup Water Assessment">
                 <span class="btn__icon">
                   <i class="fas fa-calendar-check"></i>
                 </span>
@@ -2897,7 +2936,7 @@
                 </span>
               </button>
 
-              <a id="btn-cta-how-works-leak" class="btn btn-secondary btn--large" href="#how-it-works">
+              <a id="btn-cta-how-works" class="btn btn-secondary btn--large" href="#how-it-works">
                 <span class="btn__icon">
                   <i class="fas fa-arrow-up"></i>
                 </span>
@@ -2925,10 +2964,98 @@
   <div id="site-footer"></div>
 
   <!-- Scripts -->
-  <script src="../js/service-faq-v2.js" defer></script>
   <script src="../js/site-init.js" defer></script>
   <script src="../js/booking-modal.js" defer></script>
   <script src="../js/weather-signal.js" defer></script>
   <script src="../js/weather-widget.js" defer></script>
+  <script src="../js/trends-widget.js" defer></script>
+  
+  <!-- Product Filter JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Product Category Filters
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      const productCards = document.querySelectorAll('.product-card');
+      
+      filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const category = this.dataset.category;
+          
+          // Update active button
+          filterButtons.forEach(btn => btn.classList.remove('filter-btn--active'));
+          this.classList.add('filter-btn--active');
+          
+          // Filter products
+          productCards.forEach(card => {
+            if (category === 'all' || card.dataset.category === category) {
+              card.style.display = 'block';
+              card.style.animation = 'fadeIn 0.3s ease-out';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+
+      // Weather debugging - manual test after 3 seconds
+      setTimeout(() => {
+        console.log('=== MANUAL WEATHER DEBUG ===');
+        
+        // Check if weather widget element exists
+        const weatherWidget = document.getElementById('weather-widget');
+        console.log('Weather widget element found:', !!weatherWidget);
+        
+        // Check if new weather elements exist
+        const tempEl = document.getElementById('current-temp');
+        const descEl = document.getElementById('weather-description');
+        console.log('Temperature element found:', !!tempEl);
+        console.log('Current description element found:', !!descEl);
+        
+        if (tempEl) console.log('Current temp content:', tempEl.textContent);
+        if (descEl) console.log('Current description content:', descEl.textContent);
+        
+        // Test API manually
+        fetch('http://localhost:3000/api/weather')
+          .then(response => {
+            console.log('API response status:', response.status);
+            return response.json();
+          })
+          .then(data => {
+            console.log('API returned weather data:', data);
+            
+            // Manual update test
+            if (tempEl && data.tempC) {
+              tempEl.textContent = data.tempC;
+              console.log('Manually updated temp to:', data.tempC);
+            }
+            if (descEl && data.conditions) {
+              descEl.textContent = data.conditions;
+              console.log('Manually updated description to:', data.conditions);
+            }
+          })
+          .catch(err => {
+            console.error('Manual weather API test failed:', err);
+          });
+      }, 3000);
+    });
+  </script>
+
+  <!-- FAQ Functionality -->
+  <script src="../js/service-faq-v2.js"></script>
+
+  <!-- JSON-LD Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "Backup Water Systems",
+    "provider": {
+      "@type": "LocalBusiness",
+      "name": "Myriad Green"
+    },
+    "areaServed": ["Johannesburg", "Pretoria"],
+    "serviceType": "Backup water system design, installation, repair, maintenance"
+  }
+  </script>
 </body>
 </html>

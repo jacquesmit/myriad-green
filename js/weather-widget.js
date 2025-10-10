@@ -754,7 +754,7 @@
     // Preferred selection logic:
     // 1) find widgets inside <main> that declare a data-service (page-specific)
     // 2) fallback to the first .weather-widget inside <main>
-    // 3) fallback to a global #weather-widget anywhere on the page
+    // 3) global #weather-widget ONLY on landing/index pages or when page explicitly opts in.
     function getPreferredWidget() {
       try {
         const main = document.querySelector('main');
@@ -765,10 +765,38 @@
           if (serviceWidget) return serviceWidget;
           if (widgetsInMain.length) return widgetsInMain[0];
         }
-        // global fallback
-        return document.getElementById('weather-widget') || document.querySelector('.weather-widget');
+
+        // Global fallback: only allow global #weather-widget on landing/index pages
+        // or when a page explicitly opts in via <body data-allow-weather="true"> or .allow-weather class.
+        const path = (window.location.pathname || '').toLowerCase();
+        const isIndex = path === '/' || path.endsWith('/index.html') || path.indexOf('index.html') !== -1;
+        const bodyAllow = (document.body && (document.body.getAttribute('data-allow-weather') === 'true' || document.body.classList.contains('allow-weather')));
+
+        // If this is NOT an index page and the page hasn't opted in, proactively remove any
+        // leftover index partials so they cannot be picked up or activated.
+        if (!isIndex && !bodyAllow) {
+          try {
+            const indexPartials = Array.from(document.querySelectorAll('.weather-widget[data-partial="index"], .weather-widget.weather-widget--page-hidden'));
+            indexPartials.forEach(p => {
+              // Prefer removal to avoid accidental global initialization on service pages
+              if (p && p.parentNode) p.parentNode.removeChild(p);
+            });
+          } catch (remErr) {
+            // non-critical
+            console.warn('[WeatherWidget] Could not remove index partials:', remErr);
+          }
+        }
+
+        if (isIndex || bodyAllow) {
+          // Prefer explicit ID lookup only (avoid accidental matches via generic selector)
+          return document.getElementById('weather-widget');
+        }
+
+        // No suitable widget found for this page
+        return null;
       } catch (e) {
-        return document.getElementById('weather-widget') || document.querySelector('.weather-widget');
+        // safe fallback: do not auto-inject on non-index pages
+        return null;
       }
     }
 
@@ -777,15 +805,21 @@
     try {
       const allWidgets = Array.from(document.querySelectorAll('.weather-widget'));
       allWidgets.forEach(w => {
-        if (w === el) return;
-        // If the duplicate is an index partial, remove it entirely when a service widget is present
-        if (el.getAttribute('data-service') && w.getAttribute('data-partial') === 'index') {
-          w.remove();
+        if (!w) return;
+        if (el && w === el) return;
+        // If we have a service/widget mount point selected, and the duplicate is an index partial,
+        // remove it entirely to avoid visual collisions.
+        if (el && el.getAttribute && el.getAttribute('data-service') && w.getAttribute('data-partial') === 'index') {
+          if (w.parentNode) w.parentNode.removeChild(w);
           return;
         }
-        // remove duplicate id to avoid getElementById collisions
+        // If no widget chosen for this page, proactively remove index partials (extra safety)
+        if (!el && w.getAttribute && (w.getAttribute('data-partial') === 'index' || w.classList.contains('weather-widget--page-hidden'))) {
+          if (w.parentNode) w.parentNode.removeChild(w);
+          return;
+        }
+        // otherwise neutralise duplicates so they don't interfere
         if (w.id) w.removeAttribute('id');
-        // hide from accessibility tree and visually
         w.setAttribute('aria-hidden', 'true');
         w.style.display = 'none';
         w.classList.add('weather-widget--hidden-duplicate');

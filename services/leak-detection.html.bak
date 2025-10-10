@@ -1201,7 +1201,20 @@
               <span class="last-update">Updated just now</span>
             </div>
 
-            <!-- Weather widget intentionally removed on service pages to avoid duplicate injection from index -->
+            <!-- Hidden data for core weather widget -->
+            <div
+              id="weather-widget"
+              class="weather-widget"
+              data-suburb="Johannesburg"
+              data-service="Leak Detection"
+              data-country="ZA"
+              data-units="metric"
+              data-cache-mins="120"
+              data-stale-mins="240"
+              data-theme="green"
+              data-tone="elevated"
+              data-icon="#16a34a"
+            ></div>
           </div>
 
           <!-- Smart Features Card -->
@@ -1908,66 +1921,48 @@
           </div>
 
           <!-- Trends Insights -->
-          
-          
           <div class="trends__insights">
             <div class="insights__grid">
-
               <div class="insight-card insight-card--primary">
-                <div class="insight-card__icon"><i class="fas fa-water" aria-hidden="true"></i></div>
+                <div class="insight-card__icon">
+                  <i class="fas fa-water" aria-hidden="true"></i>
+                </div>
                 <div class="insight-card__content">
-                  <h4 class="insight-card__title">Market Snapshot</h4>
-                  <p class="insight-card__text">leak detection is the most-searched term this week in ZA-GT.</p>
-                  <time class="insight-card__time" datetime="2025-10-08T10:06:12.812Z">Updated 8/10/2025</time>
+                  <h4 class="insight-card__title">Water Conservation Focus</h4>
+                  <p class="insight-card__text">
+                    Rising search interest in "leak detection" and "water leak" shows growing concern about water loss and infrastructure issues across Gauteng.
+                  </p>
                 </div>
               </div>
 
               <div class="insight-card insight-card--secondary">
-                <div class="insight-card__icon"><i class="fas fa-search" aria-hidden="true"></i></div>
+                <div class="insight-card__icon">
+                  <i class="fas fa-home" aria-hidden="true"></i>
+                </div>
                 <div class="insight-card__content">
-                  <h4 class="insight-card__title">Top Search</h4>
-                  <p class="insight-card__text">leak detection — 98 interest score</p>
+                  <h4 class="insight-card__title">Residential Demand</h4>
+                  <p class="insight-card__text">
+                    Homeowners in suburbs like Sandton and Waterkloof are increasingly searching for professional leak detection and emergency repair services to protect their properties.
+                  </p>
                 </div>
               </div>
 
               <div class="insight-card insight-card--tertiary">
-                <div class="insight-card__icon"><i class="fas fa-list" aria-hidden="true"></i></div>
+                <div class="insight-card__icon">
+                  <i class="fas fa-industry" aria-hidden="true"></i>
+                </div>
                 <div class="insight-card__content">
-                  <h4 class="insight-card__title">Top Terms</h4>
-                  <p class="insight-card__text">leak detection, water leak, acoustic leak detection</p>
+                  <h4 class="insight-card__title">Commercial Interest</h4>
+                  <p class="insight-card__text">
+                    Businesses and estates are prioritising leak detection and compliance reporting to prevent costly downtime and regulatory issues.
+                  </p>
                 </div>
               </div>
-
             </div>
-            <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  "name": "Trends snapshot for leak-detection",
-  "numberOfItems": 3,
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "leak detection"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "water leak"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "acoustic leak detection"
-    }
-  ],
-  "dateModified": "2025-10-08T10:06:12.812Z"
-}
-            </script>
           </div>
+        </div>
 
-          <!-- Trends CTA -->
+        <!-- Trends CTA -->
         <div class="trends__cta">
           <div class="cta-card">
             <h3 class="cta-card__title">Stay Ahead of the Curve</h3>

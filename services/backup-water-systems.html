@@ -201,8 +201,8 @@
             </p>
 
             <div class="hero__stats-row">
-                <div class="stat-item">
-                <span class="stat-number">800+</span>
+              <div class="stat-item">
+                <span class="stat-number">500+</span>
                 <span class="stat-label">Systems Installed</span>
               </div>
               <div class="stat-item">
@@ -314,7 +314,7 @@
               <span class="metric-label">Years Backup Water Experience</span>
             </div>
             <div class="metric-item">  
-              <span class="metric-number">800+</span>
+              <span class="metric-number">500+</span>
               <span class="metric-label">Backup Systems Installed</span>
             </div>
             <div class="metric-item">
@@ -903,7 +903,7 @@
             </div>
             <div class="product-content">
               <h3 class="product-title">Durable Water Storage Tank</h3>
-              <p class="product-description">High-capacity tank for reliable backup storage and rainwater capture — ideal for emergency supply, rainwater harvesting and bulk storage.</p>
+              <p class="product-description">High-capacity water tank for reliable storage and rainwater harvesting.</p>
               <div class="product-features">
                 <span class="feature-tag">UV Resistant</span>
                 <span class="feature-tag">Corrosion Proof</span>
@@ -934,7 +934,7 @@
             </div>
             <div class="product-content">
               <h3 class="product-title">High-Pressure Water Pump</h3>
-              <p class="product-description">Reliable booster and submersible pumps for backup systems — selected for consistent pressure, dry-run protection and long service life.</p>
+              <p class="product-description">Reliable pump for boosting water pressure and ensuring consistent flow.</p>
               <div class="product-features">
                 <span class="feature-tag">Stainless Steel</span>
                 <span class="feature-tag">Self-Priming</span>
@@ -965,7 +965,7 @@
             </div>
             <div class="product-content">
               <h3 class="product-title">Advanced Water Filtration System</h3>
-              <p class="product-description">Professional-grade filtration (and UV options) to ensure safe water quality from tanks for reuse or potable backup supply.</p>
+              <p class="product-description">Professional-grade filtration system for clean and safe water.</p>
               <div class="product-features">
                 <span class="feature-tag">5-Stage Filtration</span>
                 <span class="feature-tag">UV Sterilization</span>
@@ -1127,19 +1127,19 @@
       </div>
     </section>
 
-  <!-- Weather-Smart Monitoring Section -->
+    <!-- Weather-Smart Irrigation Section -->
     <section id="weather" class="section section--weather" aria-labelledby="weather-title">
       <div class="container">
         <div class="weather-section-header">
           <div class="weather-badge">
             <i class="fas fa-cloud-sun"></i>
-            <span>Real-Time System Intelligence</span>
+            <span>Real-Time Weather Intelligence</span>
           </div>
           <h2 id="weather-title" class="weather-section-title">
-            Smart Monitoring &amp; <span class="text-highlight">Water Management</span>
+            Weather-Smart <span class="text-highlight">Irrigation</span> Solutions
           </h2>
           <p class="weather-section-subtitle">
-            Our monitoring and control systems optimise backup water performance across Gauteng — protecting supply, reducing downtime and improving system reliability.
+            Our advanced irrigation systems automatically adapt to Johannesburg's weather conditions, ensuring optimal water efficiency and plant health year-round.
           </p>
         </div>
 
@@ -1204,10 +1204,10 @@
             <div class="weather-advice-section">
               <div class="advice-header">
                 <i class="fas fa-lightbulb"></i>
-                <span>System Recommendations &amp; Status</span>
+                <span>Today's Irrigation Recommendation</span>
               </div>
-              <div id="system-recommendation" class="advice-text">
-                Loading system recommendations and status...
+              <div id="irrigation-recommendation" class="advice-text">
+                Loading irrigation recommendations...
               </div>
             </div>
 
@@ -1219,29 +1219,14 @@
               <span class="last-update">Updated just now</span>
             </div>
 
-            <!-- Hidden data for core weather widget -->
-            <div
-              id="weather-widget"
-              class="weather-widget weather-widget--page-hidden"
-              data-partial="index"
-              data-service="Backup Water Systems"
-              data-suburb="Johannesburg"
-              data-country="ZA"
-              data-units="metric"
-              data-cache-mins="120"
-              data-stale-mins="240"
-              data-theme="green"
-              data-tone="elevated"
-              data-icon="#16a34a"
-              aria-hidden="true"
-            ></div>
+            <!-- Weather widget intentionally removed on service pages to avoid duplicate injection from index -->
           </div>
 
           <!-- Smart Features Card -->
           <div class="weather-card weather-card--features">
             <div class="features-header">
               <i class="fas fa-microchip"></i>
-              <h3 class="features-title">Smart Monitoring &amp; Controls</h3>
+              <h3 class="features-title">Smart Weather Integration</h3>
             </div>
             <div class="features-grid">
               <div class="feature-item">
@@ -1250,7 +1235,7 @@
                 </div>
                 <div class="feature-content">
                   <h4 class="feature-name">Rain Detection</h4>
-                  <p class="feature-description">Adjusts source selection and pump behaviour when rain events affect water availability</p>
+                  <p class="feature-description">Automatically skips watering when rain is detected or forecast</p>
                 </div>
               </div>
               <div class="feature-item">
@@ -1259,7 +1244,7 @@
                 </div>
                 <div class="feature-content">
                   <h4 class="feature-name">Temperature Adjustment</h4>
-                  <p class="feature-description">Modulates pump operation and duty cycles during high-temperature demand periods</p>
+                  <p class="feature-description">Increases watering duration during hot weather automatically</p>
                 </div>
               </div>
               <div class="feature-item">
@@ -1267,8 +1252,8 @@
                   <i class="fas fa-wind"></i>
                 </div>
                 <div class="feature-content">
-                  <h4 class="feature-name">Demand Compensation</h4>
-                  <p class="feature-description">Modifies system behaviour based on demand and operational conditions</p>
+                  <h4 class="feature-name">Wind Compensation</h4>
+                  <p class="feature-description">Adjusts spray patterns and timing based on wind conditions</p>
                 </div>
               </div>
               <div class="feature-item">
@@ -1276,8 +1261,8 @@
                   <i class="fas fa-tint"></i>
                 </div>
                 <div class="feature-content">
-                  <h4 class="feature-name">Level &amp; Quality Monitoring</h4>
-                  <p class="feature-description">Optimises source selection and filtration based on tank levels and water quality</p>
+                  <h4 class="feature-name">Humidity Awareness</h4>
+                  <p class="feature-description">Optimizes watering schedules based on atmospheric moisture</p>
                 </div>
               </div>
             </div>
@@ -1289,9 +1274,9 @@
               <div class="cta-icon">
                 <i class="fas fa-robot"></i>
               </div>
-              <h3 class="cta-title">Smart Monitoring Installation</h3>
+              <h3 class="cta-title">Weather-Smart Installation</h3>
               <p class="cta-description">
-                Upgrade to our intelligent monitoring and control system that responds to changing conditions — protecting supply, reducing downtime and extending equipment life.
+                Upgrade to our intelligent irrigation system that automatically responds to weather conditions, saving water and protecting your landscape.
               </p>
               <div class="cta-benefits">
                 <div class="benefit-tag">
@@ -1307,9 +1292,9 @@
                   <span>App Control</span>
                 </div>
               </div>
-              <button class="btn btn-primary btn-weather-cta book-now" data-service="Smart Water Monitoring">
+              <button class="btn btn-primary btn-weather-cta book-now" data-service="Smart Weather Integration">
                 <i class="fas fa-rocket"></i>
-                <span>Enable Smart Monitoring</span>
+                <span>Go Smart</span>
               </button>
             </div>
           </div>
@@ -1349,7 +1334,7 @@
               <i class="fas fa-users"></i>
             </div>
             <div class="stat-info">
-              <span class="stat-value">800+</span>
+              <span class="stat-value">500+</span>
               <span class="stat-label">Smart Systems</span>
             </div>
           </div>
@@ -1435,8 +1420,8 @@
                 </div>
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14297.96307328913!2d28.047305!3d-26.204102!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e950b0e3f7e6e2b%3A0x7c7b7b7b7b7b7b7b!2sGauteng!5e0!3m2!1sen!2sza!4v1691500000000!5m2!1sen!2sza"
-                    class="gauteng-map-iframe"
-                    title="Myriad Green Service Areas Map - Professional Backup Water Services across Gauteng"
+                  class="gauteng-map-iframe"
+                  title="Myriad Green Service Areas Map - Professional Irrigation Services across Gauteng"
                   allowfullscreen
                   loading="lazy">
                 </iframe>
@@ -2309,9 +2294,9 @@
 
         <!-- Trust Indicators -->
         <div class="trust-indicators" role="region" aria-labelledby="trust-heading">
-          <h3 id="trust-heading" class="sr-only">Myriad Green Backup Water Services Trust and Performance Metrics</h3>
-            <div class="trust-indicator">
-            <div class="trust-number" aria-label="800 plus happy clients">800+</div>
+          <h3 id="trust-heading" class="sr-only">Myriad Green Irrigation Services Trust and Performance Metrics</h3>
+          <div class="trust-indicator">
+            <div class="trust-number" aria-label="500 plus happy clients">500+</div>
             <div class="trust-label">Happy Clients in Gauteng</div>
           </div>
           <div class="trust-indicator">
@@ -2641,7 +2626,7 @@
         aria-labelledby="backup-faq-button-7"
                  role="region">
               <div class="faq-card__answer">
-                <p>Yes! We offer flexible payment options to make premium backup water systems accessible:</p>
+                <p>Yes! We offer flexible payment options to make premium irrigation systems accessible:</p>
                 
                 <div class="faq-card__highlight-box">
                   <strong>Payment Options:</strong>
@@ -2651,7 +2636,7 @@
                   <br>• Insurance claim assistance
                 </div>
                 
-                <p>Our goal is to work with your budget while ensuring you get the quality backup water system your property deserves. Contact us to discuss the best payment arrangement for your situation.</p>
+                <p>Our goal is to work with your budget while ensuring you get the quality irrigation system your property deserves. Contact us to discuss the best payment arrangement for your situation.</p>
               </div>
             </div>
           </div>
@@ -2729,7 +2714,7 @@
           </div>
           <h2 class="areas__title">Areas We Service in Gauteng</h2>
           <p class="areas__subtitle">
-            Professional backup water services across Johannesburg and Pretoria. Same-day response guaranteed.
+            Professional irrigation services across Johannesburg and Pretoria. Same-day response guaranteed.
           </p>
         </div>
 
@@ -2900,11 +2885,11 @@
             </div>
 
             <h2 class="cta__title">
-              Ensure Uninterrupted Supply with <span class="highlight">Backup Water Systems</span>
+              Transform Your Landscape with <span class="highlight">Smart Irrigation</span>
             </h2>
 
             <p class="cta__text">
-              Join hundreds of Gauteng property owners and businesses that rely on our backup water systems to stay operational during outages. Our expert team delivers reliable, professionally installed solutions tailored to your needs.
+              Join over 500 Gauteng property owners who've reduced their water bills by 40% while creating healthier, more beautiful landscapes. Our expert team delivers professional irrigation solutions tailored to your property's unique needs.
             </p>
 
             <div class="cta__features">
@@ -2928,7 +2913,7 @@
 
             <div class="cta__stats">
               <div class="stat-item">
-                <span class="stat-number">800+</span>
+                <span class="stat-number">500+</span>
                 <span class="stat-label">Happy Customers</span>
               </div>
               <div class="stat-item">
@@ -3015,53 +3000,46 @@
         });
       });
 
-      // Weather debugging - run manual tests only in local/dev environments
-      (function runManualWeatherDebugIfLocal() {
-        const host = (typeof window !== 'undefined' && window.location && window.location.hostname) ? window.location.hostname : '';
-        const isLocal = host === 'localhost' || host === '127.0.0.1' || host === '::1';
-        if (!isLocal) return;
-
-        // Manual test after 3 seconds (local only)
-        setTimeout(() => {
-          console.log('=== MANUAL WEATHER DEBUG (LOCAL ONLY) ===');
-          
-          // Check if weather widget element exists
-          const weatherWidget = document.getElementById('weather-widget');
-          console.log('Weather widget element found:', !!weatherWidget);
-          
-          // Check if new weather elements exist
-          const tempEl = document.getElementById('current-temp');
-          const descEl = document.getElementById('weather-description');
-          console.log('Temperature element found:', !!tempEl);
-          console.log('Current description element found:', !!descEl);
-          
-          if (tempEl) console.log('Current temp content:', tempEl.textContent);
-          if (descEl) console.log('Current description content:', descEl.textContent);
-          
-          // Test API manually
-          fetch('http://localhost:3000/api/weather')
-            .then(response => {
-              console.log('API response status:', response.status);
-              return response.json();
-            })
-            .then(data => {
-              console.log('API returned weather data:', data);
-              
-              // Manual update test
-              if (tempEl && data.tempC) {
-                tempEl.textContent = data.tempC;
-                console.log('Manually updated temp to:', data.tempC);
-              }
-              if (descEl && data.conditions) {
-                descEl.textContent = data.conditions;
-                console.log('Manually updated description to:', data.conditions);
-              }
-            })
-            .catch(err => {
-              console.error('Manual weather API test failed:', err);
-            });
-        }, 3000);
-      })();
+      // Weather debugging - manual test after 3 seconds
+      setTimeout(() => {
+        console.log('=== MANUAL WEATHER DEBUG ===');
+        
+        // Check if weather widget element exists
+        const weatherWidget = document.getElementById('weather-widget');
+        console.log('Weather widget element found:', !!weatherWidget);
+        
+        // Check if new weather elements exist
+        const tempEl = document.getElementById('current-temp');
+        const descEl = document.getElementById('weather-description');
+        console.log('Temperature element found:', !!tempEl);
+        console.log('Current description element found:', !!descEl);
+        
+        if (tempEl) console.log('Current temp content:', tempEl.textContent);
+        if (descEl) console.log('Current description content:', descEl.textContent);
+        
+        // Test API manually
+        fetch('http://localhost:3000/api/weather')
+          .then(response => {
+            console.log('API response status:', response.status);
+            return response.json();
+          })
+          .then(data => {
+            console.log('API returned weather data:', data);
+            
+            // Manual update test
+            if (tempEl && data.tempC) {
+              tempEl.textContent = data.tempC;
+              console.log('Manually updated temp to:', data.tempC);
+            }
+            if (descEl && data.conditions) {
+              descEl.textContent = data.conditions;
+              console.log('Manually updated description to:', data.conditions);
+            }
+          })
+          .catch(err => {
+            console.error('Manual weather API test failed:', err);
+          });
+      }, 3000);
     });
   </script>
 

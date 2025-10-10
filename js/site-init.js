@@ -52,10 +52,25 @@ document.addEventListener('DOMContentLoaded', () => {
         if (p) p.setAttribute('data-hero-intro', '');
       }
 
-      // 3) Inject a weather widget container if missing (irrigation/service pages only)
-      const isIrrigationPage = /irrigation/i.test(document.title) || /\birrigation\b/i.test(document.body.textContent || '');
-      let widget = document.querySelector('#weather-widget');
-      if (!widget && isIrrigationPage) {
+  // 3) Inject a weather widget container if missing (only when page explicitly opts-in)
+  // Require either an explicit opt-in attribute `data-allow-weather="true"` on <body>
+  // or a clear per-page `data-service` that includes the word 'Irrigation'.
+      const bodyAllow = document.body && (document.body.getAttribute('data-allow-weather') === 'true' || document.body.classList.contains('allow-weather'));
+  const bodyService = (document.body && (document.body.getAttribute('data-service') || '')).toLowerCase();
+  // Require an exact service match to 'irrigation' or an explicit opt-in
+  const isIrrigationPage = bodyAllow || bodyService === 'irrigation';
+
+      // Diagnostic logging to help trace unexpected widget injections
+      try {
+        console.info('[site-init] weather injection check:', {
+          bodyAllow: !!bodyAllow,
+          bodyService: bodyService,
+          isIrrigationPage: !!isIrrigationPage,
+          title: (document.title || '').slice(0, 120)
+        });
+      } catch (e) { /* noop */ }
+  let widget = document.querySelector('#weather-widget');
+  if (!widget && isIrrigationPage) {
         // Detect suburb from <title>, patterns like: "Irrigation Annlin, Pretoria | ..." or "Irrigation in Eldoraigne, Centurion"
         const t = document.title || '';
         let suburb = 'Johannesburg';
@@ -70,14 +85,16 @@ document.addEventListener('DOMContentLoaded', () => {
         widget.setAttribute('data-suburb', suburb);
         widget.setAttribute('data-country', 'ZA');
         widget.setAttribute('data-units', 'metric');
-        widget.setAttribute('data-theme', 'xbox');
+  widget.setAttribute('data-theme', 'xbox');
         widget.setAttribute('data-tone', 'solid');
         widget.setAttribute('data-icon', '#ffffff');
 
         // Place after hero H1 if available, else at top of main
         if (heroTitle && heroTitle.parentElement) {
+          console.info('[site-init] inserting weather widget after hero title');
           heroTitle.parentElement.insertBefore(widget, heroTitle.nextSibling);
         } else {
+          console.info('[site-init] inserting weather widget at top of main');
           const main = document.querySelector('main') || document.body;
           main.insertBefore(widget, main.firstChild);
         }
