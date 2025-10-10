@@ -3015,46 +3015,53 @@
         });
       });
 
-      // Weather debugging - manual test after 3 seconds
-      setTimeout(() => {
-        console.log('=== MANUAL WEATHER DEBUG ===');
-        
-        // Check if weather widget element exists
-        const weatherWidget = document.getElementById('weather-widget');
-        console.log('Weather widget element found:', !!weatherWidget);
-        
-        // Check if new weather elements exist
-        const tempEl = document.getElementById('current-temp');
-        const descEl = document.getElementById('weather-description');
-        console.log('Temperature element found:', !!tempEl);
-        console.log('Current description element found:', !!descEl);
-        
-        if (tempEl) console.log('Current temp content:', tempEl.textContent);
-        if (descEl) console.log('Current description content:', descEl.textContent);
-        
-        // Test API manually
-        fetch('http://localhost:3000/api/weather')
-          .then(response => {
-            console.log('API response status:', response.status);
-            return response.json();
-          })
-          .then(data => {
-            console.log('API returned weather data:', data);
-            
-            // Manual update test
-            if (tempEl && data.tempC) {
-              tempEl.textContent = data.tempC;
-              console.log('Manually updated temp to:', data.tempC);
-            }
-            if (descEl && data.conditions) {
-              descEl.textContent = data.conditions;
-              console.log('Manually updated description to:', data.conditions);
-            }
-          })
-          .catch(err => {
-            console.error('Manual weather API test failed:', err);
-          });
-      }, 3000);
+      // Weather debugging - run manual tests only in local/dev environments
+      (function runManualWeatherDebugIfLocal() {
+        const host = (typeof window !== 'undefined' && window.location && window.location.hostname) ? window.location.hostname : '';
+        const isLocal = host === 'localhost' || host === '127.0.0.1' || host === '::1';
+        if (!isLocal) return;
+
+        // Manual test after 3 seconds (local only)
+        setTimeout(() => {
+          console.log('=== MANUAL WEATHER DEBUG (LOCAL ONLY) ===');
+          
+          // Check if weather widget element exists
+          const weatherWidget = document.getElementById('weather-widget');
+          console.log('Weather widget element found:', !!weatherWidget);
+          
+          // Check if new weather elements exist
+          const tempEl = document.getElementById('current-temp');
+          const descEl = document.getElementById('weather-description');
+          console.log('Temperature element found:', !!tempEl);
+          console.log('Current description element found:', !!descEl);
+          
+          if (tempEl) console.log('Current temp content:', tempEl.textContent);
+          if (descEl) console.log('Current description content:', descEl.textContent);
+          
+          // Test API manually
+          fetch('http://localhost:3000/api/weather')
+            .then(response => {
+              console.log('API response status:', response.status);
+              return response.json();
+            })
+            .then(data => {
+              console.log('API returned weather data:', data);
+              
+              // Manual update test
+              if (tempEl && data.tempC) {
+                tempEl.textContent = data.tempC;
+                console.log('Manually updated temp to:', data.tempC);
+              }
+              if (descEl && data.conditions) {
+                descEl.textContent = data.conditions;
+                console.log('Manually updated description to:', data.conditions);
+              }
+            })
+            .catch(err => {
+              console.error('Manual weather API test failed:', err);
+            });
+        }, 3000);
+      })();
     });
   </script>
 
