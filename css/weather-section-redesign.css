@@ -93,7 +93,8 @@
 /* Weather Grid Layout */
 .weather-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-areas: "primary features cta";
   gap: 2rem;
   margin-bottom: 3rem;
   position: relative;
@@ -120,12 +121,115 @@
   background: linear-gradient(135deg, var(--page-bg, #031226) 0%, rgba(3,18,38,0.8) 100%) !important;
 }
 
+[data-theme="dark"] .weather-section-title {
+  color: var(--color-gray-50, #f8fafc) !important;
+}
+
+[data-theme="dark"] .weather-section-subtitle,
+[data-theme="dark"] .weather-location-info,
+[data-theme="dark"] .metric-label,
+[data-theme="dark"] .last-update,
+[data-theme="dark"] .feature-description,
+[data-theme="dark"] .cta-description {
+  color: var(--color-gray-300, #cbd5f5) !important;
+}
+
+[data-theme="dark"] .weather-badge,
+[data-theme="dark"] .update-time {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(59, 130, 246, 0.9)) !important;
+  color: #0f172a !important;
+  box-shadow: 0 8px 24px rgba(15, 118, 110, 0.35);
+}
+
 [data-theme="dark"] .weather-card,
 [data-theme="dark"] .weather-card--primary {
   background: var(--card-background-color, #071022) !important;
   border-color: rgba(255,255,255,0.04) !important;
   box-shadow: 0 10px 30px rgba(2,6,23,0.6) !important;
   color: var(--color-text, #e6eef8) !important;
+}
+
+[data-theme="dark"] .weather-card--primary {
+  border-color: rgba(16, 185, 129, 0.45) !important;
+}
+
+[data-theme="dark"] .weather-card--features {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(45, 212, 191, 0.12)) !important;
+  border-color: rgba(59, 130, 246, 0.22) !important;
+}
+
+[data-theme="dark"] .feature-name,
+[data-theme="dark"] .metric-value,
+[data-theme="dark"] .weather-condition,
+[data-theme="dark"] .stat-value,
+[data-theme="dark"] .cta-title,
+[data-theme="dark"] .location-name,
+[data-theme="dark"] .temp-value {
+  color: var(--color-gray-50, #f8fafc) !important;
+}
+
+[data-theme="dark"] .temp-unit {
+  color: var(--color-gray-300, #cbd5f5) !important;
+}
+
+[data-theme="dark"] .weather-icon-large {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(59, 130, 246, 0.9)) !important;
+  box-shadow: 0 18px 48px rgba(4, 17, 38, 0.65) !important;
+}
+
+[data-theme="dark"] .weather-metric {
+  background: rgba(30, 64, 175, 0.3) !important;
+  border: 1px solid rgba(148, 163, 184, 0.18) !important;
+}
+
+[data-theme="dark"] .weather-metric:hover {
+  background: rgba(59, 130, 246, 0.35) !important;
+}
+
+[data-theme="dark"] .weather-advice-section {
+  background: linear-gradient(135deg, rgba(29, 78, 216, 0.85), rgba(37, 211, 196, 0.75)) !important;
+  box-shadow: 0 18px 40px rgba(8, 15, 35, 0.65);
+}
+
+[data-theme="dark"] .weather-card-footer {
+  border-color: rgba(148, 163, 184, 0.18) !important;
+}
+
+[data-theme="dark"] .weather-refresh-btn {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(45, 212, 191, 0.9)) !important;
+  color: #04111f !important;
+  box-shadow: 0 12px 30px rgba(6, 182, 212, 0.35);
+}
+
+[data-theme="dark"] .weather-refresh-btn:hover {
+  background: linear-gradient(135deg, rgba(20, 184, 166, 1), rgba(59, 130, 246, 1)) !important;
+}
+
+[data-theme="dark"] .weather-card--cta {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.95), rgba(59, 130, 246, 0.9)) !important;
+  color: var(--color-gray-50, #f8fafc) !important;
+  box-shadow: 0 24px 55px rgba(2, 12, 30, 0.75);
+}
+
+[data-theme="dark"] .benefit-tag {
+  background: rgba(255, 255, 255, 0.14) !important;
+  color: var(--color-gray-50, #f8fafc) !important;
+}
+
+[data-theme="dark"] .btn-weather-cta {
+  background: rgba(248, 250, 252, 0.14) !important;
+  color: var(--color-gray-50, #f8fafc) !important;
+  box-shadow: 0 16px 36px rgba(14, 165, 233, 0.45);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+[data-theme="dark"] .btn-weather-cta:hover {
+  background: rgba(248, 250, 252, 0.22) !important;
+  color: #22d3ee !important;
+}
+
+[data-theme="dark"] .stat-icon {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(59, 130, 246, 0.9)) !important;
 }
 
 .weather-card:hover {
@@ -135,6 +239,7 @@
 
 /* Primary Weather Card */
 .weather-card--primary {
+  grid-area: primary;
   /* Keep the primary light gradient for light theme but fall back to --card-background
      so dark theme can override without layout changes */
   background: linear-gradient(135deg, var(--card-background, white) 0%, #f8fafc 100%);
@@ -361,6 +466,7 @@
 
 /* Features Card */
 .weather-card--features {
+  grid-area: features;
   background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
 }
 
@@ -428,6 +534,7 @@
 
 /* CTA Card */
 .weather-card--cta {
+  grid-area: cta;
   background: linear-gradient(135deg, var(--color-primary) 0%, #059669 100%);
   color: white;
   text-align: center;
@@ -524,7 +631,7 @@
   z-index: 2;
 }
 
-[/* NOTE: Dark-mode tweaks added on 2025-10-05 (commit 654a24f) --
+/* NOTE: Dark-mode tweaks added on 2025-10-05 (commit 654a24f) --
   This block contains targeted overrides so the weather stats bar and its
   child elements use theme-aware tokens (e.g. --card-background-color,
   --color-text) instead of literal white backgrounds. These changes were
@@ -619,10 +726,27 @@
 }
 
 /* Mobile Responsiveness */
+@media (max-width: 1280px) {
+  .weather-grid {
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    grid-template-areas:
+      "primary primary"
+      "features cta";
+  }
+
+  .cta-content {
+    padding: 0.5rem 0;
+  }
+}
+
 @media (max-width: 1024px) {
   .weather-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+    grid-template-areas:
+      "primary"
+      "features"
+      "cta";
   }
   
   .weather-stats-bar {
@@ -665,6 +789,18 @@
   .weather-stats-bar {
     grid-template-columns: 1fr;
     gap: 1rem;
+  }
+
+  .weather-card-footer {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .weather-stat {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
   
   .temp-value {
