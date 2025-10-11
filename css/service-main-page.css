@@ -2535,6 +2535,33 @@ section[id] {
   box-shadow: 0 8px 24px rgba(2,6,23,0.6) !important;
 }
 
+[data-theme="dark"] .section--trends {
+  background: linear-gradient(145deg, #020817 0%, #071224 45%, #050e1c 100%) !important;
+}
+
+[data-theme="dark"] .section--trends::before {
+  background: radial-gradient(circle at 30% 70%, rgba(34,197,94,0.18) 0%, transparent 55%),
+              radial-gradient(circle at 70% 30%, rgba(14,165,233,0.16) 0%, transparent 55%) !important;
+}
+
+[data-theme="dark"] .section--trends .trends__widget-container {
+  background: rgba(8, 23, 37, 0.9) !important;
+  border-color: rgba(148, 163, 184, 0.12) !important;
+  box-shadow: 0 16px 40px rgba(2, 12, 24, 0.6) !important;
+}
+
+[data-theme="dark"] .section--trends .trends__widget-title,
+[data-theme="dark"] .section--trends .trends__widget-description,
+[data-theme="dark"] .section--trends .trends__subtitle,
+[data-theme="dark"] .section--trends .trends__title,
+[data-theme="dark"] .section--trends .trends__eyebrow {
+  color: var(--color-gray-100, #f8fafc) !important;
+}
+
+[data-theme="dark"] .section--trends .trends__eyebrow {
+  background: rgba(34,197,94,0.18) !important;
+}
+
 /* Hidden Trends Widget - For Internal Use Only */
 .trends__widget-container--hidden {
   display: none !important;
