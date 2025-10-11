@@ -5873,18 +5873,23 @@ details[open] .faq__caret {
   background: linear-gradient(90deg, var(--color-primary-dark), var(--color-accent));
 }
 
-[data-theme="dark"] .section--how-it-works .contact-note {
-  background: var(--color-gray-750);
-  border-color: var(--color-gray-600);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+[data-theme="dark"] .section--how-it-works .contact-note,
+[data-theme="dark"] .section--how-it-works .how__contact-note {
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.92), rgba(11, 14, 28, 0.9));
+  border-color: rgba(148, 163, 184, 0.22);
+  box-shadow: 0 16px 36px rgba(2, 12, 24, 0.45);
 }
 
 [data-theme="dark"] .section--how-it-works .how__contact-note::before {
-  background: var(--color-primary-light);
+  background: linear-gradient(180deg, rgba(45, 212, 191, 0.8), rgba(16, 185, 129, 0.9));
 }
 
 [data-theme="dark"] .section--how-it-works .contact-note__text {
   color: var(--color-gray-200);
+}
+
+[data-theme="dark"] .section--how-it-works .contact-note__text i {
+  color: var(--color-primary-light);
 }
 
 [data-theme="dark"] .section--how-it-works .contact-link {
