@@ -118,7 +118,13 @@
 
 /* Dark theme overrides for weather section and cards */
 [data-theme="dark"] .section--weather {
-  background: linear-gradient(135deg, var(--page-bg, #031226) 0%, rgba(3,18,38,0.8) 100%) !important;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+[data-theme="dark"] .section--weather::before,
+[data-theme="dark"] .section--weather::after {
+  background: none !important;
 }
 
 [data-theme="dark"] .weather-section-title {

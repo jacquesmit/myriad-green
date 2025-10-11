@@ -1218,7 +1218,8 @@
 
 /* Pricing Section - layered dark palette */
 [data-theme="dark"] .section--pricing {
-  background: linear-gradient(155deg, rgba(2, 10, 18, 0.96) 0%, rgba(4, 23, 33, 0.98) 55%, rgba(3, 15, 24, 1) 100%) !important;
+  background: transparent !important;
+  background-color: transparent !important;
   color: var(--color-gray-100, #f1f5f9) !important;
 }
 
