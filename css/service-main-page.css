@@ -1034,7 +1034,7 @@ section[id] {
 
 .pricing-card__badge {
   position: absolute;
-  top: -16px;
+  top: -22px;
   left: 50%;
   transform: translateX(-50%);
   background: linear-gradient(135deg, #2d7a2d 0%, #1e5e1e 50%, #2d7a2d 100%);
@@ -1076,15 +1076,14 @@ section[id] {
 .pricing-card__badge::after {
   content: '';
   position: absolute;
-  top: 50%;
   left: 50%;
+  bottom: -10px;
   width: 0;
   height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 8px solid #2d7a2d;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 12px solid #2d7a2d;
   transform: translateX(-50%);
-  bottom: -8px;
   filter: drop-shadow(0 2px 4px rgba(45, 122, 45, 0.3));
 }
 

@@ -1216,33 +1216,92 @@
   color: var(--color-gray-50) !important;
 }
 
-/* Pricing Section - ensure dark theme uses dark card backgrounds and readable text */
-[data-theme="dark"] .section--pricing,
-[data-theme="dark"] .pricing__group,
-[data-theme="dark"] .pricing__grid,
-[data-theme="dark"] .pricing-card,
-[data-theme="dark"] .pricing__item,
-[data-theme="dark"] .product-pricing,
-[data-theme="dark"] .pricing__grid--services {
-  background: var(--color-card-bg, #121212) !important;
-  color: var(--color-text, #e2e8f0) !important;
-  border: 1px solid rgba(255, 255, 255, 0.06) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+/* Pricing Section - layered dark palette */
+[data-theme="dark"] .section--pricing {
+  background: linear-gradient(155deg, rgba(2, 10, 18, 0.96) 0%, rgba(4, 23, 33, 0.98) 55%, rgba(3, 15, 24, 1) 100%) !important;
+  color: var(--color-gray-100, #f1f5f9) !important;
 }
 
-[data-theme="dark"] .pricing__title,
-[data-theme="dark"] .pricing__group-title,
-[data-theme="dark"] .pricing__subtitle,
-[data-theme="dark"] .pricing__group-description,
-[data-theme="dark"] .price-note,
-[data-theme="dark"] .product-pricing .price-note {
-  color: var(--color-text, #e2e8f0) !important;
+[data-theme="dark"] .section--pricing .pricing__group,
+[data-theme="dark"] .section--pricing .pricing__grid,
+[data-theme="dark"] .section--pricing .product-pricing,
+[data-theme="dark"] .section--pricing .pricing__item {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
-[data-theme="dark"] .pricing-card .price,
-[data-theme="dark"] .pricing-card .price-amount,
-[data-theme="dark"] .price {
-  color: var(--color-primary, #34d399) !important;
+[data-theme="dark"] .section--pricing .pricing-card {
+  background: rgba(8, 24, 32, 0.92) !important;
+  border: 1px solid rgba(34, 197, 94, 0.28) !important;
+  box-shadow: 0 18px 42px rgba(3, 16, 24, 0.55) !important;
+  color: var(--color-gray-50, #f8fafc) !important;
+}
+
+[data-theme="dark"] .section--pricing .pricing-card--featured,
+[data-theme="dark"] .section--pricing .pricing-card--service.pricing-card--featured {
+  background: rgba(10, 34, 44, 0.95) !important;
+  border-color: rgba(45, 212, 191, 0.4) !important;
+  box-shadow: 0 26px 58px rgba(13, 148, 136, 0.32) !important;
+}
+
+[data-theme="dark"] .section--pricing .pricing-card__header,
+[data-theme="dark"] .section--pricing .pricing-card__content,
+[data-theme="dark"] .section--pricing .pricing-card__footer {
+  color: inherit !important;
+}
+
+[data-theme="dark"] .section--pricing .pricing-card__badge {
+  background: rgba(34, 197, 94, 0.16) !important;
+  color: #4ade80 !important;
+  border: 1px solid rgba(34, 197, 94, 0.32) !important;
+}
+
+[data-theme="dark"] .section--pricing .pricing-card__badge::after {
+  border-top-color: rgba(74, 222, 128, 0.9) !important;
+  filter: drop-shadow(0 4px 10px rgba(14, 116, 144, 0.35)) !important;
+}
+
+[data-theme="dark"] .section--pricing .pricing-card__badge--popular::after {
+  border-top-color: rgba(96, 165, 250, 0.9) !important;
+}
+
+[data-theme="dark"] .section--pricing .pricing-card__badge--premium::after {
+  border-top-color: rgba(253, 224, 71, 0.9) !important;
+}
+
+[data-theme="dark"] .section--pricing .pricing-card__title,
+[data-theme="dark"] .section--pricing .price,
+[data-theme="dark"] .section--pricing .pricing-card__cta {
+  color: var(--color-gray-100, #f1f5f9) !important;
+}
+
+[data-theme="dark"] .section--pricing .pricing-card__amount {
+  color: #5eead4 !important;
+}
+
+[data-theme="dark"] .section--pricing .pricing-card__period {
+  color: rgba(148, 236, 203, 0.8) !important;
+}
+
+[data-theme="dark"] .section--pricing .pricing-card__note,
+[data-theme="dark"] .section--pricing .price-note {
+  color: rgba(203, 213, 225, 0.78) !important;
+}
+
+[data-theme="dark"] .section--pricing .pricing-card__feature {
+  color: rgba(226, 232, 240, 0.92) !important;
+}
+
+[data-theme="dark"] .section--pricing .pricing-card__feature-icon {
+  color: #22c55e !important;
+}
+
+[data-theme="dark"] .section--pricing .pricing__title,
+[data-theme="dark"] .section--pricing .pricing__group-title,
+[data-theme="dark"] .section--pricing .pricing__subtitle,
+[data-theme="dark"] .section--pricing .pricing__group-description {
+  color: var(--color-gray-100, #f1f5f9) !important;
 }
 
 /* Consolidated Areas dark overrides: ensures any leftover white backgrounds are replaced by dark tokens */
