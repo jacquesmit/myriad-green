@@ -1129,11 +1129,11 @@
     </section>
 
     <!-- Emergency Response Section -->
-    <section id="emergency" class="section section--emergency" aria-labelledby="emergency-title">
+    <section id="emergency" class="section section--emergency" aria-labelledby="emergency-title" role="region">
       <div class="container">
-        <div class="emergency-section-header">
-          <div class="emergency-badge">
-            <i class="fas fa-exclamation-triangle"></i>
+        <header class="emergency-section-header">
+          <div class="emergency-badge" role="status" aria-live="polite">
+            <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
             <span>24/7 Emergency Response</span>
           </div>
           <h2 id="emergency-title" class="emergency-section-title">
@@ -1142,202 +1142,213 @@
           <p class="emergency-section-subtitle">
             When drains block unexpectedly, our rapid response team provides same-day emergency clearing services across Gauteng properties with guaranteed results.
           </p>
-        </div>
+        </header>
 
-        <div class="emergency-grid">
-          <!-- Emergency Response Card -->
-          <div class="emergency-card emergency-card--primary">
-            <div class="emergency-card-header">
+        <div class="emergency-grid" role="main">
+          <!-- Emergency Status Card -->
+          <article class="emergency-card emergency-card--status" aria-labelledby="status-title">
+            <header class="emergency-card-header">
               <div class="emergency-location-info">
-                <i class="fas fa-clock"></i>
-                <span class="location-name">Emergency Response Time</span>
-                <span class="response-time" id="response-time">Same Day Contact</span>
+                <i class="fas fa-clock" aria-hidden="true"></i>
+                <h3 id="status-title" class="location-name">Emergency Response Status</h3>
+                <time class="response-time" id="response-time" datetime="PT2H">2 Hour Response</time>
               </div>
-            </div>
+            </header>
 
-            <div class="emergency-current-display">
-              <div class="emergency-main-info">
-                <div class="emergency-icon-large">
-                  <i id="emergency-icon" class="fas fa-phone-alt"></i>
+            <div class="emergency-status-display">
+              <div class="status-indicator">
+                <div class="status-icon" role="img" aria-label="Emergency services available">
+                  <i id="emergency-icon" class="fas fa-phone-alt" aria-hidden="true"></i>
+                  <div class="status-pulse" aria-hidden="true"></div>
                 </div>
-                <div class="emergency-status">
-                  <span id="current-status" class="status-value">Available</span>
-                  <span class="status-unit">24/7</span>
+                <div class="status-info">
+                  <div id="current-status" class="status-value" role="status" aria-live="polite">Available Now</div>
+                  <div class="status-unit">24/7 Service</div>
                 </div>
               </div>
-              <div class="emergency-description-info">
+              <div class="status-description">
                 <div id="emergency-description" class="emergency-condition">Emergency Teams Standing By</div>
-                <div id="response-promise" class="response-promise">Same-day contact guaranteed</div>
+                <div id="response-promise" class="response-promise">Guaranteed same-day contact</div>
               </div>
             </div>
 
-            <div class="emergency-metrics-grid">
+            <div class="emergency-metrics-grid" role="group" aria-label="Emergency service metrics">
               <div class="emergency-metric" data-metric="response">
-                <i class="fas fa-tint"></i>
+                <i class="fas fa-clock" aria-hidden="true"></i>
                 <div class="metric-info">
-                  <span class="metric-label">Response</span>
-                  <span id="response-rate" class="metric-value">2hrs</span>
+                  <span class="metric-label">Avg Response</span>
+                  <span id="response-rate" class="metric-value">≤ 2hrs</span>
                 </div>
               </div>
               <div class="emergency-metric" data-metric="success">
-                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-check-circle" aria-hidden="true"></i>
                 <div class="metric-info">
                   <span class="metric-label">Success Rate</span>
                   <span id="success-rate" class="metric-value">98%</span>
                 </div>
               </div>
               <div class="emergency-metric" data-metric="coverage">
-                <i class="fas fa-map-marker-alt"></i>
+                <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
                 <div class="metric-info">
-                  <span class="metric-label">Coverage</span>
-                  <span id="coverage-area" class="metric-value">Full Gauteng</span>
+                  <span class="metric-label">Coverage Area</span>
+                  <span id="coverage-area" class="metric-value">All Gauteng</span>
                 </div>
               </div>
               <div class="emergency-metric" data-metric="equipment">
-                <i class="fas fa-tools"></i>
+                <i class="fas fa-tools" aria-hidden="true"></i>
                 <div class="metric-info">
                   <span class="metric-label">Equipment</span>
-                  <span id="equipment-ready" class="metric-value">Ready</span>
+                  <span id="equipment-ready" class="metric-value">On Standby</span>
                 </div>
               </div>
             </div>
-
-            <div class="emergency-advice-section">
-              <div class="advice-header">
-                <i class="fas fa-lightbulb"></i>
-                <span>Emergency Drain Tips</span>
-              </div>
-              <div id="emergency-recommendation" class="advice-text">
-                Stop using affected drains immediately. Call our emergency team for rapid assessment and clearing.
-              </div>
-            </div>
-
-            <div class="emergency-card-footer">
-              <button id="call-emergency" class="emergency-call-btn">
-                <i class="fas fa-phone"></i>
-                <span>Call Emergency Line</span>
-              </button>
-              <span class="emergency-note">Available 24/7</span>
-            </div>
-          </div>
+          </article>
 
           <!-- Emergency Services Card -->
-          <div class="emergency-card emergency-card--features">
-            <div class="features-header">
-              <i class="fas fa-ambulance"></i>
-              <h3 class="features-title">Emergency Services Available</h3>
-            </div>
-            <div class="features-grid">
-              <div class="feature-item">
-                <div class="feature-icon">
-                  <i class="fas fa-search"></i>
-                </div>
-                <div class="feature-content">
-                  <h4 class="feature-name">Rapid Assessment</h4>
-                  <p class="feature-description">Immediate endoscope inspection to locate and assess blockage severity</p>
-                </div>
+          <article class="emergency-card emergency-card--services" aria-labelledby="services-title">
+            <header class="emergency-card-header">
+              <div class="emergency-location-info">
+                <i class="fas fa-tools" aria-hidden="true"></i>
+                <h3 id="services-title" class="location-name">Available Emergency Services</h3>
+                <span class="response-time">Professional Equipment</span>
               </div>
-              <div class="feature-item">
-                <div class="feature-icon">
-                  <i class="fas fa-water"></i>
-                </div>
-                <div class="feature-content">
-                  <h4 class="feature-name">Emergency Jetting</h4>
-                  <p class="feature-description">High-pressure clearing for immediate flow restoration</p>
-                </div>
-              </div>
-              <div class="feature-item">
-                <div class="feature-icon">
-                  <i class="fas fa-shield-alt"></i>
-                </div>
-                <div class="feature-content">
-                  <h4 class="feature-name">Overflow Prevention</h4>
-                  <p class="feature-description">Rapid response to prevent property damage from drain backups</p>
-                </div>
-              </div>
-              <div class="feature-item">
-                <div class="feature-icon">
-                  <i class="fas fa-clock"></i>
-                </div>
-                <div class="feature-content">
-                  <h4 class="feature-name">24/7 Availability</h4>
-                  <p class="feature-description">24/7 emergency response across Gauteng areas</p>
-                </div>
-              </div>
-            </div>
-          </div>
+            </header>
 
-          <!-- Emergency CTA Card -->
-          <div class="emergency-card emergency-card--cta">
-            <div class="cta-content">
-              <div class="cta-icon">
-                <i class="fas fa-phone-alt"></i>
+            <div class="emergency-status-display">
+              <div class="status-indicator">
+                <div class="status-icon services-icon" role="img" aria-label="Emergency services ready">
+                  <i class="fas fa-wrench" aria-hidden="true"></i>
+                  <div class="status-pulse services-pulse" aria-hidden="true"></div>
+                </div>
+                <div class="status-info">
+                  <div class="status-value services-status">4 Services</div>
+                  <div class="status-unit">Ready Now</div>
+                </div>
               </div>
-              <h3 class="cta-title">Emergency Drain Clearing</h3>
+              <div class="status-description">
+                <div class="emergency-condition">Professional Equipment Available</div>
+                <div class="response-promise">Endoscopes, jetters & drain unblockers</div>
+              </div>
+            </div>
+
+            <div class="emergency-metrics-grid services-metrics" role="group" aria-label="Available emergency services">
+              <div class="emergency-metric service-metric" data-service="assessment">
+                <i class="fas fa-search" aria-hidden="true"></i>
+                <div class="metric-info">
+                  <span class="metric-label">Rapid Assessment</span>
+                  <span class="metric-value">Ready</span>
+                </div>
+              </div>
+              <div class="emergency-metric service-metric" data-service="jetting">
+                <i class="fas fa-water" aria-hidden="true"></i>
+                <div class="metric-info">
+                  <span class="metric-label">Emergency Jetting</span>
+                  <span class="metric-value">Ready</span>
+                </div>
+              </div>
+              <div class="emergency-metric service-metric" data-service="prevention">
+                <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                <div class="metric-info">
+                  <span class="metric-label">Damage Prevention</span>
+                  <span class="metric-value">Ready</span>
+                </div>
+              </div>
+              <div class="emergency-metric service-metric" data-service="availability">
+                <i class="fas fa-clock" aria-hidden="true"></i>
+                <div class="metric-info">
+                  <span class="metric-label">24/7 Support</span>
+                  <span class="metric-value">Active</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="emergency-advice-section services-advice">
+              <div class="advice-header">
+                <i class="fas fa-tools"></i>
+                <span>Service Equipment</span>
+              </div>
+              <div class="advice-text">
+                Professional endoscopes, high-pressure jetters and eco-friendly unblockers available for immediate deployment.
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="emergency-row-secondary">
+          <!-- Emergency CTA Card -->
+          <aside class="emergency-card emergency-card--cta" role="complementary" aria-labelledby="cta-title">
+            <div class="cta-content">
+              <div class="cta-icon" role="img" aria-label="Emergency contact">
+                <i class="fas fa-phone-alt" aria-hidden="true"></i>
+              </div>
+              <h3 id="cta-title" class="cta-title">Need Emergency Help?</h3>
               <p class="cta-description">
                 Don't let blocked drains cause property damage. Our emergency team responds rapidly with professional equipment for immediate flow restoration.
               </p>
-              <div class="cta-benefits">
+              <div class="cta-benefits" role="group" aria-label="Emergency service benefits">
                 <div class="benefit-tag">
-                  <i class="fas fa-clock"></i>
-                  <span>2hr Response</span>
+                  <i class="fas fa-clock" aria-hidden="true"></i>
+                  <span>≤ 2hr Response</span>
                 </div>
                 <div class="benefit-tag">
-                  <i class="fas fa-shield-alt"></i>
+                  <i class="fas fa-shield-alt" aria-hidden="true"></i>
                   <span>Damage Prevention</span>
                 </div>
                 <div class="benefit-tag">
-                  <i class="fas fa-tools"></i>
+                  <i class="fas fa-tools" aria-hidden="true"></i>
                   <span>Pro Equipment</span>
                 </div>
               </div>
-              <button class="btn btn-primary btn-emergency-cta book-now" data-service="Emergency Drain Clearing">
-                <i class="fas fa-phone"></i>
-                <span>Call Emergency</span>
+              <button type="button" class="btn btn-primary btn-emergency-cta book-now" 
+                      data-service="Emergency Drain Clearing"
+                      aria-describedby="emergency-help-text">
+                <i class="fas fa-phone" aria-hidden="true"></i>
+                <span>Call Emergency Line</span>
               </button>
+              <p id="emergency-help-text" class="emergency-help-text">Available 24/7 • No call-out fees</p>
             </div>
-          </div>
+          </aside>
         </div>
 
-        <!-- Emergency Stats Bar -->
-        <div class="emergency-stats-bar">
-          <div class="emergency-stat">
-            <div class="stat-icon">
-              <i class="fas fa-clock"></i>
+        <!-- Emergency Performance Metrics -->
+        <footer class="emergency-metrics-bar" role="contentinfo" aria-label="Emergency service performance metrics">
+          <div class="performance-metric" data-metric="response-time">
+            <div class="metric-icon" role="img" aria-label="Response time metric">
+              <i class="fas fa-clock" aria-hidden="true"></i>
             </div>
-            <div class="stat-info">
-              <span class="stat-value">2hr</span>
-              <span class="stat-label">Average Response</span>
-            </div>
-          </div>
-          <div class="emergency-stat">
-            <div class="stat-icon">
-              <i class="fas fa-check-circle"></i>
-            </div>
-            <div class="stat-info">
-              <span class="stat-value">98%</span>
-              <span class="stat-label">Success Rate</span>
+            <div class="metric-data">
+              <span class="metric-value" aria-describedby="response-desc">≤ 2hr</span>
+              <span id="response-desc" class="metric-label">Avg Response Time</span>
             </div>
           </div>
-          <div class="emergency-stat">
-            <div class="stat-icon">
-              <i class="fas fa-phone"></i>
+          <div class="performance-metric" data-metric="success-rate">
+            <div class="metric-icon" role="img" aria-label="Success rate metric">
+              <i class="fas fa-check-circle" aria-hidden="true"></i>
             </div>
-            <div class="stat-info">
-              <span class="stat-value">24/7</span>
-              <span class="stat-label">Availability</span>
-            </div>
-          </div>
-          <div class="emergency-stat">
-            <div class="stat-icon">
-              <i class="fas fa-users"></i>
-            </div>
-            <div class="stat-info">
-              <span class="stat-value">1000+</span>
-              <span class="stat-label">Emergency Calls</span>
+            <div class="metric-data">
+              <span class="metric-value" aria-describedby="success-desc">98%</span>
+              <span id="success-desc" class="metric-label">Success Rate</span>
             </div>
           </div>
-        </div>
+          <div class="performance-metric" data-metric="availability">
+            <div class="metric-icon" role="img" aria-label="Availability metric">
+              <i class="fas fa-shield-check" aria-hidden="true"></i>
+            </div>
+            <div class="metric-data">
+              <span class="metric-value" aria-describedby="availability-desc">24/7</span>
+              <span id="availability-desc" class="metric-label">Service Uptime</span>
+            </div>
+          </div>
+          <div class="performance-metric" data-metric="completed-jobs">
+            <div class="metric-icon" role="img" aria-label="Completed jobs metric">
+              <i class="fas fa-wrench" aria-hidden="true"></i>
+            </div>
+            <div class="metric-data">
+              <span class="metric-value" aria-describedby="jobs-desc">2,500+</span>
+              <span id="jobs-desc" class="metric-label">Jobs Completed</span>
+            </div>
+          </div>
+        </footer>
       </div>
     </section>
 
