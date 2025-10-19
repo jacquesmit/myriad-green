@@ -1276,7 +1276,7 @@
 
         <div class="emergency-row-secondary">
           <!-- Emergency CTA Card -->
-          <aside class="emergency-card emergency-card--cta" role="complementary" aria-labelledby="cta-title">
+          <aside class="emergency-card emergency-card--cta" data-service="drain-unblocking" role="complementary" aria-labelledby="cta-title">
             <div class="cta-content">
               <div class="cta-icon" role="img" aria-label="Emergency contact">
                 <i class="fas fa-phone-alt" aria-hidden="true"></i>
@@ -3009,6 +3009,35 @@
           });
         });
       });
+
+      // Emergency CTA Background Image - Simple Test
+      const emergencyCard = document.querySelector('.emergency-card--cta');
+      if (emergencyCard) {
+        console.log('🔍 Emergency card found:', emergencyCard);
+        console.log('📋 Service type:', emergencyCard.dataset.service);
+        
+        // Test the specific image path
+        const imagePath = '../images/services/blocked drains/emergency-drain-unblocking.png';
+        const testImg = new Image();
+        
+        testImg.onload = function() {
+          console.log('✅ Image loaded successfully:', imagePath);
+          console.log('📐 Image dimensions:', this.naturalWidth + 'x' + this.naturalHeight);
+        };
+        
+        testImg.onerror = function() {
+          console.error('❌ Image failed to load:', imagePath);
+          console.log('🔧 Trying absolute path test...');
+        };
+        
+        testImg.src = imagePath;
+        
+        // Also log current background style
+        const computedStyle = window.getComputedStyle(emergencyCard);
+        console.log('🎨 Current background-image:', computedStyle.backgroundImage);
+      } else {
+        console.error('❌ Emergency card not found');
+      }
 
       // Weather debugging - manual test after 3 seconds
       setTimeout(() => {
