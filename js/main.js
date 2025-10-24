@@ -25,6 +25,22 @@ hamburger.addEventListener('click', () => {
   hamburger.classList.toggle('open');       // Animate into "X"
 });
 
+// Mobile Services Submenu Toggle
+const mobileServicesToggle = document.querySelector('.mobile-services-toggle');
+const mobileServicesSubmenu = document.querySelector('.mobile-services-submenu');
+
+if (mobileServicesToggle && mobileServicesSubmenu) {
+  mobileServicesToggle.addEventListener('click', (e) => {
+    e.preventDefault(); // Prevent navigation
+    
+    // Toggle submenu visibility
+    mobileServicesSubmenu.classList.toggle('show');
+    
+    // Toggle arrow rotation
+    mobileServicesToggle.classList.toggle('active');
+  });
+}
+
 // Toggle dropdown menu on click (mobile-friendly)
 document.querySelectorAll('.main-menu > li > a').forEach(link => {
   link.addEventListener('click', (e) => {
