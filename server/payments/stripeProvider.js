@@ -8,18 +8,26 @@ module.exports = {
   name: 'stripe',
 
   async createCheckout({ cart, origin, isBooking, bookingId }) {
-    const lineItems = cart.map((item) => ({
-      price_data: {
-        currency: STRIPE_CURRENCY,
-        product_data: {
-          name: item.name,
-          description: item.description || '',
-          images: ['https://via.placeholder.com/150'],
+    const lineItems = cart.map((item) => {
+      const productData = {
+        name: item.name,
+        images: ['https://via.placeholder.com/150'],
+      };
+      
+      // Only add description if it exists and is not empty
+      if (item.description && item.description.trim()) {
+        productData.description = item.description.trim();
+      }
+      
+      return {
+        price_data: {
+          currency: STRIPE_CURRENCY,
+          product_data: productData,
+          unit_amount: Math.round(item.price * 100),
         },
-        unit_amount: Math.round(item.price * 100),
-      },
-      quantity: item.quantity,
-    }));
+        quantity: item.quantity,
+      };
+    });
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],

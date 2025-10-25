@@ -168,6 +168,7 @@
   <link rel="stylesheet" href="../css/components/buttons/floating-contact-bar.css">
   <link rel="stylesheet" href="../css/service-faq-v2.css">
   <link rel="stylesheet" href="../css/service-pages.css">
+  <link rel="stylesheet" href="../css/cart-modal.css">
 </head>
 
 <body class="has-fixed-header" data-theme="light" data-service="Backup Water Systems" data-facebook="https://www.facebook.com/profile.php?id=100065157684438">
@@ -915,7 +916,12 @@
                 <div class="price-note">+ Installation from R450</div>
               </div>
               <div class="product-actions">
-                <button class="btn btn-primary buy-now" data-sku="TANK-01">
+                <button class="btn btn-primary add-to-cart-btn" 
+                        data-name="Durable Water Storage Tank"
+                        data-price="2500"
+                        data-sku="TANK-01"
+                        data-image="../images/products/placeholder.svg"
+                        data-description="High-capacity water tank for reliable storage and rainwater harvesting">
                   <i class="fas fa-shopping-cart"></i>
                   Add to Cart
                 </button>
@@ -946,7 +952,12 @@
                 <div class="price-note">+ Installation from R150</div>
               </div>
               <div class="product-actions">
-                <button class="btn btn-primary buy-now" data-sku="PUMP-01">
+                <button class="btn btn-primary add-to-cart-btn" 
+                        data-name="High-Pressure Water Pump"
+                        data-price="1200"
+                        data-sku="PUMP-01"
+                        data-image="../images/products/placeholder.svg"
+                        data-description="Reliable pump for boosting water pressure and ensuring consistent flow">
                   <i class="fas fa-shopping-cart"></i>
                   Add to Cart
                 </button>
@@ -977,7 +988,12 @@
                 <div class="price-note">+ Installation from R250</div>
               </div>
               <div class="product-actions">
-                <button class="btn btn-primary buy-now" data-sku="FILTER-01">
+                <button class="btn btn-primary add-to-cart-btn" 
+                        data-name="Advanced Water Filtration System"
+                        data-price="3500"
+                        data-sku="FILTER-01"
+                        data-image="../images/products/placeholder.svg"
+                        data-description="Professional-grade filtration system for clean and safe water">
                   <i class="fas fa-shopping-cart"></i>
                   Add to Cart
                 </button>
@@ -2967,6 +2983,42 @@
   <!-- Footer injection -->
   <div id="site-footer"></div>
 
+  <!-- Cart Modal -->
+  <div id="cartModal" class="cart-modal hidden">
+    <div class="cart-modal-content">
+      <div class="cart-header">
+        <h3>Shopping Cart</h3>
+        <button id="closeCartBtn" class="close-cart-btn" aria-label="Close cart">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="cart-body">
+        <ul id="cartItemsList" class="cart-items-list"></ul>
+        <div class="cart-total">
+          <strong>Total: R<span id="cartTotal">0.00</span></strong>
+        </div>
+      </div>
+      <div class="cart-footer">
+        <div class="checkout-actions">
+          <a href="../checkout.html" class="btn btn-primary checkout-btn">
+            <i class="fas fa-credit-card"></i>
+            Proceed to Checkout
+          </a>
+          <button id="clearCartBtn" class="btn btn-secondary">
+            <i class="fas fa-trash"></i>
+            Clear Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Cart Button -->
+  <button id="openCartBtn" class="floating-cart-btn" style="display: none;" aria-label="View cart">
+    <i class="fas fa-shopping-cart"></i>
+    <span class="cart-badge" id="cartCount">0</span>
+  </button>
+
   <!-- Scripts -->
   <script src="../js/site-init.js" defer></script>
   <script src="../js/booking-modal.js" defer></script>
@@ -3046,6 +3098,11 @@
 
   <!-- FAQ Functionality -->
   <script src="../js/service-faq-v2.js"></script>
+
+  <!-- Cart & Checkout Scripts -->
+  <script src="../js/cart-modal.js" defer></script>
+  <script src="../js/checkout.js" defer></script>
+  <script src="../js/booking-modal-loader.js"></script>
 
   <!-- JSON-LD Schema -->
   <script type="application/ld+json">

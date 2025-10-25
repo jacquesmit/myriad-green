@@ -256,16 +256,17 @@ document.addEventListener('click', (evt) => {
   const btn = evt.target.closest('.add-to-cart-btn');
   if (!btn) return;
   const productCard = btn.closest('.product-card');
-  const rawSrc = productCard?.querySelector('img')?.getAttribute('src') || 'images/placeholder.png';
+  const rawSrc = btn.dataset.image || productCard?.querySelector('img')?.getAttribute('src') || 'images/placeholder.png';
   const image = rawSrc.replace(/^\//, '');
-  const description = productCard?.querySelector('.description')?.textContent?.trim() || '';
+  const description = btn.dataset.description || productCard?.querySelector('.description')?.textContent?.trim() || '';
   const product = {
-    id: btn.dataset.id,
+    id: btn.dataset.sku || btn.dataset.id || Date.now().toString(),
     name: btn.dataset.name,
     price: parseFloat(btn.dataset.price),
     quantity: 1,
     image,
     description,
+    sku: btn.dataset.sku
   };
   addToCart(product);
 });

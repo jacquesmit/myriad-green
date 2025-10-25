@@ -171,6 +171,16 @@ app.use(express.static(path.join(__dirname, '../'), {
 const db = admin.firestore();
 
 
+// ✅ Health check endpoint for testing
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    server: 'myriad-green',
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
 // ✅ Mount checkout session route
 app.use('/create-checkout-session', createCheckoutSession);
 
