@@ -119,6 +119,7 @@
   <link rel="stylesheet" href="../css/components/buttons/floating-contact-bar.css">
   <link rel="stylesheet" href="../css/service-faq-v2.css">
   <link rel="stylesheet" href="../css/service-pages.css">
+  <link rel="stylesheet" href="../css/cart-modal.css">
 </head>
 
 <body class="has-fixed-header" data-theme="light" data-service="Irrigation">
@@ -865,7 +866,12 @@
                 <div class="price-note">+ Installation from R450</div>
               </div>
               <div class="product-actions">
-                <button class="btn btn-primary buy-now" data-sku="SMART-CTRL-01">
+                <button class="btn btn-primary add-to-cart-btn" 
+                        data-name="Smart WiFi Controller"
+                        data-price="2950"
+                        data-sku="SMART-CTRL-01"
+                        data-image="../images/products/placeholder.svg"
+                        data-description="Weather-smart irrigation controller with mobile app control">
                   <i class="fas fa-shopping-cart"></i>
                   Add to Cart
                 </button>
@@ -896,7 +902,12 @@
                 <div class="price-note">Bulk pricing available</div>
               </div>
               <div class="product-actions">
-                <button class="btn btn-primary buy-now" data-sku="ROTOR-PGP-01">
+                <button class="btn btn-primary add-to-cart-btn" 
+                        data-name="Hunter PGP Ultra Rotor"
+                        data-price="285"
+                        data-sku="ROTOR-PGP-01"
+                        data-image="../images/products/placeholder.svg"
+                        data-description="Heavy-duty rotor sprinkler with adjustable arc and radius">
                   <i class="fas fa-shopping-cart"></i>
                   Add to Cart
                 </button>
@@ -927,7 +938,12 @@
                 <div class="price-note">+ Installation from R150</div>
               </div>
               <div class="product-actions">
-                <button class="btn btn-primary buy-now" data-sku="PRESSURE-REG-01">
+                <button class="btn btn-primary add-to-cart-btn" 
+                        data-name="Pressure Regulator & Filter"
+                        data-price="695"
+                        data-sku="PRESSURE-REG-01"
+                        data-image="../images/products/placeholder.svg"
+                        data-description="Professional pressure regulation system with integrated filtration">
                   <i class="fas fa-shopping-cart"></i>
                   Add to Cart
                 </button>
@@ -3052,6 +3068,96 @@
 
   <!-- FAQ Functionality -->
   <script src="../js/service-faq-v2.js"></script>
+
+  <!-- Cart Modal -->
+  <div id="cartModal" class="cart-modal hidden">
+    <div class="cart-modal-overlay"></div>
+    <div class="cart-modal-content">
+      <div class="cart-modal-header">
+        <h3 class="cart-modal-title">
+          <i class="fas fa-shopping-cart"></i>
+          Your Cart
+        </h3>
+        <button id="closeCartBtn" class="cart-modal-close" aria-label="Close cart">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="cart-modal-body">
+        <div class="cart-items" id="cartItemsList">
+          <div class="cart-empty" id="cart-empty">
+            <i class="fas fa-shopping-cart"></i>
+            <p>Your cart is empty</p>
+            <small>Add some products to get started!</small>
+          </div>
+        </div>
+        
+        <div class="cart-summary" id="cart-summary" style="display: none;">
+          <div class="cart-summary-row">
+            <span>Subtotal:</span>
+            <span class="cart-subtotal">R0.00</span>
+          </div>
+          <div class="cart-summary-row cart-summary-total">
+            <span>Total:</span>
+            <span id="cartTotal" class="cart-total">R0.00</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="cart-modal-footer">
+        <div class="checkout-actions">
+          <button class="btn btn-secondary cart-continue-shopping">
+            Continue Shopping
+          </button>
+          <button class="btn btn-primary cart-checkout" id="cart-checkout" disabled>
+            <i class="fas fa-credit-card"></i>
+            Checkout
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Cart Button -->
+  <button id="openCartBtn" class="floating-cart-btn" style="display: none;" aria-label="View cart">
+    <i class="fas fa-shopping-cart"></i>
+    <span class="cart-badge" id="cartCount">0</span>
+  </button>
+
+  <!-- Cart & Checkout Scripts -->
+  <script src="../js/cart-modal.js" defer></script>
+  <script src="../js/checkout.js" defer></script>
+  
+  <!-- Cart Modal Debug Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Ensure cart modal close functionality
+      const cartModal = document.getElementById('cartModal');
+      const closeBtn = document.getElementById('closeCartBtn');
+      const openBtn = document.getElementById('openCartBtn');
+      
+      console.log('Cart modal elements:', { cartModal, closeBtn, openBtn });
+      
+      // Add backup close handler
+      if (closeBtn && cartModal) {
+        closeBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          cartModal.classList.add('hidden');
+          console.log('Cart closed via backup handler');
+        });
+      }
+      
+      // Add overlay click to close
+      if (cartModal) {
+        cartModal.addEventListener('click', (e) => {
+          if (e.target === cartModal) {
+            cartModal.classList.add('hidden');
+          }
+        });
+      }
+    });
+  </script>
 
   <!-- JSON-LD Schema -->
   <script type="application/ld+json">
