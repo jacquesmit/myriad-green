@@ -171,12 +171,25 @@
   --text-color: #000000;
   --badge-background-color: #e3fcec;
   --badge-text-color: #107c10;
-  --card-background-color: #f8fafc;
+  --card-background-color: #ffffff;
   --card-border-color: #e5e7eb;
   --metric-background-color: #f1f5f9;
   --metric-icon-color: #107c10;
   --metric-label-color: #6b7280;
   --metric-value-color: #374151;
+  
+  /* Enhanced Why Us Card Variables - Light Mode */
+  --why-us-card-bg: rgba(255, 255, 255, 0.95);
+  --why-us-card-border: rgba(113, 128, 150, 0.15);
+  --why-us-card-shadow: 0 4px 20px rgba(113, 128, 150, 0.08);
+  --why-us-card-shadow-hover: 0 8px 30px rgba(113, 128, 150, 0.15);
+  --why-us-icon-bg: rgba(16, 124, 16, 0.08);
+  --why-us-icon-color: #107c10;
+  --why-us-eyebrow-color: #68d391;
+  --why-us-title-color: #1a365d;
+  --why-us-description-color: #4a5568;
+  --why-us-stat-number-color: #107c10;
+  --why-us-stat-label-color: #68d391;
 }
 /*==============================
   1. Light Mode Overrides cards*/
@@ -837,7 +850,7 @@ input:focus, textarea:focus, select:focus {
   backdrop-filter: blur(10px);
 }
 
-/* Missing dark mode variables for the "Why Choose Us" section */
+/* Enhanced dark mode variables for the "Why Choose Us" section */
 [data-theme="dark"] {
   --background-color: #121212;
   --text-color: #ffffff;
@@ -846,4 +859,17 @@ input:focus, textarea:focus, select:focus {
   --icon-background-color: #2d3748;
   --icon-color: #4caf50;
   --eyebrow-color: #9ca3af;
+  
+  /* Enhanced Why Us Card Variables - Dark Mode */
+  --why-us-card-bg: rgba(31, 41, 55, 0.95);
+  --why-us-card-border: rgba(75, 85, 99, 0.3);
+  --why-us-card-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  --why-us-card-shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.4);
+  --why-us-icon-bg: rgba(76, 175, 80, 0.15);
+  --why-us-icon-color: #4caf50;
+  --why-us-eyebrow-color: #68d391;
+  --why-us-title-color: #f9fafb;
+  --why-us-description-color: #d1d5db;
+  --why-us-stat-number-color: #4caf50;
+  --why-us-stat-label-color: #68d391;
 }
