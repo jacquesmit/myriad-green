@@ -612,11 +612,26 @@ body.has-fixed-header .contact-main {
 
 /* Special Field Types */
 .select-field .form-select {
-  appearance: none;
+  cursor: pointer;
+  /* Keep native dropdown functionality while adding minimal custom styling */
   background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,9 12,15 18,9"></polyline></svg>');
   background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 16px;
+  background-position: right 2.5rem center;
+  background-size: 14px;
+  padding-right: 3rem;
+}
+
+/* Ensure dropdown options are properly styled */
+.form-select option {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  padding: 0.5rem;
+}
+
+/* Dark theme option styling */
+[data-theme="dark"] .form-select option {
+  background-color: var(--color-background);
+  color: var(--color-text);
 }
 
 .textarea-field .form-textarea {
