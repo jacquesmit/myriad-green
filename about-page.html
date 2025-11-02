@@ -1,245 +1,663 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-  <link rel="stylesheet" href="css/weather-widget.css">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Discover the story behind Myriad Green, our mission, values, and the people bringing water-smart solutions to South Africa." />
-  <meta name="keywords" content="About Myriad Green, Our Story, Irrigation Experts, Water Solutions, South Africa, Sustainable Services" />
+  <title>About Us - Myriad Green | Water-Smart Solutions South Africa</title>
+  <meta name="description" content="Discover Myriad Green's story - 14+ years of innovative irrigation, water storage, and sustainable solutions across South Africa. Meet our expert team and learn about our mission." />
+  <meta name="keywords" content="About Myriad Green, Irrigation Experts South Africa, Water Solutions Pretoria, Sustainable Water Management, Irrigation Company History" />
   <meta name="author" content="Myriad Green" />
-  <title>About Us | Myriad Green</title>
-
-  <link rel="icon" href="images/favicon.ico" />
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="About Us - Myriad Green Water Solutions" />
+  <meta property="og:description" content="14+ years of innovative water-smart solutions across South Africa. Expert irrigation, water storage, and sustainable services." />
+  <meta property="og:image" content="https://www.myriadgreen.co.za/images/about-og-image.jpg" />
+  <meta property="og:url" content="https://www.myriadgreen.co.za/about-page.html" />
+  <meta property="og:type" content="website" />
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="About Us - Myriad Green Water Solutions" />
+  <meta name="twitter:description" content="14+ years of innovative water-smart solutions across South Africa." />
+  <meta name="twitter:image" content="https://www.myriadgreen.co.za/images/about-twitter-card.jpg" />
+  
+  <!-- Preload Critical Resources -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" as="style" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
+  
+  <!-- Core Site Styles (for injection system) -->
   <link rel="stylesheet" href="css/reset.css" />
-  <link rel="stylesheet" href="css/theme-toggle.css" />
-  <link rel="stylesheet" href="css/layout.css" />
-  <link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/mobile-nav.css" />
-  <link rel="stylesheet" href="css/landinghero.css" />
-  <link rel="stylesheet" href="css/servicesection.css" />
-  <link rel="stylesheet" href="css/about-us-section.css" />
-  <link rel="stylesheet" href="css/contact-us-form.css" />
-  <link rel="stylesheet" href="css/shop-section.css" />
-  <link rel="stylesheet" href="css/testimonials-fallback.css" />
-  <link rel="stylesheet" href="css/utilities.css" />
-  <link rel="stylesheet" href="css/components/buttons/book-consultation-btn.css" />
-  <link rel="stylesheet" href="css/navbar.css" />
-  <link rel="stylesheet" href="css/components/buttons/floating-contact-bar.css" />
-  <link rel="stylesheet" href="css/booking-modal.css" />
-  <link rel="stylesheet" href="css/animations.css" />
-  <link rel="stylesheet" href="css/components/Buttons/buttons.css" />
-  <link rel="stylesheet" href="css/why-choose-us.css" />
-  <link rel="stylesheet" href="css/how-it-works.css" />
-  <link rel="stylesheet" href="css/our-key-services.css" />
-  <link rel="stylesheet" href="css/cart-modal.css" />
-  <link rel="stylesheet" href="css/components/buttons/cart-view-btn.css" />
-  <link rel="stylesheet" href="css/components/buttons/cart-checkout -btn.css" />
   <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/utilities.css" />
+  <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/main-navigation.css" />
+  <link rel="stylesheet" href="css/mobile-nav.css" />
   <link rel="stylesheet" href="css/footer.css" />
-  <link rel="stylesheet" href="css/about.css" />
-  <link rel="stylesheet" href="css/about-hero.css" />
-  <link rel="stylesheet" href="css/components/buttons/social-bar.css" />
+  <link rel="stylesheet" href="css/theme-toggle.css" />
+  <link rel="stylesheet" href="css/floating-social-bar.css" />
+  <link rel="stylesheet" href="css/booking-modal.css" />
+  <link rel="stylesheet" href="css/mobile-tweaks.css" />
+  
+  <!-- Third-party Styles -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/reset.css" />
-  <link rel="stylesheet" href="/css/theme.css" />
-  <link rel="stylesheet" href="/css/utilities.css" />
-  <link rel="stylesheet" href="/css/main.css" />
-  <link rel="stylesheet" href="/css/landinghero.css" />
-  <link rel="stylesheet" href="/css/servicesection.css" />
-  <link rel="stylesheet" href="/css/booking-modal.css" />
-  <link rel="stylesheet" href="/css/faq-section.css" />
-  <link rel="stylesheet" href="/css/testimonials-fallback.css" />
-  <link rel="stylesheet" href="/css/about-us-section.css" />
-  <link rel="stylesheet" href="/css/main-navigation.css" />
-  <link rel="stylesheet" href="/css/mobile-nav.css" />
-  <link rel="stylesheet" href="/css/footer.css" />
-  <link rel="stylesheet" href="/css/navbar.css" />
-  <link rel="stylesheet" href="/css/theme-toggle.css" />
-  <link rel="stylesheet" href="/css/components/buttons/book-now-button.css" />
-  <link rel="stylesheet" href="/css/components/buttons/social-bar.css" />
-  <link rel="stylesheet" href="/css/floating-bar-reopen-btn.css" />
-  <link rel="stylesheet" href="/css/contact-us-form.css">
-  <link rel="stylesheet" href="/css/mobile-tweaks.css" />
-  <link rel="stylesheet" href="/css/icon-strip-mobile.css" />
-  <link rel="stylesheet" href="/css/mobile-tap-feedback.css" />
-  <link rel="stylesheet" href="/css/mobile-scroll-icon-animate.css" />
-  <link rel="stylesheet" href="/css/layout.css" />
-  <link rel="stylesheet" href="/css/weather-widget.css">
-  <link rel="stylesheet" href="/css/cart-modal.css" />
-  <link rel="stylesheet" href="/css/checkout.css" />
-  <link rel="stylesheet" href="/css/shop-section.css" />
+  <!-- Page-specific Styles -->
+  <link rel="stylesheet" href="css/about-page-redesign.css" />
+  
+  <!-- Weather Widget Styles -->
+  <link rel="stylesheet" href="css/weather-widget.css" />
 </head>
 <body id="top">
-  <!-- Floating Social Bar -->
-  <div class="floating-follow-bar">
-    <a href="https://facebook.com/MyriadGreen" target="_blank"><i class="fab fa-facebook-f"></i></a>
-    <a href="https://twitter.com/green_myriad" target="_blank"><i class="fab fa-twitter"></i></a>
-    <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
-    <a href="https://www.youtube.com/channel/UCcwj7WeFJ4C9JRxNOQWKCjw" target="_blank"><i class="fab fa-youtube"></i></a>
-  </div>
-  <!-- ✅ Injected Social Bar -->
-  <div id="site-social-bar"></div>
-
-  <!-- Header -->
-  <header>
-    <div id="site-nav"></div>
-  </header>
-
-  <main id="main-content" class="about-page">
-    <!-- About Us Hero Section (copied from index for consistency) -->
-    <section class="hero" aria-label="Myriad Green Irrigation & Water Solutions">
-      <div class="hero-bg">
-        <div class="hero-overlay" style="background:
-          linear-gradient(135deg, rgba(0,123,255,0.92) 0%, rgba(0,0,0,0.92) 100%),
-          url('images/work/Rain -bird irrigation valves Before installation.png') center/cover no-repeat;
-          opacity:0.98;
-          position:absolute; inset:0; z-index:1;"></div>
-        <div class="container hero-content" style="position:relative; z-index:2;">
-          <div class="hero-text">
-            <p class="hero-section-label swing-animate" style="font-size:1.35rem; font-weight:700; letter-spacing:0.03em; color:#fff; margin-bottom:0.8rem; display:inline-block;">About</p>
-            <h1 class="hero-title" style="font-size:3.2rem; font-weight:800; line-height:1.1;">
-              <span class="hero-title-gradient">Myriad Green Irrigation, Water Storage &amp; Pumping Solutions</span>
-              <i class="fas fa-leaf" aria-hidden="true" style="color:var(--color-accent);margin-left:10px;"></i>
-            </h1>
-            <p class="lead" style="font-size:1.45rem; line-height:1.5; margin-top:1.2rem;">
-              Water-smart, mobile irrigation, storage, and pumping solutions for a sustainable South Africa.<br>
-              <span class="hero-highlight">Founded in Pretoria • 14 Years of Innovation</span>
+  <!-- Navigation Container -->
+  <header id="site-nav" class="menu-header-container"></header>
+  
+  <main class="about-container" role="main">
+    
+    <!-- Hero Section -->
+    <section class="about-hero" role="banner" aria-label="About Myriad Green Hero">
+      <div class="about-hero-bg" aria-hidden="true"></div>
+      <div class="container">
+        <div class="about-hero-content">
+          <p class="about-hero-label">About</p>
+          <h1 class="about-hero-title">
+            Myriad Green Water Solutions
+            <i class="fas fa-leaf" aria-hidden="true"></i>
+          </h1>
+          <p class="about-hero-subtitle">
+            Water-smart, sustainable irrigation, storage, and pumping solutions for a thriving South Africa.
+            <strong>Founded in Pretoria • 14+ Years of Innovation</strong>
+          </p>
+          <a href="contact.html" class="about-hero-cta" aria-label="Contact us for a free consultation">
+            <i class="fas fa-phone" aria-hidden="true"></i>
+            Get Your Free Consultation
+          </a>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Company Introduction Section -->
+    <section class="about-section animate-on-scroll" aria-label="Company Introduction">
+      <div class="container">
+        <div class="about-section-header">
+          <h2 class="about-section-title">Leading Water Solutions in South Africa</h2>
+          <p class="about-section-description">
+            For over 14 years, Myriad Green has been at the forefront of sustainable water management, 
+            delivering innovative irrigation, storage, and pumping solutions across Gauteng and beyond.
+          </p>
+        </div>
+        
+        <div class="about-cards-grid stagger-animation">
+          <div class="about-card">
+            <div class="about-card-icon">
+              <i class="fas fa-seedling" aria-hidden="true"></i>
+            </div>
+            <h3 class="about-card-title">Sustainable Solutions</h3>
+            <div class="about-card-content">
+              <p>Eco-friendly water management systems that protect our environment while maximizing efficiency and reducing costs for our clients.</p>
+              <ul class="about-card-list">
+                <li>Water conservation technology</li>
+                <li>Renewable energy integration</li>
+                <li>Sustainable drainage systems</li>
+                <li>Environmental impact reduction</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="about-card">
+            <div class="about-card-icon">
+              <i class="fas fa-tools" aria-hidden="true"></i>
+            </div>
+            <h3 class="about-card-title">Expert Installation</h3>
+            <div class="about-card-content">
+              <p>Professional installation and maintenance services backed by decades of experience and industry-leading expertise.</p>
+              <ul class="about-card-list">
+                <li>Certified technicians</li>
+                <li>Quality guarantee</li>
+                <li>Ongoing maintenance support</li>
+                <li>Emergency repair services</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="about-card">
+            <div class="about-card-icon">
+              <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
+            </div>
+            <h3 class="about-card-title">Local Expertise</h3>
+            <div class="about-card-content">
+              <p>Deep understanding of South African climate, regulations, and local conditions to deliver solutions that work perfectly in our environment.</p>
+              <ul class="about-card-list">
+                <li>Climate-adapted systems</li>
+                <li>Local supplier network</li>
+                <li>Regional compliance</li>
+                <li>Community partnerships</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Mission, Vision, Values Section -->
+    <section class="mission-vision-values animate-on-scroll" aria-label="Our Mission, Vision and Values">
+      <div class="container">
+        <div class="about-section-header">
+          <h2 class="about-section-title">Our Foundation</h2>
+          <p class="about-section-description">
+            Built on strong values and guided by a clear vision for South Africa's water-smart future.
+          </p>
+        </div>
+        
+        <div class="mvv-grid stagger-animation">
+          <div class="mvv-card">
+            <div class="mvv-icon">
+              <i class="fas fa-bullseye" aria-hidden="true"></i>
+            </div>
+            <h3 class="mvv-title">Our Mission</h3>
+            <p class="mvv-content">
+              To deliver innovative, sustainable water, irrigation, and wastewater solutions that empower 
+              communities and businesses across South Africa to thrive while protecting our precious water resources.
             </p>
-            <a href="/contact" class="btn btn-primary hero-cta">
-              <i class="fas fa-seedling"></i> Get a Free Consultation
-            </a>
+          </div>
+          
+          <div class="mvv-card">
+            <div class="mvv-icon">
+              <i class="fas fa-eye" aria-hidden="true"></i>
+            </div>
+            <h3 class="mvv-title">Our Vision</h3>
+            <p class="mvv-content">
+              To be the trusted leader in water-smart services across South Africa, driving positive change 
+              for people and the planet through cutting-edge technology and sustainable practices.
+            </p>
+          </div>
+          
+          <div class="mvv-card">
+            <div class="mvv-icon">
+              <i class="fas fa-heart" aria-hidden="true"></i>
+            </div>
+            <h3 class="mvv-title">Our Values</h3>
+            <div class="mvv-content">
+              <ul class="about-card-list">
+                <li><strong>Integrity:</strong> Transparent, honest service in every project</li>
+                <li><strong>Innovation:</strong> Pioneering new solutions for water management</li>
+                <li><strong>Sustainability:</strong> Protecting resources for future generations</li>
+                <li><strong>Community:</strong> Supporting local growth and well-being</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
     </section>
-
-    <!-- About Section from Index (Irrigation) -->
-    <section class="about-irrigation" aria-label="Irrigation Solutions" style="background: var(--color-section-bg); padding: var(--section-padding, 3rem) 0; margin-bottom: var(--section-margin, 2.5rem); border-radius: var(--radius-lg, 18px); box-shadow: var(--shadow-soft, 0 4px 16px rgba(113,128,150,0.12));">
-      <div class="container">
-        <h2 style="color: var(--color-heading); margin-bottom: 1.5rem;">Irrigation & Water Solutions</h2>
-  <p style="color: var(--color-text); margin-bottom: 1rem;">We design, install, and maintain smart irrigation systems for homes, farms, and businesses. Our solutions save water, reduce costs, and support sustainable growth.</p>
-  <div id="weather-widget" style="margin: 1.25rem 0 1.5rem 0;"></div>
-    <div class="about-irrigation-image-wrapper">
-      <img class="about-irrigation-image" src="images/irrigation/irrigation-system.jpg" alt="Irrigation System" loading="lazy" />
-    </div>
-    <div class="about-irrigation-seo-copy" style="max-width: 600px; margin: 0 auto 1.5rem auto; text-align: center; color: var(--color-text); font-size: 1.08rem;">
-      <p>Upgrade your property with advanced irrigation systems designed for South African climates.</p>
-      <p>Save water, reduce costs, and enjoy lush gardens year-round with our smart solutions.</p>
-      <p>We specialize in drip, sprinkler, and automated irrigation for homes, farms, and businesses.</p>
-      <p>Our expert team delivers reliable installation, maintenance, and leak detection services.</p>
-      <p>Harness rainwater harvesting and grey water recycling for sustainable water management.</p>
-      <p>Contact Myriad Green for eco-friendly irrigation and water solutions tailored to your needs.</p>
-    </div>
-    </div>
-        <ul style="color: var(--color-text); margin-left: 1.5rem;">
-          <li>Drip & Sprinkler Systems</li>
-          <li>Automated Scheduling</li>
-          <li>Leak Detection & Repair</li>
-          <li>Rainwater Harvesting</li>
-          <li>Grey Water Recycling</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Mission, Vision, Values -->
-    <section class="about-us-section" aria-label="Our Mission, Vision & Values">
-      <div class="container grid">
-        <div class="about-mission">
-          <h2>Our Mission</h2>
-          <p>To deliver innovative, sustainable water, irrigation, and wastewater solutions that empower communities and businesses across South Africa.</p>
-        </div>
-        <div class="about-vision">
-          <h2>Our Vision</h2>
-          <p>To be the trusted leader in water-smart services, driving positive change for people and the planet.</p>
-        </div>
-        <div class="about-values">
-          <h2>Our Values</h2>
-          <ul>
-            <li><strong>Integrity:</strong> Transparent, honest service in every project.</li>
-            <li><strong>Innovation:</strong> Pioneering new solutions for water management.</li>
-            <li><strong>Sustainability:</strong> Protecting resources for future generations.</li>
-            <li><strong>Community:</strong> Supporting local growth and well-being.</li>
-          </ul>
+    
+    <!-- Our Story Section -->
+    <section class="about-story animate-on-scroll" aria-label="Our Story">
+      <div class="story-content">
+        <h2 class="story-title">Our Story</h2>
+        <p class="story-text">
+          Founded in Pretoria over 14 years ago, Myriad Green began as a local irrigation specialist with a vision 
+          to revolutionize water management across South Africa. What started as a small team of passionate water 
+          experts has grown into a leading provider of comprehensive water-smart solutions.
+        </p>
+        <p class="story-text">
+          Today, we serve clients across Gauteng and beyond, combining decades of experience in irrigation, 
+          plumbing, leak detection, and sustainable water management. Our commitment to innovation and sustainability 
+          has made us the trusted choice for homes, farms, and businesses seeking reliable, eco-friendly water solutions.
+        </p>
+        
+        <div class="story-stats stagger-animation">
+          <div class="story-stat">
+            <span class="story-stat-number">14+</span>
+            <span class="story-stat-label">Years Experience</span>
+          </div>
+          <div class="story-stat">
+            <span class="story-stat-number">1000+</span>
+            <span class="story-stat-label">Projects Completed</span>
+          </div>
+          <div class="story-stat">
+            <span class="story-stat-number">500+</span>
+            <span class="story-stat-label">Happy Clients</span>
+          </div>
+          <div class="story-stat">
+            <span class="story-stat-number">24/7</span>
+            <span class="story-stat-label">Emergency Support</span>
+          </div>
         </div>
       </div>
     </section>
-
-    <!-- Our Story -->
-    <section class="about-story" aria-label="Our Story">
+    
+    <!-- Meet the Team Section -->
+    <section class="team-section animate-on-scroll" aria-label="Meet Our Team">
       <div class="container">
-        <h2>Our Story</h2>
-        <p>Founded in Cape Town, Myriad Green has grown from a local irrigation specialist to a nationwide provider of water-smart solutions. Our team combines decades of experience in plumbing, irrigation, leak detection, and sustainable water management. We are passionate about helping homes, farms, and businesses thrive with reliable, eco-friendly services.</p>
-      </div>
-    </section>
-
-    <!-- Meet the Team -->
-    <section class="about-team" aria-label="Meet the Team">
-      <div class="container">
-        <h2>Meet the Team</h2>
-        <div class="grid">
+        <div class="about-section-header">
+          <h2 class="about-section-title">Meet Our Expert Team</h2>
+          <p class="about-section-description">
+            Our experienced professionals are passionate about delivering exceptional water solutions 
+            and outstanding customer service.
+          </p>
+        </div>
+        
+        <div class="team-grid stagger-animation">
           <div class="team-member">
-            <img src="images/icons/leadership.png" alt="Team Leader" loading="lazy" />
-            <h3>Jane Doe</h3>
-            <p>Founder & Water Solutions Expert</p>
+            <div class="team-avatar">
+              <i class="fas fa-user-tie" aria-hidden="true"></i>
+            </div>
+            <h3 class="team-name">Jacques Mitchell</h3>
+            <p class="team-role">Founder & Water Solutions Expert</p>
+            <p class="team-bio">
+              With over 14 years in the industry, Jacques leads our team with expertise in irrigation design, 
+              water storage systems, and sustainable water management solutions.
+            </p>
           </div>
+          
           <div class="team-member">
-            <img src="images/icons/maintenance.png" alt="Maintenance Specialist" loading="lazy" />
-            <h3>John Smith</h3>
-            <p>Operations & Maintenance Lead</p>
+            <div class="team-avatar">
+              <i class="fas fa-wrench" aria-hidden="true"></i>
+            </div>
+            <h3 class="team-name">Michael van der Merwe</h3>
+            <p class="team-role">Operations & Maintenance Lead</p>
+            <p class="team-bio">
+              Michael oversees all installation and maintenance operations, ensuring every project meets 
+              our high standards of quality and reliability.
+            </p>
           </div>
+          
           <div class="team-member">
-            <img src="images/icons/competitive.png" alt="Customer Service" loading="lazy" />
-            <h3>Thandi Moyo</h3>
-            <p>Customer Service & Community Outreach</p>
+            <div class="team-avatar">
+              <i class="fas fa-user-friends" aria-hidden="true"></i>
+            </div>
+            <h3 class="team-name">Sarah Mthembu</h3>
+            <p class="team-role">Customer Service & Community Outreach</p>
+            <p class="team-bio">
+              Sarah leads our customer service initiatives and community outreach programs, ensuring 
+              exceptional support and building strong local partnerships.
+            </p>
           </div>
         </div>
       </div>
     </section>
-
-    <!-- Key Services (inject partial) -->
-    <section class="about-services" aria-label="Our Key Services">
+    
+    <!-- Services Preview Section -->
+    <section class="services-preview animate-on-scroll" aria-label="Our Services Preview">
       <div class="container">
-        <h2>Our Key Services</h2>
-        <div id="services-partial"></div>
+        <div class="about-section-header">
+          <h2 class="about-section-title">Our Core Services</h2>
+          <p class="about-section-description">
+            Comprehensive water solutions designed to meet all your irrigation, storage, and management needs.
+          </p>
+        </div>
+        
+        <div class="services-grid stagger-animation">
+          <div class="service-preview-card">
+            <div class="service-preview-icon">
+              <i class="fas fa-tint" aria-hidden="true"></i>
+            </div>
+            <h3 class="service-preview-title">Irrigation Systems</h3>
+            <p class="service-preview-description">
+              Smart drip and sprinkler systems with automated scheduling for maximum water efficiency.
+            </p>
+          </div>
+          
+          <div class="service-preview-card">
+            <div class="service-preview-icon">
+              <i class="fas fa-database" aria-hidden="true"></i>
+            </div>
+            <h3 class="service-preview-title">Water Storage</h3>
+            <p class="service-preview-description">
+              Professional tank installation and rainwater harvesting systems for reliable water supply.
+            </p>
+          </div>
+          
+          <div class="service-preview-card">
+            <div class="service-preview-icon">
+              <i class="fas fa-search" aria-hidden="true"></i>
+            </div>
+            <h3 class="service-preview-title">Leak Detection</h3>
+            <p class="service-preview-description">
+              Advanced leak detection technology to prevent water waste and property damage.
+            </p>
+          </div>
+          
+          <div class="service-preview-card">
+            <div class="service-preview-icon">
+              <i class="fas fa-recycle" aria-hidden="true"></i>
+            </div>
+            <h3 class="service-preview-title">Grey Water Systems</h3>
+            <p class="service-preview-description">
+              Sustainable water recycling solutions for gardens and irrigation systems.
+            </p>
+          </div>
+          
+          <div class="service-preview-card">
+            <div class="service-preview-icon">
+              <i class="fas fa-tools" aria-hidden="true"></i>
+            </div>
+            <h3 class="service-preview-title">Maintenance & Repair</h3>
+            <p class="service-preview-description">
+              Comprehensive maintenance programs and emergency repair services.
+            </p>
+          </div>
+          
+          <div class="service-preview-card">
+            <div class="service-preview-icon">
+              <i class="fas fa-phone-alt" aria-hidden="true"></i>
+            </div>
+            <h3 class="service-preview-title">Emergency Services</h3>
+            <p class="service-preview-description">
+              24/7 emergency response for urgent water system issues and repairs.
+            </p>
+          </div>
+        </div>
+        
+        <div class="services-preview-cta">
+          <a href="services.html" class="contact-cta-button" aria-label="View all our services">
+            <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            View All Services
+          </a>
+        </div>
       </div>
     </section>
-
-    <!-- Testimonials (inject partial) -->
-    <section class="about-testimonials" aria-label="Testimonials">
+    
+    <!-- Weather Widget Section -->
+    <section class="about-section animate-on-scroll" aria-label="Current Weather Information">
       <div class="container">
-        <h2>What Our Clients Say</h2>
-        <div id="testimonials-partial"></div>
+        <div class="about-section-header">
+          <h2 class="about-section-title">Weather-Smart Solutions</h2>
+          <p class="about-section-description">
+            Our irrigation systems adapt to local weather conditions for optimal water efficiency.
+          </p>
+        </div>
+        
+        <div id="weather-widget" class="weather-widget-container loading-skeleton skeleton-card">
+          <div class="skeleton-text"></div>
+          <div class="skeleton-title"></div>
+          <div class="skeleton-text"></div>
+        </div>
       </div>
     </section>
-
-    <!-- Contact CTA -->
-    <section class="about-contact-cta" aria-label="Contact Us" style="background: var(--color-bg-alt); padding: var(--section-padding, 3rem) 0; margin-bottom: var(--section-margin, 2.5rem); border-radius: var(--radius-lg, 18px); box-shadow: var(--shadow-soft, 0 4px 16px rgba(113,128,150,0.12));">
+    
+    <!-- Testimonials Section (Injected Content) -->
+    <section class="about-section animate-on-scroll" aria-label="Client Testimonials">
       <div class="container">
-        <h2>Ready to go water-smart?</h2>
-        <p>Contact us for a free consultation or to learn more about our services.</p>
-  <a href="/contact" class="btn btn-primary">Contact Us</a>
+        <div class="about-section-header">
+          <h2 class="about-section-title">What Our Clients Say</h2>
+          <p class="about-section-description">
+            Hear from satisfied customers who have transformed their properties with our water solutions.
+          </p>
+        </div>
+        
+        <div id="testimonials-partial" class="loading-skeleton">
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+        </div>
       </div>
     </section>
-
-    <!-- Google Map Embed -->
-    <section class="about-map" aria-label="Our Location" style="padding: var(--section-padding, 3rem) 0;">
-      <div class="container" style="text-align:center;">
-        <h2 style="color: var(--color-heading); margin-bottom: 1.5rem;">Find Us</h2>
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3303.927234234234!2d18.423300315233!3d-33.9188619806526!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1dcc5d1e1e1e1e1e%3A0x123456789abcdef!2s123%20Green%20Lane%2C%20Cape%20Town!5e0!3m2!1sen!2sza!4v1620000000000!5m2!1sen!2sza" width="100%" height="350" style="border:0; border-radius:12px; box-shadow:0 2px 16px rgba(0,0,0,0.07);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    
+    <!-- Contact CTA Section -->
+    <section class="contact-cta animate-on-scroll" aria-label="Contact Call to Action">
+      <div class="contact-cta-content">
+        <h2 class="contact-cta-title">Ready to Go Water-Smart?</h2>
+        <p class="contact-cta-description">
+          Join hundreds of satisfied customers who have transformed their properties with our 
+          innovative water solutions. Get your free consultation today!
+        </p>
+        <a href="contact.html" class="contact-cta-button" aria-label="Contact us for consultation">
+          <i class="fas fa-phone" aria-hidden="true"></i>
+          Get Free Consultation
+        </a>
       </div>
     </section>
+    
+    <!-- Map Section -->
+    <section class="map-section animate-on-scroll" aria-label="Our Location">
+      <div class="container">
+        <div class="about-section-header">
+          <h2 class="about-section-title">Find Us in Pretoria</h2>
+          <p class="about-section-description">
+            Visit our offices or contact us to schedule an on-site consultation anywhere in Gauteng.
+          </p>
+        </div>
+        
+        <div class="map-container">
+          <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3303.927234234234!2d28.188200000000000!3d-25.746110000000000!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e95bcb1f4f4f4f4%3A0x123456789abcdef!2sPretoria%2C%20South%20Africa!5e0!3m2!1sen!2sza!4v1620000000000!5m2!1sen!2sza"
+            class="map-iframe"
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Myriad Green Location in Pretoria"
+            aria-label="Interactive map showing Myriad Green location in Pretoria">
+          </iframe>
+        </div>
+      </div>
+    </section>
+    
   </main>
-
-  <div id="booking-modal-container"></div>
+  
+  <!-- Footer Container -->
   <footer id="site-footer"></footer>
-  <a href="#" class="scroll-to-top" aria-label="Back to top"><i class="fas fa-arrow-up"></i></a>
-
-  <script src="js/site-init.js" type="module"></script>
+  
+  <!-- Floating Social Bar Container -->
+  <div id="site-social-bar"></div>
+  
+  <!-- Scroll to Top Button -->
+  <a href="#top" class="scroll-to-top" aria-label="Back to top">
+    <i class="fas fa-arrow-up" aria-hidden="true"></i>
+  </a>
+  
+  <!-- Core Scripts -->
+  <script src="js/site-init.js" defer></script>
+  <script src="js/theme-toggle.js" defer></script>
   <script src="js/weather-widget.js" defer></script>
   
+  <!-- Page-specific JavaScript -->
+  <script>
+    // =============================================================================
+    // ABOUT PAGE - ENHANCED FUNCTIONALITY
+    // =============================================================================
+    
+    class AboutPageManager {
+      constructor() {
+        this.init();
+      }
+      
+      init() {
+        this.setupScrollAnimations();
+        this.setupLazyLoading();
+        this.loadPartialContent();
+        this.setupSmoothScrolling();
+      }
+      
+      // =============================================================================
+      // SCROLL ANIMATIONS
+      // =============================================================================
+      setupScrollAnimations() {
+        // Create intersection observer for scroll animations
+        const observerOptions = {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px'
+        };
+        
+        this.observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('animated');
+              // Unobserve after animation to improve performance
+              this.observer.unobserve(entry.target);
+            }
+          });
+        }, observerOptions);
+        
+        // Observe all elements with animation classes
+        document.querySelectorAll('.animate-on-scroll, .stagger-animation').forEach(el => {
+          this.observer.observe(el);
+        });
+      }
+      
+      // =============================================================================
+      // LAZY LOADING
+      // =============================================================================
+      setupLazyLoading() {
+        // Lazy load images
+        const imageObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              if (img.dataset.src) {
+                img.src = img.dataset.src;
+                img.classList.remove('loading-skeleton');
+                imageObserver.unobserve(img);
+              }
+            }
+          });
+        });
+        
+        document.querySelectorAll('img[data-src]').forEach(img => {
+          imageObserver.observe(img);
+        });
+      }
+      
+      // =============================================================================
+      // PARTIAL CONTENT LOADING
+      // =============================================================================
+      async loadPartialContent() {
+        // Load testimonials partial
+        try {
+          const testimonialsContainer = document.getElementById('testimonials-partial');
+          if (testimonialsContainer) {
+            // Simulate loading testimonials (replace with actual implementation)
+            await this.simulateLoading(1000);
+            testimonialsContainer.innerHTML = this.getTestimonialsHTML();
+            testimonialsContainer.classList.remove('loading-skeleton');
+          }
+        } catch (error) {
+          console.warn('Failed to load testimonials:', error);
+        }
+      }
+      
+      getTestimonialsHTML() {
+        return `
+          <div class="testimonials-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-6);">
+            <div class="testimonial-card" style="background: var(--bg-primary); padding: var(--space-6); border-radius: var(--border-radius-xl); box-shadow: var(--shadow-md);">
+              <div style="display: flex; align-items: center; margin-bottom: var(--space-4);">
+                <div style="width: 50px; height: 50px; background: var(--primary-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin-right: var(--space-3);">
+                  <i class="fas fa-user"></i>
+                </div>
+                <div>
+                  <h4 style="margin: 0; color: var(--text-primary);">John Smith</h4>
+                  <p style="margin: 0; color: var(--text-secondary); font-size: var(--text-sm);">Pretoria Homeowner</p>
+                </div>
+              </div>
+              <p style="color: var(--text-secondary); font-style: italic; line-height: 1.6;">
+                "Myriad Green transformed our garden irrigation system. Professional service, 
+                great results, and our water bill has decreased significantly!"
+              </p>
+              <div style="color: var(--primary-green); margin-top: var(--space-3);">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+            </div>
+            
+            <div class="testimonial-card" style="background: var(--bg-primary); padding: var(--space-6); border-radius: var(--border-radius-xl); box-shadow: var(--shadow-md);">
+              <div style="display: flex; align-items: center; margin-bottom: var(--space-4);">
+                <div style="width: 50px; height: 50px; background: var(--accent-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin-right: var(--space-3);">
+                  <i class="fas fa-user"></i>
+                </div>
+                <div>
+                  <h4 style="margin: 0; color: var(--text-primary);">Maria Gonzalez</h4>
+                  <p style="margin: 0; color: var(--text-secondary); font-size: var(--text-sm);">Farm Owner</p>
+                </div>
+              </div>
+              <p style="color: var(--text-secondary); font-style: italic; line-height: 1.6;">
+                "Excellent borehole installation and irrigation setup. The team was professional, 
+                efficient, and delivered exactly what they promised."
+              </p>
+              <div style="color: var(--primary-green); margin-top: var(--space-3);">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+            </div>
+            
+            <div class="testimonial-card" style="background: var(--bg-primary); padding: var(--space-6); border-radius: var(--border-radius-xl); box-shadow: var(--shadow-md);">
+              <div style="display: flex; align-items: center; margin-bottom: var(--space-4);">
+                <div style="width: 50px; height: 50px; background: var(--accent-purple); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin-right: var(--space-3);">
+                  <i class="fas fa-user"></i>
+                </div>
+                <div>
+                  <h4 style="margin: 0; color: var(--text-primary);">David van Wyk</h4>
+                  <p style="margin: 0; color: var(--text-secondary); font-size: var(--text-sm);">Business Owner</p>
+                </div>
+              </div>
+              <p style="color: var(--text-secondary); font-style: italic; line-height: 1.6;">
+                "Outstanding leak detection service saved us thousands in water bills. 
+                Highly recommend their professional and reliable service."
+              </p>
+              <div style="color: var(--primary-green); margin-top: var(--space-3);">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      
+      // =============================================================================
+      // SMOOTH SCROLLING
+      // =============================================================================
+      setupSmoothScrolling() {
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+          anchor.addEventListener('click', (e) => {
+            const target = document.querySelector(anchor.getAttribute('href'));
+            if (target) {
+              e.preventDefault();
+              target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+              });
+            }
+          });
+        });
+      }
+      
+      // =============================================================================
+      // UTILITY FUNCTIONS
+      // =============================================================================
+      simulateLoading(delay) {
+        return new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+    
+    // =============================================================================
+    // INITIALIZATION
+    // =============================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+      new AboutPageManager();
+    });
+    
+    // =============================================================================
+    // THEME INTEGRATION
+    // =============================================================================
+    document.addEventListener('themeChanged', (event) => {
+      // Handle theme changes if needed
+      console.log('Theme changed to:', event.detail.theme);
+    });
+  </script>
+  
+  <!-- Structured Data (JSON-LD) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -247,22 +665,44 @@
     "name": "Myriad Green",
     "url": "https://www.myriadgreen.co.za",
     "logo": "https://www.myriadgreen.co.za/images/logo.png",
-    "description": "Specialists in water, irrigation, wastewater, and leak detection solutions across South Africa.",
+    "description": "Leading provider of irrigation, water storage, and sustainable water management solutions across South Africa. 14+ years of expertise in water-smart services.",
+    "foundingDate": "2010",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "123 Green Lane",
-      "addressLocality": "Cape Town",
-      "addressRegion": "Western Cape",
-      "postalCode": "8001",
+      "streetAddress": "Pretoria",
+      "addressLocality": "Pretoria",
+      "addressRegion": "Gauteng",
+      "postalCode": "0001",
       "addressCountry": "ZA"
     },
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+27-123-456-7890",
-      "contactType": "Customer Service"
-    }
+      "telephone": "+27-81-721-6701",
+      "contactType": "Customer Service",
+      "availableLanguage": "English"
+    },
+    "serviceArea": {
+      "@type": "GeoCircle",
+      "geoMidpoint": {
+        "@type": "GeoCoordinates",
+        "latitude": -25.7461,
+        "longitude": 28.1881
+      },
+      "geoRadius": "100000"
+    },
+    "services": [
+      "Irrigation Systems",
+      "Water Storage Solutions",
+      "Borehole Installation",
+      "Leak Detection",
+      "Grey Water Systems",
+      "Rainwater Harvesting",
+      "Emergency Water Services"
+    ]
   }
   </script>
-  <script src="js/booking-modal-loader.js" defer></script>
+  
+  <!-- Booking Modal Integration -->
+  <script type="module" src="js/booking-modal.js"></script>
 </body>
 </html>
