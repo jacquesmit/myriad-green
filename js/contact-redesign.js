@@ -199,16 +199,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const label = document.querySelector(`label[for="${inputId}"]`);
     
     if (!label || !label.classList.contains('floating-label')) {
-      console.warn(`No floating label found for input: ${inputId}`);
       return;
     }
     
     const hasValue = input.value.trim() !== '' || input.type === 'select-one' && input.value !== '';
     const isFocused = document.activeElement === input;
     const isAutofilled = input.matches(':-webkit-autofill') || input.matches(':autofill');
-    
-    // Debug logging - ensure we have the right association
-    console.log(`Field ${inputId}: Value="${input.value}" | Label="${label.textContent.trim()}" | Should float: ${hasValue || isFocused || isAutofilled}`);
     
     if (hasValue || isFocused || isAutofilled) {
       label.classList.add('active');

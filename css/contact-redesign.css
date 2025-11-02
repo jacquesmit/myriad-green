@@ -69,6 +69,11 @@
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
 }
 
+/* Account for fixed header if present */
+body.has-fixed-header .contact-main {
+  margin-top: 90px;
+}
+
 /* Dark mode main background */
 [data-theme="dark"] .contact-main {
   background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
@@ -391,6 +396,8 @@
 .contact-form-section {
   padding: 4rem 1rem;
   background: white;
+  position: relative;
+  z-index: 1;
 }
 
 .form-container {
@@ -456,6 +463,10 @@
   margin-bottom: 1.5rem;
 }
 
+.input-row:first-child {
+  margin-top: 1.5rem;
+}
+
 .input-row:last-child {
   margin-bottom: 0;
 }
@@ -465,6 +476,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  z-index: 1;
 }
 
 .form-input,
@@ -508,13 +520,19 @@
   transform-origin: left center;
   background: var(--background);
   padding: 0 0.25rem;
+  z-index: 2;
 }
 
 /* Floating label states - handled by JavaScript for better control */
 .floating-label.active {
-  transform: translateY(-2.5rem) translateX(-0.5rem) scale(0.85);
+  transform: translateY(-1.8rem) translateX(-0.5rem) scale(0.85);
   color: var(--primary-green);
   font-weight: 500;
+}
+
+/* Special handling for first input field to prevent overlap with group title */
+.form-group .input-row:first-child .floating-label.active {
+  transform: translateY(-1.4rem) translateX(-0.5rem) scale(0.85);
 }
 
 /* Handle autofill specifically */
