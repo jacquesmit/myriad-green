@@ -74,6 +74,8 @@
   background: var(--color-background);
   min-height: 100vh;
   padding: var(--cookie-space-lg) var(--cookie-space-sm);
+  position: relative;
+  z-index: 1;
 }
 
 .cookie-notice-container {
@@ -88,7 +90,7 @@
    =================================== */
 
 .cookie-notice-header {
-  background: var(--color-surface);
+  background: var(--color-card-bg, rgba(255, 255, 255, 0.85));
   border-radius: var(--cookie-radius-xl);
   padding: var(--cookie-space-xl);
   box-shadow: var(--cookie-shadow-md);
@@ -159,7 +161,7 @@
 
 .page-subtitle {
   font-size: var(--cookie-text-base);
-  color: var(--color-text-secondary);
+  color: var(--color-subheading);
   text-align: center;
   margin: var(--cookie-space-sm) 0 0 0;
   opacity: 0.8;
@@ -170,17 +172,20 @@
    =================================== */
 
 .cookie-content-grid {
-  display: grid;
-  gap: var(--cookie-space-lg);
+  display: block; /* Simplified layout for better compatibility */
+  margin-bottom: var(--cookie-space-lg);
 }
 
 .cookie-section {
-  background: var(--color-surface);
+  background: var(--color-card-bg, rgba(255, 255, 255, 0.85));
   border-radius: var(--cookie-radius-lg);
   padding: var(--cookie-space-xl);
   box-shadow: var(--cookie-shadow-sm);
   transition: all var(--cookie-transition-normal);
   position: relative;
+  margin-bottom: var(--cookie-space-lg);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .cookie-section:hover {
@@ -238,7 +243,7 @@
 }
 
 .cookie-category {
-  background: var(--color-background);
+  background: var(--color-bg-alt, #f1f5f9);
   border: 2px solid var(--color-border);
   border-radius: var(--cookie-radius-md);
   padding: var(--cookie-space-lg);
@@ -296,7 +301,7 @@
 }
 
 .cookie-category-description {
-  color: var(--color-text-secondary);
+  color: var(--color-subheading);
   font-size: var(--cookie-text-sm);
   line-height: 1.6;
 }
@@ -306,7 +311,7 @@
    =================================== */
 
 .cookie-actions {
-  background: var(--color-surface);
+  background: var(--color-card-bg, rgba(255, 255, 255, 0.85));
   border-radius: var(--cookie-radius-lg);
   padding: var(--cookie-space-xl);
   box-shadow: var(--cookie-shadow-sm);
@@ -359,7 +364,7 @@
 
 .cookie-actions-note {
   font-size: var(--cookie-text-xs);
-  color: var(--color-text-secondary);
+  color: var(--color-subheading);
   opacity: 0.8;
 }
 
