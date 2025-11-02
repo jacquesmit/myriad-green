@@ -4,46 +4,77 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>Checkout – Myriad Green</title>
-  <link rel="stylesheet" href="css/reset.css" />
-  <link rel="stylesheet" href="css/theme.css" />
-  <link rel="stylesheet" href="css/checkout.css">
-  <link rel="stylesheet" href="css/checkout-form.css">
-  <link rel="stylesheet" href="css/components/buttons/terms-conditions-btn.css">
+  <!-- External Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  
   <!-- Font Awesome CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="/css/reset.css" />
-  <link rel="stylesheet" href="/css/theme.css" />
-  <link rel="stylesheet" href="/css/utilities.css" />
-  <link rel="stylesheet" href="/css/main.css" />
-  <link rel="stylesheet" href="/css/landinghero.css" />
-  <link rel="stylesheet" href="/css/servicesection.css" />
-  <link rel="stylesheet" href="/css/booking-modal.css" />
-  <link rel="stylesheet" href="/css/faq-section.css" />
-  <link rel="stylesheet" href="/css/testimonials-fallback.css" />
-  <link rel="stylesheet" href="/css/about-us-section.css" />
-  <link rel="stylesheet" href="/css/main-navigation.css" />
-  <link rel="stylesheet" href="/css/mobile-nav.css" />
-  <link rel="stylesheet" href="/css/footer.css" />
-  <link rel="stylesheet" href="/css/navbar.css" />
-  <link rel="stylesheet" href="/css/theme-toggle.css" />
-  <link rel="stylesheet" href="/css/components/buttons/book-now-button.css" />
-  <link rel="stylesheet" href="/css/components/buttons/social-bar.css" />
-  <link rel="stylesheet" href="/css/floating-bar-reopen-btn.css" />
-  <link rel="stylesheet" href="/css/contact-us-form.css">
-  <link rel="stylesheet" href="/css/mobile-tweaks.css" />
-  <link rel="stylesheet" href="/css/icon-strip-mobile.css" />
-  <link rel="stylesheet" href="/css/mobile-tap-feedback.css" />
-  <link rel="stylesheet" href="/css/mobile-scroll-icon-animate.css" />
-  <link rel="stylesheet" href="/css/layout.css" />
-  <link rel="stylesheet" href="/css/weather-widget.css">
-  <link rel="stylesheet" href="/css/cart-modal.css" />
-  <link rel="stylesheet" href="/css/checkout.css" />
-  <link rel="stylesheet" href="/css/shop-section.css" />
+  <!-- Core CSS -->
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/utilities.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  
+  <!-- Navigation & UI Components -->
+  <link rel="stylesheet" href="css/main-navigation.css" />
+  <link rel="stylesheet" href="css/mobile-nav.css" />
+  <link rel="stylesheet" href="css/navbar.css" />
+  <link rel="stylesheet" href="css/footer.css" />
+  <link rel="stylesheet" href="css/theme-toggle.css" />
+  
+  <!-- Checkout Specific -->
+  <link rel="stylesheet" href="css/checkout.css">
+  <link rel="stylesheet" href="css/checkout-form.css">
+  <link rel="stylesheet" href="css/cart-modal.css" />
+  
+  <!-- Mobile Enhancements -->
+  <link rel="stylesheet" href="css/mobile-tweaks.css" />
+  <link rel="stylesheet" href="css/mobile-tap-feedback.css" />
+  
+  <!-- Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'GA_MEASUREMENT_ID');
+  </script>
 </head>
 <body>
+  <!-- Navigation Header -->
+  <div class="menu-header-container">
+    <nav>
+      <!-- Logo -->
+      <div class="header-logo">
+        <a href="/">
+          <img src="images/work/Myriadgreen_irrigation_logo-removebg-preview.png" alt="Myriad Green Irrigation Logo">
+        </a>
+      </div>
+
+      <!-- Mobile Hamburger Icon -->
+      <div class="hamburger" aria-label="Menu" role="button">
+        <span></span><span></span><span></span>
+      </div>
+
+      <!-- Theme Toggle -->
+      <div class="theme-toggle-wrapper">
+        <div id="theme-toggle" class="theme-toggle-btn" role="button" aria-label="Switch theme">
+            <i class="fas theme-icon fa-moon"></i>
+        </div>
+      </div>
+
+      <!-- Main Menu -->
+      <ul class="main-menu">
+        <li><a href="/">Home</a></li>
+        <li><a href="/services/irrigation.html">Services</a></li>
+        <li><a href="/shop/">Shop</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+
   <main class="checkout-container modern-layout">
     <h1 class="checkout-title">Checkout</h1>
     <div class="checkout-sidebyside">
@@ -67,6 +98,8 @@
           <label for="clientPhone">Phone Number</label>
           <input type="tel" id="clientPhone" name="clientPhone" required placeholder="021 000 0000" autocomplete="tel" />
         </fieldset>
+        <input type="hidden" id="csrfToken" name="csrfToken" value="">
+        <input type="hidden" id="sessionId" name="sessionId" value="">
         <div class="payment-actions">
             <button id="submitOrderBtn" class="submit-order-btn" type="submit">Submit Order</button>
         </div>
@@ -90,7 +123,7 @@
               <li><i class="fas fa-money-bill-wave payment-icon"></i><strong>Cash</strong></li>
               <li><i class="fas fa-credit-card payment-icon"></i><strong>Card</strong></li>
               <li><i class="fas fa-university payment-icon"></i><strong>Finance</strong></li>
-              <li><span class="payment-icon" style="font-weight:bold; font-size:1.2em;">X</span><strong>XRP</strong></li>
+              <li><span class="payment-icon xrp-payment-icon">X</span><strong>XRP</strong></li>
               <li><i class="fab fa-ethereum payment-icon"></i><strong>ETH</strong></li>
               <li><i class="fab fa-bitcoin payment-icon"></i><strong>BTC</strong></li>
             </ul>
@@ -104,7 +137,7 @@
             <p>Estimated delivery: 2-5 business days. Pickup available at our Cape Town location.</p>
           </div>
           <div class="trust-badge">
-            <img src="images/icons/trust.png" alt="Trusted Service" style="max-width:80px; height:auto; margin-top:0.5rem;">
+            <img src="images/icons/trust.png" alt="Trusted Service" class="trust-badge-icon">
             <span>Trusted by 1000+ customers</span>
           </div>
           <div class="checkout-testimonial">
@@ -118,7 +151,45 @@
       </form>
     </div>
   </main>
+
+  <!-- Footer Section -->
+  <footer class="main-footer">
+    <div class="footer-container">
+      <h2 class="footer-title">Infinite Green Service Solutions</h2>
+      <div class="footer-columns">
+        <ul class="footer-menu">
+          <li class="footer-headings">Quick Links</li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/services/irrigation.html">Services</a></li>
+          <li><a href="/about.html">About Us</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="/shop/">Shop</a></li>
+          <li><a href="/privacy-policy.html">Privacy Policy</a></li>
+          <li><a href="/terms-and-conditions.html">Terms & Conditions</a></li>
+        </ul>
+        <ul class="footer-menu">
+          <li class="footer-headings">Services</li>
+          <li><a href="/services/backup-water-systems.html">Backup Water Systems</a></li>
+          <li><a href="/services/irrigation.html">Irrigation Systems</a></li>
+          <li><a href="/services/leak-detection.html">Leak Detection</a></li>
+          <li><a href="/services/drain-unblocking.html">Drain Unblocking</a></li>
+        </ul>
+        <ul class="footer-menu">
+          <li class="footer-headings">Contact Info</li>
+          <li><a href="tel:+27214470000">Call: 021 447 0000</a></li>
+          <li><a href="mailto:info@myriadgreen.co.za">Email: info@myriadgreen.co.za</a></li>
+          <li>Cape Town, South Africa</li>
+        </ul>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Myriad Green. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
   <script src="js/checkout.js" defer></script>
   <script src="js/purchase-update-rotate.js" defer></script>
+  <script src="js/theme-toggle.js" defer></script>
+  <script src="js/mobile-nav.js" defer></script>
 </body>
 </html>
