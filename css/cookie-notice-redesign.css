@@ -1,0 +1,511 @@
+/**
+ * MYRIAD GREEN - COOKIE NOTICE PAGE REDESIGN
+ * Modern, responsive, and accessible legal document styling
+ * Preserves all existing functionality while enhancing UX
+ */
+
+/* ===================================
+   CSS CUSTOM PROPERTIES & VARIABLES
+   =================================== */
+
+:root {
+  /* Cookie Notice Specific Colors */
+  --cookie-primary: #176a3a;
+  --cookie-primary-light: #1e7d42;
+  --cookie-secondary: #b6ffb0;
+  --cookie-accent: #f6fff8;
+  
+  /* Enhanced Spacing System */
+  --cookie-space-xs: 0.5rem;
+  --cookie-space-sm: 1rem;
+  --cookie-space-md: 1.5rem;
+  --cookie-space-lg: 2rem;
+  --cookie-space-xl: 3rem;
+  --cookie-space-xxl: 4rem;
+  
+  /* Typography Scale */
+  --cookie-text-xs: 0.875rem;
+  --cookie-text-sm: 1rem;
+  --cookie-text-base: 1.125rem;
+  --cookie-text-lg: 1.25rem;
+  --cookie-text-xl: 1.5rem;
+  --cookie-text-2xl: 2rem;
+  --cookie-text-3xl: 2.5rem;
+  
+  /* Border Radius System */
+  --cookie-radius-sm: 6px;
+  --cookie-radius-md: 12px;
+  --cookie-radius-lg: 16px;
+  --cookie-radius-xl: 20px;
+  
+  /* Shadow System */
+  --cookie-shadow-sm: 0 2px 8px rgba(23, 106, 58, 0.08);
+  --cookie-shadow-md: 0 4px 16px rgba(23, 106, 58, 0.12);
+  --cookie-shadow-lg: 0 8px 32px rgba(23, 106, 58, 0.16);
+  --cookie-shadow-xl: 0 12px 48px rgba(23, 106, 58, 0.20);
+  
+  /* Animation Timing */
+  --cookie-transition-fast: 0.2s ease;
+  --cookie-transition-normal: 0.3s ease;
+  --cookie-transition-slow: 0.5s ease;
+}
+
+/* Dark Theme Variables */
+[data-theme="dark"] {
+  --cookie-primary: #b6ffb0;
+  --cookie-primary-light: #c9ffc2;
+  --cookie-secondary: #176a3a;
+  --cookie-accent: #0f1419;
+  
+  --cookie-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --cookie-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --cookie-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --cookie-shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.6);
+}
+
+/* ===================================
+   BASE LAYOUT & STRUCTURE
+   =================================== */
+
+.cookie-notice-page {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.6;
+  color: var(--color-text);
+  background: var(--color-background);
+  min-height: 100vh;
+  padding: var(--cookie-space-lg) var(--cookie-space-sm);
+}
+
+.cookie-notice-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  gap: var(--cookie-space-lg);
+}
+
+/* ===================================
+   HEADER SECTION
+   =================================== */
+
+.cookie-notice-header {
+  background: var(--color-surface);
+  border-radius: var(--cookie-radius-xl);
+  padding: var(--cookie-space-xl);
+  box-shadow: var(--cookie-shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle background pattern */
+.cookie-notice-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(45deg, var(--cookie-primary), transparent);
+  opacity: 0.05;
+  border-radius: 50%;
+  transform: translate(50%, -50%);
+}
+
+.header-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--cookie-space-lg);
+  gap: var(--cookie-space-md);
+}
+
+.back-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, var(--cookie-accent), var(--cookie-primary));
+  color: var(--cookie-primary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all var(--cookie-transition-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--cookie-shadow-sm);
+}
+
+.back-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--cookie-shadow-md);
+}
+
+.back-button:active {
+  transform: translateY(0);
+}
+
+.header-logo {
+  height: 50px;
+  width: auto;
+  filter: drop-shadow(var(--cookie-shadow-sm));
+}
+
+.page-title {
+  font-size: var(--cookie-text-3xl);
+  font-weight: 700;
+  color: var(--color-heading);
+  margin: 0;
+  text-align: center;
+}
+
+.page-subtitle {
+  font-size: var(--cookie-text-base);
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: var(--cookie-space-sm) 0 0 0;
+  opacity: 0.8;
+}
+
+/* ===================================
+   MAIN CONTENT AREA
+   =================================== */
+
+.cookie-content-grid {
+  display: grid;
+  gap: var(--cookie-space-lg);
+}
+
+.cookie-section {
+  background: var(--color-surface);
+  border-radius: var(--cookie-radius-lg);
+  padding: var(--cookie-space-xl);
+  box-shadow: var(--cookie-shadow-sm);
+  transition: all var(--cookie-transition-normal);
+  position: relative;
+}
+
+.cookie-section:hover {
+  box-shadow: var(--cookie-shadow-md);
+  transform: translateY(-2px);
+}
+
+.cookie-section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--cookie-space-md);
+  margin-bottom: var(--cookie-space-lg);
+}
+
+.cookie-section-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--cookie-radius-md);
+  background: linear-gradient(135deg, var(--cookie-primary), var(--cookie-primary-light));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: var(--cookie-shadow-sm);
+}
+
+.cookie-section-title {
+  font-size: var(--cookie-text-xl);
+  font-weight: 600;
+  color: var(--color-heading);
+  margin: 0;
+}
+
+.cookie-section-content {
+  color: var(--color-text);
+  line-height: 1.7;
+}
+
+.cookie-section-content p {
+  margin-bottom: var(--cookie-space-md);
+}
+
+.cookie-section-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* ===================================
+   COOKIE CATEGORIES STYLING
+   =================================== */
+
+.cookie-categories {
+  display: grid;
+  gap: var(--cookie-space-md);
+}
+
+.cookie-category {
+  background: var(--color-background);
+  border: 2px solid var(--color-border);
+  border-radius: var(--cookie-radius-md);
+  padding: var(--cookie-space-lg);
+  transition: all var(--cookie-transition-normal);
+}
+
+.cookie-category:hover {
+  border-color: var(--cookie-primary);
+  box-shadow: var(--cookie-shadow-sm);
+}
+
+.cookie-category-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--cookie-space-md);
+}
+
+.cookie-category-title {
+  font-size: var(--cookie-text-lg);
+  font-weight: 600;
+  color: var(--color-heading);
+  margin: 0;
+}
+
+.cookie-toggle {
+  position: relative;
+  width: 60px;
+  height: 30px;
+  background: var(--color-border);
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all var(--cookie-transition-normal);
+}
+
+.cookie-toggle::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  transition: all var(--cookie-transition-normal);
+  box-shadow: var(--cookie-shadow-sm);
+}
+
+.cookie-toggle.active {
+  background: var(--cookie-primary);
+}
+
+.cookie-toggle.active::before {
+  transform: translateX(30px);
+}
+
+.cookie-category-description {
+  color: var(--color-text-secondary);
+  font-size: var(--cookie-text-sm);
+  line-height: 1.6;
+}
+
+/* ===================================
+   ACTION BUTTONS
+   =================================== */
+
+.cookie-actions {
+  background: var(--color-surface);
+  border-radius: var(--cookie-radius-lg);
+  padding: var(--cookie-space-xl);
+  box-shadow: var(--cookie-shadow-sm);
+  text-align: center;
+}
+
+.cookie-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--cookie-space-md);
+  margin-bottom: var(--cookie-space-lg);
+}
+
+.cookie-btn {
+  padding: var(--cookie-space-md) var(--cookie-space-lg);
+  border: none;
+  border-radius: var(--cookie-radius-md);
+  font-size: var(--cookie-text-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--cookie-transition-normal);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--cookie-space-xs);
+}
+
+.cookie-btn-primary {
+  background: linear-gradient(135deg, var(--cookie-primary), var(--cookie-primary-light));
+  color: white;
+  box-shadow: var(--cookie-shadow-sm);
+}
+
+.cookie-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--cookie-shadow-md);
+}
+
+.cookie-btn-secondary {
+  background: var(--color-background);
+  color: var(--color-text);
+  border: 2px solid var(--color-border);
+}
+
+.cookie-btn-secondary:hover {
+  border-color: var(--cookie-primary);
+  color: var(--cookie-primary);
+}
+
+.cookie-actions-note {
+  font-size: var(--cookie-text-xs);
+  color: var(--color-text-secondary);
+  opacity: 0.8;
+}
+
+/* ===================================
+   ENHANCED LINKS & TYPOGRAPHY
+   =================================== */
+
+.cookie-content-grid a {
+  color: var(--cookie-primary);
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px solid transparent;
+  transition: all var(--cookie-transition-fast);
+}
+
+.cookie-content-grid a:hover {
+  border-bottom-color: var(--cookie-primary);
+  opacity: 0.8;
+}
+
+.cookie-section-content ul {
+  list-style: none;
+  padding: 0;
+  margin: var(--cookie-space-md) 0;
+}
+
+.cookie-section-content li {
+  position: relative;
+  padding-left: var(--cookie-space-lg);
+  margin-bottom: var(--cookie-space-sm);
+  line-height: 1.6;
+}
+
+.cookie-section-content li::before {
+  content: '🍪';
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 1rem;
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+
+/* Tablet Styles */
+@media (min-width: 768px) {
+  .cookie-notice-page {
+    padding: var(--cookie-space-xl) var(--cookie-space-lg);
+  }
+  
+  .cookie-content-grid {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  }
+  
+  .header-navigation {
+    margin-bottom: var(--cookie-space-xl);
+  }
+  
+  .back-button {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+  
+  .header-logo {
+    height: 70px;
+  }
+}
+
+/* Desktop Styles */
+@media (min-width: 1024px) {
+  .cookie-notice-page {
+    padding: var(--cookie-space-xxl) var(--cookie-space-xl);
+  }
+  
+  .cookie-categories {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .cookie-actions-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ===================================
+   ACCESSIBILITY ENHANCEMENTS
+   =================================== */
+
+/* Focus States */
+.back-button:focus,
+.cookie-toggle:focus,
+.cookie-btn:focus {
+  outline: 3px solid var(--cookie-primary);
+  outline-offset: 2px;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .cookie-section {
+    border: 2px solid var(--color-border);
+  }
+  
+  .cookie-btn-primary {
+    border: 2px solid var(--cookie-primary);
+  }
+}
+
+/* ===================================
+   PRINT STYLES
+   =================================== */
+
+@media print {
+  .cookie-notice-page {
+    background: white;
+    color: black;
+    padding: 1rem;
+  }
+  
+  .back-button,
+  .cookie-toggle,
+  .cookie-actions {
+    display: none;
+  }
+  
+  .cookie-section {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ccc;
+    margin-bottom: 1rem;
+  }
+  
+  .page-title {
+    font-size: 24pt;
+  }
+  
+  .cookie-section-title {
+    font-size: 18pt;
+  }
+}
