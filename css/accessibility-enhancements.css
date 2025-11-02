@@ -1,0 +1,639 @@
+/* =====================================================
+   ACCESSIBILITY ENHANCEMENTS
+   WCAG AA Compliance and Enhanced User Experience
+   ===================================================== */
+
+/* =====================================================
+   FOCUS MANAGEMENT
+   ===================================================== */
+
+/* Enhanced focus indicators for all interactive elements */
+*:focus-visible {
+  outline: 3px solid var(--accent-blue);
+  outline-offset: 2px;
+  border-radius: var(--border-radius-lg);
+}
+
+/* Remove outline for mouse users, keep for keyboard users */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Custom focus styles for specific elements */
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.landing-hero-btn:focus-visible,
+.hero-cta-primary:focus-visible {
+  outline: 3px solid var(--accent-blue);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 1px var(--bg-primary), 0 0 0 4px var(--accent-blue);
+}
+
+/* Form field focus styles */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--primary-green);
+  outline-offset: 1px;
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 1px var(--bg-primary), 0 0 0 4px rgba(30, 123, 30, 0.2);
+}
+
+/* Link focus styles */
+a:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+  border-radius: var(--border-radius-lg);
+  background: rgba(0, 122, 204, 0.1);
+}
+
+/* Card focus styles */
+.service-card:focus-visible,
+.product-card:focus-visible,
+.testimonial-card:focus-visible {
+  outline: 3px solid var(--accent-blue);
+  outline-offset: 3px;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+}
+
+/* =====================================================
+   KEYBOARD NAVIGATION
+   ===================================================== */
+
+/* Skip link enhancements */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--primary-green);
+  color: white;
+  padding: var(--space-3) var(--space-6);
+  text-decoration: none;
+  border-radius: var(--border-radius-lg);
+  font-weight: 600;
+  font-size: var(--text-base);
+  z-index: 9999;
+  transition: top 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.skip-link:focus {
+  top: 6px;
+  outline: 3px solid var(--accent-blue);
+  outline-offset: 2px;
+  border-color: var(--accent-blue);
+}
+
+/* Additional skip links for complex pages */
+.skip-link-secondary {
+  position: absolute;
+  top: -40px;
+  left: 180px;
+  background: var(--accent-blue);
+  color: white;
+  padding: var(--space-3) var(--space-6);
+  text-decoration: none;
+  border-radius: var(--border-radius-lg);
+  font-weight: 600;
+  font-size: var(--text-base);
+  z-index: 9998;
+  transition: top 0.3s ease;
+}
+
+.skip-link-secondary:focus {
+  top: 6px;
+  outline: 3px solid var(--primary-green);
+  outline-offset: 2px;
+}
+
+/* Keyboard-only visible elements */
+.keyboard-only {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.keyboard-only:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+}
+
+/* Enhanced tab order indicators */
+.tab-indicator {
+  position: relative;
+}
+
+.tab-indicator::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  border: 2px dashed transparent;
+  border-radius: var(--border-radius-lg);
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+.tab-indicator:focus-within::before {
+  border-color: var(--accent-blue);
+  opacity: 1;
+}
+
+/* =====================================================
+   SCREEN READER ENHANCEMENTS
+   ===================================================== */
+
+/* Screen reader only text */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Screen reader only but focusable */
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Enhanced ARIA live regions */
+.live-region {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Status messages styling */
+.status-message {
+  padding: var(--space-4);
+  border-radius: var(--border-radius-lg);
+  margin: var(--space-4) 0;
+  font-weight: 600;
+}
+
+.status-message.success {
+  background: rgba(30, 123, 30, 0.1);
+  color: var(--primary-green);
+  border: 2px solid var(--primary-green);
+}
+
+.status-message.error {
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--accent-red);
+  border: 2px solid var(--accent-red);
+}
+
+.status-message.warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--accent-gold);
+  border: 2px solid var(--accent-gold);
+}
+
+.status-message.info {
+  background: rgba(0, 122, 204, 0.1);
+  color: var(--accent-blue);
+  border: 2px solid var(--accent-blue);
+}
+
+/* =====================================================
+   HIGH CONTRAST AND COLOR ACCESSIBILITY
+   ===================================================== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --text-primary: #000000;
+    --text-secondary: #333333;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f0f0f0;
+    --primary-green: #006600;
+    --accent-blue: #0000cc;
+    --accent-red: #cc0000;
+    --accent-gold: #cc9900;
+  }
+  
+  [data-theme="dark"] {
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --bg-primary: #000000;
+    --bg-secondary: #333333;
+  }
+  
+  /* Enhanced button contrast */
+  .btn-primary,
+  .landing-hero-btn,
+  .hero-cta-primary {
+    background: #000000;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+  }
+  
+  .btn-primary:hover,
+  .landing-hero-btn:hover,
+  .hero-cta-primary:hover {
+    background: #ffffff;
+    color: #000000;
+    border: 2px solid #000000;
+  }
+  
+  /* Enhanced link contrast */
+  a {
+    color: #0000cc;
+    text-decoration: underline;
+  }
+  
+  a:visited {
+    color: #6600cc;
+  }
+  
+  a:hover {
+    background: #ffff00;
+    color: #000000;
+  }
+}
+
+/* Color blindness support - using patterns and shapes */
+
+.success-pattern::before {
+  content: "✓ ";
+  font-weight: bold;
+}
+
+.error-pattern::before {
+  content: "✗ ";
+  font-weight: bold;
+}
+
+.warning-pattern::before {
+  content: "⚠ ";
+  font-weight: bold;
+}
+
+.info-pattern::before {
+  content: "ℹ ";
+  font-weight: bold;
+}
+
+/* =====================================================
+   REDUCED MOTION SUPPORT
+   ===================================================== */
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Remove parallax and complex animations */
+  .parallax {
+    transform: none !important;
+  }
+  
+  .animated-gradient {
+    background: var(--primary-green) !important;
+  }
+  
+  /* Keep essential feedback animations but make them instant */
+  .btn-primary:hover,
+  .landing-hero-btn:hover,
+  .hero-cta-primary:hover {
+    transform: none;
+    transition: background-color 0.01ms, color 0.01ms;
+  }
+}
+
+/* =====================================================
+   TEXT AND READABILITY ENHANCEMENTS
+   ===================================================== */
+
+/* Enhanced readability */
+.readable-text {
+  line-height: 1.6;
+  letter-spacing: 0.025em;
+  word-spacing: 0.1em;
+}
+
+/* Dyslexia-friendly typography */
+@media (prefers-reduced-data: reduce) {
+  body {
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+    word-spacing: 0.15em;
+  }
+  
+  .hero-title,
+  .landing-hero h1,
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.4;
+  }
+}
+
+/* Text selection enhancement */
+::selection {
+  background: rgba(0, 122, 204, 0.3);
+  color: var(--text-primary);
+}
+
+::-moz-selection {
+  background: rgba(0, 122, 204, 0.3);
+  color: var(--text-primary);
+}
+
+/* =====================================================
+   FORM ACCESSIBILITY ENHANCEMENTS
+   ===================================================== */
+
+/* Enhanced form labels and inputs */
+.form-group {
+  position: relative;
+  margin-bottom: var(--space-6);
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+  font-size: var(--text-base);
+}
+
+.form-label.required::after {
+  content: " *";
+  color: var(--accent-red);
+  font-weight: bold;
+}
+
+.form-input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid #e2e8f0;
+  border-radius: var(--border-radius-lg);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: var(--text-base);
+  transition: all 0.2s ease;
+}
+
+.form-input:focus {
+  border-color: var(--primary-green);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(30, 123, 30, 0.1);
+}
+
+.form-input[aria-invalid="true"] {
+  border-color: var(--accent-red);
+  background: rgba(220, 38, 38, 0.05);
+}
+
+.form-input[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.form-error {
+  color: var(--accent-red);
+  font-size: var(--text-sm);
+  margin-top: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.form-error::before {
+  content: "⚠";
+  font-weight: bold;
+}
+
+.form-success {
+  color: var(--primary-green);
+  font-size: var(--text-sm);
+  margin-top: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.form-success::before {
+  content: "✓";
+  font-weight: bold;
+}
+
+/* =====================================================
+   MODAL AND DIALOG ACCESSIBILITY
+   ===================================================== */
+
+/* Enhanced modal focus management */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal[aria-hidden="true"] {
+  display: none;
+}
+
+.modal-content {
+  background: var(--bg-primary);
+  border-radius: var(--border-radius-xl);
+  padding: var(--space-8);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: var(--shadow-xl);
+  border: 2px solid var(--primary-green);
+}
+
+.modal-close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  background: none;
+  border: none;
+  font-size: var(--text-xl);
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: var(--space-2);
+  border-radius: var(--border-radius-lg);
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.modal-close:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+/* =====================================================
+   LOADING AND STATE INDICATORS
+   ===================================================== */
+
+/* Accessible loading states */
+.loading {
+  position: relative;
+  color: transparent;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid var(--primary-green);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.loading[aria-label]::before {
+  content: attr(aria-label);
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Error state indicators */
+.error-state {
+  color: var(--accent-red);
+  background: rgba(220, 38, 38, 0.1);
+  border: 2px solid var(--accent-red);
+  padding: var(--space-4);
+  border-radius: var(--border-radius-lg);
+  margin: var(--space-4) 0;
+}
+
+.error-state::before {
+  content: "⚠ ";
+  font-weight: bold;
+}
+
+/* Success state indicators */
+.success-state {
+  color: var(--primary-green);
+  background: rgba(30, 123, 30, 0.1);
+  border: 2px solid var(--primary-green);
+  padding: var(--space-4);
+  border-radius: var(--border-radius-lg);
+  margin: var(--space-4) 0;
+}
+
+.success-state::before {
+  content: "✓ ";
+  font-weight: bold;
+}
+
+/* =====================================================
+   TOUCH AND GESTURE ACCESSIBILITY
+   ===================================================== */
+
+/* Enhanced touch targets for accessibility */
+@media (pointer: coarse) {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Larger tap areas for small icons */
+  .icon-button {
+    padding: var(--space-3);
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Enhanced spacing for touch interfaces */
+  .touch-spacing {
+    margin: var(--space-2) 0;
+  }
+}
+
+/* =====================================================
+   PRINT ACCESSIBILITY
+   ===================================================== */
+
+@media print {
+  /* Ensure good contrast in print */
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  /* Show URLs for links */
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: smaller;
+  }
+  
+  /* Hide interactive elements in print */
+  button,
+  input,
+  select,
+  textarea,
+  .modal,
+  .skip-link {
+    display: none !important;
+  }
+  
+  /* Ensure page breaks work well */
+  .page-break {
+    page-break-before: always;
+  }
+  
+  .no-break {
+    page-break-inside: avoid;
+  }
+}
