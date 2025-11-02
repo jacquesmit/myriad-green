@@ -76,7 +76,39 @@
   </div>
 
   <main class="checkout-container modern-layout">
-    <h1 class="checkout-title">Checkout</h1>
+    <h1 class="checkout-title">Secure Checkout</h1>
+    
+    <!-- Progress Indicator -->
+    <div class="checkout-progress">
+      <div class="progress-step completed">
+        <div class="step-circle">
+          <i class="fas fa-shopping-cart"></i>
+        </div>
+        <span class="step-label">Cart</span>
+      </div>
+      <div class="progress-line completed"></div>
+      <div class="progress-step active">
+        <div class="step-circle">
+          <i class="fas fa-user"></i>
+        </div>
+        <span class="step-label">Details</span>
+      </div>
+      <div class="progress-line"></div>
+      <div class="progress-step">
+        <div class="step-circle">
+          <i class="fas fa-credit-card"></i>
+        </div>
+        <span class="step-label">Payment</span>
+      </div>
+      <div class="progress-line"></div>
+      <div class="progress-step">
+        <div class="step-circle">
+          <i class="fas fa-check"></i>
+        </div>
+        <span class="step-label">Complete</span>
+      </div>
+    </div>
+    
     <div class="checkout-sidebyside">
       <section class="cart-summary card">
         <h2 class="cart-summary-title">Your Items</h2>
@@ -140,11 +172,54 @@
             <img src="images/icons/trust.png" alt="Trusted Service" class="trust-badge-icon">
             <span>Trusted by 1000+ customers</span>
           </div>
-          <div class="checkout-testimonial">
-            <blockquote>
-              <span class="testimonial-quote">“Myriad Green made my irrigation upgrade seamless and affordable. Highly recommended!”</span>
-              <span class="testimonial-author">– Sarah M., Pretoria East</span>
-            </blockquote>
+          <div class="checkout-testimonials">
+            <h3>What Our Customers Say</h3>
+            <div class="testimonial-carousel">
+              <div class="testimonial-item active">
+                <div class="testimonial-stars">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+                <blockquote>
+                  <span class="testimonial-quote">"Outstanding service! My irrigation system has never worked better. Professional team and fair pricing."</span>
+                  <span class="testimonial-author">– Sarah M., Pretoria East</span>
+                </blockquote>
+              </div>
+              <div class="testimonial-item">
+                <div class="testimonial-stars">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+                <blockquote>
+                  <span class="testimonial-quote">"Quick response time and excellent workmanship. Highly recommend Myriad Green for any water systems."</span>
+                  <span class="testimonial-author">– John D., Cape Town</span>
+                </blockquote>
+              </div>
+              <div class="testimonial-item">
+                <div class="testimonial-stars">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+                <blockquote>
+                  <span class="testimonial-quote">"Professional, reliable, and affordable. Their leak detection service saved me thousands in water bills."</span>
+                  <span class="testimonial-author">– Maria K., Johannesburg</span>
+                </blockquote>
+              </div>
+            </div>
+            <div class="testimonial-indicators">
+              <button type="button" class="indicator active" data-slide="0" aria-label="Show testimonial 1"></button>
+              <button type="button" class="indicator" data-slide="1" aria-label="Show testimonial 2"></button>
+              <button type="button" class="indicator" data-slide="2" aria-label="Show testimonial 3"></button>
+            </div>
           </div>
           </div>
         </div>

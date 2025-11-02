@@ -51,6 +51,9 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Initialize analytics
   initializeAnalytics();
+  
+  // Initialize testimonial carousel
+  initializeTestimonialCarousel();
 
   const checkoutForm = document.getElementById("checkoutForm");
   // Auto-detect API base: if on localhost and not port 3000, point to http://localhost:3000
@@ -492,5 +495,59 @@ document.addEventListener("DOMContentLoaded", () => {
     const requiredFields = document.querySelectorAll('#checkoutForm input[required]');
     const completedFields = Array.from(requiredFields).filter(field => field.value.trim()).length;
     return Math.round((completedFields / requiredFields.length) * 100);
+  }
+  
+  // Testimonial Carousel Functions
+  function initializeTestimonialCarousel() {
+    const testimonialItems = document.querySelectorAll('.testimonial-item');
+    const indicators = document.querySelectorAll('.testimonial-indicators .indicator');
+    let currentSlide = 0;
+    
+    if (!testimonialItems.length) return;
+    
+    // Auto-rotate testimonials
+    const rotateTestimonials = () => {
+      testimonialItems[currentSlide].classList.remove('active');
+      indicators[currentSlide].classList.remove('active');
+      
+      currentSlide = (currentSlide + 1) % testimonialItems.length;
+      
+      testimonialItems[currentSlide].classList.add('active');
+      indicators[currentSlide].classList.add('active');
+    };
+    
+    // Set up auto-rotation
+    let autoRotate = setInterval(rotateTestimonials, 4000);
+    
+    // Manual navigation
+    indicators.forEach((indicator, index) => {
+      indicator.addEventListener('click', () => {
+        // Clear auto-rotation
+        clearInterval(autoRotate);
+        
+        // Update slides
+        testimonialItems[currentSlide].classList.remove('active');
+        indicators[currentSlide].classList.remove('active');
+        
+        currentSlide = index;
+        
+        testimonialItems[currentSlide].classList.add('active');
+        indicators[currentSlide].classList.add('active');
+        
+        // Restart auto-rotation
+        autoRotate = setInterval(rotateTestimonials, 4000);
+        
+        // Track interaction
+        trackEvent('testimonial_navigation', {
+          slide_index: index,
+          interaction_type: 'manual'
+        });
+      });
+    });
+    
+    // Track initial view
+    trackEvent('testimonial_carousel_viewed', {
+      total_testimonials: testimonialItems.length
+    });
   }
 });
