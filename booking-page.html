@@ -3,173 +3,834 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Book a Consultation</title>
+  <title>Book a Consultation - Myriad Green</title>
+  <meta name="description" content="Book your irrigation, plumbing, or water system consultation with Myriad Green. Professional service across Gauteng with flexible scheduling." />
   
-  <!-- Styles -->
+  <!-- Preload Critical Fonts -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" as="style" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  
+  <!-- Core Site Styles (for injection system) -->
+  <link rel="stylesheet" href="css/reset.css" />
   <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/utilities.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/main-navigation.css" />
+  <link rel="stylesheet" href="css/mobile-nav.css" />
+  <link rel="stylesheet" href="css/footer.css" />
+  <link rel="stylesheet" href="css/theme-toggle.css" />
+  <link rel="stylesheet" href="css/floating-social-bar.css" />
   <link rel="stylesheet" href="css/booking-modal.css" />
+  <link rel="stylesheet" href="css/mobile-tweaks.css" />
+  
+  <!-- Third-party Styles -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="css/booking-page.css" />
   
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/reset.css" />
-  <link rel="stylesheet" href="/css/theme.css" />
-  <link rel="stylesheet" href="/css/utilities.css" />
-  <link rel="stylesheet" href="/css/main.css" />
-  <link rel="stylesheet" href="/css/landinghero.css" />
-  <link rel="stylesheet" href="/css/servicesection.css" />
-  <link rel="stylesheet" href="/css/booking-modal.css" />
-  <link rel="stylesheet" href="/css/faq-section.css" />
-  <link rel="stylesheet" href="/css/testimonials-fallback.css" />
-  <link rel="stylesheet" href="/css/about-us-section.css" />
-  <link rel="stylesheet" href="/css/main-navigation.css" />
-  <link rel="stylesheet" href="/css/mobile-nav.css" />
-  <link rel="stylesheet" href="/css/footer.css" />
-  <link rel="stylesheet" href="/css/navbar.css" />
-  <link rel="stylesheet" href="/css/theme-toggle.css" />
-  <link rel="stylesheet" href="/css/components/buttons/book-now-button.css" />
-  <link rel="stylesheet" href="/css/components/buttons/social-bar.css" />
-  <link rel="stylesheet" href="/css/floating-bar-reopen-btn.css" />
-  <link rel="stylesheet" href="/css/contact-us-form.css">
-  <link rel="stylesheet" href="/css/mobile-tweaks.css" />
-  <link rel="stylesheet" href="/css/icon-strip-mobile.css" />
-  <link rel="stylesheet" href="/css/mobile-tap-feedback.css" />
-  <link rel="stylesheet" href="/css/mobile-scroll-icon-animate.css" />
-  <link rel="stylesheet" href="/css/layout.css" />
-  <link rel="stylesheet" href="/css/weather-widget.css">
-  <link rel="stylesheet" href="/css/cart-modal.css" />
-  <link rel="stylesheet" href="/css/checkout.css" />
-  <link rel="stylesheet" href="/css/shop-section.css" />
+  <!-- Page-specific Styles -->
+  <link rel="stylesheet" href="css/booking-page-redesign.css" />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="images/favicon.ico" />
 </head>
 <body>
-  <!-- Navigation Header -->
-  <nav class="booking-nav">
-    <a href="index.html" class="logo-link" title="Go to Homepage">
-      <img src="images/Myriadgreen_irrigation_logo-removebg-preview.png" alt="Myriad Green Logo" />
-      <span class="nav-title"></span>
-    </a>
-    <a href="index.html" class="close-btn" title="Back to Homepage">
-      <i class="fas fa-arrow-left"></i>
-      <span>Back to Home</span>
-    </a>
-  </nav>
-
-  <div class="booking-page">
-    <div class="header-row">
-      <h1>Book a Consultation</h1>
-      <input type="text" id="datetime" name="datetime" placeholder="Pick date & time" required />
-    </div>
-
-    <form id="booking-form">
-      <label for="name">Full Name</label>
-      <input type="text" id="name" name="name" required />
-
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" required />
-
-      <label for="phone">Phone</label>
-      <input type="tel" id="phone" name="phone" required />
-
-      <label for="service">Service</label>
-      <select id="service" name="service" required>
-        <option value="">Choose a service</option>
-        <option>Irrigation</option><option>Boreholes</option><option>Plumbing</option>
-        <option>Electrical</option><option>Water Storage Tanks</option><option>Water Filtration</option>
-        <option>Pumps</option><option>Landscaping</option><option>Grey Water Systems</option>
-        <option>Rain Water Harvesting</option><option>Waste Water Systems</option><option>Leak Detection</option>
-        <option>Emergency Services</option><option>Solar Installations</option><option>Blocked Drainage</option>
-        <option>Gutter Solutions</option><option>Instant Lawn</option><option>Aggregates</option>
-        <option>Garden Substrates</option><option>Treefelling</option><option>Coc Certificates</option><option>Gas Installations</option>
-      </select>
-
-      <div class="form-checkbox-row">
-        <input type="checkbox" id="isEmergency" name="isEmergency" />
-        <label for="isEmergency">
-          <strong>Emergency Booking</strong><br />
-          <small>Subject to approval. Double standard fee applies.</small>
-        </label>
+  <!-- Navigation will be injected here by js/inject-nav.js -->
+  
+  <main class="booking-container">
+    <div class="booking-content">
+      
+      <!-- Hero Section -->
+      <section class="booking-hero" role="banner">
+        <div class="booking-hero-content">
+          <h1>Book Your Consultation</h1>
+          <p>Schedule a professional consultation for your irrigation, plumbing, or water system needs. Our experts are ready to help transform your property.</p>
+        </div>
+      </section>
+      
+      <!-- Progress Indicator -->
+      <nav class="booking-progress" role="progressbar" aria-label="Booking Progress">
+        <div class="progress-step active">
+          <i class="progress-step-icon fas fa-calendar-alt" aria-hidden="true"></i>
+          <span>Select Date & Time</span>
+        </div>
+        <div class="progress-connector"></div>
+        <div class="progress-step">
+          <i class="progress-step-icon fas fa-user" aria-hidden="true"></i>
+          <span>Your Information</span>
+        </div>
+        <div class="progress-connector"></div>
+        <div class="progress-step">
+          <i class="progress-step-icon fas fa-tools" aria-hidden="true"></i>
+          <span>Service Details</span>
+        </div>
+        <div class="progress-connector"></div>
+        <div class="progress-step">
+          <i class="progress-step-icon fas fa-check" aria-hidden="true"></i>
+          <span>Confirmation</span>
+        </div>
+      </nav>
+      
+      <!-- Success Message (hidden by default) -->
+      <div id="success-message" class="success-message" role="alert" aria-live="polite">
+        <h3><i class="fas fa-check-circle" aria-hidden="true"></i> Booking Request Submitted!</h3>
+        <p>Thank you for choosing Myriad Green. We'll contact you within 24 hours to confirm your appointment and discuss your requirements in detail.</p>
       </div>
-
-      <label for="message">Message</label>
-      <textarea id="message" name="message" rows="4" placeholder="Tell us about your requirements..."></textarea>
-
-      <button type="submit">Submit Booking</button>
-    </form>
-  </div>
-
-  <a href="https://wa.me/27817216701" class="floating-whatsapp" target="_blank" aria-label="Chat on WhatsApp">
-    <i class="fab fa-whatsapp"></i>
-  </a>
-
-  <!-- Scripts -->
+      
+      <!-- Form Container -->
+      <section class="booking-form-container">
+        <form id="booking-form" class="booking-form" novalidate>
+          
+          <!-- Date & Time Selection -->
+          <div class="form-section">
+            <h2 class="form-section-title">
+              <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+              When would you like to meet?
+            </h2>
+            
+            <div class="form-group">
+              <div class="datetime-wrapper">
+                <input 
+                  type="text" 
+                  id="datetime" 
+                  name="datetime"
+                  class="form-input datetime-input"
+                  placeholder=" "
+                  required
+                  aria-describedby="datetime-help"
+                />
+                <label for="datetime" class="form-label">Select Date & Time</label>
+              </div>
+              <div id="datetime-help" class="sr-only">Choose your preferred appointment date and time. Available Monday to Saturday, 8 AM to 5 PM.</div>
+              <div class="error-message">Please select a date and time for your appointment.</div>
+            </div>
+          </div>
+          
+          <!-- Personal Information -->
+          <div class="form-section">
+            <h2 class="form-section-title">
+              <i class="fas fa-user" aria-hidden="true"></i>
+              Your Contact Information
+            </h2>
+            
+            <div class="form-group">
+              <input 
+                type="text" 
+                id="name" 
+                name="name"
+                class="form-input"
+                placeholder=" "
+                required
+                minlength="2"
+                maxlength="100"
+                aria-describedby="name-help"
+              />
+              <label for="name" class="form-label">Full Name</label>
+              <div id="name-help" class="sr-only">Enter your full name for the appointment.</div>
+              <div class="error-message">Please enter your full name (2-100 characters).</div>
+            </div>
+            
+            <div class="form-group">
+              <input 
+                type="email" 
+                id="email" 
+                name="email"
+                class="form-input"
+                placeholder=" "
+                required
+                aria-describedby="email-help"
+              />
+              <label for="email" class="form-label">Email Address</label>
+              <div id="email-help" class="sr-only">We'll use this email to send appointment confirmations and updates.</div>
+              <div class="error-message">Please enter a valid email address.</div>
+            </div>
+            
+            <div class="form-group">
+              <input 
+                type="tel" 
+                id="phone" 
+                name="phone"
+                class="form-input"
+                placeholder=" "
+                required
+                pattern="[0-9\+\-\s\(\)]+"
+                aria-describedby="phone-help"
+              />
+              <label for="phone" class="form-label">Phone Number</label>
+              <div id="phone-help" class="sr-only">Include your area code for quick contact regarding your appointment.</div>
+              <div class="error-message">Please enter a valid phone number.</div>
+            </div>
+          </div>
+          
+          <!-- Service Selection -->
+          <div class="form-section">
+            <h2 class="form-section-title">
+              <i class="fas fa-tools" aria-hidden="true"></i>
+              What service do you need?
+            </h2>
+            
+            <div class="form-group">
+              <select 
+                id="service" 
+                name="service"
+                class="form-select"
+                required
+                aria-describedby="service-help"
+              >
+                <option value="">Choose a service</option>
+                <optgroup label="Water Systems">
+                  <option value="irrigation">Irrigation Systems</option>
+                  <option value="boreholes">Borehole Installation</option>
+                  <option value="water-storage">Water Storage Tanks</option>
+                  <option value="water-filtration">Water Filtration</option>
+                  <option value="pumps">Water Pumps</option>
+                  <option value="grey-water">Grey Water Systems</option>
+                  <option value="rainwater-harvesting">Rain Water Harvesting</option>
+                  <option value="wastewater">Waste Water Systems</option>
+                </optgroup>
+                <optgroup label="Plumbing Services">
+                  <option value="plumbing">General Plumbing</option>
+                  <option value="leak-detection">Leak Detection</option>
+                  <option value="blocked-drainage">Blocked Drainage</option>
+                  <option value="gutter-solutions">Gutter Solutions</option>
+                </optgroup>
+                <optgroup label="Electrical & Energy">
+                  <option value="electrical">Electrical Work</option>
+                  <option value="solar">Solar Installations</option>
+                  <option value="gas">Gas Installations</option>
+                  <option value="coc-certificates">COC Certificates</option>
+                </optgroup>
+                <optgroup label="Landscaping">
+                  <option value="landscaping">Landscaping</option>
+                  <option value="instant-lawn">Instant Lawn</option>
+                  <option value="aggregates">Aggregates</option>
+                  <option value="garden-substrates">Garden Substrates</option>
+                  <option value="treefelling">Tree Felling</option>
+                </optgroup>
+                <optgroup label="Emergency Services">
+                  <option value="emergency">Emergency Services</option>
+                </optgroup>
+              </select>
+              <label for="service" class="form-label">Service Type</label>
+              <div id="service-help" class="sr-only">Select the primary service you need help with. You can discuss additional services during the consultation.</div>
+              <div class="error-message">Please select a service type.</div>
+            </div>
+          </div>
+          
+          <!-- Emergency Booking Option -->
+          <div class="form-section">
+            <div class="checkbox-group" id="emergency-group">
+              <input 
+                type="checkbox" 
+                id="isEmergency" 
+                name="isEmergency" 
+                class="form-checkbox"
+                aria-describedby="emergency-help"
+              />
+              <label for="isEmergency" class="checkbox-label">
+                <div class="checkbox-title">
+                  <i class="fas fa-bolt" aria-hidden="true"></i>
+                  Emergency Booking
+                </div>
+                <div class="checkbox-description">
+                  Urgent consultation needed within 24 hours. Subject to availability. Double standard fee applies for emergency callouts.
+                </div>
+              </label>
+            </div>
+            <div id="emergency-help" class="sr-only">Check this if you need urgent assistance within 24 hours.</div>
+          </div>
+          
+          <!-- Additional Information -->
+          <div class="form-section">
+            <h2 class="form-section-title">
+              <i class="fas fa-comment-alt" aria-hidden="true"></i>
+              Additional Details
+            </h2>
+            
+            <div class="form-group">
+              <textarea 
+                id="message" 
+                name="message"
+                class="form-textarea"
+                placeholder=" "
+                rows="4"
+                maxlength="1000"
+                aria-describedby="message-help"
+              ></textarea>
+              <label for="message" class="form-label">Tell us about your project (Optional)</label>
+              <div id="message-help" class="sr-only">Provide any additional details about your project or specific requirements. This helps us prepare for your consultation.</div>
+              <div class="error-message">Message is too long (maximum 1000 characters).</div>
+            </div>
+          </div>
+          
+          <!-- Submit Button -->
+          <button type="submit" class="submit-button" id="submit-btn">
+            <i class="fas fa-credit-card" aria-hidden="true"></i>
+            Proceed to Checkout
+          </button>
+          
+        </form>
+      </section>
+      
+    </div>
+  </main>
+  
+  <!-- Footer will be injected here by js/inject-footer.js -->
+  <!-- Floating Social Bar will be injected here by js/inject-social-bar.js -->
+  
+  <!-- Core Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-  <script src="https://js.stripe.com/v3/"></script>
-
+  
+  <!-- Site Injection Scripts -->
+  <script src="js/inject-nav.js"></script>
+  <script src="js/inject-footer.js"></script>
+  <script src="js/inject-social-bar.js"></script>
+  <script src="js/theme-toggle.js"></script>
+  
+  <!-- Firebase Integration (for booking availability checking) -->
   <script>
-    // Initialize Flatpickr
-    function initializeDatePicker() {
-      const dateInput = document.getElementById('datetime');
-      
-      flatpickr(dateInput, {
-        enableTime: true,
-        dateFormat: "Y-m-d H:i",
-        minDate: "today",
-        maxDate: new Date().fp_incr(60), // 60 days from today
-        minuteIncrement: 30,
-        defaultHour: 9,
-        defaultMinute: 0,
-        time_24hr: false,
-        disable: [
-          // Disable Sundays
-          function(date) {
-            return (date.getDay() === 0);
-          }
-        ],
-        minTime: "08:00",
-        maxTime: "17:00",
-        locale: {
-          firstDayOfWeek: 1 // Start week on Monday
-        },
-        onChange: function(selectedDates, dateStr, instance) {
-          console.log('Date selected:', dateStr);
-        }
-      });
-    }
+    // Initialize Firebase for booking availability checking
+    // This ensures the same Firebase setup as the booking modal
+    window._firebaseReady = false;
+    window._firebaseError = null;
 
-    // Form submission
-    document.getElementById('booking-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      const formData = new FormData(this);
-      const datetime = document.getElementById('datetime').value;
-      
-      if (!datetime) {
-        alert('Please select a date and time for your appointment.');
-        return;
+    (async () => {
+      try {
+        const { initializeApp } = await import("https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js");
+        const {
+          getFirestore,
+          collection,
+          query,
+          where,
+          getDocs,
+          addDoc
+        } = await import("https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js");
+        const { getAnalytics, logEvent } = await import("https://www.gstatic.com/firebasejs/9.6.10/firebase-analytics.js");
+
+        // Firebase config (same as booking modal)
+        const firebaseConfig = {
+          apiKey: "AIzaSyDshdxstcCy5hqoN4PBOt0KjEtPP6F4ehU",
+          authDomain: "myriad-green-booking.firebaseapp.com",
+          projectId: "myriad-green-booking",
+          storageBucket: "myriad-green-booking.appspot.com",
+          messagingSenderId: "1045964317317",
+          appId: "1:1045964317317:web:4d56dd1b99b7e06f27ffec",
+          measurementId: "G-FVNSW4M4JN"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const analytics = getAnalytics(app);
+        window._firebaseReady = true;
+        window._firebase = { db, analytics, logEvent, collection, query, where, getDocs, addDoc };
+        console.log('✅ Firebase initialized for booking page');
+      } catch (e) {
+        console.error("❌ Firebase failed to initialize:", e);
+        window._firebaseReady = false;
+        window._firebaseError = e && e.message ? e.message : String(e);
+      }
+    })();
+  </script>
+  
+  <!-- Page-specific JavaScript -->
+  <script>
+    // =============================================================================
+    // BOOKING PAGE - ENHANCED FUNCTIONALITY
+    // =============================================================================
+    
+    class BookingPageManager {
+      constructor() {
+        this.form = document.getElementById('booking-form');
+        this.submitBtn = document.getElementById('submit-btn');
+        this.successMessage = document.getElementById('success-message');
+        this.progressSteps = document.querySelectorAll('.progress-step');
+        this.progressConnectors = document.querySelectorAll('.progress-connector');
+        this.currentStep = 1;
+        
+        this.init();
       }
       
-      // Add datetime to form data
-      formData.append('datetime', datetime);
+      init() {
+        this.initializeDatePicker();
+        this.setupFormValidation();
+        this.setupFormSubmission();
+        this.setupProgressTracking();
+        this.setupEmergencyToggle();
+      }
       
-      // Here you can handle the form submission
-      console.log('Form submitted with data:', Object.fromEntries(formData));
+      // =============================================================================
+      // DATE PICKER INITIALIZATION
+      // =============================================================================
+      initializeDatePicker() {
+        const dateInput = document.getElementById('datetime');
+        
+        this.flatpickrInstance = flatpickr(dateInput, {
+          enableTime: true,
+          dateFormat: "F j, Y at h:i K",
+          altInput: true,
+          altFormat: "F j, Y at h:i K",
+          minDate: "today",
+          maxDate: new Date().fp_incr(60), // 60 days from today
+          minuteIncrement: 30,
+          defaultHour: 9,
+          defaultMinute: 0,
+          time_24hr: false,
+          disable: [
+            // Disable Sundays
+            function(date) {
+              return (date.getDay() === 0);
+            }
+          ],
+          minTime: "08:00",
+          maxTime: "17:00",
+          locale: {
+            firstDayOfWeek: 1 // Start week on Monday
+          },
+          onChange: (selectedDates, dateStr, instance) => {
+            if (selectedDates.length > 0) {
+              this.updateProgress(2);
+              this.validateField(dateInput);
+            }
+          },
+          onOpen: () => {
+            // Add theme class to calendar
+            const calendar = document.querySelector('.flatpickr-calendar');
+            if (calendar) {
+              calendar.classList.add(document.documentElement.getAttribute('data-theme'));
+            }
+          }
+        });
+      }
       
-      // Example: Show success message
-      alert('Booking request submitted successfully! We will contact you shortly.');
+      // =============================================================================
+      // FORM VALIDATION
+      // =============================================================================
+      setupFormValidation() {
+        const inputs = this.form.querySelectorAll('input, select, textarea');
+        
+        inputs.forEach(input => {
+          input.addEventListener('blur', () => this.validateField(input));
+          input.addEventListener('input', () => this.clearFieldError(input));
+          
+          // Progress tracking for key fields
+          if (['name', 'email', 'phone'].includes(input.id)) {
+            input.addEventListener('input', () => {
+              if (this.validateField(input, false)) {
+                this.updateProgress(3);
+              }
+            });
+          }
+          
+          if (input.id === 'service') {
+            input.addEventListener('change', () => {
+              if (input.value) {
+                this.updateProgress(4);
+                this.validateField(input);
+              }
+            });
+          }
+        });
+      }
       
-      // Reset form
-      this.reset();
-      document.getElementById('datetime').value = '';
-    });
+      validateField(field, showError = true) {
+        const formGroup = field.closest('.form-group') || field.closest('.checkbox-group');
+        const errorMessage = formGroup?.querySelector('.error-message');
+        let isValid = true;
+        let errorText = '';
+        
+        // Clear previous error state
+        field.classList.remove('error');
+        if (formGroup) formGroup.classList.remove('has-error');
+        
+        // Validation rules
+        switch (field.type) {
+          case 'text':
+            if (field.hasAttribute('required') && !field.value.trim()) {
+              isValid = false;
+              errorText = 'This field is required.';
+            } else if (field.hasAttribute('minlength') && field.value.length < field.getAttribute('minlength')) {
+              isValid = false;
+              errorText = `Minimum ${field.getAttribute('minlength')} characters required.`;
+            }
+            break;
+            
+          case 'email':
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (field.hasAttribute('required') && !field.value.trim()) {
+              isValid = false;
+              errorText = 'Email address is required.';
+            } else if (field.value && !emailRegex.test(field.value)) {
+              isValid = false;
+              errorText = 'Please enter a valid email address.';
+            }
+            break;
+            
+          case 'tel':
+            const phoneRegex = /^[0-9\+\-\s\(\)]{10,}$/;
+            if (field.hasAttribute('required') && !field.value.trim()) {
+              isValid = false;
+              errorText = 'Phone number is required.';
+            } else if (field.value && !phoneRegex.test(field.value.replace(/\s/g, ''))) {
+              isValid = false;
+              errorText = 'Please enter a valid phone number.';
+            }
+            break;
+            
+          default:
+            if (field.hasAttribute('required')) {
+              if (field.tagName === 'SELECT' && !field.value) {
+                isValid = false;
+                errorText = 'Please make a selection.';
+              } else if (field.id === 'datetime' && !field.value) {
+                isValid = false;
+                errorText = 'Please select a date and time.';
+              }
+            }
+        }
+        
+        // Handle textarea max length
+        if (field.tagName === 'TEXTAREA' && field.hasAttribute('maxlength')) {
+          if (field.value.length > field.getAttribute('maxlength')) {
+            isValid = false;
+            errorText = `Maximum ${field.getAttribute('maxlength')} characters allowed.`;
+          }
+        }
+        
+        // Show error if validation failed
+        if (!isValid && showError) {
+          field.classList.add('error');
+          if (formGroup) formGroup.classList.add('has-error');
+          if (errorMessage) errorMessage.textContent = errorText;
+        }
+        
+        return isValid;
+      }
+      
+      clearFieldError(field) {
+        field.classList.remove('error');
+        const formGroup = field.closest('.form-group') || field.closest('.checkbox-group');
+        if (formGroup) formGroup.classList.remove('has-error');
+      }
+      
+      // =============================================================================
+      // PROGRESS TRACKING
+      // =============================================================================
+      setupProgressTracking() {
+        // Initialize first step as active
+        this.updateProgress(1);
+      }
+      
+      updateProgress(step) {
+        if (step <= this.currentStep) return; // Don't go backwards
+        
+        this.currentStep = step;
+        
+        this.progressSteps.forEach((stepEl, index) => {
+          stepEl.classList.remove('active', 'completed');
+          if (index + 1 < step) {
+            stepEl.classList.add('completed');
+          } else if (index + 1 === step) {
+            stepEl.classList.add('active');
+          }
+        });
+        
+        this.progressConnectors.forEach((connector, index) => {
+          connector.classList.remove('completed');
+          if (index + 1 < step) {
+            connector.classList.add('completed');
+          }
+        });
+      }
+      
+      // =============================================================================
+      // EMERGENCY BOOKING TOGGLE
+      // =============================================================================
+      setupEmergencyToggle() {
+        const emergencyCheckbox = document.getElementById('isEmergency');
+        const emergencyGroup = document.getElementById('emergency-group');
+        
+        emergencyCheckbox.addEventListener('change', () => {
+          if (emergencyCheckbox.checked) {
+            emergencyGroup.classList.add('emergency');
+          } else {
+            emergencyGroup.classList.remove('emergency');
+          }
+        });
+      }
+      
+      // =============================================================================
+      // FORM SUBMISSION
+      // =============================================================================
+      setupFormSubmission() {
+        this.form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.handleFormSubmission();
+        });
+      }
+      
+      async handleFormSubmission() {
+        // Validate all fields
+        const inputs = this.form.querySelectorAll('input[required], select[required], textarea[required]');
+        let isFormValid = true;
+        
+        inputs.forEach(input => {
+          if (!this.validateField(input)) {
+            isFormValid = false;
+          }
+        });
+        
+        if (!isFormValid) {
+          this.showFormError('Please correct the errors above before submitting.');
+          return;
+        }
+        
+        // Show loading state
+        this.setLoadingState(true);
+        
+        try {
+          // Process Stripe checkout - will redirect to Stripe on success
+          await this.submitForm();
+          // If we reach here, something went wrong (should have redirected)
+          this.showFormError('Redirect to checkout failed. Please try again.');
+        } catch (error) {
+          console.error('Form submission error:', error);
+          this.showFormError(error.message || 'There was an error processing your booking. Please try again or contact us directly.');
+        } finally {
+          this.setLoadingState(false);
+        }
+      }
+      
+      async submitForm() {
+        // Prepare form data
+        const formData = new FormData(this.form);
+        const datetime = document.getElementById('datetime').value;
+        formData.append('datetime', datetime);
+        
+        // Convert to object for easier handling
+        const bookingData = Object.fromEntries(formData);
+        
+        // Add timestamp
+        bookingData.timestamp = new Date().toISOString();
+        
+        console.log('Booking data:', bookingData);
+        
+        // Integrate with Stripe checkout (same logic as booking modal)
+        return await this.processStripeCheckout(bookingData);
+      }
+      
+      async processStripeCheckout(bookingData) {
+        // Build a single-item cart that describes the booking
+        const cartItem = {
+          name: `Booking: ${bookingData.service}`,
+          description: `Date: ${bookingData.datetime}; Emergency: ${bookingData.isEmergency ? 'Yes' : 'No'}; Notes: ${bookingData.message || 'N/A'}`,
+          price: this.calculateBookingPrice(bookingData),
+          quantity: 1
+        };
 
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', function() {
-      initializeDatePicker();
+        // Detect backend API base (same as booking modal)
+        const detectApiBase = () => {
+          const el = document.querySelector('[data-api-base]');
+          const explicit = el?.getAttribute('data-api-base');
+          if (explicit) return explicit.replace(/\/$/, '');
+          const host = window.location.hostname;
+          const port = window.location.port;
+          const isLocal = (host === 'localhost' || host === '127.0.0.1' || /^192\.168\./.test(host) || /^10\./.test(host) || /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(host));
+          if (isLocal && port !== '3000') {
+            return 'http://localhost:3000';
+          }
+          return '';
+        };
+        const API_BASE = detectApiBase();
+
+        try {
+          // Check Firebase availability if available (same as modal)
+          try {
+            if (window._firebaseReady && window._firebase?.db) {
+              const { db, collection, query, where, getDocs } = window._firebase;
+              const q = query(collection(db, "bookings"), where("datetime", "==", bookingData.datetime));
+              const snap = await getDocs(q);
+              if (!snap.empty) {
+                throw new Error("That time slot is already booked. Please choose another.");
+              }
+            } else {
+              console.warn("⚠️ Firebase not ready; skipping duplicate booking check");
+            }
+          } catch (checkErr) {
+            if (checkErr.message.includes("already booked")) {
+              throw checkErr;
+            }
+            console.warn("⚠️ Booking availability check failed:", checkErr);
+          }
+
+          // Create a pending booking record in Firestore (same as modal)
+          let bookingId = null;
+          try {
+            if (window._firebaseReady && window._firebase?.db) {
+              const { db, addDoc, collection } = window._firebase;
+              const docRef = await addDoc(collection(db, 'bookings'), {
+                name: bookingData.name,
+                email: bookingData.email,
+                phone: bookingData.phone,
+                service: bookingData.service,
+                datetime: bookingData.datetime,
+                isEmergency: bookingData.isEmergency,
+                message: bookingData.message,
+                price: cartItem.price,
+                status: 'pending',
+                created: new Date()
+              });
+              bookingId = docRef.id;
+            }
+          } catch (preSaveErr) {
+            console.warn('⚠️ Failed to create pending booking:', preSaveErr);
+          }
+
+          // Save basic client + booking cart snapshot to backend (best-effort)
+          try {
+            await fetch(`${API_BASE}/save-client-data`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                name: bookingData.name,
+                email: bookingData.email,
+                phone: bookingData.phone,
+                address: 'Booking - via booking page',
+                cart: [cartItem]
+              })
+            });
+          } catch (_) {}
+
+          // Create Stripe checkout session through backend
+          const resp = await fetch(`${API_BASE}/create-checkout-session`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              cart: [cartItem],
+              customerName: bookingData.name,
+              customerPhone: bookingData.phone,
+              customerEmail: bookingData.email,
+              customerAddress: 'Booking - via booking page',
+              bookingId,
+              bookingDateTime: bookingData.datetime,
+              bookingEmergency: bookingData.isEmergency,
+              bookingMessage: bookingData.message
+            })
+          });
+          
+          const data = await resp.json();
+          if (resp.ok && data?.url) {
+            // Redirect to Stripe checkout
+            window.location.href = data.url;
+            return; // Stop further execution
+          }
+          
+          throw new Error(data?.error || 'Failed to initiate Stripe checkout');
+          
+        } catch (err) {
+          console.error('Stripe checkout error:', err);
+          throw new Error(err.message || 'Something went wrong. Please try again.');
+        }
+      }
+      
+      calculateBookingPrice(bookingData) {
+        // Base consultation fee
+        let basePrice = 15000; // R150.00 in cents
+        
+        // Emergency booking doubles the fee
+        if (bookingData.isEmergency) {
+          basePrice *= 2;
+        }
+        
+        // Different services may have different base rates
+        const servicePricing = {
+          'irrigation': 15000,
+          'boreholes': 20000,
+          'solar': 25000,
+          'electrical': 18000,
+          'plumbing': 15000,
+          'emergency': 30000
+        };
+        
+        const serviceKey = bookingData.service?.toLowerCase();
+        if (servicePricing[serviceKey]) {
+          basePrice = servicePricing[serviceKey];
+          if (bookingData.isEmergency && serviceKey !== 'emergency') {
+            basePrice *= 2;
+          }
+        }
+        
+        return basePrice;
+      }
+      
+      setLoadingState(loading) {
+        if (loading) {
+          this.submitBtn.classList.add('loading');
+          this.submitBtn.disabled = true;
+          this.submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Redirecting to Checkout...';
+        } else {
+          this.submitBtn.classList.remove('loading');
+          this.submitBtn.disabled = false;
+          this.submitBtn.innerHTML = '<i class="fas fa-credit-card" aria-hidden="true"></i> Proceed to Checkout';
+        }
+      }
+      
+      showSuccess() {
+        this.successMessage.classList.add('show');
+        this.form.style.display = 'none';
+        
+        // Scroll to success message
+        this.successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Update progress to completed
+        this.progressSteps.forEach(step => {
+          step.classList.remove('active');
+          step.classList.add('completed');
+        });
+        this.progressConnectors.forEach(connector => {
+          connector.classList.add('completed');
+        });
+      }
+      
+      showFormError(message) {
+        // Create or update error alert
+        let errorAlert = document.getElementById('form-error-alert');
+        if (!errorAlert) {
+          errorAlert = document.createElement('div');
+          errorAlert.id = 'form-error-alert';
+          errorAlert.className = 'error-message';
+          errorAlert.style.cssText = 'display: block; margin-bottom: var(--space-4); padding: var(--space-4); border-radius: var(--border-radius-md);';
+          this.form.insertBefore(errorAlert, this.form.firstChild);
+        }
+        
+        errorAlert.textContent = message;
+        errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+          if (errorAlert) errorAlert.remove();
+        }, 5000);
+      }
+    }
+    
+    // =============================================================================
+    // INITIALIZATION
+    // =============================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+      new BookingPageManager();
+    });
+    
+    // =============================================================================
+    // THEME INTEGRATION
+    // =============================================================================
+    document.addEventListener('themeChanged', (event) => {
+      const calendar = document.querySelector('.flatpickr-calendar');
+      if (calendar) {
+        calendar.className = calendar.className.replace(/\b(light|dark)\b/g, '');
+        calendar.classList.add(event.detail.theme);
+      }
     });
   </script>
-
+  
+  <!-- Booking Modal Integration -->
   <script type="module" src="js/booking-modal.js"></script>
 </body>
 </html>

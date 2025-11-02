@@ -79,6 +79,14 @@
   --transition-slow: 0.3s ease;
   --transition-bounce: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   --transition-spring: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --transition-smooth: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-elastic: 0.8s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+  
+  /* Enhanced Animation Variables */
+  --animation-scale-in: 0.95;
+  --animation-scale-hover: 1.02;
+  --animation-translate-distance: 2rem;
+  --animation-stagger-delay: 0.1s;
 }
 
 /* Dark Theme Overrides */
@@ -340,9 +348,14 @@ body {
 }
 
 .about-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-8px) scale(var(--animation-scale-hover));
   box-shadow: var(--shadow-2xl);
   border-color: var(--primary-green);
+}
+
+.about-card:active {
+  transform: translateY(-4px) scale(0.98);
+  transition: all var(--transition-fast);
 }
 
 @keyframes shimmer {
@@ -758,8 +771,18 @@ body {
 
 .contact-cta-button:hover {
   background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.05);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.contact-cta-button:active {
+  transform: translateY(0) scale(0.98);
+  transition: all var(--transition-fast);
+}
+
+.contact-cta-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
 }
 
 /* =============================================================================
@@ -817,36 +840,100 @@ body {
 }
 
 /* =============================================================================
-   SCROLL ANIMATIONS
+   ENHANCED SCROLL ANIMATIONS
    ============================================================================= */
+
+/* Base animation classes with improved easing */
 .animate-on-scroll {
   opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.8s ease;
+  transform: translateY(var(--animation-translate-distance)) scale(var(--animation-scale-in));
+  transition: all var(--transition-smooth);
+  will-change: transform, opacity;
 }
 
 .animate-on-scroll.animated {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
+/* Fade in from left animation */
+.animate-fade-left {
+  opacity: 0;
+  transform: translateX(-2rem);
+  transition: all var(--transition-spring);
+}
+
+.animate-fade-left.animated {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Fade in from right animation */
+.animate-fade-right {
+  opacity: 0;
+  transform: translateX(2rem);
+  transition: all var(--transition-spring);
+}
+
+.animate-fade-right.animated {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Scale and fade animation */
+.animate-scale-in {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all var(--transition-elastic);
+}
+
+.animate-scale-in.animated {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Enhanced stagger animations with improved timing */
 .stagger-animation > * {
   opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.6s ease;
+  transform: translateY(1.5rem) scale(0.95);
+  transition: all var(--transition-spring);
+  will-change: transform, opacity;
 }
 
 .stagger-animation.animated > * {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
-.stagger-animation.animated > *:nth-child(1) { transition-delay: 0.1s; }
-.stagger-animation.animated > *:nth-child(2) { transition-delay: 0.2s; }
-.stagger-animation.animated > *:nth-child(3) { transition-delay: 0.3s; }
-.stagger-animation.animated > *:nth-child(4) { transition-delay: 0.4s; }
-.stagger-animation.animated > *:nth-child(5) { transition-delay: 0.5s; }
-.stagger-animation.animated > *:nth-child(6) { transition-delay: 0.6s; }
+/* Progressive stagger delays with better spacing */
+.stagger-animation.animated > *:nth-child(1) { transition-delay: calc(var(--animation-stagger-delay) * 1); }
+.stagger-animation.animated > *:nth-child(2) { transition-delay: calc(var(--animation-stagger-delay) * 2); }
+.stagger-animation.animated > *:nth-child(3) { transition-delay: calc(var(--animation-stagger-delay) * 3); }
+.stagger-animation.animated > *:nth-child(4) { transition-delay: calc(var(--animation-stagger-delay) * 4); }
+.stagger-animation.animated > *:nth-child(5) { transition-delay: calc(var(--animation-stagger-delay) * 5); }
+.stagger-animation.animated > *:nth-child(6) { transition-delay: calc(var(--animation-stagger-delay) * 6); }
+.stagger-animation.animated > *:nth-child(7) { transition-delay: calc(var(--animation-stagger-delay) * 7); }
+.stagger-animation.animated > *:nth-child(8) { transition-delay: calc(var(--animation-stagger-delay) * 8); }
+
+/* Floating animation for special elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Pulse animation for emphasis */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.3); }
+  50% { box-shadow: 0 0 0 20px rgba(16, 185, 129, 0); }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
 
 /* =============================================================================
    RESPONSIVE DESIGN

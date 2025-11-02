@@ -1,0 +1,798 @@
+/* =============================================================================
+   BOOKING PAGE REDESIGN - MODERN CSS ARCHITECTURE
+   Created: November 2, 2025
+   Purpose: Complete responsive redesign with theme integration and injection system
+   ============================================================================= */
+
+/* =============================================================================
+   CSS CUSTOM PROPERTIES (THEME INTEGRATION)
+   ============================================================================= */
+:root {
+  /* Primary Brand Colors */
+  --primary-green: #10b981;
+  --primary-green-hover: #059669;
+  --primary-green-light: #d1fae5;
+  --accent-blue: #3b82f6;
+  
+  /* Extended Color Palette */
+  --success-green: #10b981;
+  --warning-amber: #f59e0b;
+  --error-red: #ef4444;
+  --info-blue: #3b82f6;
+  
+  /* Light Theme Variables */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --border-color: #e2e8f0;
+  --border-hover: #cbd5e1;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* Typography Scale */
+  --font-sans: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  
+  /* Spacing Scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  
+  /* Layout Values */
+  --border-radius-sm: 0.375rem;
+  --border-radius-md: 0.5rem;
+  --border-radius-lg: 0.75rem;
+  --border-radius-xl: 1rem;
+  --container-max-width: 800px;
+  --form-max-width: 600px;
+  
+  /* Animation Values */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+  --transition-bounce: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Dark Theme Overrides */
+[data-theme="dark"] {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-color: #334155;
+  --border-hover: #475569;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+/* =============================================================================
+   BASE STYLES & RESET
+   ============================================================================= */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+/* =============================================================================
+   LAYOUT CONTAINER
+   ============================================================================= */
+.booking-container {
+  min-height: 100vh;
+  padding: var(--space-8) var(--space-4);
+  margin-top: 80px; /* Account for injected navigation */
+}
+
+.booking-content {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  position: relative;
+}
+
+/* =============================================================================
+   HERO SECTION
+   ============================================================================= */
+.booking-hero {
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-blue) 100%);
+  border-radius: var(--border-radius-xl);
+  padding: var(--space-12) var(--space-8);
+  margin-bottom: var(--space-8);
+  color: white;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.booking-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(255, 255, 255, 0.05) 10px,
+    rgba(255, 255, 255, 0.05) 20px
+  );
+  animation: movePattern 20s linear infinite;
+}
+
+@keyframes movePattern {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.booking-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.booking-hero h1 {
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  margin: 0 0 var(--space-4) 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.booking-hero p {
+  font-size: var(--text-lg);
+  margin: 0;
+  opacity: 0.95;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* =============================================================================
+   PROGRESS INDICATOR
+   ============================================================================= */
+.booking-progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: var(--space-8);
+  gap: var(--space-4);
+}
+
+.progress-step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-primary);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-sm);
+}
+
+.progress-step.active {
+  background: var(--primary-green);
+  border-color: var(--primary-green);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.progress-step.completed {
+  background: var(--success-green);
+  border-color: var(--success-green);
+  color: white;
+}
+
+.progress-step-icon {
+  font-size: var(--text-base);
+}
+
+.progress-connector {
+  width: 40px;
+  height: 2px;
+  background: var(--border-color);
+  position: relative;
+}
+
+.progress-connector.completed {
+  background: var(--success-green);
+}
+
+/* =============================================================================
+   FORM CONTAINER
+   ============================================================================= */
+.booking-form-container {
+  background: var(--bg-primary);
+  border-radius: var(--border-radius-xl);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+  position: relative;
+  overflow: hidden;
+}
+
+.booking-form-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-green), var(--accent-blue), var(--primary-green));
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* =============================================================================
+   FORM STYLES
+   ============================================================================= */
+.booking-form {
+  max-width: var(--form-max-width);
+  margin: 0 auto;
+}
+
+.form-section {
+  margin-bottom: var(--space-8);
+}
+
+.form-section-title {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.form-section-title::before {
+  content: '';
+  width: 4px;
+  height: 24px;
+  background: linear-gradient(135deg, var(--primary-green), var(--accent-blue));
+  border-radius: 2px;
+}
+
+/* =============================================================================
+   FORM FIELDS - FLOATING LABELS
+   ============================================================================= */
+.form-group {
+  position: relative;
+  margin-bottom: var(--space-6);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: var(--space-4) var(--space-4) var(--space-3) var(--space-4);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  font-size: var(--text-base);
+  font-family: var(--font-sans);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: all var(--transition-base);
+  outline: none;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  transform: translateY(-1px);
+}
+
+.form-input:valid,
+.form-select:valid,
+.form-textarea:valid {
+  border-color: var(--success-green);
+}
+
+.form-input.error,
+.form-select.error,
+.form-textarea.error {
+  border-color: var(--error-red);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Floating Labels */
+.form-label {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  font-size: var(--text-base);
+  color: var(--text-muted);
+  background: var(--bg-primary);
+  padding: 0 var(--space-2);
+  pointer-events: none;
+  transition: all var(--transition-bounce);
+  transform-origin: left center;
+}
+
+.form-input:focus + .form-label,
+.form-input:not(:placeholder-shown) + .form-label,
+.form-select:focus + .form-label,
+.form-select:not([value=""]) + .form-label,
+.form-textarea:focus + .form-label,
+.form-textarea:not(:placeholder-shown) + .form-label {
+  top: -10px;
+  left: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--primary-green);
+  font-weight: 600;
+  transform: scale(0.9);
+}
+
+/* Date Picker Specific Styling */
+.datetime-wrapper {
+  position: relative;
+}
+
+.datetime-input {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2310b981'%3e%3cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right var(--space-4) center;
+  background-size: 20px;
+  padding-right: 3rem;
+}
+
+/* Service Selection Dropdown */
+.form-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3e%3cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right var(--space-4) center;
+  background-size: 16px;
+  padding-right: 3rem;
+}
+
+.form-select:focus {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2310b981'%3e%3cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3e%3c/svg%3e");
+}
+
+/* Textarea */
+.form-textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* =============================================================================
+   CHECKBOX & EMERGENCY BOOKING
+   ============================================================================= */
+.checkbox-group {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--bg-tertiary);
+  border-radius: var(--border-radius-lg);
+  border: 2px solid transparent;
+  transition: all var(--transition-base);
+  cursor: pointer;
+}
+
+.checkbox-group:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border-hover);
+}
+
+.checkbox-group.emergency {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(251, 146, 60, 0.1));
+  border-color: var(--warning-amber);
+}
+
+.form-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  background: var(--bg-primary);
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-base);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.form-checkbox:checked {
+  background: var(--primary-green);
+  border-color: var(--primary-green);
+}
+
+.form-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.checkbox-label {
+  flex: 1;
+  cursor: pointer;
+}
+
+.checkbox-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.checkbox-description {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* =============================================================================
+   SUBMIT BUTTON
+   ============================================================================= */
+.submit-button {
+  width: 100%;
+  padding: var(--space-4) var(--space-6);
+  background: linear-gradient(135deg, var(--primary-green), var(--primary-green-hover));
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-lg);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.submit-button:hover {
+  background: linear-gradient(135deg, var(--primary-green-hover), var(--primary-green));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.submit-button:active {
+  transform: translateY(0);
+}
+
+.submit-button:disabled {
+  background: var(--text-muted);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Loading State */
+.submit-button.loading {
+  color: transparent;
+}
+
+.submit-button.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* =============================================================================
+   SUCCESS MESSAGE
+   ============================================================================= */
+.success-message {
+  background: linear-gradient(135deg, var(--success-green), #059669);
+  color: white;
+  padding: var(--space-6);
+  border-radius: var(--border-radius-lg);
+  margin-bottom: var(--space-6);
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all var(--transition-bounce);
+}
+
+.success-message.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.success-message h3 {
+  margin: 0 0 var(--space-2) 0;
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+
+.success-message p {
+  margin: 0;
+  opacity: 0.95;
+}
+
+/* =============================================================================
+   ERROR MESSAGES
+   ============================================================================= */
+.error-message {
+  background: var(--error-red);
+  color: white;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--border-radius-md);
+  font-size: var(--text-sm);
+  margin-top: var(--space-2);
+  display: none;
+}
+
+.form-group.has-error .error-message {
+  display: block;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================= */
+
+/* Tablet Styles */
+@media (max-width: 768px) {
+  .booking-container {
+    padding: var(--space-6) var(--space-3);
+    margin-top: 70px;
+  }
+  
+  .booking-hero {
+    padding: var(--space-8) var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+  
+  .booking-hero h1 {
+    font-size: var(--text-3xl);
+  }
+  
+  .booking-form-container {
+    padding: var(--space-6);
+  }
+  
+  .booking-progress {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  
+  .progress-connector {
+    width: 2px;
+    height: 20px;
+  }
+  
+  .form-section-title {
+    font-size: var(--text-lg);
+  }
+}
+
+/* Mobile Styles */
+@media (max-width: 480px) {
+  .booking-container {
+    padding: var(--space-4) var(--space-2);
+    margin-top: 60px;
+  }
+  
+  .booking-hero {
+    padding: var(--space-6) var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+  
+  .booking-hero h1 {
+    font-size: var(--text-2xl);
+  }
+  
+  .booking-hero p {
+    font-size: var(--text-base);
+  }
+  
+  .booking-form-container {
+    padding: var(--space-4);
+  }
+  
+  .form-group {
+    margin-bottom: var(--space-4);
+  }
+  
+  .progress-step {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-xs);
+  }
+  
+  .form-input,
+  .form-select,
+  .form-textarea {
+    padding: var(--space-3);
+    font-size: var(--text-sm);
+  }
+  
+  .form-label {
+    font-size: var(--text-sm);
+  }
+  
+  .submit-button {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-base);
+  }
+}
+
+/* =============================================================================
+   FLATPICKR THEME INTEGRATION
+   ============================================================================= */
+.flatpickr-calendar {
+  background: var(--bg-primary) !important;
+  border: 2px solid var(--border-color) !important;
+  border-radius: var(--border-radius-lg) !important;
+  box-shadow: var(--shadow-xl) !important;
+}
+
+.flatpickr-day {
+  color: var(--text-primary) !important;
+  border: 1px solid transparent !important;
+}
+
+.flatpickr-day:hover {
+  background: var(--bg-tertiary) !important;
+  border-color: var(--primary-green) !important;
+}
+
+.flatpickr-day.selected {
+  background: var(--primary-green) !important;
+  border-color: var(--primary-green) !important;
+}
+
+.flatpickr-day.today {
+  border-color: var(--accent-blue) !important;
+}
+
+.flatpickr-months {
+  background: var(--bg-secondary) !important;
+}
+
+.flatpickr-current-month input.numInput {
+  color: var(--text-primary) !important;
+}
+
+.flatpickr-weekday {
+  color: var(--text-secondary) !important;
+}
+
+/* =============================================================================
+   ACCESSIBILITY IMPROVEMENTS
+   ============================================================================= */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus Indicators */
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus,
+.form-checkbox:focus,
+.submit-button:focus {
+  outline: 2px solid var(--primary-green);
+  outline-offset: 2px;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  :root {
+    --border-color: #000000;
+    --text-muted: #000000;
+  }
+  
+  [data-theme="dark"] {
+    --border-color: #ffffff;
+    --text-muted: #ffffff;
+  }
+}
+
+/* =============================================================================
+   PRINT STYLES
+   ============================================================================= */
+@media print {
+  .booking-hero,
+  .booking-progress,
+  .submit-button {
+    display: none;
+  }
+  
+  .booking-form-container {
+    box-shadow: none;
+    border: 2px solid #000;
+  }
+  
+  .form-input,
+  .form-select,
+  .form-textarea {
+    border: 1px solid #000;
+    background: transparent;
+  }
+}

@@ -1,0 +1,117 @@
+/* =============================================================================
+   UX ENHANCEMENTS - MOBILE TOUCH & LOADING OPTIMIZATIONS
+   ============================================================================= */
+
+/* Mobile Touch Interactions */
+@media (max-width: 768px) {
+  /* Larger touch targets */
+  .about-card,
+  .mvv-card,
+  .service-preview-card,
+  .team-member {
+    min-height: 48px;
+    padding: var(--space-6);
+  }
+  
+  /* Touch feedback */
+  .contact-cta-button,
+  .about-hero-cta,
+  .scroll-to-top {
+    transform: scale(1);
+    transition: transform 0.15s ease;
+  }
+  
+  .contact-cta-button:active,
+  .about-hero-cta:active,
+  .scroll-to-top:active {
+    transform: scale(0.95);
+  }
+  
+  /* Prevent text selection on buttons */
+  .contact-cta-button,
+  .about-hero-cta {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Enhanced Loading States */
+.loading-skeleton {
+  background: linear-gradient(90deg, 
+    var(--bg-secondary) 25%, 
+    var(--bg-tertiary) 50%, 
+    var(--bg-secondary) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-card {
+  height: 200px;
+  border-radius: var(--border-radius-lg);
+  margin-bottom: var(--space-4);
+}
+
+.skeleton-text {
+  height: 16px;
+  border-radius: var(--border-radius-sm);
+  margin-bottom: var(--space-2);
+}
+
+.skeleton-title {
+  height: 24px;
+  border-radius: var(--border-radius-sm);
+  margin-bottom: var(--space-3);
+  width: 60%;
+}
+
+/* Improved Focus States for Accessibility */
+.about-card:focus-within,
+.mvv-card:focus-within,
+.service-preview-card:focus-within,
+.team-member:focus-within {
+  outline: 2px solid var(--primary-green);
+  outline-offset: 2px;
+}
+
+.contact-cta-button:focus,
+.about-hero-cta:focus {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 4px;
+}
+
+/* Skip Link for Screen Readers */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--primary-green);
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: var(--border-radius-sm);
+  z-index: 1000;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .animate-on-scroll,
+  .stagger-animation > *,
+  .loading-skeleton {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .about-hero-bg {
+    animation: none !important;
+  }
+}
