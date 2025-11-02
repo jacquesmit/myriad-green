@@ -1,149 +1,352 @@
-  <link rel="stylesheet" href="css/components/buttons/social-bar.css" />
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contact Us | Myriad Green</title>
+  <title>Contact Us - Expert Water Solutions | Myriad Green</title>
+  <meta name="description" content="Contact Myriad Green for professional irrigation, leak detection, and water management services in Gauteng. Fast response, expert solutions, and free consultations available.">
+  
+  <!-- External Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  
+  <!-- Core CSS -->
+  <link rel="stylesheet" href="css/reset.css" />
   <link rel="stylesheet" href="css/theme.css" />
-  <link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/theme-toggle.css" />
+  <link rel="stylesheet" href="css/utilities.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  
+  <!-- Navigation & UI Components -->
   <link rel="stylesheet" href="css/main-navigation.css" />
+  <link rel="stylesheet" href="css/mobile-nav.css" />
   <link rel="stylesheet" href="css/navbar.css" />
-  <link rel="stylesheet" href="css/nav.css" />
-  <link rel="stylesheet" href="css/contact.css" />
-  <link rel="stylesheet" href="css/contact-us-form.css" />
-  <link rel="stylesheet" href="css/legal.css" />
   <link rel="stylesheet" href="css/footer.css" />
-  <link rel="stylesheet" href="css/components/buttons/floating-contact-bar.css" />
-  <link rel="stylesheet" href="css/components/buttons/socials.css" />
-  <link rel="stylesheet" href="css/components/buttons/scroll-to-top.css" />
-  <link rel="stylesheet" href="css/contact-page.css" />
+  <link rel="stylesheet" href="css/theme-toggle.css" />
+  
+  <!-- Contact Page Specific -->
+  <link rel="stylesheet" href="css/contact-redesign.css">
+  
+  <!-- Additional Components -->
   <link rel="stylesheet" href="css/booking-modal.css" />
+  <link rel="stylesheet" href="css/mobile-tweaks.css" />
+  <link rel="stylesheet" href="css/mobile-tap-feedback.css" />
+  
+  <!-- Scripts -->
   <script src="js/site-init.js" defer></script>
   
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="/css/reset.css" />
-  <link rel="stylesheet" href="/css/theme.css" />
-  <link rel="stylesheet" href="/css/utilities.css" />
-  <link rel="stylesheet" href="/css/main.css" />
-  <link rel="stylesheet" href="/css/landinghero.css" />
-  <link rel="stylesheet" href="/css/servicesection.css" />
-  <link rel="stylesheet" href="/css/booking-modal.css" />
-  <link rel="stylesheet" href="/css/faq-section.css" />
-  <link rel="stylesheet" href="/css/testimonials-fallback.css" />
-  <link rel="stylesheet" href="/css/about-us-section.css" />
-  <link rel="stylesheet" href="/css/main-navigation.css" />
-  <link rel="stylesheet" href="/css/mobile-nav.css" />
-  <link rel="stylesheet" href="/css/footer.css" />
-  <link rel="stylesheet" href="/css/navbar.css" />
-  <link rel="stylesheet" href="/css/theme-toggle.css" />
-  <link rel="stylesheet" href="/css/components/buttons/book-now-button.css" />
-  <link rel="stylesheet" href="/css/components/buttons/social-bar.css" />
-  <link rel="stylesheet" href="/css/floating-bar-reopen-btn.css" />
-  <link rel="stylesheet" href="/css/contact-us-form.css">
-  <link rel="stylesheet" href="/css/mobile-tweaks.css" />
-  <link rel="stylesheet" href="/css/icon-strip-mobile.css" />
-  <link rel="stylesheet" href="/css/mobile-tap-feedback.css" />
-  <link rel="stylesheet" href="/css/mobile-scroll-icon-animate.css" />
-  <link rel="stylesheet" href="/css/layout.css" />
-  <link rel="stylesheet" href="/css/weather-widget.css">
-  <link rel="stylesheet" href="/css/cart-modal.css" />
-  <link rel="stylesheet" href="/css/checkout.css" />
-  <link rel="stylesheet" href="/css/shop-section.css" />
+  <!-- Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'GA_MEASUREMENT_ID');
+  </script>
 </head>
 <body>
+  <!-- Navigation Header -->
+  <div class="menu-header-container">
+    <nav>
+      <!-- Logo -->
+      <div class="header-logo">
+        <a href="/">
+          <img src="images/work/Myriadgreen_irrigation_logo-removebg-preview.png" alt="Myriad Green Logo">
+        </a>
+      </div>
 
+      <!-- Mobile Hamburger Icon -->
+      <div class="hamburger" aria-label="Menu" role="button">
+        <span></span><span></span><span></span>
+      </div>
 
-  <div id="site-nav"></div>
-  <div id="site-social-bar"></div>
+      <!-- Theme Toggle -->
+      <div class="theme-toggle-wrapper">
+        <div id="theme-toggle" class="theme-toggle-btn" role="button" aria-label="Switch theme">
+            <i class="fas theme-icon fa-moon"></i>
+        </div>
+      </div>
 
+      <!-- Main Menu -->
+      <ul class="main-menu">
+        <li><a href="/">Home</a></li>
+        <li><a href="/services/irrigation.html">Services</a></li>
+        <li><a href="/shop/">Shop</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/contact.html" class="active">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
 
-  <main class="contact-page">
-    <section class="hero">
-      <h1>Contact Myriad Green – Water Management, Irrigation & Pumping Experts in Gauteng</h1>
-      <p>Get in touch for professional irrigation, leak detection, rainwater harvesting, and water management services. We respond quickly and help your system flow smoothly.</p>
+  <main class="contact-main">
+    <!-- Hero Section -->
+    <section class="contact-hero">
+      <div class="hero-content">
+        <h1>Get Expert Water Solutions Fast</h1>
+        <p>Professional irrigation, leak detection & water management services across Gauteng. Fast response, reliable solutions, competitive pricing.</p>
+        <div class="hero-actions">
+          <a href="tel:+27877600222" class="cta-button cta-phone">
+            <i class="fas fa-phone"></i>
+            <span>Call Now</span>
+          </a>
+          <a href="#contact-form" class="cta-button cta-form">
+            <i class="fas fa-envelope"></i>
+            <span>Get Quote</span>
+          </a>
+          <a href="#emergency" class="cta-button cta-emergency">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Emergency</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Trust Indicators -->
+      <div class="trust-badges">
+        <div class="trust-badge">
+          <i class="fas fa-clock"></i>
+          <span>24/7 Emergency Service</span>
+        </div>
+        <div class="trust-badge">
+          <i class="fas fa-shield-check"></i>
+          <span>Licensed & Insured</span>
+        </div>
+        <div class="trust-badge">
+          <i class="fas fa-award"></i>
+          <span>1000+ Happy Customers</span>
+        </div>
+      </div>
     </section>
 
-
-    <section class="contact-main-grid" style="margin-top: 3rem;">
-      <div class="container contact-grid">
-        <div class="contact-details">
-          <h2>Why Contact Myriad Green?</h2>
-          <p style="margin-bottom:2rem; font-size:1.15rem; color:#333; font-family:'Poppins',sans-serif;">
-                        <em style="color:#176a3a;">Myriad Green</em> is <em style="color:#176a3a;">Gauteng's trusted partner</em> for <em style="color:#176a3a;">water management</em>, <a href="/services/irrigation.html" style="color:#176a3a; text-decoration:underline;"><em>irrigation</em></a>, and <em style="color:#176a3a;">pumping solutions</em>. Our expert team delivers <em style="color:#176a3a;">fast</em>, <em style="color:#176a3a;">reliable service</em> for <em style="color:#176a3a;">homes</em>, <em style="color:#176a3a;">businesses</em>, and <em style="color:#176a3a;">farms</em>. Whether you need <em style="color:#176a3a;">leak detection</em>, <em style="color:#176a3a;">rainwater harvesting</em>, or advice on <em style="color:#176a3a;">sustainable water systems</em>, we're here to help you <em style="color:#176a3a;">save water</em> and <em style="color:#176a3a;">money</em>. Contact us today for a <em style="color:#176a3a;">free consultation</em> or <em style="color:#176a3a;">emergency support</em>.
-          </p>
-          <h2>Drain Unblocking & Leak Detection Experts</h2>
-          <p style="margin-bottom:1.7rem; font-size:1.08rem; color:#333; font-family:'Poppins',sans-serif;">
-            <em style="color:#176a3a;">Blocked drains</em> and <em style="color:#176a3a;">hidden leaks</em> can cause costly damage and disrupt your daily life. Myriad Green specializes in fast, non-invasive <em style="color:#176a3a;">leak detection</em> and professional <em style="color:#176a3a;">drain unblocking</em> for homes, businesses, and farms across <em style="color:#176a3a;">Gauteng</em>. Our advanced equipment finds problems quickly, saving you time and money. If you notice <em style="color:#176a3a;">slow drainage</em>, <em style="color:#176a3a;">damp patches</em>, or <em style="color:#176a3a;">rising water bills</em>, contact us for a rapid response and expert solutions.
-          </p>
-          <h2>Contact Information</h2>
-          <ul>
-            <li><span>Phone:</span> <a href="tel:+27834567890">+27 83 456 7890</a></li>
-            <li><span>Email:</span> <a href="mailto:info@myriadgreen.co.za">info@myriadgreen.co.za</a></li>
-            <li><span>Address:</span> <span>123 Green Lane, Gauteng, South Africa</span></li>
-            <li><span>Operating Hours:</span> <span>Mon-Sun 08:00–18:00</span></li>
-          </ul>
+    <!-- Contact Methods -->
+    <section class="contact-methods">
+      <div class="contact-cards">
+        <div class="contact-card phone-card">
+          <div class="card-icon">
+            <i class="fas fa-phone"></i>
+          </div>
+          <div class="card-content">
+            <h3>Call Us</h3>
+            <p><strong><a href="tel:+27877600222">087 760 0222</a></strong></p>
+            <p>Available 24/7 for emergencies</p>
+          </div>
         </div>
-        <div class="form-content">
+        
+        <div class="contact-card email-card">
+          <div class="card-icon">
+            <i class="fas fa-envelope"></i>
+          </div>
+          <div class="card-content">
+            <h3>Email Us</h3>
+            <p><strong><a href="mailto:info@myriadgreen.co.za">info@myriadgreen.co.za</a></strong></p>
+            <p>We respond within 2 hours</p>
+          </div>
+        </div>
+        
+        <div class="contact-card location-card">
+          <div class="card-icon">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <div class="card-content">
+            <h3>Service Area</h3>
+            <p><strong>Gauteng Province</strong></p>
+            <p>Johannesburg, Pretoria & surrounding areas</p>
+          </div>
+        </div>
+        
+        <div class="contact-card hours-card">
+          <div class="card-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="card-content">
+            <h3>Business Hours</h3>
+            <p><strong>Mon-Sun: 8:00 AM - 6:00 PM</strong></p>
+            <p>Emergency service available 24/7</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Overview -->
+    <section class="services-highlight">
+      <div class="services-content">
+        <h2>How Can We Help You?</h2>
+        <p>Myriad Green is Gauteng's trusted partner for water management solutions. From leak detection to irrigation systems, we deliver fast, reliable service.</p>
+        
+        <div class="service-grid">
+          <div class="service-item">
+            <i class="fas fa-tint"></i>
+            <h4>Leak Detection</h4>
+            <p>Advanced equipment finds hidden leaks quickly</p>
+          </div>
+          <div class="service-item">
+            <i class="fas fa-seedling"></i>
+            <h4>Irrigation Systems</h4>
+            <p>Professional installation and maintenance</p>
+          </div>
+          <div class="service-item">
+            <i class="fas fa-tools"></i>
+            <h4>Drain Unblocking</h4>
+            <p>Fast, effective drain clearing services</p>
+          </div>
+          <div class="service-item">
+            <i class="fas fa-cloud-rain"></i>
+            <h4>Rainwater Harvesting</h4>
+            <p>Sustainable water collection systems</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Form Section -->
+    <section class="contact-form-section" id="contact-form">
+      <div class="form-container">
+        <div class="form-header">
           <h2>Send Us a Message</h2>
-          <div></div>
-          <form id="contactForm" class="contact-form" method="POST" action="https://formspree.io/f/xdkgbjre" novalidate>
-            <div class="form-group">
-              <input type="text" id="name" name="name" placeholder=" " required aria-label="Full Name">
-              <label for="name">Full Name</label>
+          <p>Tell us about your water management needs and we'll get back to you with a customized solution.</p>
+        </div>
+        
+        <form id="modern-contact-form" class="modern-contact-form" method="POST" action="https://formspree.io/f/xgvwqeow" novalidate>
+          <!-- Contact Information Group -->
+          <div class="form-group">
+            <h4 class="group-title">Contact Information</h4>
+            
+            <div class="input-row">
+              <div class="input-field">
+                <input type="text" id="name" name="name" required class="form-input" placeholder=" " />
+                <label for="name" class="floating-label">Full Name</label>
+                <i class="field-icon fas fa-user"></i>
+                <div class="field-validation">
+                  <i class="fas fa-check-circle validation-success"></i>
+                  <i class="fas fa-exclamation-circle validation-error"></i>
+                </div>
+              </div>
             </div>
-            <div class="form-group">
-              <input type="email" id="email" name="email" placeholder=" " required aria-label="Email Address">
-              <label for="email">Email Address</label>
+            
+            <div class="input-row">
+              <div class="input-field">
+                <input type="email" id="email" name="email" required class="form-input" placeholder=" " />
+                <label for="email" class="floating-label">Email Address</label>
+                <i class="field-icon fas fa-envelope"></i>
+                <div class="field-validation">
+                  <i class="fas fa-check-circle validation-success"></i>
+                  <i class="fas fa-exclamation-circle validation-error"></i>
+                </div>
+              </div>
             </div>
-            <div class="form-group">
-              <input type="tel" id="phone" name="phone" placeholder=" " required aria-label="Phone Number">
-              <label for="phone">Phone Number</label>
+            
+            <div class="input-row">
+              <div class="input-field">
+                <input type="tel" id="phone" name="phone" required class="form-input" placeholder=" " />
+                <label for="phone" class="floating-label">Phone Number</label>
+                <i class="field-icon fas fa-phone"></i>
+                <div class="field-validation">
+                  <i class="fas fa-check-circle validation-success"></i>
+                  <i class="fas fa-exclamation-circle validation-error"></i>
+                </div>
+              </div>
             </div>
-            <div class="form-group">
-              <input type="text" id="address" name="address" placeholder=" " required aria-label="Suburb / Area / Address">
-              <label for="address">Suburb / Area / Address</label>
+            
+            <div class="input-row">
+              <div class="input-field">
+                <input type="text" id="address" name="address" required class="form-input" placeholder=" " />
+                <label for="address" class="floating-label">Suburb / Area / Address</label>
+                <i class="field-icon fas fa-map-marker-alt"></i>
+                <div class="field-validation">
+                  <i class="fas fa-check-circle validation-success"></i>
+                  <i class="fas fa-exclamation-circle validation-error"></i>
+                </div>
+              </div>
             </div>
-            <div class="form-group">
-              <textarea id="message" name="message" placeholder=" " rows="4" required aria-label="How can we help?"></textarea>
-              <label for="message">How can we help?</label>
+          </div>
+
+          <!-- Project Details Group -->
+          <div class="form-group">
+            <h4 class="group-title">Project Details</h4>
+            
+            <div class="input-row">
+              <div class="input-field select-field">
+                <select id="service" name="service" required class="form-select">
+                  <option value="" disabled selected hidden></option>
+                  <option value="Irrigation Installation">Irrigation Installation</option>
+                  <option value="Leak Detection">Leak Detection</option>
+                  <option value="Drain Unblocking">Drain Unblocking</option>
+                  <option value="Rainwater Harvesting">Rainwater Harvesting</option>
+                  <option value="Water Filtration">Water Filtration</option>
+                  <option value="Landscaping">Landscaping</option>
+                  <option value="Emergency Service">Emergency Service</option>
+                  <option value="Other">Other</option>
+                </select>
+                <label for="service" class="floating-label">Select a Service</label>
+                <i class="field-icon fas fa-list"></i>
+                <div class="field-validation">
+                  <i class="fas fa-check-circle validation-success"></i>
+                  <i class="fas fa-exclamation-circle validation-error"></i>
+                </div>
+              </div>
             </div>
-            <div class="form-group">
-              <select id="service" name="service" required aria-label="Service">
-                <option value="" disabled selected hidden>Select a Service</option>
-                <option value="Irrigation Installation">Irrigation Installation</option>
-                <option value="Leak Detection">Leak Detection</option>
-                <option value="Drain Unblocking">Drain Unblocking</option>
-                <option value="Rainwater Harvesting">Rainwater Harvesting</option>
-                <option value="Water Filtration">Water Filtration</option>
-                <option value="Landscaping">Landscaping</option>
-                <option value="Other">Other</option>
-              </select>
+            
+            <div class="input-row">
+              <div class="input-field textarea-field">
+                <textarea id="message" name="message" required class="form-textarea" placeholder=" " rows="4"></textarea>
+                <label for="message" class="floating-label">How can we help you?</label>
+                <i class="field-icon fas fa-comment-dots"></i>
+                <div class="field-validation">
+                  <i class="fas fa-check-circle validation-success"></i>
+                  <i class="fas fa-exclamation-circle validation-error"></i>
+                </div>
+              </div>
             </div>
-            <!-- Honeypot for spam protection -->
-            <div style="display:none;">
-              <label for="website">Website</label>
-              <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
-            </div>
-            <button type="submit">Send Message</button>
-            <div id="form-status" class="form-status-message" role="alert"></div>
+          </div>
+
+          <!-- Honeypot for spam protection -->
+          <div class="honeypot">
+            <label for="website">Website</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+          </div>
+
+          <!-- Submit Button -->
+          <div class="form-actions">
+            <button type="submit" id="submit-btn" class="submit-button">
+              <span class="btn-content">
+                <i class="fas fa-paper-plane btn-icon"></i>
+                <span class="btn-text">Send Message</span>
+                <i class="fas fa-arrow-right btn-arrow"></i>
+              </span>
+            </button>
+            
+            <div id="form-status-message" class="form-status-message" role="alert"></div>
+            
             <div class="privacy-notice">
-              <small>We respect your privacy and never share your information. See our <a href="/privacy-policy">Privacy Policy</a>.</small>
+              <i class="fas fa-shield-alt"></i>
+              <span>We respect your privacy and never share your information. See our <a href="/privacy-policy">Privacy Policy</a>.</span>
             </div>
-          </form>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Service Area Map -->
+    <section class="service-area-map" id="service-area">
+      <div class="map-content">
+        <h2>Our Service Area</h2>
+        <p>We proudly serve homes, businesses, and farms across Gauteng Province</p>
+        <div class="map-container">
+          <iframe 
+            id="contact-map-iframe" 
+            src="https://www.google.com/maps?q=Gauteng,+South+Africa&output=embed" 
+            width="100%" 
+            height="400" 
+            allowfullscreen 
+            loading="lazy" 
+            title="Myriad Green Service Area - Gauteng, South Africa">
+          </iframe>
         </div>
       </div>
     </section>
   </main>
-
-  <section class="contact-map">
-    <iframe id="contact-map-iframe" src="https://www.google.com/maps?q=Gauteng,+South+Africa&output=embed" width="100%" height="200" style="border:0;" allowfullscreen loading="lazy" title="Our Location"></iframe>
-  </section>
   <script>
     // Dynamically update the map based on the 'area' URL parameter
     (function() {
@@ -159,12 +362,58 @@
       }
     })();
   </script>
-  <footer id="site-footer"></footer>
+  <!-- Footer Section -->
+  <footer class="main-footer">
+    <div class="footer-container">
+      <h2 class="footer-title">Expert Water Solutions</h2>
+      <div class="footer-columns">
+        <ul class="footer-menu">
+          <li class="footer-headings">Quick Links</li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/services/irrigation.html">Services</a></li>
+          <li><a href="/about.html">About Us</a></li>
+          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="/shop/">Shop</a></li>
+        </ul>
+        <ul class="footer-menu">
+          <li class="footer-headings">Services</li>
+          <li><a href="/services/irrigation.html">Irrigation Systems</a></li>
+          <li><a href="/services/leak-detection.html">Leak Detection</a></li>
+          <li><a href="/services/drain-unblocking.html">Drain Unblocking</a></li>
+          <li><a href="/services/backup-water-systems.html">Water Systems</a></li>
+        </ul>
+        <ul class="footer-menu">
+          <li class="footer-headings">Contact Info</li>
+          <li><a href="tel:+27877600222">087 760 0222</a></li>
+          <li><a href="mailto:info@myriadgreen.co.za">info@myriadgreen.co.za</a></li>
+          <li>Gauteng, South Africa</li>
+          <li>Mon-Sun: 8:00 AM - 6:00 PM</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Booking Modal -->
   <div id="booking-modal-container"></div>
-  <div id="booking-modal-container"></div>
+  
+  <!-- Scripts -->
   <script src="js/booking-modal-loader.js" defer></script>
-</body>
-  <div id="booking-modal-container"></div>
-  <script src="js/booking-modal-loader.js" defer></script>
+  <script src="js/contact-redesign.js" defer></script>
+  <script>
+    // Dynamic map update based on URL parameter
+    (function() {
+      function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+      }
+      
+      const area = getQueryParam('area');
+      if (area) {
+        const iframe = document.getElementById('contact-map-iframe');
+        const encodedArea = encodeURIComponent(area + ', South Africa');
+        iframe.src = 'https://www.google.com/maps?q=' + encodedArea + '&output=embed';
+      }
+    })();
+  </script>
 </body>
 </html>
