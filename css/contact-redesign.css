@@ -3,7 +3,12 @@
    Complete redesign for production-ready contact experience
    =================================== */
 
-/* CSS Variables */
+/* ===================================
+   THEME VARIABLES - LIGHT & DARK MODE
+   =================================== */
+
+/* Light Mode Variables */
+[data-theme="light"],
 :root {
   --primary-green: #00A651;
   --secondary-green: #10B981;
@@ -29,6 +34,32 @@
   --radius-xl: 20px;
 }
 
+/* Dark Mode Variables */
+[data-theme="dark"] {
+  --primary-green: #10B981;
+  --secondary-green: #059669;
+  --dark-green: #065f46;
+  --light-green: #064e3b;
+  --accent-blue: #60a5fa;
+  --emergency-red: #f87171;
+  --warning-orange: #fbbf24;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-light: #9ca3af;
+  --background: #111827;
+  --surface: #1f2937;
+  --border: #374151;
+  --border-light: rgba(16, 185, 129, 0.1);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+}
+
 /* ===================================
    MAIN LAYOUT STRUCTURE
    =================================== */
@@ -36,6 +67,11 @@
 .contact-main {
   min-height: 100vh;
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+/* Dark mode main background */
+[data-theme="dark"] .contact-main {
+  background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
 }
 
 /* ===================================
@@ -178,7 +214,7 @@
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
 }
 
@@ -740,12 +776,26 @@
   }
   
   .contact-cards {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
+    max-width: 800px;
   }
   
   .service-grid {
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
+/* Specific tablet breakpoint for better card layout */
+@media (max-width: 900px) and (min-width: 769px) {
+  .contact-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    max-width: 700px;
+  }
+  
+  .contact-card {
+    padding: 1.75rem;
   }
 }
 
@@ -976,6 +1026,13 @@
   transform: translateY(-1px);
 }
 
+/* Dark mode hover effects */
+[data-theme="dark"] .input-field:hover .form-input:not(:focus),
+[data-theme="dark"] .input-field:hover .form-select:not(:focus),
+[data-theme="dark"] .input-field:hover .form-textarea:not(:focus) {
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
 /* Success state animations */
 .input-field.valid {
   animation: bounce 0.5s ease-out;
@@ -1053,6 +1110,80 @@
     box-shadow: none;
     border: 1px solid #ccc;
   }
+}
+
+/* ===================================
+   DARK MODE SPECIFIC OVERRIDES
+   =================================== */
+
+/* Dark mode card backgrounds and text */
+[data-theme="dark"] .contact-card {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .service-item {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .modern-contact-form {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+/* Ensure text is always visible in dark mode */
+[data-theme="dark"] .card-content h3,
+[data-theme="dark"] .service-item h4,
+[data-theme="dark"] .group-title {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .card-content p,
+[data-theme="dark"] .service-item p {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .card-content a {
+  color: var(--primary-green) !important;
+}
+
+/* Dark mode form styling */
+[data-theme="dark"] .form-input,
+[data-theme="dark"] .form-select,
+[data-theme="dark"] .form-textarea {
+  background: var(--background);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .floating-label {
+  background: var(--background);
+  color: var(--text-light);
+}
+
+[data-theme="dark"] .form-input:focus + .floating-label,
+[data-theme="dark"] .form-input:not(:placeholder-shown) + .floating-label,
+[data-theme="dark"] .form-select:focus + .floating-label,
+[data-theme="dark"] .form-select:not([value=""]) + .floating-label,
+[data-theme="dark"] .form-textarea:focus + .floating-label,
+[data-theme="dark"] .form-textarea:not(:placeholder-shown) + .floating-label {
+  color: var(--primary-green);
+}
+
+/* Dark mode hero section adjustments */
+[data-theme="dark"] .services-content h2,
+[data-theme="dark"] .form-header h2,
+[data-theme="dark"] .map-content h2 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .services-content > p,
+[data-theme="dark"] .form-header p,
+[data-theme="dark"] .map-content > p {
+  color: var(--text-secondary);
 }
 
 /* Performance optimizations */
