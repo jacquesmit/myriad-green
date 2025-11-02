@@ -179,38 +179,58 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    function initializeFloatingLabels() {
-        const inputs = document.querySelectorAll('.form-input, .form-select, .form-textarea');
-        
-        inputs.forEach(input => {
-            updateFloatingLabel(input);
-            
-            // Handle autofill
-            setTimeout(() => {
-                updateFloatingLabel(input);
-            }, 100);
-        });
+  function initializeFloatingLabels() {
+    const inputs = document.querySelectorAll('.form-input, .form-select, .form-textarea');
+    
+    inputs.forEach(input => {
+      updateFloatingLabel(input);
+      
+      // Handle autofill - check multiple times as browsers autofill at different moments
+      setTimeout(() => updateFloatingLabel(input), 100);
+      setTimeout(() => updateFloatingLabel(input), 500);
+      setTimeout(() => updateFloatingLabel(input), 1000);
+    });
+    
+    // Set up periodic autofill checking
+    setInterval(checkAutofillStatus, 1000);
+  }  function updateFloatingLabel(input) {
+    // Find the correct label by ID association
+    const inputId = input.id;
+    const label = document.querySelector(`label[for="${inputId}"]`);
+    
+    if (!label || !label.classList.contains('floating-label')) {
+      console.warn(`No floating label found for input: ${inputId}`);
+      return;
     }
     
-    function updateFloatingLabel(input) {
-        const label = input.nextElementSibling;
-        if (!label || !label.classList.contains('floating-label')) return;
-        
-        const hasValue = input.value.trim() !== '' || input.type === 'select-one' && input.value !== '';
-        const isFocused = document.activeElement === input;
-        
-        if (hasValue || isFocused) {
-            label.style.transform = 'translateY(-2.5rem) translateX(-0.5rem) scale(0.85)';
-            label.style.color = 'var(--primary-green)';
-            label.style.fontWeight = '500';
-        } else {
-            label.style.transform = '';
-            label.style.color = 'var(--text-light)';
-            label.style.fontWeight = '';
-        }
-    }
+    const hasValue = input.value.trim() !== '' || input.type === 'select-one' && input.value !== '';
+    const isFocused = document.activeElement === input;
+    const isAutofilled = input.matches(':-webkit-autofill') || input.matches(':autofill');
     
-    function addEnhancedUX() {
+    // Debug logging - ensure we have the right association
+    console.log(`Field ${inputId}: Value="${input.value}" | Label="${label.textContent.trim()}" | Should float: ${hasValue || isFocused || isAutofilled}`);
+    
+    if (hasValue || isFocused || isAutofilled) {
+      label.classList.add('active');
+    } else {
+      label.classList.remove('active');
+    }
+  }
+  
+  function checkAutofillStatus() {
+    const inputs = document.querySelectorAll('.form-input');
+    inputs.forEach(input => {
+      const container = input.closest('.input-field');
+      const isAutofilled = input.matches(':-webkit-autofill') || input.value !== '';
+      
+      if (isAutofilled) {
+        container?.classList.add('autofilled');
+        updateFloatingLabel(input);
+      } else {
+        container?.classList.remove('autofilled');
+      }
+    });
+  }    function addEnhancedUX() {
         // Auto-format phone number
         const phoneInput = document.querySelector('input[name="phone"]');
         if (phoneInput) {

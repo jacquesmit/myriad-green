@@ -510,12 +510,24 @@
   padding: 0 0.25rem;
 }
 
-.form-input:focus + .floating-label,
-.form-input:not(:placeholder-shown) + .floating-label,
-.form-select:focus + .floating-label,
-.form-select:not([value=""]) + .floating-label,
-.form-textarea:focus + .floating-label,
-.form-textarea:not(:placeholder-shown) + .floating-label {
+/* Floating label states - handled by JavaScript for better control */
+.floating-label.active {
+  transform: translateY(-2.5rem) translateX(-0.5rem) scale(0.85);
+  color: var(--primary-green);
+  font-weight: 500;
+}
+
+/* Handle autofill specifically */
+.form-input:-webkit-autofill,
+.form-input:-webkit-autofill:hover,
+.form-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--background) inset;
+  -webkit-text-fill-color: var(--text-primary);
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Enhanced autofill support - fallback approach */
+.input-field.autofilled .floating-label {
   transform: translateY(-2.5rem) translateX(-0.5rem) scale(0.85);
   color: var(--primary-green);
   font-weight: 500;
@@ -1165,12 +1177,8 @@
   color: var(--text-light);
 }
 
-[data-theme="dark"] .form-input:focus + .floating-label,
-[data-theme="dark"] .form-input:not(:placeholder-shown) + .floating-label,
-[data-theme="dark"] .form-select:focus + .floating-label,
-[data-theme="dark"] .form-select:not([value=""]) + .floating-label,
-[data-theme="dark"] .form-textarea:focus + .floating-label,
-[data-theme="dark"] .form-textarea:not(:placeholder-shown) + .floating-label {
+/* Dark mode floating label active state */
+[data-theme="dark"] .floating-label.active {
   color: var(--primary-green);
 }
 
@@ -1185,6 +1193,15 @@
 [data-theme="dark"] .form-header p,
 [data-theme="dark"] .map-content > p {
   color: var(--text-secondary);
+}
+
+/* Ensure services highlight section is visible in dark mode */
+[data-theme="dark"] .services-highlight {
+  background: var(--surface);
+}
+
+[data-theme="dark"] .service-item i {
+  color: var(--primary-green) !important;
 }
 
 /* Performance optimizations */
