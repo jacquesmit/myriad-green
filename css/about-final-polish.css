@@ -1,0 +1,277 @@
+/* =============================================================================
+   FINAL POLISH - ADVANCED UX ENHANCEMENTS
+   ============================================================================= */
+
+/* Smooth Scroll Behavior */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px; /* Account for fixed navigation */
+}
+
+/* Enhanced Visual Hierarchy */
+.about-section-title {
+  background: linear-gradient(135deg, var(--primary-green), var(--accent-blue));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  position: relative;
+}
+
+.about-section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-green), var(--accent-blue));
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.6s ease, width 0.6s ease;
+}
+
+.about-section.animated .about-section-title::after {
+  opacity: 1;
+  width: 80px;
+}
+
+/* Subtle Parallax Effect */
+.about-hero-bg {
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .about-hero-bg {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+}
+
+/* Advanced Content Transitions */
+.stagger-animation > * {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.stagger-animation.animated > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stagger-animation.animated > *:nth-child(1) { transition-delay: 0.1s; }
+.stagger-animation.animated > *:nth-child(2) { transition-delay: 0.2s; }
+.stagger-animation.animated > *:nth-child(3) { transition-delay: 0.3s; }
+.stagger-animation.animated > *:nth-child(4) { transition-delay: 0.4s; }
+.stagger-animation.animated > *:nth-child(5) { transition-delay: 0.5s; }
+.stagger-animation.animated > *:nth-child(6) { transition-delay: 0.6s; }
+
+/* Interactive Elements Enhancement */
+.about-card,
+.mvv-card,
+.service-preview-card,
+.team-member {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.about-card::before,
+.mvv-card::before,
+.service-preview-card::before,
+.team-member::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.1), 
+    transparent);
+  transition: left 0.6s ease;
+  pointer-events: none;
+}
+
+.about-card:hover::before,
+.mvv-card:hover::before,
+.service-preview-card:hover::before,
+.team-member:hover::before {
+  left: 100%;
+}
+
+/* Enhanced Button Interactions */
+.contact-cta-button,
+.about-hero-cta {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--primary-green), var(--accent-blue));
+  background-size: 200% 100%;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.contact-cta-button::before,
+.about-hero-cta::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+  pointer-events: none;
+}
+
+.contact-cta-button:hover::before,
+.about-hero-cta:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.contact-cta-button:hover,
+.about-hero-cta:hover {
+  background-position: 100% 0;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(var(--primary-green-rgb), 0.3);
+}
+
+/* Story Stats Animation */
+.story-stat {
+  position: relative;
+  overflow: hidden;
+}
+
+.story-stat-number {
+  display: inline-block;
+  transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.story-section.animated .story-stat-number {
+  animation: countUp 2s ease-out forwards;
+}
+
+@keyframes countUp {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Advanced Loading States */
+.weather-widget-container.loading-skeleton {
+  position: relative;
+  border-radius: var(--border-radius-xl);
+  overflow: hidden;
+}
+
+.weather-widget-container.loading-skeleton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent);
+  animation: shimmerWave 2s infinite;
+}
+
+@keyframes shimmerWave {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Section Dividers */
+.about-section + .about-section::before {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-green), var(--accent-blue));
+  margin: var(--space-16) auto var(--space-8);
+  border-radius: 1px;
+  opacity: 0;
+  transform: scaleX(0);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.about-section.animated + .about-section::before {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+/* Enhanced Map Container */
+.map-container {
+  position: relative;
+  border-radius: var(--border-radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.map-container:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.map-iframe {
+  transition: filter 0.4s ease;
+}
+
+.map-container:hover .map-iframe {
+  filter: saturate(1.1) contrast(1.05);
+}
+
+/* Scroll Progress Indicator */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-green), var(--accent-blue));
+  z-index: 1001;
+  transition: width 0.1s ease;
+}
+
+/* Print Styles */
+@media print {
+  .about-hero-bg,
+  #site-nav,
+  #site-footer,
+  #site-social-bar,
+  .scroll-to-top,
+  .skip-link {
+    display: none !important;
+  }
+  
+  .about-container {
+    padding-top: 0 !important;
+  }
+  
+  .about-card,
+  .mvv-card,
+  .service-preview-card,
+  .team-member {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}

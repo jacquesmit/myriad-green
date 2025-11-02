@@ -48,11 +48,15 @@
   <!-- Page-specific Styles -->
   <link rel="stylesheet" href="css/about-page-redesign.css" />
   <link rel="stylesheet" href="css/about-ux-enhancements.css" />
+  <link rel="stylesheet" href="css/about-final-polish.css" />
   
   <!-- Weather Widget Styles -->
   <link rel="stylesheet" href="css/weather-widget.css" />
 </head>
 <body id="top">
+  <!-- Scroll Progress Indicator -->
+  <div class="scroll-progress" id="scroll-progress"></div>
+  
   <!-- Skip Link for Accessibility -->
   <a href="#main-content" class="skip-link">Skip to main content</a>
   
@@ -474,6 +478,9 @@
         this.setupLazyLoading();
         this.loadPartialContent();
         this.setupSmoothScrolling();
+        this.setupScrollProgress();
+        this.setupInteractiveElements();
+        this.setupParallaxEffect();
       }
       
       // =============================================================================
@@ -635,6 +642,100 @@
             }
           });
         });
+      }
+      
+      // =============================================================================
+      // SCROLL PROGRESS INDICATOR
+      // =============================================================================
+      setupScrollProgress() {
+        const progressBar = document.getElementById('scroll-progress');
+        if (!progressBar) return;
+        
+        window.addEventListener('scroll', () => {
+          const scrollTop = window.pageYOffset;
+          const docHeight = document.body.scrollHeight - window.innerHeight;
+          const scrollPercent = (scrollTop / docHeight) * 100;
+          progressBar.style.width = Math.min(scrollPercent, 100) + '%';
+        });
+      }
+      
+      // =============================================================================
+      // INTERACTIVE ELEMENTS
+      // =============================================================================
+      setupInteractiveElements() {
+        // Enhanced card interactions
+        document.querySelectorAll('.about-card, .mvv-card, .service-preview-card, .team-member').forEach(card => {
+          card.addEventListener('mouseenter', (e) => {
+            e.target.style.transform = 'translateY(-8px) scale(1.02)';
+          });
+          
+          card.addEventListener('mouseleave', (e) => {
+            e.target.style.transform = 'translateY(0) scale(1)';
+          });
+          
+          // Add subtle click animation
+          card.addEventListener('click', (e) => {
+            e.target.style.transform = 'translateY(-4px) scale(0.98)';
+            setTimeout(() => {
+              e.target.style.transform = 'translateY(-8px) scale(1.02)';
+            }, 150);
+          });
+        });
+        
+        // Story stats counter animation
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const numberElement = entry.target.querySelector('.story-stat-number');
+              if (numberElement && !numberElement.classList.contains('animated')) {
+                this.animateNumber(numberElement);
+                numberElement.classList.add('animated');
+              }
+            }
+          });
+        });
+        
+        document.querySelectorAll('.story-stat').forEach(stat => {
+          observer.observe(stat);
+        });
+      }
+      
+      // =============================================================================
+      // PARALLAX EFFECT
+      // =============================================================================
+      setupParallaxEffect() {
+        const heroBackground = document.querySelector('.about-hero-bg');
+        if (!heroBackground) return;
+        
+        // Check if user prefers reduced motion
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          return;
+        }
+        
+        window.addEventListener('scroll', () => {
+          const scrolled = window.pageYOffset;
+          const rate = scrolled * -0.5;
+          heroBackground.style.transform = `translateY(${rate}px)`;
+        });
+      }
+      
+      // =============================================================================
+      // NUMBER ANIMATION
+      // =============================================================================
+      animateNumber(element) {
+        const target = parseInt(element.textContent.replace(/\D/g, ''));
+        const suffix = element.textContent.replace(/\d/g, '');
+        let current = 0;
+        const increment = target / 60; // 60 frames for smooth animation
+        
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            current = target;
+            clearInterval(timer);
+          }
+          element.textContent = Math.floor(current) + suffix;
+        }, 16); // ~60fps
       }
       
       // =============================================================================
