@@ -1,77 +1,8 @@
 /* 
- * FLOATING SOCIAL BAR STYLES
- * Positioning and visibility for the injected social bar
- * Handles the nested structure created by injection
+ * FLOATING SOCIAL BAR PLACEHOLDER
+ * This file exists to prevent 404 errors on CSS import
+ * The actual styling is handled by the existing injection system
+ * and css/components/buttons/social-bar.css
  */
 
-/* Target the injected content - the actual floating bar */
-#site-social-bar .floating-follow-bar,
-#site-social-bar.floating-follow-bar,
-.floating-follow-bar {
-  position: fixed !important;
-  right: 20px !important;
-  top: 50% !important;
-  left: auto !important;
-  transform: translateY(-50%) !important;
-  z-index: 999 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 8px;
-  transition: all 0.3s ease;
-}
-
-/* Reset any conflicting positioning on the container */
-#site-social-bar {
-  position: static !important;
-  right: auto !important;
-  left: auto !important;
-  top: auto !important;
-  transform: none !important;
-}
-
-/* Style the social bar links */
-#site-social-bar .floating-follow-bar a,
-.floating-follow-bar a {
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--color-card-bg, rgba(255, 255, 255, 0.95)) !important;
-  color: var(--color-text) !important;
-  text-decoration: none;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
-  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
-}
-
-#site-social-bar .floating-follow-bar a:hover,
-.floating-follow-bar a:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-}
-
-#site-social-bar .floating-follow-bar a i,
-.floating-follow-bar a i {
-  font-size: 18px;
-}
-
-/* Theme-specific styling handled by existing social-bar.css */
-
-/* Mobile adjustments */
-@media (max-width: 768px) {
-  .floating-follow-bar {
-    right: 15px;
-    gap: 6px;
-  }
-  
-  .floating-follow-bar a {
-    width: 44px;
-    height: 44px;
-  }
-  
-  .floating-follow-bar a i {
-    font-size: 16px;
-  }
-}
+/* Let the existing injection system handle the positioning and styling */
