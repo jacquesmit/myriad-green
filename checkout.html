@@ -111,25 +111,137 @@
     
     <div class="checkout-sidebyside">
       <section class="cart-summary card">
-        <h2 class="cart-summary-title">Your Items</h2>
-        <ul id="checkoutCartList" class="checkout-cart-list"></ul>
-        <p class="checkout-total">Total: R<span id="checkoutCartTotal">0.00</span></p>
+        <div class="cart-header">
+          <h2 class="cart-summary-title">
+            <i class="fas fa-shopping-bag"></i>
+            Your Order
+          </h2>
+          <div class="cart-count" id="cartItemCount">0 items</div>
+        </div>
+        
+        <div class="cart-items-container">
+          <ul id="checkoutCartList" class="checkout-cart-list"></ul>
+        </div>
+        
+        <div class="order-summary">
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="cartSubtotal">R0.00</span>
+          </div>
+          <div class="summary-row">
+            <span>Delivery</span>
+            <span class="delivery-info">
+              <i class="fas fa-truck" title="Free delivery over R500"></i>
+              Free
+            </span>
+          </div>
+          <div class="summary-row total-row">
+            <span>Total</span>
+            <span class="total-amount">R<span id="checkoutCartTotal">0.00</span></span>
+          </div>
+        </div>
+        
+        <div class="security-badges">
+          <div class="security-item">
+            <i class="fas fa-lock"></i>
+            <span>Secure Checkout</span>
+          </div>
+          <div class="security-item">
+            <i class="fas fa-shield-alt"></i>
+            <span>Protected Payment</span>
+          </div>
+        </div>
       </section>
       <form id="checkoutForm" class="checkout-form card">
-        <fieldset>
-          <legend class="form-legend">Contact Details</legend>
-          <label for="clientName">Full Name</label>
-          <input type="text" id="clientName" name="clientName" required placeholder="Your Name" autocomplete="name" />
-
-          <label for="clientEmail">Email Address</label>
-          <input type="email" id="clientEmail" name="clientEmail" required placeholder="you@example.com" autocomplete="email" />
-
-          <label for="clientAddress">Address</label>
-          <input type="text" id="clientAddress" name="clientAddress" required placeholder="123 Main St, Suburb, City" autocomplete="street-address" />
-
-          <label for="clientPhone">Phone Number</label>
-          <input type="tel" id="clientPhone" name="clientPhone" required placeholder="021 000 0000" autocomplete="tel" />
-        </fieldset>
+        <div class="form-header">
+          <h2 class="form-title">
+            <i class="fas fa-shield-alt"></i>
+            Secure Checkout Form
+          </h2>
+          <div class="form-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" id="formProgressFill"></div>
+            </div>
+            <span class="progress-text" id="formProgressText">0% Complete</span>
+          </div>
+        </div>
+        
+        <input type="hidden" id="csrfToken" name="csrfToken" value="">
+        <input type="hidden" id="sessionId" name="sessionId" value="">
+        
+        <div class="form-section">
+          <div class="section-header">
+            <h3 class="section-title">
+              <i class="fas fa-user-circle section-icon"></i>
+              Contact Details
+            </h3>
+            <p class="section-subtitle">We'll use this information to process your order</p>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-field">
+              <input type="text" id="clientName" name="clientName" required autocomplete="name" class="modern-input" />
+              <label for="clientName" class="floating-label">Full Name</label>
+              <div class="field-icon">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="field-validation">
+                <i class="fas fa-check-circle validation-success"></i>
+                <i class="fas fa-exclamation-circle validation-error"></i>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-field">
+              <input type="email" id="clientEmail" name="clientEmail" required autocomplete="email" class="modern-input" />
+              <label for="clientEmail" class="floating-label">Email Address</label>
+              <div class="field-icon">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <div class="field-validation">
+                <i class="fas fa-check-circle validation-success"></i>
+                <i class="fas fa-exclamation-circle validation-error"></i>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-field">
+              <input type="text" id="clientAddress" name="clientAddress" required autocomplete="street-address" class="modern-input" />
+              <label for="clientAddress" class="floating-label">Street Address</label>
+              <div class="field-icon">
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <div class="field-validation">
+                <i class="fas fa-check-circle validation-success"></i>
+                <i class="fas fa-exclamation-circle validation-error"></i>
+              </div>
+              <div class="field-help">
+                <i class="fas fa-info-circle"></i>
+                <span class="help-text">Include suburb and postal code for accurate delivery</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-field">
+              <input type="tel" id="clientPhone" name="clientPhone" required autocomplete="tel" class="modern-input" />
+              <label for="clientPhone" class="floating-label">Phone Number</label>
+              <div class="field-icon">
+                <i class="fas fa-phone"></i>
+              </div>
+              <div class="field-validation">
+                <i class="fas fa-check-circle validation-success"></i>
+                <i class="fas fa-exclamation-circle validation-error"></i>
+              </div>
+              <div class="field-help">
+                <i class="fas fa-info-circle"></i>
+                <span class="help-text">We'll contact you for delivery coordination</span>
+              </div>
+            </div>
+          </div>
+        </div>
         <input type="hidden" id="csrfToken" name="csrfToken" value="">
         <input type="hidden" id="sessionId" name="sessionId" value="">
         <div class="payment-actions">

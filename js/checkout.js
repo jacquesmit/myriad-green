@@ -8,6 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
     list.innerHTML = "";
     let total = 0;
 
+    // Update cart count
+    const cartCount = document.getElementById('cartItemCount');
+    if (cartCount) {
+      cartCount.textContent = `${cart.length} item${cart.length !== 1 ? 's' : ''}`;
+    }
+
     cart.forEach((item, index) => {
       const li = document.createElement("li");
       li.classList.add("checkout-item");
@@ -32,6 +38,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     totalEl.textContent = total.toFixed(2);
+    
+    // Update subtotal (same as total for now)
+    const subtotalEl = document.getElementById('cartSubtotal');
+    if (subtotalEl) {
+      subtotalEl.textContent = `R${total.toFixed(2)}`;
+    }
 
     document.querySelectorAll(".remove-from-checkout").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -54,6 +66,9 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Initialize testimonial carousel
   initializeTestimonialCarousel();
+  
+  // Initialize enhanced form interactions
+  initializeFormEnhancements();
 
   const checkoutForm = document.getElementById("checkoutForm");
   // Auto-detect API base: if on localhost and not port 3000, point to http://localhost:3000
@@ -549,5 +564,110 @@ document.addEventListener("DOMContentLoaded", () => {
     trackEvent('testimonial_carousel_viewed', {
       total_testimonials: testimonialItems.length
     });
+  }
+  
+  // Enhanced Form Interactions
+  function initializeFormEnhancements() {
+    const formFields = document.querySelectorAll('.modern-input');
+    const progressFill = document.getElementById('formProgressFill');
+    const progressText = document.getElementById('formProgressText');
+    
+    // Initialize form progress
+    updateFormProgress();
+    
+    formFields.forEach(field => {
+      // Real-time validation and progress tracking
+      field.addEventListener('input', function() {
+        validateField(this);
+        updateFormProgress();
+      });
+      
+      field.addEventListener('blur', function() {
+        validateField(this);
+      });
+      
+      // Enhanced focus effects
+      field.addEventListener('focus', function() {
+        this.closest('.form-field').classList.add('focused');
+        
+        // Track field interaction
+        trackEvent('form_field_focused', {
+          field_name: this.name,
+          field_type: this.type
+        });
+      });
+      
+      field.addEventListener('blur', function() {
+        this.closest('.form-field').classList.remove('focused');
+      });
+    });
+  }
+  
+  function validateField(field) {
+    const fieldContainer = field.closest('.form-field');
+    const value = field.value.trim();
+    let isValid = false;
+    
+    // Clear previous states
+    fieldContainer.classList.remove('valid', 'error');
+    
+    if (field.type === 'email') {
+      isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    } else if (field.type === 'tel') {
+      isValid = /^[\d\s\-\+\(\)]{10,15}$/.test(value.replace(/\s/g, ''));
+    } else if (field.name === 'clientName') {
+      isValid = value.length >= 2 && /^[a-zA-Z\s''-]+$/.test(value);
+    } else if (field.name === 'clientAddress') {
+      isValid = value.length >= 10;
+    } else {
+      isValid = value.length > 0;
+    }
+    
+    if (value.length > 0) {
+      fieldContainer.classList.add(isValid ? 'valid' : 'error');
+    }
+    
+    return isValid;
+  }
+  
+  function updateFormProgress() {
+    const formFields = document.querySelectorAll('.modern-input[required]');
+    const progressFill = document.getElementById('formProgressFill');
+    const progressText = document.getElementById('formProgressText');
+    
+    if (!progressFill || !progressText) return;
+    
+    let completedFields = 0;
+    let validFields = 0;
+    
+    formFields.forEach(field => {
+      const value = field.value.trim();
+      if (value.length > 0) {
+        completedFields++;
+        if (validateField(field)) {
+          validFields++;
+        }
+      }
+    });
+    
+    const progressPercentage = Math.round((validFields / formFields.length) * 100);
+    
+    progressFill.style.width = `${progressPercentage}%`;
+    progressText.textContent = `${progressPercentage}% Complete`;
+    
+    // Add completion celebration
+    if (progressPercentage === 100) {
+      progressFill.style.background = 'linear-gradient(90deg, #10B981 0%, #00A651 100%)';
+      progressText.innerHTML = `<i class="fas fa-check-circle"></i> Ready to Submit!`;
+      
+      // Track form completion
+      trackEvent('form_completion_achieved', {
+        completion_percentage: progressPercentage,
+        valid_fields: validFields,
+        total_fields: formFields.length
+      });
+    } else {
+      progressFill.style.background = 'linear-gradient(90deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%)';
+    }
   }
 });
