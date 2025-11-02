@@ -243,9 +243,6 @@
   <link rel="stylesheet" href="/css/cart-modal.css" />
   <link rel="stylesheet" href="/css/checkout.css" />
   <link rel="stylesheet" href="/css/shop-section.css" />
-  
-  <!-- NEW: Consolidated Index Page CSS Architecture -->
-  <link rel="stylesheet" href="/css/index-page-redesign.css" />
 </head>
 
 <body id="top">
@@ -268,58 +265,26 @@
   </header>
 
   
-  <main id="main-content" role="main" tabindex="-1">
-  
-  <!-- Skip to Content Link for Accessibility -->
-  <a href="#main-content" class="skip-link sr-only" aria-label="Skip to main content">Skip to main content</a>
-  
+  <main>
   <!-- =====================
-  SECTION: Hero Section - Enhanced Semantic Structure
+  SECTION: Hero Section
   ===================== -->
-  <section class="landing-hero" role="banner" aria-labelledby="hero-heading">
-    <div class="container">
-      <div class="landing-hero-content">
-        <div class="landing-hero-text">
-          <h1 id="hero-heading" data-hero-title class="hero-title">
-            <span class="blue-span" aria-label="Irrigation">Irrigation</span> 
-            <span class="green-span" aria-hidden="true">&amp;</span> 
-            <span class="red-span" aria-label="Turnkey">Turnkey</span> 
-            <span class="hero-subtitle">Service Providers</span><span class="gold-span" aria-hidden="true">!</span>
-          </h1>
-          <p data-hero-intro class="hero-description">
-            Infinite Green Solutions For The Water Industry <span class="gold-span" aria-hidden="true">—</span> 
-            Save Water &amp; Automate With Eco-Friendly Solutions<span class="red-span" aria-hidden="true">.</span>
-          </p>
-          
-          <div class="hero-actions">
-            <!-- Trigger Button - Preserved for functionality -->
-            <button 
-              id="book-consultation-btn" 
-              class="book-service-btn landing-hero-btn hero-cta-primary" 
-              type="button"
-              aria-describedby="hero-heading"
-              aria-label="Book a free consultation with irrigation experts">
-              <i class="fas fa-calendar-alt" aria-hidden="true"></i>
-              <span>Book a Consultation</span>
-            </button>
-          </div>
-        </div>
-        
-        <div class="landing-hero-img hero-visual">
-          <div class="hero-image-wrapper">
-            <img 
-              src="images/mrg products/removed back ground/Tm2_Rain_Bird_Wi-fi_Controller-removebg-preview.png" 
-              alt="Smart WiFi irrigation controller device showing advanced water management technology" 
-              loading="eager"
-              width="400"
-              height="300"
-              class="hero-product-image" />
-            <div class="hero-image-accent" aria-hidden="true"></div>
-          </div>
-        </div>
+  <section class="landing-hero">
+      <div class="landing-hero-text">
+  <h1 data-hero-title><span class="blue-span">Irrigation</span> <span class="green-span">&amp;</span> <span class="red-span">Turnkey</span> Service Providers<span class="gold-span">!</span></h1>
+  <p data-hero-intro>Infinite Green Solutions For The Water Industry <span class="gold-span">—</span> Save Water &amp; Automate With Eco-Friendly Solutions<span class="red-span">.</span></p>
+        <!-- Consultation Booking Button -->
+
+          <!-- Trigger Button -->
+  <button id="book-consultation-btn" class="book-service-btn landing-hero-btn">Book a Consultation</button>
+
+
       </div>
-    </div>
-  </section>
+      <div class="landing-hero-img">
+        <img src="images/mrg products/removed back ground/Tm2_Rain_Bird_Wi-fi_Controller-removebg-preview.png" alt="Irrigation controller" />
+      </div>
+
+    </section>
 
     <!-- Clients Section -->
     <section class="clients-section section" aria-labelledby="clients-heading">
