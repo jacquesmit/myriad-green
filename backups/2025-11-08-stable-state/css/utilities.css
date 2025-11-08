@@ -1,0 +1,146 @@
+/* ==============================
+   UTILITIES.CSS — REUSABLE SHORTCUTS
+   -------------------------------
+   Flex, margin, padding, alignment, grid helpers
+   ============================== */
+
+
+/* ========= Flexbox Layouts ========= */
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
+}
+.flex-row {
+  flex-direction: row;
+}
+.flex-wrap {
+  flex-wrap: wrap;
+}
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.items-center {
+  align-items: center;
+}
+
+
+/* ========= Grid Helpers ========= */
+.grid {
+  display: grid;
+}
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+.grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+.grid-gap {
+  gap: 1rem;
+}
+.auto-grid {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+
+/* ========= Width Utilities ========= */
+.w-full {
+  width: 100%;
+}
+.max-w-1200 {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.w-half {
+  width: 50%;
+}
+
+
+/* ========= Padding & Margin ========= */
+.px-sm { padding-left: 0.5rem; padding-right: 0.5rem; }
+.px-md { padding-left: 1rem; padding-right: 1rem; }
+.py-sm { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.py-md { padding-top: 1rem; padding-bottom: 1rem; }
+
+.mt-sm { margin-top: 0.5rem; }
+.mt-md { margin-top: 1rem; }
+.mt-lg { margin-top: 2rem; }
+
+.mb-sm { margin-bottom: 0.5rem; }
+.mb-md { margin-bottom: 1rem; }
+.mb-lg { margin-bottom: 2rem; }
+
+.mx-auto { margin-left: auto; margin-right: auto; }
+
+
+/* ========= Text & Alignment ========= */
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
+.text-left {
+  text-align: left;
+}
+
+
+/* ========= Responsive Stacking ========= */
+.responsive-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+@media (max-width: 768px) {
+  .responsive-stack {
+    flex-direction: column;
+  }
+}
+
+
+/* ========= Buttons ========= */
+.btn {
+  padding: 0.5rem 1rem;
+  font-weight: var(--font-weight-bold);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-accent);
+  color: var(--color-heading);
+  border: 1px solid var(--color-border);
+  transition: var(--transition-default);
+}
+.btn:hover {
+  background-color: var(--color-accent-hover);
+}
+
+.btn-full {
+  width: 100%;
+}
+
+
+/* ========= Visibility ========= */
+.hide-mobile {
+  display: block;
+}
+@media (max-width: 600px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+.show-mobile {
+  display: none;
+}
+@media (max-width: 600px) {
+  .show-mobile {
+    display: block !important;
+  }
+}

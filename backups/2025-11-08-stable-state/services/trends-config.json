@@ -1,0 +1,55 @@
+{
+  "services": {
+    "irrigation": {
+      "path": "services/irrigation.html",
+      "geo": "ZA-GT",
+      "queries": [
+        "irrigation",
+        "water tank",
+        "borehole",
+        "drip irrigation",
+        "smart irrigation",
+        "rainbird",
+        "hunter irrigation",
+        "wifi sprinkler controller",
+        "automatic irrigation",
+        "garden irrigation system",
+        "sprinkler repair",
+        "irrigation installation",
+        "borehole drilling",
+        "water pump",
+        "grey water system"
+      ]
+    },
+    "leak-detection": {
+      "path": "services/leak-detection.html",
+      "geo": "ZA-GT",
+      "queries": [
+        "leak detection",
+        "water leak",
+        "acoustic leak detection",
+        "thermal imaging",
+        "underground leak",
+        "burst pipe",
+        "water loss",
+        "plumbing leak",
+        "leak repair",
+        "pressure testing",
+        "tracer gas",
+        "leak detection services"
+      ]
+    },
+    "backup-water-systems": {
+      "path": "services/backup-water-systems.html",
+      "geo": "ZA-GT",
+      "queries": [
+        "backup water systems",
+        "water tank",
+        "rainwater harvesting",
+        "emergency water supply",
+        "water storage solutions",
+        "water management"
+      ]
+    }
+  }
+}

@@ -1,0 +1,24 @@
+.cart-checkout-btn {
+  display: inline-block;
+  background-color: #10b981; /* Emerald */
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  text-decoration: none;
+  text-align: center;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.cart-checkout-btn:hover {
+  background-color: #059669;
+}
+
+.checkout-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}

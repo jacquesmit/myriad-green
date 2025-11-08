@@ -1,0 +1,78 @@
+/* Light mode border and shadow for floating contact bar */
+[data-theme="light"] .floating-contact-bar {
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+/* Gold phone icon in contact bar only on hover */
+.floating-contact-bar a.phone .phone-icon {
+  color: inherit;
+}
+.floating-contact-bar a.phone:hover .phone-icon {
+  color: #ffd700;
+}
+/* Floating Contact Bar - right side, matches floating social bar style */
+.floating-contact-bar {
+  position: fixed;
+  top: 70px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 8px;
+  background: var(--dropdown-bg-color);
+  border: 1px solid var(--dropdown-border-color);
+  border-right: none;
+  border-radius: 0 0 10px 10px;
+  z-index: 1200;
+  width: 60px;
+  min-height: 300px;
+  box-shadow: var(--shadow-medium);
+  transition: all 0.3s ease;
+}
+.floating-contact-bar a {
+  color: var(--dropdown-link-color);
+  font-size: 1.3rem;
+  text-decoration: none;
+  padding: 10px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2px 0;
+  border-radius: var(--radius-sm);
+  transition: all 0.3s ease;
+  background: transparent;
+  border: 1px solid transparent;
+  line-height: 1.3;
+}
+.floating-contact-bar a:hover {
+  background: var(--dropdown-link-hover-bg);
+  color: var(--dropdown-link-hover-color);
+  border-color: var(--dropdown-border-color);
+  transform: translateX(-4px);
+  box-shadow: var(--shadow-soft);
+}
+.floating-contact-bar a.email:hover { color: #3182ce; }
+.floating-contact-bar a.phone:hover { color: #38a169; }
+.floating-contact-bar a.whatsapp:hover { color: #25d366; }
+.floating-contact-bar a.messenger:hover { color: #1877f2; }
+.floating-contact-bar a.chat:hover { color: #805ad5; }
+@media (max-width: 768px) {
+  .floating-contact-bar {
+    top: 70px;
+    width: 50px;
+    min-height: 180px;
+    padding: 8px 6px;
+  }
+  .floating-contact-bar a {
+    font-size: 1.1rem;
+    padding: 8px 6px;
+  }
+}
+@media (max-width: 480px) {
+  .floating-contact-bar {
+    display: none;
+  }
+}
+[data-theme="dark"] .floating-contact-bar {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}

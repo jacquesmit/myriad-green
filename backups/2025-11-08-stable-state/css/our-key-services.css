@@ -1,0 +1,32 @@
+.services-grid {
+  display: grid;
+  gap: 1.7rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin-left: 60px;
+  margin-right: 60px;
+  margin-bottom: 1.5rem;
+  box-sizing: border-box;
+}
+
+.service-card {
+  background-color: var(--color-bg);
+  padding: 0.7rem 0.5rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+  font-size: 0.97rem;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.service-card .icon-wrapper {
+  font-size: 1.6rem;
+  margin-bottom: 0.7rem;
+  color: #107c10;
+}
+#featured-services-heading {
+  text-align: left;
+  margin-left: 60px;
+  margin-right: 60px;
+  margin-bottom: 1.5rem;
+}
