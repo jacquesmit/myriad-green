@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Myriad Green — Advanced Implementation Hub</title>
+  <style>
+    :root{ --bg:#0f1115; --card:#171a21; --muted:#222733; --text:#e8eefc; --sub:#9fb0d4; --accent:#87e64b; --accent2:#9fc612; --danger:#ff6666; }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:linear-gradient(180deg,#0c0f14 0%, #0f1115 100%);color:var(--text)}
+    .wrap{display:grid;grid-template-columns:300px 1fr;gap:16px;min-height:100vh}
+    aside{background:var(--card);border-right:1px solid var(--muted);padding:16px;position:sticky;top:0;height:100vh;overflow:auto}
+    main{padding:20px 24px 80px}
+    h1{margin:0 0 12px;font-size:22px}
+    h2{margin:22px 0 10px;font-size:18px;border-bottom:1px solid var(--muted);padding-bottom:6px}
+    .phase{background:var(--card);border:1px solid var(--muted);border-radius:14px;padding:14px;margin:14px 0}
+    .row{display:grid;grid-template-columns:24px 1fr 120px 130px 130px;align-items:center;gap:8px;padding:8px 10px;border-radius:10px}
+    .row:hover{background:rgba(255,255,255,0.03)}
+    .row input[type="checkbox"]{transform:scale(1.2)}
+    .owner,.status,.due{font-size:13px;color:var(--sub);border:1px solid var(--muted);background:#10131a;border-radius:6px;padding:3px 6px;width:100%}
+    .hint{color:var(--sub);font-size:12px}
+    .progress{height:8px;background:#10131a;border-radius:999px;overflow:hidden;border:1px solid var(--muted)}
+    .bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+    .kpi{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+    .card{background:var(--card);border:1px solid var(--muted);padding:12px;border-radius:12px}
+    .card h3{margin:0 0 6px;font-size:14px;color:var(--sub)}
+    .big{font-size:24px;font-weight:700}
+    .controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+    button,.btn{background:var(--muted);color:var(--text);border:1px solid #2a3140;border-radius:10px;padding:8px 12px;cursor:pointer}
+    button:hover{filter:brightness(1.1)}
+    .search{width:100%;padding:10px;border-radius:10px;border:1px solid var(--muted);background:#0e1219;color:var(--text)}
+    .list a{display:block;color:var(--sub);text-decoration:none;padding:6px 0;border-bottom:1px dashed #222b3a}
+    .list a:hover{color:var(--text)}
+    .tag{font-size:11px;color:#9fb0d4;background:#10131a;border:1px solid #2a3140;padding:2px 6px;border-radius:6px;margin-left:auto}
+    .phase-header{display:flex;align-items:center;gap:10px}
+    .hidden{display:none}
+    .danger{color:var(--danger)}
+    .log{background:var(--card);border:1px solid var(--muted);border-radius:10px;padding:10px;margin-top:16px}
+    .log textarea{width:100%;min-height:80px;background:#10131a;color:var(--text);border:1px solid var(--muted);border-radius:8px;padding:6px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <aside>
+      <h1>Myriad Green — Hub</h1>
+      <div class="kpi">
+        <div class="card"><h3>Total Progress</h3><div class="big" id="overallPct">0%</div><div class="progress"><div class="bar" id="overallBar"></div></div></div>
+        <div class="card"><h3>Open Tasks</h3><div class="big" id="openCount">0</div><div class="hint" id="compCount">0 done</div></div>
+      </div>
+      <input id="search" class="search" placeholder="Search tasks…" />
+      <div class="controls">
+        <button id="expand">Expand</button>
+        <button id="collapse">Collapse</button>
+        <button id="reset" class="danger">Reset</button>
+      </div>
+      <div class="controls">
+        <button id="export">Export JSON</button>
+        <button id="exportFull" title="Export with defaults for all tasks">Export Full JSON</button>
+        <button id="connectRepo" title="Choose /Admin-Dashboard/myriad-green-hub.json">Connect Repo File</button>
+        <button id="saveRepo" title="Save current Hub state to chosen file">Save to Repo</button>
+        <label class="btn" for="importFile">Import</label><input id="importFile" type="file" accept="application/json" class="hidden" />
+        <label class="btn"><input type="checkbox" id="autoRepo" /> Auto‑save to Repo</label>
+      </div>
+      <h2>Phases</h2><div class="list" id="toc"></div>
+      <div class="hint">State is stored in your browser and can be saved to the repo JSON for Copilot.</div>
+    </aside>
+
+    <main>
+      <div id="phases"></div>
+      <div class="log">
+        <h2>Change Log</h2>
+        <textarea id="logArea" placeholder="YYYY-MM-DD: P2-02 Firestore rules tightened; P4-04 CTA logic added."></textarea>
+        <button id="saveLog">Save Log</button>
+      </div>
+      <div class="log">
+        <h2>RFC Form</h2>
+        <textarea id="rfcArea" placeholder="RFC-ID: YYYYMMDD-01\nChange:\nReason:\nImpact:\nTests:\nRollback:"></textarea>
+        <button id="saveRFC">Save RFC</button>
+      </div>
+    </main>
+  </div>
+
+<script>
+// -------- Data --------
+const PHASES = [
+  {id:'p1',title:'Phase 1 — Structural Finalization',tasks:[
+    'Complete all main service pages',
+    'Create suburb pages',
+    'Verify component injection',
+    'Confirm responsive layout',
+    'Fix color/typography vars',
+    'Validate dark/light mode',
+    'Test accessibility'
+  ]},
+  {id:'p2',title:'Phase 2 — Stripe + Firebase Integration',tasks:[
+    'Switch Stripe test keys',
+    'Configure live Firestore',
+    'Connect Gmail + Calendar OAuth2',
+    'Implement .ics file download',
+    'Add confirmation emails',
+    'Test refund workflow'
+  ]},
+  {id:'p3',title:'Phase 3 — CRM & Automation',tasks:[
+    'Verify HubSpot pipeline',
+    'Connect HubSpot ↔ Firebase',
+    'Auto-log Gmail emails',
+    'Create review automation',
+    'Build internal dashboard'
+  ]},
+  {id:'p4',title:'Phase 4 — SEO & Analytics',tasks:[
+    'Connect GA4 & Tag Manager',
+    'Add JSON-LD data',
+    'Add OG/Twitter meta',
+    'Implement CTA logic',
+    'Launch blog auto-poster',
+    'Validate schema'
+  ]},
+  {id:'p5',title:'Phase 5 — E-Commerce Readiness',tasks:[
+    'Enable Stripe Checkout',
+    'Build product JSON',
+    'Create product carousel',
+    'Implement thank-you redirect',
+    'Add product schema'
+  ]},
+  {id:'p6',title:'Phase 6 — Testing & Deployment',tasks:[
+    'Cross-device tests',
+    'Optimize load speed',
+    'Check redirects',
+    'Deploy to live domain',
+    'End-to-end test',
+    'Backup build'
+  ]},
+  {id:'p7',title:'Phase 7 — Post-Launch Operations',tasks:[
+    'Start Ads campaigns',
+    'Monitor analytics',
+    'Launch subscriptions',
+    'Add contractor dashboard',
+    'Expand Gauteng pages',
+    'Schedule content calendar'
+  ]}
+];
+
+// -------- Storage & Repo Sync --------
+const STORAGE_KEY='mrg-hub-v2';
+let repoHandle=null; // File System Access API handle (session only)
+function load(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY))||{}; }catch{ return {}; } }
+function save(s){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+  const auto=document.getElementById('autoRepo');
+  if(auto && auto.checked && repoHandle){ saveToRepo(); }
+}
+async function connectRepo(){
+  if(!window.showSaveFilePicker){ alert('File System Access API not supported. Use Chrome/Edge.'); return; }
+  try{
+    repoHandle=await window.showSaveFilePicker({
+      suggestedName:'myriad-green-hub.json',
+      types:[{description:'JSON',accept:{'application/json':['.json']}}]
+    });
+  }catch(e){ /* canceled */ }
+}
+async function saveToRepo(){
+  try{
+    if(!repoHandle){ await connectRepo(); }
+    if(!repoHandle) return;
+    const writable=await repoHandle.createWritable();
+    await writable.write(JSON.stringify(load(),null,2));
+    await writable.close();
+  }catch(e){ console.warn('Save to Repo failed',e); }
+}
+
+// -------- Render --------
+function render(){
+  const st=load(), phs=document.getElementById('phases'), toc=document.getElementById('toc');
+  phs.innerHTML=''; toc.innerHTML='';
+  let total=0, done=0;
+
+  PHASES.forEach(p=>{
+    let phaseTotal=0, phaseDone=0;
+    const sec=document.createElement('section'); sec.className='phase'; sec.id=p.id;
+    const header=document.createElement('div'); header.className='phase-header';
+    const h2=document.createElement('h2'); h2.textContent=p.title;
+    const tag=document.createElement('span'); tag.className='tag'; tag.id=p.id+'-pct'; tag.textContent='0%';
+    header.append(h2, tag);
+
+    const prog=document.createElement('div'); prog.className='progress';
+    const bar=document.createElement('div'); bar.className='bar'; bar.id=p.id+'-bar'; prog.appendChild(bar);
+
+    const list=document.createElement('div');
+    p.tasks.forEach((t,i)=>{
+      const id=p.id+'-t'+i;
+      if(st[id+'-status']===undefined){ st[id+'-status']='Todo'; }
+      const row=document.createElement('div'); row.className='row'; row.dataset.task=t.toLowerCase();
+
+      const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!st[id];
+      cb.addEventListener('change',()=>{ st[id]=cb.checked; save(st); update(); });
+
+      const txt=document.createElement('span'); txt.textContent=t;
+
+      const owner=document.createElement('input'); owner.className='owner'; owner.placeholder='Owner';
+      owner.value=st[id+'-owner']||''; owner.addEventListener('input',()=>{ st[id+'-owner']=owner.value; save(st); });
+
+      const due=document.createElement('input'); due.className='due'; due.type='date';
+      due.value=st[id+'-due']||''; due.addEventListener('input',()=>{ st[id+'-due']=due.value; save(st); });
+
+      const status=document.createElement('select'); status.className='status';
+      ;['Todo','In-Progress','Review','Blocked','Done'].forEach(sopt=>{
+        const opt=document.createElement('option'); opt.value=sopt; opt.textContent=sopt; status.appendChild(opt);
+      });
+      status.value=st[id+'-status']||'Todo';
+      status.addEventListener('change',()=>{ st[id+'-status']=status.value; save(st); });
+
+      row.append(cb, txt, owner, due, status);
+      list.appendChild(row);
+
+      phaseTotal++; if(cb.checked) phaseDone++;
+    });
+
+    const pct=phaseTotal?Math.round((phaseDone/phaseTotal)*100):0;
+    bar.style.width=pct+'%'; tag.textContent=pct+'%';
+
+    total+=phaseTotal; done+=phaseDone;
+
+    sec.append(header, prog, list); phs.appendChild(sec);
+
+    const a=document.createElement('a'); a.href='#'+p.id; a.textContent=p.title; toc.appendChild(a);
+  });
+
+  const pctTotal=total?Math.round((done/total)*100):0;
+  document.getElementById('overallPct').textContent=pctTotal+'%';
+  document.getElementById('overallBar').style.width=pctTotal+'%';
+  document.getElementById('openCount').textContent=(total-done);
+  document.getElementById('compCount').textContent=done+' done';
+
+  save(st);
+}
+function update(){ render(); }
+
+// -------- Controls --------
+document.getElementById('saveLog').onclick=()=>{ const s=load(); s.log=document.getElementById('logArea').value; save(s); };
+document.getElementById('saveRFC').onclick=()=>{ const s=load(); s.rfc=document.getElementById('rfcArea').value; save(s); };
+document.getElementById('reset').onclick=()=>{ if(confirm('Clear all data?')){ localStorage.removeItem(STORAGE_KEY); render(); } };
+
+document.getElementById('export').onclick=()=>{
+  const raw=localStorage.getItem(STORAGE_KEY)||'{}';
+  const blob=new Blob([raw],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='myriad-green-hub.json';
+  document.body.append(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+};
+
+document.getElementById('exportFull').onclick=()=>{
+  const st=load();
+  PHASES.forEach(p=>p.tasks.forEach((t,i)=>{
+    const id=p.id+'-t'+i;
+    if(st[id]===undefined) st[id]=false;
+    if(st[id+'-status']===undefined) st[id+'-status']='Todo';
+    if(st[id+'-owner']===undefined) st[id+'-owner']='';
+    if(st[id+'-due']===undefined) st[id+'-due']='';
+  }));
+  save(st);
+  const blob=new Blob([JSON.stringify(st,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='myriad-green-hub.json';
+  document.body.append(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+};
+
+document.getElementById('importFile').addEventListener('change', async e=>{
+  const f=e.target.files[0]; if(!f) return; const t=await f.text();
+  try{ JSON.parse(t); localStorage.setItem(STORAGE_KEY,t); render(); if(repoHandle){ saveToRepo(); } }
+  catch{ alert('Invalid JSON'); }
+  e.target.value='';
+});
+
+document.getElementById('search').addEventListener('input',()=>{
+  const q=document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.row').forEach(r=>{ r.style.display=r.dataset.task.includes(q)?'grid':'none'; });
+});
+
+const connectBtn=document.getElementById('connectRepo');
+const saveBtn=document.getElementById('saveRepo');
+if(connectBtn){ connectBtn.onclick=()=>connectRepo(); }
+if(saveBtn){ saveBtn.onclick=()=>saveToRepo(); }
+
+render();
+</script>
+</body>
+</html>

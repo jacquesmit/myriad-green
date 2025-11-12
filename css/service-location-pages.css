@@ -4969,28 +4969,6 @@ details[open] .faq__caret {
   color: var(--color-text-dark, #e2e8f0);
 }
 
-/* ========================================
-   RESPONSIVE - Spec Value Alignment
-   ======================================== */
-
-
-
-/* Extra large screens - Even better spacing */
-@media (min-width: 1400px) {
-  .spec-item {
-    padding: 0.875rem 0;
-  }
-  
-  .spec-label {
-    font-size: 0.95rem;
-  }
-  
-  .spec-value {
-    font-size: 0.95rem;
-    font-weight: 600;
-  }
-}
-
 [data-theme="dark"] .capability-benefits i {
   color: var(--color-primary-light, #22c55e);
 }
