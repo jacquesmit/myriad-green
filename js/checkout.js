@@ -1,9 +1,64 @@
-document.addEventListener("DOMContentLoaded", () => {
+// Global render function so it can be called from quickAddToCart
+window.renderCheckout = function() {
   const list = document.getElementById("checkoutCartList");
   const totalEl = document.getElementById("checkoutCartTotal");
-  const submitBtn = document.getElementById("submitOrderBtn");
+  if (!list || !totalEl) return; // Exit if elements not found
 
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  list.innerHTML = "";
+  let total = 0;
+
+  // Update cart count
+  const cartCount = document.getElementById('cartItemCount');
+  if (cartCount) {
+    cartCount.textContent = `${cart.length} item${cart.length !== 1 ? 's' : ''}`;
+  }
+
+  cart.forEach((item, index) => {
+    const li = document.createElement("li");
+    li.classList.add("checkout-item");
+
+    // Use provided item.image or a tiny transparent PNG data URI to avoid 404s
+    const productImage = (item.image || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=')
+      .replace(/^\//, '')
+      .replace(/ /g, '%20');
+
+    li.innerHTML = `
+      <img src="${productImage}" alt="${item.name}" class="checkout-item-img" />
+      <article class="checkout-item-details">
+        <h3 class="item-name">${item.name}</h3>
+        <p class="item-desc">${item.description || "No description available."}</p>
+        <p class="item-qty">Quantity: ${item.quantity}</p>
+        <p class="item-price">Price: R${(item.price * item.quantity).toFixed(2)}</p>
+        <button class="remove-from-checkout" data-index="${index}">Remove</button>
+      </article>
+    `;
+    list.appendChild(li);
+    total += item.price * item.quantity;
+  });
+
+  totalEl.textContent = total.toFixed(2);
+  
+  // Update subtotal (same as total for now)
+  const subtotalEl = document.getElementById('cartSubtotal');
+  if (subtotalEl) {
+    subtotalEl.textContent = `R${total.toFixed(2)}`;
+  }
+
+  document.querySelectorAll(".remove-from-checkout").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const idx = parseInt(btn.dataset.index);
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.splice(idx, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      window.renderCheckout(); // re-render
+    });
+  });
+};
+
+document.addEventListener("DOMContentLoaded", () => {
   function renderCheckout() {
+    window.renderCheckout();
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
     list.innerHTML = "";
     let total = 0;
@@ -86,14 +141,18 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   const API_BASE = detectApiBase();
   if (checkoutForm) {
+    console.log('✅ Checkout form found, adding submit listener');
     checkoutForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+      console.log('📝 Form submitted');
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      console.log('🛒 Cart:', cart);
       const name = document.getElementById("clientName").value.trim();
       const email = document.getElementById("clientEmail").value.trim();
       const phone = document.getElementById("clientPhone").value.trim();
       const address = document.getElementById("clientAddress").value.trim();
       const agreeTcs = document.getElementById("agreeTcs").checked;
+      console.log('📋 Form data:', { name, email, phone, address, agreeTcs });
       
       // Clear previous error messages
       clearErrorMessages();
@@ -164,6 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         const data = await response.json();
+        console.log('💳 Stripe response:', data);
         if (data.url) {
           // Track successful checkout initiation
           trackEvent('checkout_success', {
@@ -172,11 +232,13 @@ document.addEventListener("DOMContentLoaded", () => {
             payment_method: 'stripe'
           });
           
+          console.log('✅ Redirecting to Stripe:', data.url);
           showSuccess("Redirecting to secure payment...");
           setTimeout(() => {
             window.location.href = data.url;  // ✅ This must redirect to Stripe
           }, 1000);
         } else {
+          console.error('❌ No checkout URL in response');
           throw new Error("No checkout URL received from server");
         }
       } catch (err) {
@@ -695,7 +757,7 @@ window.quickAddToCart = function(id, name, price, image) {
   localStorage.setItem('cart', JSON.stringify(cart));
   
   // Refresh the cart display
-  displayCart();
+  window.renderCheckout();
   
   // Show feedback
   const btn = event.target.closest('button');

@@ -435,7 +435,7 @@
 
 .modern-input {
   width: 100%;
-  padding: 1rem 1rem 1rem 3rem;
+  padding: 1rem 3rem 1rem 3rem;
   border: 2px solid var(--border);
   border-radius: var(--radius-md);
   font-size: 1rem;
@@ -444,6 +444,8 @@
   background: var(--background);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   outline: none;
+  position: relative;
+  z-index: 2;
 }
 
 .modern-input:focus {
@@ -483,6 +485,8 @@
   color: var(--text-light);
   font-size: 1rem;
   transition: color 0.3s ease;
+  pointer-events: none;
+  user-select: none;
   z-index: 1;
 }
 
