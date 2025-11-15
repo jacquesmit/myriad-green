@@ -1,66 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thank You | Myriad Green</title>
+  <meta name="description" content="Thank you for your booking with Myriad Green. Your request has been received and we'll be in touch shortly.">
+  <meta name="robots" content="noindex, nofollow">
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  
+  <!-- Core Styles -->
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/thank-you-page.css">
-  
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="/css/reset.css" />
-  <link rel="stylesheet" href="/css/theme.css" />
-  <link rel="stylesheet" href="/css/utilities.css" />
-  <link rel="stylesheet" href="/css/main.css" />
-  <link rel="stylesheet" href="/css/landinghero.css" />
-  <link rel="stylesheet" href="/css/servicesection.css" />
-  <link rel="stylesheet" href="/css/booking-modal.css" />
-  <link rel="stylesheet" href="/css/faq-section.css" />
-  <link rel="stylesheet" href="/css/testimonials-fallback.css" />
-  <link rel="stylesheet" href="/css/about-us-section.css" />
-  <link rel="stylesheet" href="/css/main-navigation.css" />
-  <link rel="stylesheet" href="/css/mobile-nav.css" />
-  <link rel="stylesheet" href="/css/footer.css" />
-  <link rel="stylesheet" href="/css/navbar.css" />
-  <link rel="stylesheet" href="/css/theme-toggle.css" />
-  <link rel="stylesheet" href="/css/components/buttons/book-now-button.css" />
-  <link rel="stylesheet" href="/css/components/buttons/social-bar.css" />
-  <link rel="stylesheet" href="/css/floating-bar-reopen-btn.css" />
-  <link rel="stylesheet" href="/css/contact-us-form.css">
-  <link rel="stylesheet" href="/css/mobile-tweaks.css" />
-  <link rel="stylesheet" href="/css/icon-strip-mobile.css" />
-  <link rel="stylesheet" href="/css/mobile-tap-feedback.css" />
-  <link rel="stylesheet" href="/css/mobile-scroll-icon-animate.css" />
-  <link rel="stylesheet" href="/css/layout.css" />
-  <link rel="stylesheet" href="/css/weather-widget.css">
-  <link rel="stylesheet" href="/css/cart-modal.css" />
-  <link rel="stylesheet" href="/css/checkout.css" />
-  <link rel="stylesheet" href="/css/shop-section.css" />
 </head>
-<body>
+<body data-theme="light">
   <section class="thank-you-section">
     <div class="thank-you-container">
-      <h1>Thank You!</h1>
-      <p>Your request has been sent. We'll be in touch shortly.</p>
+      <!-- Success Icon -->
+      <div class="success-icon">
+        <div class="success-circle">
+          <i class="fas fa-check"></i>
+        </div>
+      </div>
+      
+      <!-- Main Content -->
+      <h1 class="thank-you-title">Thank You!</h1>
+      <p class="thank-you-message">Your request has been successfully received. We'll be in touch with you shortly to confirm your booking.</p>
+      
+      <!-- Booking Summary -->
       <!--
         NOTE: The booking summary below is dynamically filled from URL parameters.
         When Stripe is integrated, you may want to fetch booking/order details from your backend using an order/session ID in the URL.
         See JS section at the bottom for details.
       -->
-      <div class="booking-summary" style="background:#f7fafc;padding:16px 18px 10px 18px;border-radius:8px;margin:18px 0 10px 0;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-        <h3 style="color:#146eb4;font-size:1.1rem;margin-bottom:10px;">Booking Summary</h3>
-        <table style="width:100%;font-size:15px;color:#374151;margin-bottom:10px;">
-          <tr><td><strong>Name:</strong></td><td id="summary-name"></td></tr>
-          <tr><td><strong>Email:</strong></td><td id="summary-email"></td></tr>
-          <tr><td><strong>Service:</strong></td><td id="summary-service"></td></tr>
-          <tr><td><strong>Date & Time:</strong></td><td id="summary-datetime"></td></tr>
-          <tr><td><strong>Emergency:</strong></td><td id="summary-emergency"></td></tr>
-          <tr><td><strong>Hours Expected:</strong></td><td id="summary-hours"></td></tr>
-          <tr><td><strong>Total Price:</strong></td><td id="summary-price"></td></tr>
-        </table>
+      <div class="booking-summary">
+        <h3 class="booking-summary__title">
+          <i class="fas fa-calendar-check"></i>
+          Booking Summary
+        </h3>
+        <div class="booking-summary__content">
+          <div class="summary-item">
+            <span class="summary-label">
+              <i class="fas fa-user"></i>
+              Name:
+            </span>
+            <span class="summary-value" id="summary-name">—</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">
+              <i class="fas fa-envelope"></i>
+              Email:
+            </span>
+            <span class="summary-value" id="summary-email">—</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">
+              <i class="fas fa-concierge-bell"></i>
+              Service:
+            </span>
+            <span class="summary-value" id="summary-service">—</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">
+              <i class="fas fa-clock"></i>
+              Date & Time:
+            </span>
+            <span class="summary-value" id="summary-datetime">—</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">
+              <i class="fas fa-exclamation-circle"></i>
+              Emergency:
+            </span>
+            <span class="summary-value" id="summary-emergency">—</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">
+              <i class="fas fa-hourglass-half"></i>
+              Hours Expected:
+            </span>
+            <span class="summary-value" id="summary-hours">—</span>
+          </div>
+          <div class="summary-item summary-item--total">
+            <span class="summary-label">
+              <i class="fas fa-tag"></i>
+              Total Price:
+            </span>
+            <span class="summary-value" id="summary-price">—</span>
+          </div>
+        </div>
       </div>
-      <a id="addToCalendarBtn" href="#" download="myriad-green-booking.ics" class="irrigation-contact-us-btn" style="margin-bottom:12px;display:inline-block;">Add to Calendar</a>
-      <a href="index.html" class="irrigation-contact-us-btn">Return to Home</a>
+      
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <a id="addToCalendarBtn" href="#" download="myriad-green-booking.ics" class="btn btn-secondary">
+          <i class="fas fa-calendar-plus"></i>
+          Add to Calendar
+        </a>
+        <a href="index.html" class="btn btn-primary">
+          <i class="fas fa-home"></i>
+          Return to Home
+        </a>
+      </div>
+      
+      <!-- Auto Redirect Notice -->
+      <p class="redirect-notice">
+        <i class="fas fa-info-circle"></i>
+        You will be redirected to the homepage in <span id="countdown">15</span> seconds
+      </p>
     </div>
   </section>
 
@@ -111,10 +160,17 @@ const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Myriad Green//Bookin
 const icsBlob = new Blob([icsContent.replace(/\n/g, "\r\n")], { type: 'text/calendar' });
 document.getElementById('addToCalendarBtn').href = URL.createObjectURL(icsBlob);
 
-// ✅ Redirect after 15 seconds
-setTimeout(() => {
-  window.location.href = "/";
-}, 15000);
+// ✅ Redirect after 15 seconds with countdown
+let countdown = 15;
+const countdownEl = document.getElementById('countdown');
+const countdownInterval = setInterval(() => {
+  countdown--;
+  if (countdownEl) countdownEl.textContent = countdown;
+  if (countdown <= 0) {
+    clearInterval(countdownInterval);
+    window.location.href = "/";
+  }
+}, 1000);
 
 // ✅ Fireworks (Confetti style)
 function launchFireworks() {

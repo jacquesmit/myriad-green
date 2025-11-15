@@ -1,131 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <title>Thank You for Your Order!</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f9f7;
-      margin: 0;
-      padding: 2rem;
-      color: #2f4033;
-      overflow-x: hidden;
-    }
-
-    .card {
-      max-width: 600px;
-      margin: 2rem auto;
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 2rem;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-      text-align: center;
-      animation: fadeIn 1s ease-out;
-    }
-
-    h1 {
-      color: #3a5e4a;
-    }
-
-    #orderSummaryList {
-      list-style: none;
-      padding: 0;
-      margin-top: 2rem;
-    }
-
-    #orderSummaryList li {
-      padding: 1rem;
-      border-bottom: 1px solid #e1eee5;
-      font-size: 1.1rem;
-      opacity: 0;
-      animation: fadeInItem 0.5s forwards;
-    }
-
-    #orderSummaryList li:nth-child(1) { animation-delay: 0.3s; }
-    #orderSummaryList li:nth-child(2) { animation-delay: 0.6s; }
-    #orderSummaryList li:nth-child(3) { animation-delay: 0.9s; }
-
-    #orderTotal {
-      font-size: 1.4rem;
-      font-weight: bold;
-      margin-top: 1.5rem;
-      color: #1e3729;
-    }
-
-    #countdown {
-      font-size: 1.1rem;
-      margin-top: 1rem;
-      color: #6b8c7c;
-      animation: pulse 1s infinite;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeInItem {
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    @keyframes pulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.4; }
-      100% { opacity: 1; }
-    }
-
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      width: 100vw;
-      height: 100vh;
-      z-index: 9999;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thank You for Your Order! | Myriad Green</title>
+  <meta name="description" content="Thank you for your order! Your purchase has been confirmed and we'll process it shortly.">
+  <meta name="robots" content="noindex, nofollow">
   
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="/css/reset.css" />
-  <link rel="stylesheet" href="/css/theme.css" />
-  <link rel="stylesheet" href="/css/utilities.css" />
-  <link rel="stylesheet" href="/css/main.css" />
-  <link rel="stylesheet" href="/css/landinghero.css" />
-  <link rel="stylesheet" href="/css/servicesection.css" />
-  <link rel="stylesheet" href="/css/booking-modal.css" />
-  <link rel="stylesheet" href="/css/faq-section.css" />
-  <link rel="stylesheet" href="/css/testimonials-fallback.css" />
-  <link rel="stylesheet" href="/css/about-us-section.css" />
-  <link rel="stylesheet" href="/css/main-navigation.css" />
-  <link rel="stylesheet" href="/css/mobile-nav.css" />
-  <link rel="stylesheet" href="/css/footer.css" />
-  <link rel="stylesheet" href="/css/navbar.css" />
-  <link rel="stylesheet" href="/css/theme-toggle.css" />
-  <link rel="stylesheet" href="/css/components/buttons/book-now-button.css" />
-  <link rel="stylesheet" href="/css/components/buttons/social-bar.css" />
-  <link rel="stylesheet" href="/css/floating-bar-reopen-btn.css" />
-  <link rel="stylesheet" href="/css/contact-us-form.css">
-  <link rel="stylesheet" href="/css/mobile-tweaks.css" />
-  <link rel="stylesheet" href="/css/icon-strip-mobile.css" />
-  <link rel="stylesheet" href="/css/mobile-tap-feedback.css" />
-  <link rel="stylesheet" href="/css/mobile-scroll-icon-animate.css" />
-  <link rel="stylesheet" href="/css/layout.css" />
-  <link rel="stylesheet" href="/css/weather-widget.css">
-  <link rel="stylesheet" href="/css/cart-modal.css" />
-  <link rel="stylesheet" href="/css/checkout.css" />
-  <link rel="stylesheet" href="/css/shop-section.css" />
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/thank-you-order.css">
 </head>
-<body>
-  <div class="card">
-    <h1>🎉 Thank You for Your Order!</h1>
-    <ul id="orderSummaryList"></ul>
-    <div id="orderTotal"></div>
-    <div id="countdown"></div>
-  </div>
-
+<body data-theme="light">
   <canvas id="fireworkCanvas"></canvas>
+  
+  <section class="thank-you-order-section">
+    <div class="thank-you-order-container">
+      <!-- Success Icon -->
+      <div class="success-icon">
+        <div class="success-circle">
+          <i class="fas fa-shopping-bag"></i>
+        </div>
+      </div>
+      
+      <!-- Main Content -->
+      <h1 class="thank-you-title">Thank You for Your Order!</h1>
+      <p class="thank-you-message">Your order has been successfully placed. We'll send you a confirmation email shortly with your order details.</p>
+      
+      <!-- Order Summary -->
+      <div class="order-summary">
+        <h3 class="order-summary__title">
+          <i class="fas fa-receipt"></i>
+          Order Summary
+        </h3>
+        <div class="order-summary__content">
+          <ul id="orderSummaryList" class="order-items"></ul>
+          <div class="order-total" id="orderTotal"></div>
+        </div>
+      </div>
+      
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <a href="shop/index.html" class="btn btn-secondary">
+          <i class="fas fa-shopping-cart"></i>
+          Continue Shopping
+        </a>
+        <a href="index.html" class="btn btn-primary">
+          <i class="fas fa-home"></i>
+          Return to Home
+        </a>
+      </div>
+      
+      <!-- Auto Redirect Notice -->
+      <p class="redirect-notice" id="countdown">
+        <i class="fas fa-info-circle"></i>
+        Redirecting to homepage in <span id="countdownSeconds">8</span> seconds
+      </p>
+    </div>
+  </section>
 
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
   <script src="js/order-confirmation.js"></script>
@@ -192,9 +128,10 @@
 
     // Countdown and Redirect
     let seconds = 8;
+    const countdownSecondsEl = document.getElementById('countdownSeconds');
     const interval = setInterval(() => {
       seconds--;
-      countdown.textContent = `Returning to homepage in ${seconds} seconds...`;
+      if (countdownSecondsEl) countdownSecondsEl.textContent = seconds;
       if (seconds <= 0) clearInterval(interval);
     }, 1000);
 
@@ -242,13 +179,26 @@
 
         (order.cart || []).forEach((item, i) => {
           const li = document.createElement("li");
-          li.textContent = `✔️ ${item.quantity} × ${item.name} — R${(item.price * item.quantity).toFixed(2)}`;
+          li.className = 'order-item';
+          li.innerHTML = `
+            <div class="order-item__info">
+              <span class="order-item__quantity">${item.quantity}×</span>
+              <span class="order-item__name">${item.name}</span>
+            </div>
+            <span class="order-item__price">R${(item.price * item.quantity).toFixed(2)}</span>
+          `;
           li.style.animationDelay = `${0.3 + i * 0.3}s`;
           list.appendChild(li);
           total += item.price * item.quantity;
         });
 
-        totalEl.innerHTML = `Total Paid: <strong>R${total.toFixed(2)}</strong>`;
+        totalEl.innerHTML = `
+          <span class="order-total__label">
+            <i class="fas fa-receipt"></i>
+            Total Paid:
+          </span>
+          <span class="order-total__amount">R${total.toFixed(2)}</span>
+        `;
 
   // If server did not send the confirmation email (emailSent !== true), send it client-side using fetched details
   if (order.emailSent !== true && window.sendOrderConfirmationEmail) {
