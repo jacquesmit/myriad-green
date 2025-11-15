@@ -671,3 +671,50 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 });
+
+// Quick add to cart from recommended products
+window.quickAddToCart = function(id, name, price, image) {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  
+  // Check if product already exists
+  const existingIndex = cart.findIndex(item => item.id === id);
+  
+  if (existingIndex > -1) {
+    cart[existingIndex].quantity += 1;
+  } else {
+    cart.push({
+      id: id,
+      name: name,
+      price: price,
+      quantity: 1,
+      image: image,
+      description: ''
+    });
+  }
+  
+  localStorage.setItem('cart', JSON.stringify(cart));
+  
+  // Refresh the cart display
+  displayCart();
+  
+  // Show feedback
+  const btn = event.target.closest('button');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-check"></i> Added!';
+  btn.style.background = '#10B981';
+  
+  setTimeout(() => {
+    btn.innerHTML = originalText;
+    btn.style.background = '';
+  }, 1500);
+  
+  // Track event
+  if (typeof trackEvent === 'function') {
+    trackEvent('upsell_product_added', {
+      product_id: id,
+      product_name: name,
+      product_price: price
+    });
+  }
+};
+

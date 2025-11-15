@@ -106,41 +106,6 @@
     
     <!-- Main Checkout Content -->
     <div class="checkout-content">
-      <!-- Order Summary Card -->
-      <div class="order-summary-card">
-        <div class="summary-header">
-          <h3>Order Summary</h3>
-          <span class="item-count" id="cartItemCount">0 items</span>
-        </div>
-        
-        <div class="order-items" id="checkoutCartList"></div>
-        
-        <div class="order-totals">
-          <div class="total-line">
-            <span>Subtotal</span>
-            <span id="cartSubtotal">R0.00</span>
-          </div>
-          <div class="total-line">
-            <span>Shipping</span>
-            <span class="free-shipping">Free</span>
-          </div>
-          <div class="total-line final-total">
-            <span>Total</span>
-            <span id="checkoutCartTotal">R0.00</span>
-          </div>
-        </div>
-        
-        <div class="trust-indicators">
-          <div class="trust-item">
-            <i class="fas fa-shield-check"></i>
-            <span>Secure Payment</span>
-          </div>
-          <div class="trust-item">
-            <i class="fas fa-truck"></i>
-            <span>Free Delivery</span>
-          </div>
-        </div>
-      </div>
       <!-- Checkout Form -->
       <form id="checkoutForm" class="checkout-form-card">
         <div class="form-header">
@@ -233,6 +198,47 @@
           </button>
         </div>
       </form>
+
+      <!-- Order Summary Card -->
+      <div class="order-summary-card">
+        <div class="summary-header">
+          <h3>Order Summary</h3>
+          <span class="item-count" id="cartItemCount">0 items</span>
+        </div>
+        
+        <div class="order-items" id="checkoutCartList"></div>
+        
+        <div class="order-totals">
+          <div class="total-line">
+            <span>Subtotal</span>
+            <span id="cartSubtotal">R0.00</span>
+          </div>
+          <div class="total-line">
+            <span>Shipping</span>
+            <span class="free-shipping">Free</span>
+          </div>
+          <div class="total-line final-total">
+            <span>Total</span>
+            <span id="checkoutCartTotal">R0.00</span>
+          </div>
+        </div>
+        
+        <div class="trust-indicators">
+          <div class="trust-item">
+            <i class="fas fa-shield-check"></i>
+            <span>Secure Payment</span>
+          </div>
+          <div class="trust-item">
+            <i class="fas fa-truck"></i>
+            <span>Free Delivery</span>
+          </div>
+        </div>
+        
+        <a href="/shop/" class="continue-shopping-btn">
+          <i class="fas fa-shopping-bag"></i>
+          <span>Continue Shopping</span>
+        </a>
+      </div>
       
       <!-- Support Information -->
       <div class="checkout-info">
@@ -270,6 +276,82 @@
         </div>
       </div>
     </div>
+
+    <!-- Recommended Products Section -->
+    <section class="recommended-products">
+      <div class="recommended-container">
+        <h3 class="recommended-title">You May Also Like</h3>
+        <p class="recommended-subtitle">Complete your order with these popular items</p>
+        
+        <div class="recommended-grid">
+          <div class="recommended-item" data-product="smart-water-meter">
+            <div class="recommended-image">
+              <img src="/shop/images/smart-water-meter.jpg" alt="Smart Water Meter" loading="lazy">
+              <span class="recommended-badge">Popular</span>
+            </div>
+            <div class="recommended-details">
+              <h4>Smart Water Meter</h4>
+              <p class="recommended-desc">Monitor water usage in real-time</p>
+              <div class="recommended-price">
+                <span class="price">R2,450.00</span>
+              </div>
+              <button class="add-to-cart-btn" onclick="quickAddToCart('smart-water-meter', 'Smart Water Meter', 2450, '/shop/images/smart-water-meter.jpg')">
+                <i class="fas fa-plus"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="recommended-item" data-product="tank-level-indicator">
+            <div class="recommended-image">
+              <img src="/shop/images/tank-level-indicator.jpg" alt="Tank Level Indicator" loading="lazy">
+            </div>
+            <div class="recommended-details">
+              <h4>Tank Level Indicator</h4>
+              <p class="recommended-desc">Always know your water levels</p>
+              <div class="recommended-price">
+                <span class="price">R895.00</span>
+              </div>
+              <button class="add-to-cart-btn" onclick="quickAddToCart('tank-level-indicator', 'Tank Level Indicator', 895, '/shop/images/tank-level-indicator.jpg')">
+                <i class="fas fa-plus"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="recommended-item" data-product="water-testing-kit">
+            <div class="recommended-image">
+              <img src="/shop/images/water-testing-kit.jpg" alt="Water Testing Kit" loading="lazy">
+              <span class="recommended-badge">Essential</span>
+            </div>
+            <div class="recommended-details">
+              <h4>Water Testing Kit</h4>
+              <p class="recommended-desc">Test your water quality</p>
+              <div class="recommended-price">
+                <span class="price">R385.00</span>
+              </div>
+              <button class="add-to-cart-btn" onclick="quickAddToCart('water-testing-kit', 'Water Testing Kit', 385, '/shop/images/water-testing-kit.jpg')">
+                <i class="fas fa-plus"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+
+          <div class="recommended-item" data-product="gutter-guard">
+            <div class="recommended-image">
+              <img src="/shop/images/gutter-guard.jpg" alt="Gutter Guard" loading="lazy">
+            </div>
+            <div class="recommended-details">
+              <h4>Gutter Guard</h4>
+              <p class="recommended-desc">Keep gutters debris-free</p>
+              <div class="recommended-price">
+                <span class="price">R325.00</span>
+              </div>
+              <button class="add-to-cart-btn" onclick="quickAddToCart('gutter-guard', 'Gutter Guard', 325, '/shop/images/gutter-guard.jpg')">
+                <i class="fas fa-plus"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <!-- Footer Section -->
