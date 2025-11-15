@@ -1,8 +1,13 @@
+console.log('🚀 Checkout.js loaded successfully');
+
 // Global render function so it can be called from quickAddToCart
 window.renderCheckout = function() {
   const list = document.getElementById("checkoutCartList");
   const totalEl = document.getElementById("checkoutCartTotal");
-  if (!list || !totalEl) return; // Exit if elements not found
+  if (!list || !totalEl) {
+    console.error('❌ Cart elements not found:', { list: !!list, totalEl: !!totalEl });
+    return; // Exit if elements not found
+  }
 
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
   list.innerHTML = "";
@@ -57,61 +62,8 @@ window.renderCheckout = function() {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  function renderCheckout() {
-    window.renderCheckout();
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    list.innerHTML = "";
-    let total = 0;
-
-    // Update cart count
-    const cartCount = document.getElementById('cartItemCount');
-    if (cartCount) {
-      cartCount.textContent = `${cart.length} item${cart.length !== 1 ? 's' : ''}`;
-    }
-
-    cart.forEach((item, index) => {
-      const li = document.createElement("li");
-      li.classList.add("checkout-item");
-
-  // Use provided item.image or a tiny transparent PNG data URI to avoid 404s
-  const productImage = (item.image || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=')
-        .replace(/^\//, '')
-        .replace(/ /g, '%20');
-
-      li.innerHTML = `
-        <img src="${productImage}" alt="${item.name}" class="checkout-item-img" />
-        <article class="checkout-item-details">
-          <h3 class="item-name">${item.name}</h3>
-          <p class="item-desc">${item.description || "No description available."}</p>
-          <p class="item-qty">Quantity: ${item.quantity}</p>
-          <p class="item-price">Price: R${(item.price * item.quantity).toFixed(2)}</p>
-          <button class="remove-from-checkout" data-index="${index}">Remove</button>
-        </article>
-      `;
-      list.appendChild(li);
-      total += item.price * item.quantity;
-    });
-
-    totalEl.textContent = total.toFixed(2);
-    
-    // Update subtotal (same as total for now)
-    const subtotalEl = document.getElementById('cartSubtotal');
-    if (subtotalEl) {
-      subtotalEl.textContent = `R${total.toFixed(2)}`;
-    }
-
-    document.querySelectorAll(".remove-from-checkout").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const idx = parseInt(btn.dataset.index);
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        cart.splice(idx, 1);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        renderCheckout(); // re-render
-      });
-    });
-  }
-
-  renderCheckout();
+  // Call the global render function
+  window.renderCheckout();
   
   // Initialize security measures
   initializeSecurity();
@@ -140,11 +92,18 @@ document.addEventListener("DOMContentLoaded", () => {
     return '';
   };
   const API_BASE = detectApiBase();
+  console.log('🔗 API Base URL:', API_BASE);
+  console.log('🔍 Looking for checkoutForm...');
+  console.log('📦 checkoutForm element:', checkoutForm);
+  
   if (checkoutForm) {
     console.log('✅ Checkout form found, adding submit listener');
     checkoutForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      console.log('📝 Form submitted');
+      console.log('📝 Form submitted - preventDefault called');
+      console.log('📋 Form element:', checkoutForm);
+      console.log('🎯 Submit button:', document.getElementById('submitOrderBtn'));
+      
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
       console.log('🛒 Cart:', cart);
       const name = document.getElementById("clientName").value.trim();
@@ -255,9 +214,13 @@ document.addEventListener("DOMContentLoaded", () => {
         displayErrors([
           "Checkout failed. Please check your connection and try again.",
           err.message || "An unexpected error occurred."
-        ]);
+        });
       }
     });
+  } else {
+    console.error('❌ CRITICAL: Checkout form NOT found!');
+    console.error('🔍 Available forms on page:', document.querySelectorAll('form'));
+    console.error('🔍 Element with ID checkoutForm:', document.getElementById('checkoutForm'));
   }
 
   // Enhanced validation functions
@@ -736,47 +699,66 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Quick add to cart from recommended products
 window.quickAddToCart = function(id, name, price, image) {
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  console.log('🛒 quickAddToCart called:', { id, name, price, image });
   
-  // Check if product already exists
-  const existingIndex = cart.findIndex(item => item.id === id);
-  
-  if (existingIndex > -1) {
-    cart[existingIndex].quantity += 1;
-  } else {
-    cart.push({
-      id: id,
-      name: name,
-      price: price,
-      quantity: 1,
-      image: image,
-      description: ''
-    });
-  }
-  
-  localStorage.setItem('cart', JSON.stringify(cart));
-  
-  // Refresh the cart display
-  window.renderCheckout();
-  
-  // Show feedback
-  const btn = event.target.closest('button');
-  const originalText = btn.innerHTML;
-  btn.innerHTML = '<i class="fas fa-check"></i> Added!';
-  btn.style.background = '#10B981';
-  
-  setTimeout(() => {
-    btn.innerHTML = originalText;
-    btn.style.background = '';
-  }, 1500);
-  
-  // Track event
-  if (typeof trackEvent === 'function') {
-    trackEvent('upsell_product_added', {
-      product_id: id,
-      product_name: name,
-      product_price: price
-    });
+  try {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    console.log('📦 Current cart:', cart);
+    
+    // Check if product already exists
+    const existingIndex = cart.findIndex(item => item.id === id);
+    
+    if (existingIndex > -1) {
+      cart[existingIndex].quantity += 1;
+      console.log('✅ Increased quantity for existing item');
+    } else {
+      cart.push({
+        id: id,
+        name: name,
+        price: price,
+        quantity: 1,
+        image: image,
+        description: ''
+      });
+      console.log('✅ Added new item to cart');
+    }
+    
+    localStorage.setItem('cart', JSON.stringify(cart));
+    console.log('💾 Cart saved to localStorage');
+    
+    // Refresh the cart display
+    if (typeof window.renderCheckout === 'function') {
+      window.renderCheckout();
+      console.log('🔄 Cart display refreshed');
+    } else {
+      console.error('❌ window.renderCheckout is not a function!');
+    }
+    
+    // Show feedback
+    const btn = event?.target?.closest('button');
+    if (btn) {
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-check"></i> Added!';
+      btn.style.background = '#10B981';
+      
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.style.background = '';
+      }, 1500);
+    }
+    
+    // Track event
+    if (typeof trackEvent === 'function') {
+      trackEvent('upsell_product_added', {
+        product_id: id,
+        product_name: name,
+        product_price: price
+      });
+    }
+  } catch (error) {
+    console.error('❌ Error in quickAddToCart:', error);
   }
 };
+
+console.log('✅ quickAddToCart function is now globally available:', typeof window.quickAddToCart);
 

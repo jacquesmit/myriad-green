@@ -39,6 +39,56 @@
     gtag('js', new Date());
     gtag('config', 'GA_MEASUREMENT_ID');
   </script>
+  
+  <!-- Quick Add to Cart Function - Defined Early for Inline Handlers -->
+  <script>
+    window.quickAddToCart = function(id, name, price, image) {
+      console.log('🛒 quickAddToCart called:', { id, name, price, image });
+      
+      try {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        // Check if product already exists
+        const existingIndex = cart.findIndex(item => item.id === id);
+        
+        if (existingIndex > -1) {
+          cart[existingIndex].quantity += 1;
+        } else {
+          cart.push({
+            id: id,
+            name: name,
+            price: price,
+            quantity: 1,
+            image: image,
+            description: ''
+          });
+        }
+        
+        localStorage.setItem('cart', JSON.stringify(cart));
+        
+        // Refresh the cart display if available
+        if (typeof window.renderCheckout === 'function') {
+          window.renderCheckout();
+        }
+        
+        // Show feedback
+        const btn = event?.target?.closest('button');
+        if (btn) {
+          const originalText = btn.innerHTML;
+          btn.innerHTML = '<i class="fas fa-check"></i> Added!';
+          btn.style.background = '#10B981';
+          
+          setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = '';
+          }, 1500);
+        }
+      } catch (error) {
+        console.error('❌ Error in quickAddToCart:', error);
+      }
+    };
+    console.log('✅ quickAddToCart loaded in head');
+  </script>
 </head>
 <body>
   <!-- Navigation Header -->
@@ -455,7 +505,7 @@
     </div>
   </footer>
 
-  <script src="js/checkout.js" defer></script>
+  <script src="js/checkout.js"></script>
   <script src="js/purchase-update-rotate.js" defer></script>
   <script src="js/theme-toggle.js" defer></script>
   <script src="js/mobile-nav.js" defer></script>
