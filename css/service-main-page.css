@@ -1,3 +1,30 @@
+/* Leak Detection Step 4: Ongoing Leak Monitoring & Emergency Support Workflow Overlay */
+.step-leak-monitoring-support-bg {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.step-leak-monitoring-support-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("../images/services/leak-detection/myriad-green-leak-detection-step-4-ongoing-leak-monitoring-emergency-support-gauteng.jpg");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.35;
+  z-index: -2;
+}
+.step-leak-monitoring-support-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.50),
+    rgba(0, 0, 0, 0.15)
+  );
+  z-index: -1;
+}
 /* Leak Detection Step 3: Non-Invasive Leak Repair & Restoration Workflow Overlay */
 .step-leak-detection-non-invasive-leak-repair-and-restoration-bg {
   position: relative;
