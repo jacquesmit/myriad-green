@@ -1,3 +1,43 @@
+/* Step 1 Assessment Background Overlay */
+.step-assessment-bg {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: inherit;
+}
+.step-assessment-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-image: url("../images/services/irrigation/myriad-green-irrigation-site-assessment-step-1-gauteng.jpg");
+  background-size: cover;
+  background-position: top center;
+  opacity: 0.35;
+  border-radius: inherit;
+}
+.step-assessment-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.32) 100%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* Visually Hidden Utility */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
 /**
  * Irrigation Service Page Stylesheet
  * Production-grade CSS extending theme.css tokens

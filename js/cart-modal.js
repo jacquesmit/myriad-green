@@ -1,12 +1,25 @@
-// 🌟 Dynamic DOM refs (allow late injection)
-let cartModal = document.getElementById("cartModal");
-let openBtn = document.getElementById("openCartBtn");
-let closeBtn = document.getElementById("closeCartBtn");
-let cartList = document.getElementById("cartItemsList");
-let cartTotal = document.getElementById("cartTotal");
-let badge = document.querySelector(".cart-badge");
-let checkoutActions = document.querySelector('.checkout-actions');
+/*==============================
+  PROFESSIONAL CART MODAL
+  Production-Ready JavaScript
+==============================*/
 
+/**
+ * Cart Modal Manager
+ * Handles shopping cart functionality with local storage persistence
+ */
+
+// DOM Element References
+let cartModal = null;
+let openBtn = null;
+let closeBtn = null;
+let cartList = null;
+let cartTotal = null;
+let badge = null;
+let checkoutActions = null;
+
+/**
+ * Query and cache DOM element references
+ */
 function queryRefs() {
   cartModal = document.getElementById("cartModal");
   openBtn = document.getElementById("openCartBtn");
@@ -17,257 +30,447 @@ function queryRefs() {
   checkoutActions = document.querySelector('.checkout-actions');
 }
 
+/**
+ * Ensure cart scaffold exists in DOM
+ * Creates floating cart button and modal if not present
+ */
 function ensureCartScaffold() {
   // Inject floating button if missing
   if (!document.getElementById('openCartBtn')) {
     const btn = document.createElement('button');
     btn.id = 'openCartBtn';
     btn.className = 'floating-cart-btn';
-    btn.setAttribute('aria-label', 'View cart');
-    btn.innerHTML = '<i class="fas fa-shopping-cart"></i><span class="cart-badge" id="cartCount">0</span>';
-    btn.addEventListener('click', () => {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      if (cart.length === 0) {
-        // Show a friendly message with a link to shop
-        const msg = document.createElement('div');
-        msg.style.position = 'fixed';
-        msg.style.top = '50%';
-        msg.style.left = '50%';
-        msg.style.transform = 'translate(-50%, -50%)';
-        msg.style.background = '#fff';
-        msg.style.color = '#222';
-        msg.style.padding = '2em 2.5em';
-        msg.style.borderRadius = '12px';
-        msg.style.boxShadow = '0 8px 32px rgba(0,0,0,0.18)';
-        msg.style.zIndex = '10001';
-        msg.style.textAlign = 'center';
-        msg.innerHTML = `
-          <h3>Your cart is empty</h3>
-          <p>Please add a product to your cart.<br>
-          Or <a href='/shop/' style='color:#2563eb;text-decoration:underline;'>visit our shop</a> if you need more products.</p>
-          <button style='margin-top:1.5em;padding:0.7em 2em;background:#2563eb;color:#fff;border:none;border-radius:6px;font-weight:bold;cursor:pointer;' id='closeCartMsgBtn'>Close</button>
-        `;
-        document.body.appendChild(msg);
-        document.getElementById('closeCartMsgBtn').onclick = () => {
-          msg.remove();
-        };
-        return;
-      }
-      cartModal.classList.remove('hidden');
-      renderCart();
-    });
+    btn.setAttribute('aria-label', 'View shopping cart');
+    btn.innerHTML = `
+      <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+      <span class="cart-badge" id="cartCount">0</span>
+    `;
+    btn.addEventListener('click', openCartModal);
     document.body.appendChild(btn);
   }
+  
   // Inject modal if missing
   if (!document.getElementById('cartModal')) {
-    const wrapper = document.createElement('div');
-    wrapper.id = 'cartModal';
-    wrapper.className = 'cart-modal hidden';
-    wrapper.innerHTML = `
-      <div class="cart-modal-content">
-        <button id="closeCartBtn" class="close-btn" aria-label="Close cart">&times;</button>
-        <h2>Your Cart</h2>
-        <ul id="cartItemsList" class="cart-items-list"></ul>
-        <p class="total">Total: R<span id="cartTotal">0.00</span></p>
+    const modal = document.createElement('div');
+    modal.id = 'cartModal';
+    modal.className = 'cart-modal hidden';
+    modal.innerHTML = `
+      <div class="cart-modal-content" role="dialog" aria-modal="true" aria-labelledby="cart-modal-title">
+        <button id="closeCartBtn" class="close-btn" aria-label="Close cart modal">&times;</button>
+        <h2 id="cart-modal-title"><i class="fas fa-shopping-cart"></i>Your Cart</h2>
+        <ul id="cartItemsList" class="cart-items-list" role="list"></ul>
+        <p class="total" role="status">
+          <span>Total:</span>
+          <span>R <span id="cartTotal">0.00</span></span>
+        </p>
         <div class="checkout-actions"></div>
-      </div>`;
-    document.body.appendChild(wrapper);
+      </div>
+    `;
+    document.body.appendChild(modal);
   }
+  
   queryRefs();
 
-  // Add click-to-close for modal overlay
+  // Close modal when clicking overlay
   if (cartModal) {
-    cartModal.addEventListener('mousedown', function(e) {
-      // Only close if clicking the overlay, not the modal content or its children
+    cartModal.addEventListener('mousedown', (e) => {
       if (e.target === cartModal) {
-        cartModal.classList.add('hidden');
+        closeCartModal();
+      }
+    });
+    
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !cartModal.classList.contains('hidden')) {
+        closeCartModal();
       }
     });
   }
 }
 
-// Optional inline button
-const inlineCartBtn = document.getElementById('inlineCartBtn');
-if (inlineCartBtn) {
-  inlineCartBtn.addEventListener('click', () => {
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    if (cart.length === 0) {
-      // Show a friendly message with a link to shop
-      const msg = document.createElement('div');
-      msg.style.position = 'fixed';
-      msg.style.top = '50%';
-      msg.style.left = '50%';
-      msg.style.transform = 'translate(-50%, -50%)';
-      msg.style.background = '#fff';
-      msg.style.color = '#222';
-      msg.style.padding = '2em 2.5em';
-      msg.style.borderRadius = '12px';
-      msg.style.boxShadow = '0 8px 32px rgba(0,0,0,0.18)';
-      msg.style.zIndex = '10001';
-      msg.style.textAlign = 'center';
-      msg.innerHTML = `
-        <h3>Your cart is empty</h3>
-        <p>Please add a product to your cart.<br>
-        Or <a href='/shop/' style='color:#2563eb;text-decoration:underline;'>visit our shop</a> if you need more products.</p>
-        <button style='margin-top:1.5em;padding:0.7em 2em;background:#2563eb;color:#fff;border:none;border-radius:6px;font-weight:bold;cursor:pointer;' id='closeCartMsgBtn'>Close</button>
-      `;
-      document.body.appendChild(msg);
-      document.getElementById('closeCartMsgBtn').onclick = () => {
-        msg.remove();
-      };
-      return;
-    }
-    cartModal.classList.remove('hidden');
-    renderCart();
-  });
+/**
+ * Get cart from local storage
+ * @returns {Array} Cart items array
+ */
+function getCart() {
+  try {
+    return JSON.parse(localStorage.getItem('cart')) || [];
+  } catch (e) {
+    console.error('Error parsing cart from localStorage:', e);
+    return [];
+  }
 }
 
-// 🔄 Render cart
-function renderCart() {
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+/**
+ * Save cart to local storage
+ * @param {Array} cart - Cart items array
+ */
+function saveCart(cart) {
+  try {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  } catch (e) {
+    console.error('Error saving cart to localStorage:', e);
+  }
+}
 
-  // Render list
+/**
+ * Open cart modal
+ */
+function openCartModal() {
+  const cart = getCart();
+  
+  if (cart.length === 0) {
+    showEmptyCartMessage();
+    return;
+  }
+  
+  if (cartModal) {
+    cartModal.classList.remove('hidden');
+    renderCart();
+    // Lock body scroll
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+/**
+ * Close cart modal
+ */
+function closeCartModal() {
+  if (cartModal) {
+    cartModal.classList.add('hidden');
+    // Restore body scroll
+    document.body.style.overflow = '';
+  }
+}
+
+/**
+ * Show empty cart message
+ */
+function showEmptyCartMessage() {
+  const existingMsg = document.getElementById('empty-cart-message');
+  if (existingMsg) return;
+  
+  const overlay = document.createElement('div');
+  overlay.id = 'empty-cart-message';
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(26, 54, 93, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+    padding: 1rem;
+  `;
+  
+  const message = document.createElement('div');
+  message.style.cssText = `
+    background: var(--cart-modal-bg, #ffffff);
+    color: var(--cart-text-primary, #1a365d);
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    text-align: center;
+    max-width: 440px;
+    width: 100%;
+  `;
+  
+  message.innerHTML = `
+    <div class="cart-empty-state">
+      <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+      <h3>Your Cart is Empty</h3>
+      <p>Start shopping to add items to your cart.</p>
+      <a href="/shop/" class="btn-primary">
+        <i class="fas fa-store" aria-hidden="true"></i>
+        Browse Products
+      </a>
+    </div>
+  `;
+  
+  overlay.appendChild(message);
+  document.body.appendChild(overlay);
+  
+  // Close on click
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      overlay.remove();
+    }
+  });
+  
+  // Close on Escape
+  const closeOnEscape = (e) => {
+    if (e.key === 'Escape') {
+      overlay.remove();
+      document.removeEventListener('keydown', closeOnEscape);
+    }
+  };
+  document.addEventListener('keydown', closeOnEscape);
+  
+  // Auto-remove after 3 seconds
+  setTimeout(() => {
+    if (overlay.parentNode) {
+      overlay.remove();
+    }
+  }, 3000);
+}
+
+/**
+ * Render cart items and total
+ */
+function renderCart() {
+  const cart = getCart();
+
+  // Render cart items
   if (cartList) {
-    cartList.innerHTML = "";
-    cart.forEach(item => {
-      const li = document.createElement("li");
-      li.innerHTML = `
-        ${item.name} (x${item.quantity})
-        <div>
-          <button onclick="updateQuantity('${item.id}', -1)">➖</button>
-          <button onclick="updateQuantity('${item.id}', 1)">➕</button>
-          <button class="remove-item" onclick="removeItem('${item.id}')">🗑️</button>
-        </div>
+    cartList.innerHTML = '';
+    
+    if (cart.length === 0) {
+      cartList.innerHTML = `
+        <li class="cart-empty-state">
+          <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+          <h3>Your cart is empty</h3>
+          <p>Add some products to get started!</p>
+        </li>
       `;
-      cartList.appendChild(li);
-    });
+    } else {
+      cart.forEach(item => {
+        const li = document.createElement('li');
+        li.setAttribute('role', 'listitem');
+        li.innerHTML = `
+          ${item.image ? `<img src="/${item.image}" alt="${escapeHtml(item.name)}" loading="lazy">` : ''}
+          <div class="item-details">
+            <h4 class="item-title">${escapeHtml(item.name)}</h4>
+            ${item.description ? `<p class="item-desc">${escapeHtml(item.description)}</p>` : ''}
+            <p class="item-qty">Quantity: ${item.quantity}</p>
+          </div>
+          <p class="item-price">R ${(item.price * item.quantity).toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+          <div class="cart-item-actions">
+            <button type="button" 
+                    onclick="updateQuantity('${item.id}', -1)" 
+                    aria-label="Decrease quantity" 
+                    title="Decrease quantity">
+              <i class="fas fa-minus"></i>
+            </button>
+            <button type="button" 
+                    onclick="updateQuantity('${item.id}', 1)" 
+                    aria-label="Increase quantity" 
+                    title="Increase quantity">
+              <i class="fas fa-plus"></i>
+            </button>
+            <button type="button" 
+                    class="remove-item" 
+                    onclick="removeItem('${item.id}')" 
+                    aria-label="Remove item" 
+                    title="Remove item">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        `;
+        cartList.appendChild(li);
+      });
+    }
   }
 
   // Render total
   if (cartTotal) {
-    const total = cart.reduce((sum, it) => sum + (Number(it.price) || 0) * (Number(it.quantity) || 0), 0);
-    cartTotal.textContent = total.toFixed(2);
+    const total = cart.reduce((sum, item) => {
+      return sum + (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 0);
+    }, 0);
+    cartTotal.textContent = total.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
-  // Render actions (Proceed to Checkout / Empty cart)
-  if (checkoutActions) {
-    checkoutActions.innerHTML = '';
-
-    const hasItems = cart.length > 0;
-
-    const goBtn = document.createElement('a');
-    goBtn.href = hasItems ? '/checkout.html' : '#';
-    goBtn.className = 'cart-checkout-btn';
-    goBtn.textContent = 'Proceed to Checkout';
-    if (!hasItems) {
-      goBtn.setAttribute('aria-disabled', 'true');
-      goBtn.style.pointerEvents = 'none';
-      goBtn.style.opacity = '0.5';
-      goBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        alert('You cannot proceed to checkout with an empty cart.');
-      });
-    }
-    checkoutActions.appendChild(goBtn);
-
-    const clearBtn = document.createElement('button');
-    clearBtn.type = 'button';
-    clearBtn.className = 'cart-empty-btn';
-    clearBtn.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="vertical-align:middle;">
-        <path d="M7 10V7a5 5 0 0110 0v3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <rect x="3" y="10" width="18" height="11" rx="2" fill="#ff4d4f" stroke="#fff" stroke-width="2"/>
-      </svg>
-      Empty Cart
-    `;
-    clearBtn.disabled = !hasItems;
-    clearBtn.addEventListener('click', () => {
-      localStorage.removeItem('cart');
-      renderCart();
-      renderBadge();
-      if (cartModal) {
-        cartModal.classList.add('hidden');
-      }
-    });
-    checkoutActions.appendChild(clearBtn);
-  }
-
+  // Render action buttons
+  renderCheckoutActions(cart);
+  
+  // Update badge
   renderBadge();
 }
 
-// 🛒 Add to cart logic — 🔥 image injected
+/**
+ * Render checkout action buttons
+ * @param {Array} cart - Cart items array
+ */
+function renderCheckoutActions(cart) {
+  if (!checkoutActions) return;
+  
+  checkoutActions.innerHTML = '';
+  const hasItems = cart.length > 0;
+
+  // Checkout button
+  const checkoutBtn = document.createElement('a');
+  checkoutBtn.href = hasItems ? '/checkout.html' : '#';
+  checkoutBtn.className = 'cart-checkout-btn';
+  checkoutBtn.innerHTML = `
+    <i class="fas fa-credit-card" aria-hidden="true"></i>
+    Proceed to Checkout
+  `;
+  
+  if (!hasItems) {
+    checkoutBtn.setAttribute('aria-disabled', 'true');
+    checkoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+    });
+  }
+  
+  checkoutActions.appendChild(checkoutBtn);
+
+  // Empty cart button
+  const emptyBtn = document.createElement('button');
+  emptyBtn.type = 'button';
+  emptyBtn.className = 'cart-empty-btn';
+  emptyBtn.disabled = !hasItems;
+  emptyBtn.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Clear Cart
+  `;
+  
+  emptyBtn.addEventListener('click', () => {
+    if (confirm('Are you sure you want to empty your cart?')) {
+      emptyCart();
+    }
+  });
+  
+  checkoutActions.appendChild(emptyBtn);
+}
+
+/**
+ * Add product to cart
+ * @param {Object} product - Product object with id, name, price, etc.
+ */
 function addToCart(product) {
-  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+  if (!product || !product.id) {
+    console.error('Invalid product:', product);
+    return;
+  }
+  
+  const cart = getCart();
   const existing = cart.find(item => item.id === product.id);
 
   if (existing) {
-    existing.quantity += 1;
+    existing.quantity = (existing.quantity || 1) + 1;
   } else {
-    cart.push(product);
+    cart.push({
+      ...product,
+      quantity: product.quantity || 1
+    });
   }
 
-  localStorage.setItem('cart', JSON.stringify(cart));
+  saveCart(cart);
   renderCart();
-  // Auto-open the cart to confirm the add
+  
+  // Auto-open cart to confirm addition
   if (cartModal) {
-    cartModal.classList.remove('hidden');
+    openCartModal();
   }
 }
 
-// ➕➖ Quantity logic
+/**
+ * Update item quantity in cart
+ * @param {string} id - Product ID
+ * @param {number} delta - Change amount (+1 or -1)
+ */
 function updateQuantity(id, delta) {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const cart = getCart();
   const item = cart.find(p => p.id === id);
+  
   if (item) {
-    item.quantity += delta;
+    item.quantity = (item.quantity || 1) + delta;
+    
     if (item.quantity <= 0) {
-      cart = cart.filter(p => p.id !== id);
-    }
-  }
-  localStorage.setItem("cart", JSON.stringify(cart));
-  renderCart();
-}
-
-// ❌ Remove item
-function removeItem(id) {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  cart = cart.filter(item => item.id !== id);
-  localStorage.setItem("cart", JSON.stringify(cart));
-  renderCart();
-}
-
-// 🔢 Badge
-function renderBadge() {
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-  const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-  if (badge) badge.textContent = count;
-  // Hide or show floating cart button
-  if (openBtn) {
-    if (count > 0) {
-      openBtn.style.display = '';
+      // Remove item if quantity reaches 0
+      const filteredCart = cart.filter(p => p.id !== id);
+      saveCart(filteredCart);
     } else {
-      openBtn.style.display = 'none';
+      saveCart(cart);
     }
+  }
+  
+  renderCart();
+}
+
+/**
+ * Remove item from cart
+ * @param {string} id - Product ID
+ */
+function removeItem(id) {
+  const cart = getCart();
+  const filteredCart = cart.filter(item => item.id !== id);
+  saveCart(filteredCart);
+  renderCart();
+}
+
+/**
+ * Empty entire cart
+ */
+function emptyCart() {
+  localStorage.removeItem('cart');
+  renderCart();
+  closeCartModal();
+}
+
+/**
+ * Update cart badge with item count
+ */
+function renderBadge() {
+  const cart = getCart();
+  const count = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+  
+  if (badge) {
+    badge.textContent = count;
+  }
+  
+  // Show/hide floating button based on cart contents
+  if (openBtn) {
+    openBtn.style.display = count > 0 ? 'flex' : 'none';
   }
 }
 
-// 🟩 Add-to-cart: delegate to catch dynamic content as well
+/**
+ * Escape HTML to prevent XSS
+ * @param {string} text - Text to escape
+ * @returns {string} Escaped text
+ */
+function escapeHtml(text) {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return String(text).replace(/[&<>"']/g, m => map[m]);
+}
+
+/**
+ * Handle "Add to Cart" button clicks (delegated event)
+ */
 document.addEventListener('click', (evt) => {
   const btn = evt.target.closest('.add-to-cart-btn');
   if (!btn) return;
+  
+  evt.preventDefault();
+  
   const productCard = btn.closest('.product-card');
-  const rawSrc = btn.dataset.image || productCard?.querySelector('img')?.getAttribute('src') || 'images/placeholder.png';
-  const image = rawSrc.replace(/^\//, '');
+  const imgElement = btn.dataset.image || productCard?.querySelector('img')?.getAttribute('src') || '/images/placeholder.png';
+  const image = imgElement.replace(/^\/+/, '');
   const description = btn.dataset.description || productCard?.querySelector('.description')?.textContent?.trim() || '';
+  
   const product = {
-    id: btn.dataset.sku || btn.dataset.id || Date.now().toString(),
-    name: btn.dataset.name,
-    price: parseFloat(btn.dataset.price),
+    id: btn.dataset.sku || btn.dataset.id || `product-${Date.now()}`,
+    name: btn.dataset.name || 'Unknown Product',
+    price: parseFloat(btn.dataset.price) || 0,
     quantity: 1,
     image,
     description,
-    sku: btn.dataset.sku
+    sku: btn.dataset.sku || ''
   };
+  
   addToCart(product);
 });
 
@@ -294,44 +497,47 @@ document.addEventListener('click', (evt) => {
 });
 
 
-// 🔄 Open/close modal
-// Empty cart logic for floating button
-const emptyCartBtn = document.getElementById('emptyCartBtn');
-if (emptyCartBtn) {
-  emptyCartBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    localStorage.removeItem('cart');
-    renderCart();
-    renderBadge();
-  });
+/**
+ * Handle inline cart button clicks (optional)
+ */
+const inlineCartBtn = document.getElementById('inlineCartBtn');
+if (inlineCartBtn) {
+  inlineCartBtn.addEventListener('click', openCartModal);
 }
 
+/**
+ * Bind modal event listeners
+ */
 function bindShellEvents() {
   if (openBtn) {
-    openBtn.addEventListener('click', () => {
-      cartModal?.classList.toggle('hidden');
-      renderCart();
-    });
+    openBtn.addEventListener('click', openCartModal);
   }
+  
   if (closeBtn) {
-    closeBtn.addEventListener('click', () => {
-      cartModal?.classList.add('hidden');
-    });
-  }
-  if (cartModal) {
-    cartModal.addEventListener('click', (e) => {
-      if (e.target === cartModal) {
-        cartModal.classList.add('hidden');
-      }
-    });
+    closeBtn.addEventListener('click', closeCartModal);
   }
 }
 
-// On page load, hide cart button if cart is empty
+/**
+ * Initialize cart modal on page load
+ */
 document.addEventListener('DOMContentLoaded', () => {
-  // Ensure modal + button exist everywhere
+  // Ensure cart scaffold exists
   ensureCartScaffold();
+  
+  // Bind event listeners
   bindShellEvents();
+  
+  // Initial render
   renderBadge();
   renderCart();
 });
+
+/**
+ * Expose functions to global scope for onclick handlers
+ * (Required for dynamically generated buttons)
+ */
+window.addToCart = addToCart;
+window.updateQuantity = updateQuantity;
+window.removeItem = removeItem;
+window.emptyCart = emptyCart;
