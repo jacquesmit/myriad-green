@@ -1,3 +1,63 @@
+/* Step 4 Maintenance & Support Background Overlay */
+.step-maintenance-support-bg {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: inherit;
+}
+.step-maintenance-support-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("../images/services/irrigation/myriad-green-irrigation-step-4-comprehensive-maintenance-and-support-gauteng.jpg");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.35;
+  z-index: -2;
+  border-radius: inherit;
+}
+.step-maintenance-support-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.45),
+    rgba(0, 0, 0, 0.15)
+  );
+  z-index: -1;
+  border-radius: inherit;
+}
+/* Step 3 Installation & Setup Background Overlay */
+.step-installation-setup-bg {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: inherit;
+}
+.step-installation-setup-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("../images/services/irrigation/myriad-green-irrigation-step-3-expert-installation-and-setup-gauteng-v2.jpg");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.35;
+  z-index: -2;
+  border-radius: inherit;
+}
+.step-installation-setup-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.45),
+    rgba(0, 0, 0, 0.15)
+  );
+  z-index: -1;
+  border-radius: inherit;
+}
 /* Step 2 Design & Quote Background Overlay */
 .step-design-quote-bg {
   position: relative;
