@@ -1,3 +1,60 @@
+/* Step 2 Design & Quote Background Overlay */
+.step-design-quote-bg {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: inherit;
+}
+.step-design-quote-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-image: url("../images/services/irrigation/myriad-green-irrigation-step-2-professional-system-design-and-quote-gauteng.jpg");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.35;
+  border-radius: inherit;
+}
+.step-design-quote-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.45),
+    rgba(0, 0, 0, 0.15)
+  );
+  border-radius: inherit;
+}
+/* Step 2 Design & Quote Background Overlay */
+.step-design-quote-bg {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.step-design-quote-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("../images/services/irrigation/myriad-green-irrigation-step-2-professional-system-design-and-quote-gauteng.jpg");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.35;
+  z-index: -2;
+}
+.step-design-quote-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.45),
+    rgba(0, 0, 0, 0.15)
+  );
+  z-index: -1;
+}
 /* Step 1 Assessment Background Overlay */
 .step-assessment-bg {
   position: relative;
