@@ -1,0 +1,77 @@
+/* terms-and-conditions.css - Dedicated styles for the Terms and Conditions page */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+:root {
+  --primary-green: #176a3a;
+  --background: #fff;
+  --text-main: #222;
+  --text-muted: #888;
+  --border-radius: 12px;
+  --shadow: 0 2px 16px rgba(0,0,0,0.07);
+}
+
+body {
+  font-family: 'Poppins', Arial, sans-serif;
+  background: #f6fff8;
+  margin: 0;
+  padding: 0;
+}
+
+.terms-container {
+  max-width: 700px;
+  margin: 3rem auto;
+  background: var(--background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: 2.5rem 2rem;
+}
+
+.terms-container h1 {
+  color: var(--primary-green);
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.terms-container h2 {
+  color: var(--primary-green);
+  font-size: 1.25rem;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.terms-container ul {
+  margin-bottom: 1.5rem;
+  padding-left: 1.2rem;
+}
+
+.terms-container li {
+  margin-bottom: 0.5rem;
+  color: var(--text-main);
+}
+
+.terms-container p, .terms-container li {
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.terms-container a {
+  color: var(--primary-green);
+  text-decoration: underline;
+}
+
+.terms-container .effective-date {
+  margin-top: 2rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 600px) {
+  .terms-container {
+    padding: 1.2rem 0.5rem;
+  }
+  .terms-container h1 {
+    font-size: 1.5rem;
+  }
+}
