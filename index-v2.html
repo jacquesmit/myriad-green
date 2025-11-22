@@ -1074,127 +1074,110 @@
         <div class="weather-section-header">
           <div class="weather-badge">
             <i class="fas fa-cloud-sun"></i>
-            <span>Real-Time Weather Intelligence</span>
+            <span>Smart Home & Environment</span>
           </div>
           <h2 id="weather-title" class="weather-section-title">
-            Weather-Smart <span class="text-highlight">System Solutions</span>
+            Real-Time <span class="text-highlight">Monitoring & Control</span>
           </h2>
           <p class="weather-section-subtitle">
-            Our advanced systems automatically adapt to Johannesburg's weather conditions, ensuring optimal performance and efficiency year-round.
+            Our systems connect your home or business to real-time weather, water, and energy data—so you can optimize comfort, savings, and sustainability all year round.
           </p>
         </div>
-
         <div class="weather-grid">
-          <!-- Live Weather Card -->
+          <!-- Live Environment Card -->
           <div class="weather-card weather-card--primary">
             <div class="weather-card-header">
               <div class="weather-location-info">
                 <i class="fas fa-map-marker-alt"></i>
-                <span class="location-name">Johannesburg, Gauteng</span>
-                <span class="update-time" id="current-time">Loading...</span>
+                <span class="location-name">Gauteng, South Africa</span>
+                <span class="update-time" id="current-time">Live</span>
               </div>
             </div>
-
             <div class="weather-current-display">
               <div class="weather-main-info">
                 <div class="weather-icon-large">
-                  <i id="weather-icon" class="fas fa-sun"></i>
+                  <i id="weather-icon" class="fas fa-bolt"></i>
                 </div>
                 <div class="weather-temperature">
-                  <span id="current-temp" class="temp-value">--°</span>
-                  <span class="temp-unit">C</span>
+                  <span id="current-temp" class="temp-value">--</span>
+                  <span class="temp-unit">Status</span>
                 </div>
               </div>
               <div class="weather-description-info">
-                <div id="weather-description" class="weather-condition">Loading...</div>
-                <div id="feels-like" class="feels-like-temp">Feels like --°C</div>
+                <div id="weather-description" class="weather-condition">Smart systems online</div>
+                <div id="feels-like" class="feels-like-temp">All sensors normal</div>
               </div>
             </div>
-
             <div class="weather-metrics-grid">
-              <div class="weather-metric" data-metric="humidity">
+              <div class="weather-metric" data-metric="water">
                 <i class="fas fa-tint"></i>
                 <div class="metric-info">
-                  <span class="metric-label">Humidity</span>
-                  <span id="humidity" class="metric-value">--%</span>
+                  <span class="metric-label">Water</span>
+                  <span id="humidity" class="metric-value">OK</span>
                 </div>
               </div>
-              <div class="weather-metric" data-metric="wind">
-                <i class="fas fa-wind"></i>
+              <div class="weather-metric" data-metric="power">
+                <i class="fas fa-bolt"></i>
                 <div class="metric-info">
-                  <span class="metric-label">Wind</span>
-                  <span id="wind-speed" class="metric-value">-- km/h</span>
+                  <span class="metric-label">Power</span>
+                  <span id="wind-speed" class="metric-value">Stable</span>
                 </div>
               </div>
-              <div class="weather-metric" data-metric="pressure">
-                <i class="fas fa-thermometer-half"></i>
+              <div class="weather-metric" data-metric="security">
+                <i class="fas fa-shield-alt"></i>
                 <div class="metric-info">
-                  <span class="metric-label">Pressure</span>
-                  <span id="pressure" class="metric-value">-- hPa</span>
+                  <span class="metric-label">Security</span>
+                  <span id="pressure" class="metric-value">Active</span>
                 </div>
               </div>
-              <div class="weather-metric" data-metric="visibility">
-                <i class="fas fa-eye"></i>
+              <div class="weather-metric" data-metric="environment">
+                <i class="fas fa-leaf"></i>
                 <div class="metric-info">
-                  <span class="metric-label">Visibility</span>
-                  <span id="visibility" class="metric-value">-- km</span>
+                  <span class="metric-label">Environment</span>
+                  <span id="visibility" class="metric-value">Healthy</span>
                 </div>
               </div>
             </div>
-
             <div class="weather-advice-section">
               <div class="advice-header">
                 <i class="fas fa-lightbulb"></i>
-                <span>Today's System Recommendation</span>
+                <span>Today's Smart Tip</span>
               </div>
               <div id="irrigation-recommendation" class="advice-text">
-                Loading system recommendations...
+                Automate your water, power, and security for peace of mind and savings.
               </div>
             </div>
-
             <div class="weather-card-footer">
               <button id="refresh-weather" class="weather-refresh-btn">
                 <i class="fas fa-sync-alt"></i>
-                <span>Refresh Data</span>
+                <span>Refresh Status</span>
               </button>
               <span class="last-update">Updated just now</span>
             </div>
-
-            <!-- Weather widget intentionally removed on service pages to avoid duplicate injection from index -->
           </div>
-
           <!-- Smart Features Card -->
           <div class="weather-card weather-card--features">
             <div class="features-header">
               <i class="fas fa-microchip"></i>
-              <h3 class="features-title">Smart Weather Integration</h3>
+              <h3 class="features-title">Smart Home Features</h3>
             </div>
             <div class="features-grid">
               <div class="feature-item">
                 <div class="feature-icon">
-                  <i class="fas fa-cloud-rain"></i>
+                  <i class="fas fa-cloud"></i>
                 </div>
                 <div class="feature-content">
-                  <h4 class="feature-name">Rain Detection</h4>
-                  <p class="feature-description">Automatically skips watering when rain is detected or forecast</p>
+                  <h4 class="feature-name">Cloud Monitoring</h4>
+                  <p class="feature-description">Access your system status and history from anywhere</p>
                 </div>
               </div>
               <div class="feature-item">
                 <div class="feature-icon">
-                  <i class="fas fa-thermometer-half"></i>
+                  <i class="fas fa-bolt"></i>
                 </div>
                 <div class="feature-content">
-                  <h4 class="feature-name">Temperature Adjustment</h4>
-                  <p class="feature-description">Increases watering duration during hot weather automatically</p>
-                </div>
-              </div>
-              <div class="feature-item">
-                <div class="feature-icon">
-                  <i class="fas fa-wind"></i>
-                </div>
-                <div class="feature-content">
-                  <h4 class="feature-name">Wind Compensation</h4>
-                  <p class="feature-description">Adjusts spray patterns and timing based on wind conditions</p>
+                  <h4 class="feature-name">Energy Automation</h4>
+                  <p class="feature-description">Automate backup power and load shedding response</p>
                 </div>
               </div>
               <div class="feature-item">
@@ -1202,72 +1185,79 @@
                   <i class="fas fa-tint"></i>
                 </div>
                 <div class="feature-content">
-                  <h4 class="feature-name">Humidity Awareness</h4>
-                  <p class="feature-description">Optimizes watering schedules based on atmospheric moisture</p>
+                  <h4 class="feature-name">Water Management</h4>
+                  <p class="feature-description">Monitor usage, leaks, and automate irrigation</p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="feature-content">
+                  <h4 class="feature-name">Security Alerts</h4>
+                  <p class="feature-description">Get instant notifications for system or security events</p>
                 </div>
               </div>
             </div>
           </div>
-
           <!-- CTA Card -->
           <div class="weather-card weather-card--cta">
             <div class="cta-content">
               <div class="cta-icon">
                 <i class="fas fa-robot"></i>
               </div>
-              <h3 class="cta-title">Weather-Smart Installation</h3>
+              <h3 class="cta-title">Upgrade to Smart Living</h3>
               <p class="cta-description">
-                Upgrade to our intelligent irrigation system that automatically responds to weather conditions, saving water and protecting your landscape.
+                Connect your home or business to the future. Our smart systems help you save, protect, and enjoy more—automatically.
               </p>
               <div class="cta-benefits">
                 <div class="benefit-tag">
-                  <i class="fas fa-water"></i>
-                  <span>30% Water Savings</span>
+                  <i class="fas fa-bolt"></i>
+                  <span>Energy Automation</span>
+                </div>
+                <div class="benefit-tag">
+                  <i class="fas fa-tint"></i>
+                  <span>Water Savings</span>
                 </div>
                 <div class="benefit-tag">
                   <i class="fas fa-shield-alt"></i>
-                  <span>Plant Protection</span>
-                </div>
-                <div class="benefit-tag">
-                  <i class="fas fa-mobile-alt"></i>
-                  <span>App Control</span>
+                  <span>Peace of Mind</span>
                 </div>
               </div>
-              <button class="btn btn-primary btn-weather-cta book-now" data-service="Smart Weather Integration">
+              <button class="btn btn-primary btn-weather-cta book-now" data-service="Smart Home Consultation">
                 <i class="fas fa-rocket"></i>
                 <span>Go Smart</span>
               </button>
             </div>
           </div>
         </div>
-
         <!-- Weather Stats Bar -->
         <div class="weather-stats-bar">
           <div class="weather-stat">
             <div class="stat-icon">
-              <i class="fas fa-chart-line"></i>
+              <i class="fas fa-bolt"></i>
             </div>
             <div class="stat-info">
-              <span class="stat-value">30%</span>
+              <span class="stat-value">24/7</span>
+              <span class="stat-label">Smart Monitoring</span>
+            </div>
+          </div>
+          <div class="weather-stat">
+            <div class="stat-icon">
+              <i class="fas fa-tint"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value">30-50%</span>
               <span class="stat-label">Water Savings</span>
             </div>
           </div>
           <div class="weather-stat">
             <div class="stat-icon">
-              <i class="fas fa-leaf"></i>
+              <i class="fas fa-shield-alt"></i>
             </div>
             <div class="stat-info">
-              <span class="stat-value">98%</span>
-              <span class="stat-label">Plant Health</span>
-            </div>
-          </div>
-          <div class="weather-stat">
-            <div class="stat-icon">
-              <i class="fas fa-clock"></i>
-            </div>
-            <div class="stat-info">
-              <span class="stat-value">24/7</span>
-              <span class="stat-label">Monitoring</span>
+              <span class="stat-value">100%</span>
+              <span class="stat-label">Workmanship Guarantee</span>
             </div>
           </div>
           <div class="weather-stat">
@@ -1275,8 +1265,8 @@
               <i class="fas fa-users"></i>
             </div>
             <div class="stat-info">
-              <span class="stat-value">500+</span>
-              <span class="stat-label">Smart Systems</span>
+              <span class="stat-value">10,000+</span>
+              <span class="stat-label">Happy Clients</span>
             </div>
           </div>
         </div>
