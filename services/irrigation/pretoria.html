@@ -121,6 +121,10 @@
   <div id="booking-modal-root"></div>
 
   <main id="content">
+        <!-- Installation Calculator Section -->
+
+
+      <script src="../../js/installation-calculator.js" defer></script>
     <!-- Hero Section -->
     <section id="hero" class="section section--hero" aria-labelledby="hero-title">
       <div class="container">
@@ -263,7 +267,13 @@
               </div>
             </div>
           </div>
-        </div>
+
+
+          
+              <!-- Disclaimer: Once-off Systems -->
+              <div class="pricing__disclaimer" style="font-size:0.95em;color:#888;margin-top:16px;">
+                <strong>Note:</strong> All prices are subject to terms & conditions. Add-ons (pump, filter, lawn, tanks) and labour beyond the specified installation time are additional. Please see full T&Cs at checkout.
+              </div>
       </div>
     </section>
 
@@ -1618,131 +1628,107 @@
           <p class="pricing__subtitle">Professional irrigation solutions tailored to your needs</p>
         </header>
 
-        <!-- Once-off Services -->
+
+        <!-- Once-off Systems -->
         <div class="pricing__group">
           <h3 class="pricing__group-title pricing__group-title--once" id="once-off-services">
-            Once-off Services
+            Once-off Irrigation Systems
           </h3>
-          <p class="pricing__group-description">Single-visit professional services for your irrigation system</p>
+          <p class="pricing__group-description">Choose a complete system package. Add pumps, filters, lawn, or tanks at checkout.</p>
 
           <div class="pricing__grid pricing__grid--services" role="list" aria-labelledby="once-off-services">
-            <!-- System Assessment Card -->
-            <article class="pricing-card pricing-card--service pricing-card--featured" role="listitem" id="service-assessment">
-              <div class="pricing-card__badge" aria-label="Most popular service">
-                <span class="pricing-card__badge-text">Most Popular</span>
+            <!-- 6-Zone System Card -->
+            <article class="pricing-card pricing-card--service pricing-card--featured" role="listitem" id="system-6-zone">
+              <div class="pricing-card__badge" aria-label="Best Value">
+                <span class="pricing-card__badge-text">Best Value</span>
               </div>
               <div class="pricing-card__header">
-                <h4 class="pricing-card__title">System Assessment</h4>
+                <h4 class="pricing-card__title">6-Zone System</h4>
                 <div class="pricing-card__price">
-                  <span class="pricing-card__amount">R750</span>
-                  <span class="pricing-card__period">one-time</span>
+                  <span class="pricing-card__amount">R12,500</span>
+                  <span class="pricing-card__period">once-off</span>
                 </div>
               </div>
-
               <div class="pricing-card__content">
                 <ul class="pricing-card__features" role="list">
-                  <li class="pricing-card__feature" role="listitem">
-                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Comprehensive system evaluation
-                  </li>
-                  <li class="pricing-card__feature" role="listitem">
-                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Optimization recommendations
-                  </li>
-                  <li class="pricing-card__feature" role="listitem">
-                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Detailed repair quotes included
-                  </li>
+                  <li class="pricing-card__feature" role="listitem">Up to 6 irrigation zones</li>
+                  <li class="pricing-card__feature" role="listitem">Standard controller included</li>
+                  <li class="pricing-card__feature" role="listitem">Rotors & pop-ups for lawns</li>
+                  <li class="pricing-card__feature" role="listitem">All pipes, valves, fittings</li>
+                  <li class="pricing-card__feature" role="listitem">Professional installation</li>
+                  <li class="pricing-card__feature" role="listitem">1-year warranty</li>
                 </ul>
               </div>
-
               <div class="pricing-card__actions">
                 <button class="btn btn--primary btn--full pricing-card__cta"
-                        data-service="assessment"
-                        data-price="750"
-                        aria-describedby="service-assessment">
-                  Book Assessment
+                        data-system="6-zone"
+                        data-price="12500"
+                        aria-describedby="system-6-zone">
+                  Select 6-Zone System
                 </button>
               </div>
             </article>
 
-            <!-- Repair Services Card -->
-            <article class="pricing-card pricing-card--service" role="listitem" id="service-repair">
-              <div class="pricing-card__badge pricing-card__badge--popular" aria-label="Popular choice">
+            <!-- 8-Zone System Card -->
+            <article class="pricing-card pricing-card--service" role="listitem" id="system-8-zone">
+              <div class="pricing-card__badge pricing-card__badge--popular" aria-label="Popular Choice">
                 <span class="pricing-card__badge-text">Popular</span>
               </div>
               <div class="pricing-card__header">
-                <h4 class="pricing-card__title">Repair Services</h4>
+                <h4 class="pricing-card__title">8-Zone System</h4>
                 <div class="pricing-card__price">
-                  <span class="pricing-card__amount">R420</span>
-                  <span class="pricing-card__period">starting from</span>
+                  <span class="pricing-card__amount">R15,000</span>
+                  <span class="pricing-card__period">once-off</span>
                 </div>
-                <div class="pricing-card__note">Excluding parts</div>
               </div>
-
               <div class="pricing-card__content">
                 <ul class="pricing-card__features" role="list">
-                  <li class="pricing-card__feature" role="listitem">
-                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Professional valve repair
-                  </li>
-                  <li class="pricing-card__feature" role="listitem">
-                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Controller diagnostics & repair
-                  </li>
-                  <li class="pricing-card__feature" role="listitem">
-                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Parts & labor warranty
-                  </li>
+                  <li class="pricing-card__feature" role="listitem">Up to 8 irrigation zones</li>
+                  <li class="pricing-card__feature" role="listitem">Standard controller included</li>
+                  <li class="pricing-card__feature" role="listitem">Rotors & pop-ups for lawns</li>
+                  <li class="pricing-card__feature" role="listitem">All pipes, valves, fittings</li>
+                  <li class="pricing-card__feature" role="listitem">Professional installation</li>
+                  <li class="pricing-card__feature" role="listitem">1-year warranty</li>
                 </ul>
               </div>
-
               <div class="pricing-card__actions">
                 <button class="btn btn--primary btn--full pricing-card__cta"
-                        data-service="repair"
-                        data-price="420"
-                        aria-describedby="service-repair">
-                  Book Repair
+                        data-system="8-zone"
+                        data-price="15000"
+                        aria-describedby="system-8-zone">
+                  Select 8-Zone System
                 </button>
               </div>
             </article>
 
-            <!-- New Installation Card -->
-            <article class="pricing-card pricing-card--service" role="listitem" id="service-installation">
-              <div class="pricing-card__badge pricing-card__badge--premium" aria-label="Premium service">
+            <!-- 12-Zone System Card -->
+            <article class="pricing-card pricing-card--service" role="listitem" id="system-12-zone">
+              <div class="pricing-card__badge pricing-card__badge--premium" aria-label="Premium System">
                 <span class="pricing-card__badge-text">Premium</span>
               </div>
               <div class="pricing-card__header">
-                <h4 class="pricing-card__title">New Installation</h4>
+                <h4 class="pricing-card__title">12-Zone System</h4>
                 <div class="pricing-card__price">
-                  <span class="pricing-card__amount">R18,500</span>
-                  <span class="pricing-card__period">starting from</span>
+                  <span class="pricing-card__amount">R19,500</span>
+                  <span class="pricing-card__period">once-off</span>
                 </div>
               </div>
-
               <div class="pricing-card__content">
                 <ul class="pricing-card__features" role="list">
-                  <li class="pricing-card__feature" role="listitem">
-                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Complete system design & CAD
-                  </li>
-                  <li class="pricing-card__feature" role="listitem">
-                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Professional installation
-                  </li>
-                  <li class="pricing-card__feature" role="listitem">
-                    <span class="pricing-card__feature-icon" aria-hidden="true">✓</span>
-                    Smart WiFi controller included
-                  </li>
+                  <li class="pricing-card__feature" role="listitem">Up to 12 irrigation zones</li>
+                  <li class="pricing-card__feature" role="listitem">Standard controller included</li>
+                  <li class="pricing-card__feature" role="listitem">Rotors & pop-ups for lawns</li>
+                  <li class="pricing-card__feature" role="listitem">All pipes, valves, fittings</li>
+                  <li class="pricing-card__feature" role="listitem">Professional installation</li>
+                  <li class="pricing-card__feature" role="listitem">1-year warranty</li>
                 </ul>
               </div>
-
               <div class="pricing-card__actions">
                 <button class="btn btn--primary btn--full pricing-card__cta"
-                        data-service="installation"
-                        data-price="18500"
-                        aria-describedby="service-installation">
-                  Get A Quote
+                        data-system="12-zone"
+                        data-price="19500"
+                        aria-describedby="system-12-zone">
+                  Select 12-Zone System
                 </button>
               </div>
             </article>
