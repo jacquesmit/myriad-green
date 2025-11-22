@@ -1,0 +1,92 @@
+/* warranty-cards.css - Production ready styles for warranty options */
+.warranty-cards-grid {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 2rem 0 3rem 0;
+}
+.warranty-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 16px rgba(20,110,180,0.08), 0 1.5px 6px rgba(0,0,0,0.04);
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  max-width: 340px;
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: box-shadow 0.2s;
+}
+.warranty-card:hover {
+  box-shadow: 0 4px 24px rgba(20,110,180,0.16), 0 2px 8px rgba(0,0,0,0.08);
+}
+.warranty-card h2 {
+  font-size: 1.35rem;
+  color: #146eb4;
+  margin-bottom: 0.7rem;
+}
+.warranty-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.2rem 0;
+}
+.warranty-card ul li {
+  margin-bottom: 0.5rem;
+  color: #374151;
+  font-size: 1rem;
+  padding-left: 1.2em;
+  position: relative;
+}
+.warranty-card ul li:before {
+  content: '\2714';
+  color: #1db954;
+  position: absolute;
+  left: 0;
+  font-size: 1.1em;
+}
+.warranty-pricing {
+  margin-bottom: 1.2rem;
+  font-size: 1.1rem;
+  color: #222;
+}
+.warranty-pricing strong {
+  color: #146eb4;
+}
+.btn.warranty-checkout {
+  width: 100%;
+  margin-top: auto;
+  background: #146eb4;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.85em 0;
+  font-size: 1.08rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.btn.warranty-checkout:hover {
+  background: #0e4e85;
+}
+.warranty-faq {
+  max-width: 700px;
+  margin: 2.5rem auto 0 auto;
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 2rem 1.5rem;
+}
+.warranty-faq h2 {
+  color: #146eb4;
+  margin-bottom: 1.2rem;
+}
+.warranty-faq dt {
+  font-weight: 600;
+  margin-top: 1.1rem;
+  color: #222;
+}
+.warranty-faq dd {
+  margin-left: 0;
+  margin-bottom: 0.7rem;
+  color: #374151;
+}
