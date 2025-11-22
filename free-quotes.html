@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Quotes | Myriad Green</title>
+  <meta name="description" content="Request a free quote for irrigation, leak detection, water systems, and more. Fast response from Myriad Green.">
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/contact-us-form.css">
+  <link rel="stylesheet" href="/css/service-main-page.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="has-fixed-header" data-theme="light">
+  <div id="site-nav"><!--#include file="/partials/nav.html" --></div>
+  <main id="content" class="container">
+    <header class="section-header">
+      <h1>Request a Free Quote</h1>
+      <p>Get a fast, no-obligation quote for any of our services. We’ll respond within a few hours.</p>
+    </header>
+    <section class="quote-form-section">
+      <form id="freeQuoteForm" class="contact-form amazing-quote-form" autocomplete="on" novalidate>
+        <input type="hidden" name="source_page" id="source_page" value="">
+        <div class="form-group">
+          <input type="text" id="name" name="name" placeholder=" " required autocomplete="name">
+          <label for="name">Full Name</label>
+        </div>
+        <div class="form-group">
+          <input type="email" id="email" name="email" placeholder=" " required autocomplete="email">
+          <label for="email">Email Address</label>
+        </div>
+        <div class="form-group">
+          <input type="tel" id="phone" name="phone" placeholder=" " required autocomplete="tel">
+          <label for="phone">Phone Number</label>
+        </div>
+        <div class="form-group">
+          <input type="text" id="address" name="address" placeholder=" " required autocomplete="address-level2">
+          <label for="address">Suburb / Area / Address</label>
+        </div>
+        <div class="form-group">
+          <div class="select-label-wrapper">
+            <label for="service" class="select-label">Relevant Service or Problem</label>
+          </div>
+          <select id="service" name="service" required>
+            <option value="" disabled hidden>Select a service or problem…</option>
+            <option value="Irrigation System Installation">Irrigation System Installation</option>
+            <option value="Irrigation System Repair">Irrigation System Repair</option>
+            <option value="Borehole Drilling">Borehole Drilling</option>
+            <option value="Borehole Pump Installation">Borehole Pump Installation</option>
+            <option value="Borehole Maintenance">Borehole Maintenance</option>
+            <option value="Leak Detection">Leak Detection</option>
+            <option value="Pipe Burst / Water Leak">Pipe Burst / Water Leak</option>
+            <option value="Grey Water System Installation">Grey Water System Installation</option>
+            <option value="Grey Water System Repair">Grey Water System Repair</option>
+            <option value="Smart Water Solutions">Smart Water Solutions</option>
+            <option value="Water Tank Installation">Water Tank Installation</option>
+            <option value="Water Tank Cleaning">Water Tank Cleaning</option>
+            <option value="Water Filtration / Purification">Water Filtration / Purification</option>
+            <option value="Emergency Water Services">Emergency Water Services</option>
+            <option value="No Water Pressure">No Water Pressure</option>
+            <option value="Other">Other / Not Listed</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <textarea id="message" name="message" placeholder=" " rows="4" required></textarea>
+          <label for="message">How can we help?</label>
+        </div>
+        <button type="submit" class="irrigation-contact-us-Formbtn amazing-btn">
+          <span class="btn-text">Request Quote</span>
+          <span class="btn-loader" style="display:none;"></span>
+        </button>
+        <div id="form-status" class="form-status-msg" role="alert"></div>
+      </form>
+      <div id="quote-success" class="quote-success-message" style="display:none;">
+        <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+        <h2>Thank you!</h2>
+        <p>Your quote request was sent successfully. We’ll get back to you soon.</p>
+        <p class="small">A confirmation email has been sent to you.</p>
+      </div>
+    </section>
+  </main>
+  <div id="site-footer"><!--#include file="/partials/footer.html" --></div>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    // Track the source page for analytics and CRM
+    document.addEventListener('DOMContentLoaded', function() {
+      var sourceInput = document.getElementById('source_page');
+      if (sourceInput) {
+        // Prefer a triggering element (if opened as modal or via JS), else fallback to referrer or current page
+        var urlParams = new URLSearchParams(window.location.search);
+        var trigger = urlParams.get('triggered_from');
+        var ref = trigger || document.referrer || window.location.origin + window.location.pathname;
+        sourceInput.value = ref;
+      }
+      // Service dropdown quick fill
+      var serviceSelect = document.getElementById('service');
+      var messageBox = document.getElementById('message');
+      if (serviceSelect && messageBox) {
+        serviceSelect.addEventListener('change', function() {
+          if (serviceSelect.value && serviceSelect.value !== 'Other') {
+            messageBox.value = 'I would like a quote for ' + serviceSelect.value + '. ';
+            messageBox.focus();
+          } else {
+            messageBox.value = '';
+          }
+        });
+      }
+    });
+
+    // Amazing zing EmailJS-powered AJAX form
+    (function() {
+      emailjs.init('ONUJ8lbw4WfuQVpFf'); // TODO: Replace with your EmailJS user ID if needed
+      const form = document.getElementById('freeQuoteForm');
+      const statusMsg = document.getElementById('form-status');
+      const btn = form.querySelector('button[type="submit"]');
+      const btnText = btn.querySelector('.btn-text');
+      const btnLoader = btn.querySelector('.btn-loader');
+      const successBox = document.getElementById('quote-success');
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        statusMsg.textContent = '';
+        btn.disabled = true;
+        btnText.textContent = 'Sending…';
+        btnLoader.style.display = 'inline-block';
+        btnLoader.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        // Validate
+        const data = {
+          name: form.name.value.trim(),
+          email: form.email.value.trim(),
+          phone: form.phone.value.trim(),
+          address: form.address.value.trim(),
+          service: form.service.value,
+          message: form.message.value.trim(),
+          source_page: form.source_page.value
+        };
+        if (!data.name || !data.email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email) || !data.phone || !data.address || !data.service || !data.message) {
+          statusMsg.textContent = 'Please fill in all fields with valid information.';
+          btn.disabled = false;
+          btnText.textContent = 'Request Quote';
+          btnLoader.style.display = 'none';
+          return;
+        }
+        // Send to admin
+        emailjs.send('service_default', 'template_quote_admin', data)
+          .then(function() {
+            // Send confirmation to client
+            return emailjs.send('service_default', 'template_quote_client', data);
+          })
+          .then(function() {
+            form.reset();
+            form.style.display = 'none';
+            successBox.style.display = 'block';
+          })
+          .catch(function(err) {
+            statusMsg.textContent = 'There was an error sending your request. Please try again or contact us directly.';
+          })
+          .finally(function() {
+            btn.disabled = false;
+            btnText.textContent = 'Request Quote';
+            btnLoader.style.display = 'none';
+          });
+      });
+    })();
+  </script>
+  <style>
+    .amazing-quote-form {
+      background: #fff;
+      border-radius: 1.25rem;
+      box-shadow: 0 4px 32px rgba(22,163,74,0.08);
+      padding: 2.5rem 1.5rem 2rem 1.5rem;
+      max-width: 480px;
+      margin: 2rem auto 0 auto;
+      position: relative;
+      z-index: 2;
+      animation: fadeInUp 0.7s cubic-bezier(.23,1.01,.32,1) 1;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: none; }
+    }
+    .amazing-btn {
+      background: linear-gradient(90deg, #16a34a 0%, #22d3ee 100%);
+      color: #fff;
+      font-weight: 700;
+      border: none;
+      border-radius: 2rem;
+      box-shadow: 0 2px 12px rgba(22,163,74,0.12);
+      padding: 0.9rem 2.2rem;
+      font-size: 1.15rem;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .amazing-btn:active { transform: scale(0.97); }
+    .amazing-btn .btn-loader { font-size: 1.2em; }
+    .form-status-msg { min-height: 1.5em; margin-top: 0.5em; color: #b91c1c; font-weight: 600; }
+    .quote-success-message {
+      background: #f0fdf4;
+      border-radius: 1.25rem;
+      box-shadow: 0 2px 16px rgba(22,163,74,0.10);
+      padding: 2.5rem 1.5rem 2rem 1.5rem;
+      max-width: 480px;
+      margin: 2rem auto 0 auto;
+      text-align: center;
+      animation: fadeInUp 0.7s cubic-bezier(.23,1.01,.32,1) 1;
+    }
+    .quote-success-message .success-icon {
+      font-size: 3.5rem;
+      color: #16a34a;
+      margin-bottom: 1rem;
+      animation: popIn 0.5s cubic-bezier(.23,1.01,.32,1) 1;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.7); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .quote-success-message h2 { color: #16a34a; margin-bottom: 0.5rem; }
+    .quote-success-message .small { color: #64748b; font-size: 0.98em; margin-top: 1.2em; }
+    /* Fix floating label for select fields */
+    .amazing-quote-form .form-group {
+      position: relative;
+      margin-bottom: 1.7rem;
+    }
+    .amazing-quote-form select {
+      width: 100%;
+      padding: 1.2rem 1.1rem 0.6rem 1.1rem;
+      font-size: 1.18rem;
+      border: 2px solid #dbeafe;
+      border-radius: 1rem;
+      background: #fff;
+      color: #1e293b;
+      appearance: none;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+    .amazing-quote-form select:focus {
+      border-color: #16a34a;
+    }
+    /* Remove floating label for select, use static label above */
+    .amazing-quote-form .select-label-wrapper {
+      margin-bottom: 0.35em;
+    }
+    .amazing-quote-form .select-label {
+      display: block;
+      color: #64748b;
+      font-weight: 600;
+      font-size: 1.05rem;
+      margin-bottom: 0;
+      padding-left: 0.1em;
+    }
+    .amazing-quote-form select {
+      margin-top: 0;
+    }
+    /* Hide the default arrow, add custom */
+    .amazing-quote-form select {
+      background-image: url('data:image/svg+xml;utf8,<svg fill="%2364778b" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7.293 7.293a1 1 0 011.414 0L10 8.586l1.293-1.293a1 1 0 111.414 1.414l-2 2a1 1 0 01-1.414 0l-2-2a1 1 0 010-1.414z"/></svg>');
+      background-repeat: no-repeat;
+      background-position: right 1.1rem center;
+      background-size: 1.3em;
+    }
+    .amazing-quote-form select::-ms-expand {
+      display: none;
+    }
+    /* Fix for select label overlap in Chrome/Edge */
+    .amazing-quote-form select:invalid {
+      color: #64748b;
+    }
+    .amazing-quote-form select option[value=""] {
+      color: #b6c2d6 !important;
+    }
+    .amazing-quote-form select:not(:invalid) {
+      color: #1e293b;
+    }
+  </style>
+</body>
+</html>
