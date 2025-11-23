@@ -5916,8 +5916,7 @@ details[open] .faq__caret {
 }
 
 [data-theme="dark"] .section--how-it-works {
-  --section-bg: var(--color-gray-900);
-  background-color: var(--section-bg);
+  background: transparent !important;
 }
 
 [data-theme="dark"] .section--how-it-works .how__title {
