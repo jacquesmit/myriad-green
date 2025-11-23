@@ -1,3 +1,9 @@
+.section--faq {
+  background: transparent !important;
+}
+[data-theme="dark"] .section--faq {
+  background: transparent !important;
+}
 /* Harmonize pricing cards with rest of page */
 .section--pricing .pricing-card,
 .section--pricing .pricing-card.pricing-card--service,
