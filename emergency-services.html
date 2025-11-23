@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emergency Services | Myriad Green</title>
+  <meta name="description" content="24/7 emergency irrigation repairs, leak detection, drain unblocking, and backup water solutions in Gauteng. Fast response, expert technicians, all major services.">
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/main-navigation.css">
+  <link rel="stylesheet" href="/css/service-main-page.css">
+  <link rel="stylesheet" href="/css/trends-widget.css">
+  <link rel="stylesheet" href="/css/weather-widget.css">
+  <link rel="stylesheet" href="/css/service-areas-section.css">
+  <link rel="stylesheet" href="/css/mobile-nav.css">
+  <link rel="stylesheet" href="/css/navbar.css">
+  <link rel="stylesheet" href="/css/theme-toggle.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="/css/components/buttons/social-bar.css">
+  <link rel="stylesheet" href="/css/components/buttons/floating-contact-bar.css">
+  <link rel="stylesheet" href="/css/service-faq-v2.css">
+  <link rel="stylesheet" href="/css/service-pages.css">
+  <link rel="stylesheet" href="/css/cart-modal.css">
+</head>
+<body class="has-fixed-header" data-theme="light" data-service="Emergency">
+  <!-- Navigation -->
+  <div id="site-nav">
+    <!--#include file="/partials/nav.html" -->
+  </div>
+  <!-- Social Bar -->
+  <div id="site-social-bar">
+    <!--#include file="/partials/social-bar.html" -->
+  </div>
+  <!-- Floating Contact Bar -->
+  <div id="floating-contact-bar">
+    <!--#include file="/partials/floating-contact-bar.html" -->
+  </div>
+  <!-- Booking Modal Root (for JS injection) -->
+  <div id="booking-modal-root"></div>
+
+  <main id="content" class="container">
+    <header class="section-header">
+      <h1>Emergency Services</h1>
+      <p>24/7 rapid response for irrigation, leaks, drains, and water emergencies across Gauteng. Call now for immediate help from certified technicians.</p>
+      <div class="emergency-cta-row">
+        <a href="tel:+27123456789" class="btn btn-primary btn--large">
+          <i class="fas fa-phone"></i> Call Emergency Line
+        </a>
+        <a href="/contact" class="btn btn-secondary btn--large">
+          <i class="fas fa-comment-dots"></i> Request Callback
+        </a>
+      </div>
+    </header>
+
+    <section class="service-overview">
+      <h2>What We Cover</h2>
+      <div class="service-cards-grid grid-3">
+        <!--#include file="/partials/service-cards.html" -->
+      </div>
+    </section>
+
+    <section class="emergency-info">
+      <h2>How Our Emergency Service Works</h2>
+      <ul class="emergency-steps">
+        <li><strong>1. Call or request help online.</strong> Our team responds immediately, 24/7.</li>
+        <li><strong>2. Rapid dispatch.</strong> Certified technicians are sent to your location, usually within hours.</li>
+        <li><strong>3. On-site diagnosis & repair.</strong> We fix the problem or provide a temporary solution to restore safety and service.</li>
+        <li><strong>4. Follow-up & aftercare.</strong> We ensure the issue is fully resolved and provide advice to prevent future emergencies.</li>
+      </ul>
+      <div class="emergency-contact-panel">
+        <h3>Emergency? Don’t wait.</h3>
+        <a href="tel:+27123456789" class="btn btn-primary btn--large">
+          <i class="fas fa-phone"></i> Call Now
+        </a>
+        <a href="/contact" class="btn btn-secondary btn--large">
+          <i class="fas fa-comment-dots"></i> Request Callback
+        </a>
+      </div>
+    </section>
+
+    <section class="service-areas">
+      <h2>Areas We Cover</h2>
+      <div id="gauteng-map-section">
+        <!--#include file="/partials/service-areas-section.html" -->
+      </div>
+    </section>
+
+    <section class="emergency-faq">
+      <h2>Emergency Service FAQ</h2>
+      <div id="faq-section">
+        <!--#include file="/partials/faq-cards-v2.html" -->
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+      <!--#include file="/partials/testimonial-irrigation.html" -->
+    </section>
+  </main>
+
+  <div id="site-footer">
+    <!--#include file="/partials/footer.html" -->
+  </div>
+
+  <!-- Scroll to Top Button -->
+  <div id="scroll-to-top">
+    <!--#include file="/partials/scroll-to-top.html" -->
+  </div>
+
+  <script src="/js/site-init.js" defer></script>
+  <script src="/js/booking-modal.js" defer></script>
+  <script src="/js/floating-bar.js" defer></script>
+  <script src="/js/faq-v2.js" defer></script>
+  <script src="/js/service-faq-v2.js" defer></script>
+  <script src="/js/cart-modal.js" defer></script>
+</body>
+</html>
