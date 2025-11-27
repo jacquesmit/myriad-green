@@ -1,3 +1,9 @@
+/* Hide cart summary and floating cart button by default, show via JS */
+#cart-summary,
+#openCartBtn {
+  display: none;
+}
+
 /* === Certifications, Brands & Compliance Section: Standalone Styles === */
 .section--certifications {
   padding: 4.5rem 0 4.5rem 0;
@@ -6183,7 +6189,25 @@ details[open] .faq__caret {
   font-size: 0.875rem;
   color: var(--color-gray-600);
   line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
 }
+
+@media (min-width: 900px) {
+  .section--how-it-works .detail-list li {
+    display: flex;
+    align-items: flex-start;
+    padding-left: var(--spacing-lg);
+  }
+  .section--how-it-works .detail-list li::before {
+    min-width: 1.2em;
+    display: inline-block;
+    text-align: left;
+    position: relative;
+    left: 0;
+    top: 0.2em;
+  }
+
 
 .section--how-it-works .detail-list li::before {
   content: "•";
