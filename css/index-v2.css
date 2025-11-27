@@ -1,46 +1,51 @@
+/* Certifications section title: centered and larger */
+.section--certifications__title {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: var(--cert-title, var(--text-primary, #1e293b));
+  text-align: center;
+  margin-bottom: 2.2rem;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
 .faq-cta__title, .section--faq-cta h2, .section--faq-cta .faq-cta__title {
   color: #1e293b !important;
 }
 [data-theme="dark"] .faq-cta__title, [data-theme="dark"] .section--faq-cta h2, [data-theme="dark"] .section--faq-cta .faq-cta__title {
   color: #f8fafc !important;
 }
-.section--faq {
-  background: transparent !important;
-  color: #1e293b !important;
+  padding: 2.5rem 0 2.5rem 0;
+  background: var(--cert-section-bg);
+  border-radius: 2.2rem;
+  margin: 2.5rem 0;
+  box-shadow: 0 4px 32px 0 rgba(16,24,40,0.10);
+  max-width: 98vw;
+  width: 100%;
 }
-.section--faq h1,
-.section--faq h2,
-.section--faq h3,
-.section--faq h4,
-.section--faq h5,
-.section--faq h6 {
-  color: #1e293b !important;
+  background: var(--cert-card-bg);
+  border-radius: 1.1rem;
+  box-shadow: 0 2px 16px rgba(30,41,59,0.10);
+  border: 1px solid var(--cert-card-border);
+  padding: 2.2rem 1.5rem 1.7rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: box-shadow 0.18s, transform 0.18s;
 }
-[data-theme="dark"] .section--faq {
-  background: transparent !important;
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: var(--cert-title);
+  margin-bottom: 0.7rem;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
 }
-/* Harmonize pricing cards with rest of page */
-.section--pricing .pricing-card,
-.section--pricing .pricing-card.pricing-card--service,
-.section--pricing .pricing-card.pricing-card--plan,
-.section--pricing .pricing-card.pricing-card--featured {
-  padding: 2.2rem 1.6rem 2.2rem 1.6rem !important;
-  border-radius: 1.25rem !important;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.07) !important;
-  font-family: inherit !important;
-  font-size: 1rem !important;
-  font-weight: 500 !important;
-  transition: box-shadow 0.18s cubic-bezier(.4,0,.2,1);
+  font-size: 1.08rem;
+  color: var(--cert-desc);
+  margin-bottom: 0;
+  line-height: 1.7;
+  font-weight: 400;
 }
-.section--pricing .pricing-card__title {
-  font-size: 1.25rem !important;
-  font-weight: 700 !important;
-  margin-bottom: 0.5rem !important;
-}
-.section--pricing .pricing-card__amount {
-  font-size: 2.1rem !important;
-  font-weight: 800 !important;
-  margin-bottom: 0.25rem !important;
 }
 .section--pricing .pricing-card__badge {
   font-size: 0.95rem !important;
@@ -158,13 +163,204 @@
   color: #94a3b8 !important;
   font-weight: 500 !important;
   text-transform: uppercase !important;
-  letter-spacing: 0.05em !important;
-  margin-top: 0.5rem !important;
-  text-align: center !important;
 }
-.pricing-card__feature {
-  font-size: 0.95rem !important;
-  color: #475569 !important;
+
+/* --- Certifications, Brands & Compliance Section --- */
+
+/* --- Certifications, Brands & Compliance Section (localized styles only) --- */
+
+/* --- Certifications, Brands & Compliance Section (production ready) --- */
+
+/* --- Certifications, Brands & Compliance Section (horizontal card layout) --- */
+/* --- Certifications, Brands & Compliance Section (production ready, enhanced) --- */
+/* --- Certifications, Brands & Compliance Section (professional grid layout) --- */
+.section--certifications {
+  padding: 2.5rem 0 2.5rem 0;
+  background: #181f2a;
+  border-radius: 2.2rem;
+  margin: 2.5rem 0;
+  box-shadow: 0 4px 32px 0 rgba(16,24,40,0.10);
+  max-width: 98vw;
+  width: 100%;
+}
+.certifications-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.2rem 2.2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.certification-card {
+  background: #232b3b;
+  border-radius: 1.1rem;
+  box-shadow: 0 2px 16px rgba(30,41,59,0.10);
+  border: 1px solid #232b3b;
+  padding: 2.2rem 1.5rem 1.7rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: box-shadow 0.18s, transform 0.18s;
+}
+.certification-card:hover {
+  box-shadow: 0 8px 32px rgba(30,41,59,0.18);
+  transform: translateY(-2px) scale(1.025);
+}
+.certification-card__icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 2.1rem;
+  margin-bottom: 1.1rem;
+  margin-right: 0;
+  box-shadow: 0 2px 8px rgba(34,197,94,0.10);
+}
+.certification-card:nth-child(1) .certification-card__icon { background: #22c55e; }
+.certification-card:nth-child(2) .certification-card__icon { background: #0ea5e9; }
+.certification-card:nth-child(3) .certification-card__icon { background: #eab308; }
+.certification-card:nth-child(4) .certification-card__icon { background: #a21caf; }
+.certification-card__title {
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 0.7rem;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+.certification-card__desc {
+  font-size: 1.08rem;
+  color: #e2e8f0;
+  margin-bottom: 0;
+  line-height: 1.7;
+  font-weight: 400;
+}
+.certification-card {
+  /* Add more vertical space inside cards */
+  padding-top: 2.5rem;
+  padding-bottom: 2.1rem;
+}
+@media (max-width: 900px) {
+  .certifications-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+  .certification-card {
+    max-width: 100%;
+    padding: 1.3rem 1rem 1.1rem 1rem;
+  }
+  .certification-card__icon {
+    width: 38px;
+    height: 38px;
+    font-size: 1.3rem;
+    margin-bottom: 0.7rem;
+  }
+}
+@media (max-width: 600px) {
+  .section--certifications {
+    padding: 1.1rem 0 1.1rem 0;
+    border-radius: 1.1rem;
+  }
+  .certification-card {
+    padding: 0.8rem 0.6rem 0.8rem 0.6rem;
+    border-radius: 0.7rem;
+  }
+  .certification-card__icon {
+    width: 24px;
+    height: 24px;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+  .certification-card__title {
+    font-size: 0.98rem;
+  }
+  .certification-card__desc {
+    font-size: 0.91rem;
+  }
+}
+@media (max-width: 900px) {
+  .certifications-grid {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .certification-card {
+    max-width: 100%;
+    padding: 1.3rem 1rem 1.1rem 1rem;
+  }
+  .certification-card__icon {
+    width: 36px;
+    height: 36px;
+    font-size: 1.3rem;
+    margin-right: 0.7rem;
+  }
+}
+@media (max-width: 600px) {
+  .section--certifications {
+    padding: 1.1rem 0 1.1rem 0;
+    border-radius: 1.1rem;
+  }
+  .certification-card {
+    padding: 0.8rem 0.6rem 0.8rem 0.6rem;
+    border-radius: 0.7rem;
+  }
+  .certification-card__icon {
+    width: 24px;
+    height: 24px;
+    font-size: 0.9rem;
+    margin-right: 0.5rem;
+  }
+  .certification-card__title {
+    font-size: 0.98rem;
+  }
+  .certification-card__desc {
+    font-size: 0.91rem;
+  }
+}
+@media (max-width: 900px) {
+  .certifications-grid {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .certification-card {
+    border-right: none;
+    border-bottom: 1.5px solid #23304a;
+    border-radius: 0;
+    padding: 1.1rem 1rem 1.1rem 1rem;
+  }
+  .certification-card:last-child {
+    border-bottom: none;
+  }
+  .certification-card__icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
+    margin-right: 0.7rem;
+  }
+}
+@media (max-width: 600px) {
+  .section--certifications {
+    padding: 1.1rem 0 1.1rem 0;
+    border-radius: 1.1rem;
+  }
+  .certification-card {
+    padding: 0.8rem 0.6rem 0.8rem 0.6rem;
+    border-radius: 0;
+  }
+  .certification-card__icon {
+    width: 24px;
+    height: 24px;
+    font-size: 0.9rem;
+    margin-right: 0.5rem;
+  }
+  .certification-card__title {
+    font-size: 0.98rem;
+  }
+  .certification-card__desc {
+    font-size: 0.91rem;
+  }
 }
 .pricing-card__feature-icon {
   color: #2d7a2d !important;
@@ -899,12 +1095,7 @@
     flex-direction: column;
     align-items: center;
   }
-  
-  .cta__buttons .btn {
-    width: 100%;
-    max-width: 300px;
   }
-}
 
 /* Safe Area Rules - Must be present for injection system */
 body.has-fixed-header { 
@@ -937,42 +1128,6 @@ section[id] {
 }
 
 /* Layout primitives - section scoped */
-.section--hero .container,
-.section--overview .container,
-.section--how .container,
-.section--products .container,
-.section--why .container,
-.section--emergency .container,
-.section--weather .container,
-.section--map .container,
-.section--pricing .container,
-.section--trends .container,
-.section--testimonials .container,
-.section--faq .container,
-.section--areas .container,
-.section--cta .container {
-  width: min(100% - 2*var(--gutter), var(--max-w));
-  margin-inline: auto;
-  padding-left: var(--fb-left);
-  padding-right: var(--fb-right);
-}
-
-/* ============================================================================
-   PRICING SECTION - CLEAN PROFESSIONAL DESIGN
-   ============================================================================ */
-
-.section--pricing {
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  position: relative;
-  padding: 6rem 0;
-}
-
-.section { 
-  padding-block: var(--section-y); 
-}
-
-.section-alt { 
-  background: var(--color-bg-alt, #f6f6f6); 
 }
 
 .section-emphasis { 

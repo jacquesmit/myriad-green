@@ -1,3 +1,11 @@
+/* Certifications section color variables for light mode */
+:root {
+  --cert-section-bg: #f8fafc;
+  --cert-card-bg: #fff;
+  --cert-card-border: #e2e8f0;
+  --cert-title: #1e293b;
+  --cert-desc: #334155;
+}
 /* Improve card spacing for a more balanced look */
 .service-cards-grid {
   display: grid;

@@ -231,6 +231,12 @@
   2. Dark Mode Overrides
 ==============================*/
 [data-theme="dark"] {  /* === Dark Mode Background Gradient Options === */
+  /* Certifications section color variables for dark mode */
+  --cert-section-bg: #181f2a;
+  --cert-card-bg: #232b3b;
+  --cert-card-border: #334155;
+  --cert-title: #f8fafc;
+  --cert-desc: #cbd5e1;
   /* Option 1: Deep Blue-Gray Radial Gradient */
 
   --bg-gradient-dark-1: radial-gradient(circle at 30% 30%, rgba(26,54,93,0.12) 0%, transparent 60%),
