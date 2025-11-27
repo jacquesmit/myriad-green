@@ -1,0 +1,34 @@
+/* Ensures all capability cards align their headings and text, regardless of content length */
+.capabilities-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+.capability-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: 100%;
+  min-width: 300px;
+  max-width: 340px;
+  flex: 1 1 300px;
+}
+.capability-card__title {
+  min-height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.capability-card__description {
+  flex: 1;
+  min-height: 4.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.capability-specs, .capability-benefits {
+  min-height: 4.5rem;
+}
