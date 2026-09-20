@@ -11,6 +11,21 @@ const REQUIRED_GUARDS = [
   'irrelevant'
 ];
 
+const ALLOWED_SOURCE_METADATA = new Set([
+  'provider',
+  'provider_form_id',
+  'provider_form_name',
+  'provider_entry_id',
+  'page_url',
+  'page_title',
+  'utm_source',
+  'utm_medium',
+  'utm_campaign',
+  'utm_content',
+  'utm_term',
+  'upload_refs'
+]);
+
 function str(value) {
   return value === undefined || value === null ? '' : String(value).trim();
 }
@@ -91,6 +106,34 @@ function normalizeIngressGuards(input = {}, attestation = null) {
   return out;
 }
 
+function normalizeSourceMetadata(input = {}) {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) {
+    const error = new Error('source_metadata must be an object');
+    error.code = 'LEAD_INGRESS_SOURCE_METADATA_INVALID';
+    throw error;
+  }
+
+  const out = {};
+  for (const [key, value] of Object.entries(input)) {
+    if (!ALLOWED_SOURCE_METADATA.has(key)) {
+      const error = new Error('Unsupported source_metadata field: ' + key);
+      error.code = 'LEAD_INGRESS_SOURCE_METADATA_UNSUPPORTED';
+      throw error;
+    }
+
+    if (key === 'upload_refs') {
+      if (value === undefined || value === null || value === '') continue;
+      const refs = Array.isArray(value) ? value : [value];
+      out.upload_refs = refs.map(ref => str(ref)).filter(Boolean);
+      continue;
+    }
+
+    const normalized = str(value);
+    if (normalized) out[key] = normalized;
+  }
+  return out;
+}
+
 function assertEvidenceRef(value) {
   const ref = str(value);
   if (!ref) {
@@ -114,6 +157,9 @@ function createLeadEventFromIngress(input = {}, {
   const evidenceRef = assertEvidenceRef(input.evidence_ref);
   const safetyAttestation = normalizeSafetyAttestation(
     input.safety_attestation || {}
+  );
+  const sourceMetadata = normalizeSourceMetadata(
+    input.source_metadata || {}
   );
 
   if (!source) {
@@ -155,10 +201,15 @@ function createLeadEventFromIngress(input = {}, {
     }
   }, { receivedAt });
 
-  if (safetyAttestation) {
+  if (safetyAttestation || Object.keys(sourceMetadata).length) {
     event.metadata = {
       ...event.metadata,
-      safety_attestation: safetyAttestation
+      ...(safetyAttestation
+        ? { safety_attestation: safetyAttestation }
+        : {}),
+      ...(Object.keys(sourceMetadata).length
+        ? { source_metadata: sourceMetadata }
+        : {})
     };
   }
   return event;
@@ -167,8 +218,10 @@ function createLeadEventFromIngress(input = {}, {
 module.exports = {
   GUARD_VALUES,
   REQUIRED_GUARDS,
+  ALLOWED_SOURCE_METADATA,
   parseAllowedLeadSources,
   normalizeSafetyAttestation,
   normalizeIngressGuards,
+  normalizeSourceMetadata,
   createLeadEventFromIngress
 };
