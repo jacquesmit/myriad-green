@@ -7,6 +7,7 @@ on:
       - 'magos/adapters/audit-ledger.js'
       - 'magos/schemas/transaction-plan.v1.schema.json'
       - 'magos/tests/transaction-writer.test.js'
+      - 'magos/tests/writer-operations.test.js'
       - '.github/workflows/magos-transaction-writer.yml'
   workflow_dispatch:
 
@@ -19,4 +20,4 @@ jobs:
         with:
           node-version: '22'
       - name: Transaction writer unit acceptance
-        run: node --test magos/tests/transaction-writer.test.js
+        run: node --test magos/tests/transaction-writer.test.js magos/tests/writer-operations.test.js
