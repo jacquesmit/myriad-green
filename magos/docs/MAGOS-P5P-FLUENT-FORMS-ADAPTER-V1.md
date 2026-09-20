@@ -13,6 +13,8 @@ Current website lead evidence shows two different realities:
 1. Fluent Forms is active on WordPress.
 2. The current operational lead boundary is still a structured WordPress admin email routed through Gmail.
 
+The verified fallback boundary today is the structured WordPress admin notification sent from `wordpress@myriadgreen.co.za` with subject `New Myriad Green Website Lead - Action Required`. CRM Intake_Queue records Gmail message ID as a provisional source_event_id for this path.
+
 The Gmail route has worked for leads such as Francois, Anita, Nomsa and Zanele, but the CRM evidence also records known provenance gaps:
 
 - Gmail message ID is being used as a provisional source_event_id,
@@ -147,7 +149,7 @@ Until those are read from the live WordPress/Fluent configuration, P5P remains a
 
 ## Migration rule
 
-Do not replace the current Gmail website lead boundary immediately.
+Do not replace the current Gmail website lead boundary immediately. Weekly Fluent Forms summary emails are aggregate monitoring evidence only and are not individual lead authority.
 
 After P4 is live:
 
