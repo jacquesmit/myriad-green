@@ -19,12 +19,12 @@
     "LEAD_SUBMITTED": {
       "allowAutoWrite": true,
       "allowCreateWithoutExistingMatch": true,
-      "minimumConfidence": 1.0
+      "minimumConfidence": 1
     },
     "PAYMENT_OBSERVED": {
       "allowAutoWrite": true,
       "allowCreateWithoutExistingMatch": false,
-      "minimumConfidence": 1.0
+      "minimumConfidence": 1
     },
     "DOCUMENT_RECEIVED": {
       "allowAutoWrite": true,
@@ -39,7 +39,12 @@
     "MESSAGE_RECEIVED": {
       "allowAutoWrite": false,
       "allowCreateWithoutExistingMatch": false,
-      "minimumConfidence": 1.0
+      "minimumConfidence": 1
+    },
+    "DOCUMENT_FILED": {
+      "allowAutoWrite": true,
+      "allowCreateWithoutExistingMatch": false,
+      "minimumConfidence": 1
     }
   }
 }
