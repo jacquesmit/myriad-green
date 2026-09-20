@@ -29,6 +29,14 @@ function canonicalFromControl(row) {
   };
 }
 
+function sameOpportunity(invoice, control) {
+  const invoiceOpportunity = invoice?.opportunity_id || '';
+  const controlOpportunity =
+    control?.['Opportunity ID'] || control?.opportunity_id || '';
+  if (!invoiceOpportunity || !controlOpportunity) return true;
+  return invoiceOpportunity === controlOpportunity;
+}
+
 class PaymentResolver {
   constructor({
     findEntityByCanonicalId = async () => null,
@@ -77,6 +85,11 @@ class PaymentResolver {
 
     const suppliedInvoiceId =
       p.invoice_id || envelope?.entity_hints?.invoice_id || '';
+    const suppliedControlId =
+      p.control_id || envelope?.entity_hints?.control_id || '';
+    const suppliedDepositId =
+      p.deposit_id || envelope?.entity_hints?.deposit_id || '';
+
     if (suppliedInvoiceId) {
       const invoice = await this.findEntityByCanonicalId(
         'Invoice',
@@ -91,8 +104,7 @@ class PaymentResolver {
           candidates: []
         };
       }
-      const suppliedControlId =
-        p.control_id || envelope?.entity_hints?.control_id || '';
+
       if (suppliedControlId) {
         const control = await this.findEntityByCanonicalId(
           'PaymentControl',
@@ -107,14 +119,7 @@ class PaymentResolver {
             candidates: []
           };
         }
-        const invoiceOpportunity = invoice.opportunity_id || '';
-        const controlOpportunity =
-          control['Opportunity ID'] || control.opportunity_id || '';
-        if (
-          invoiceOpportunity &&
-          controlOpportunity &&
-          invoiceOpportunity !== controlOpportunity
-        ) {
+        if (!sameOpportunity(invoice, control)) {
           return {
             status: 'CONFLICT',
             confidence: 0,
@@ -122,9 +127,10 @@ class PaymentResolver {
             reason: 'Invoice and Payment Control belong to different opportunities.',
             candidates: [{
               invoice_id: invoice.invoice_id,
-              invoice_opportunity_id: invoiceOpportunity,
+              invoice_opportunity_id: invoice.opportunity_id || '',
               control_id: suppliedControlId,
-              control_opportunity_id: controlOpportunity
+              control_opportunity_id:
+                control['Opportunity ID'] || control.opportunity_id || ''
             }]
           };
         }
@@ -139,6 +145,7 @@ class PaymentResolver {
         }
         return matched;
       }
+
       return this.invoiceMatch(invoice, amount, 'EXACT_ID');
     }
 
@@ -156,42 +163,6 @@ class PaymentResolver {
       return this.invoiceMatch(invoice, amount, 'EXACT_REFERENCE');
     }
 
-    const suppliedControlId =
-      p.control_id || envelope?.entity_hints?.control_id || '';
-    if (suppliedControlId) {
-      const control = await this.findEntityByCanonicalId(
-        'PaymentControl',
-        suppliedControlId
-      );
-      if (!control) {
-        return {
-          status: 'CONFLICT',
-          confidence: 0,
-          basis: 'EXACT_ID',
-          reason: 'Supplied payment control ID did not resolve.',
-          candidates: []
-        };
-      }
-      return {
-        status: 'MATCHED',
-        confidence: 1,
-        basis: 'EXACT_ID',
-        entity: {
-          type: 'Payment control',
-          id: suppliedControlId
-        },
-        canonical_ids: canonicalFromControl(control),
-        payment_control: control,
-        allocation_target: {
-          type: 'DEPOSIT',
-          id: suppliedDepositId
-        },
-        candidates: []
-      };
-    }
-
-    const suppliedDepositId =
-      p.deposit_id || envelope?.entity_hints?.deposit_id || '';
     if (suppliedDepositId) {
       const control = await this.findEntityByCanonicalId(
         'Deposit',
@@ -213,6 +184,38 @@ class PaymentResolver {
         entity: {
           type: 'Deposit',
           id: suppliedDepositId
+        },
+        canonical_ids: canonicalFromControl(control),
+        payment_control: control,
+        allocation_target: {
+          type: 'DEPOSIT',
+          id: suppliedDepositId
+        },
+        candidates: []
+      };
+    }
+
+    if (suppliedControlId) {
+      const control = await this.findEntityByCanonicalId(
+        'PaymentControl',
+        suppliedControlId
+      );
+      if (!control) {
+        return {
+          status: 'CONFLICT',
+          confidence: 0,
+          basis: 'EXACT_ID',
+          reason: 'Supplied payment control ID did not resolve.',
+          candidates: []
+        };
+      }
+      return {
+        status: 'MATCHED',
+        confidence: 1,
+        basis: 'EXACT_ID',
+        entity: {
+          type: 'Payment control',
+          id: suppliedControlId
         },
         canonical_ids: canonicalFromControl(control),
         payment_control: control,
@@ -291,6 +294,10 @@ class PaymentResolver {
       canonical_ids: canonicalFromInvoice(invoice),
       invoice,
       invoice_balance: balance,
+      allocation_target: {
+        type: 'INVOICE',
+        id: invoice.invoice_id
+      },
       candidates: []
     };
   }
@@ -300,5 +307,6 @@ module.exports = {
   PaymentResolver,
   parseMoney,
   canonicalFromInvoice,
-  canonicalFromControl
+  canonicalFromControl,
+  sameOpportunity
 };
