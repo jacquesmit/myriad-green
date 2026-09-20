@@ -50,12 +50,40 @@ function sourceLineConflict(existing, obs) {
   return null;
 }
 
-function priceFieldsComplete(line) {
+function resolveVatRateEvidence(line = {}, quote = {}) {
+  const direct = line.vat_rate;
+  if (direct !== undefined && direct !== null && direct !== '') {
+    const raw = String(direct).trim();
+    const n = Number(raw.replace('%', ''));
+    if (!Number.isFinite(n) || n < 0) return null;
+    return raw.includes('%') || n > 1 ? n / 100 : n;
+  }
+
+  const basis = text(
+    line.source_price_vat_basis || quote.vat_basis
+  ).toUpperCase();
+  if (basis === 'VAT_15_PERCENT' || basis === 'VAT15' || basis === 'VAT_15') {
+    return 0.15;
+  }
+  if (
+    basis === 'VAT_0_PERCENT' ||
+    basis === 'ZERO_RATED' ||
+    basis === 'VAT_EXEMPT' ||
+    basis === 'EXEMPT'
+  ) {
+    return 0;
+  }
+  return null;
+}
+
+function priceFieldsComplete(line, quote = {}) {
   const quantity = numberValue(line.quantity);
   const unitPrice = numberValue(line.unit_price_ex_vat);
+  const vatRate = resolveVatRateEvidence(line, quote);
   return Boolean(
     quantity !== null && quantity > 0 &&
-    unitPrice !== null && unitPrice >= 0
+    unitPrice !== null && unitPrice >= 0 &&
+    vatRate !== null
   );
 }
 
@@ -236,11 +264,11 @@ class SupplierPriceResolver {
 
     const promotable =
       Boolean(part) &&
-      priceFieldsComplete(line);
+      priceFieldsComplete(line, quote);
 
     if (part && !promotable) {
       partReason =
-        'Canonical part is exact, but quantity/unit price evidence is incomplete; price promotion requires review.';
+        'Canonical part is exact, but quantity/unit-price/VAT-basis evidence is incomplete; price promotion requires review.';
     }
 
     return {
@@ -274,6 +302,7 @@ module.exports = {
   SupplierPriceResolver,
   sourceLineConflict,
   priceFieldsComplete,
+  resolveVatRateEvidence,
   numberValue,
   sameNumber
 };
