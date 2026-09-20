@@ -365,3 +365,23 @@ test('SET_IF_EMPTY fills missing values but does not overwrite established value
     'JOB-1'
   );
 });
+
+
+test('registryRows does not truncate Writer_Schema_Registry at 300 rows', async () => {
+  let seenOptions = 'NOT_CALLED';
+  const audit = {
+    async readObjects(sheet, options) {
+      assert.equal(sheet, 'Writer_Schema_Registry');
+      seenOptions = options;
+      return [];
+    }
+  };
+  const writer = new TransactionWriter({
+    stores: { audit },
+    auditStore: audit
+  });
+
+  const rows = await writer.registryRows();
+  assert.deepEqual(rows, []);
+  assert.equal(seenOptions, undefined);
+});
