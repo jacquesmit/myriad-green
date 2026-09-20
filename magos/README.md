@@ -21,6 +21,28 @@ It enforces:
 9. Compensation on later failure.
 10. `Sync_Exceptions` evidence and same-key recovery.
 
+### Writer Operations Library V1
+
+The writer exposes a reusable operation catalog for processors and future adapters:
+
+- update by canonical key
+- create/append if absent
+- upsert by key
+- patch only if live values still match
+- controlled state transition
+- set fields only when empty
+- linked-record creation
+- evidence attachment
+- snapshots
+- immutable events
+- document registration
+- procurement requirements
+- supplier-price records
+- payment allocations
+- accepted-scope job composition
+
+These helpers compile business intent into governed TransactionPlan mutations. They do not bypass Data_Ownership_Matrix, Cross_System_Links, Writer_Schema_Registry, idempotency, read-back or compensation.
+
 ### P2 private HTTP runtime
 
 The writer now has a deployable service boundary under `runtime/`.
