@@ -355,7 +355,7 @@ test('governed event run endpoint rejects unregistered event type with 422', asy
   await withServer(app, async (base) => {
     const event = {
       ...sampleEvent(),
-      event_type: 'LEAD_SUBMITTED'
+      event_type: 'SUPPLIER_EMAIL_RECEIVED'
     };
     const result = await request(base, '/v1/events/run', {
       method: 'POST',
@@ -365,6 +365,6 @@ test('governed event run endpoint rejects unregistered event type with 422', asy
 
     assert.equal(result.status, 422);
     assert.equal(result.payload.error, 'UNSUPPORTED_GOVERNED_EVENT_TYPE');
-    assert.equal(result.payload.event_type, 'LEAD_SUBMITTED');
+    assert.equal(result.payload.event_type, 'SUPPLIER_EMAIL_RECEIVED');
   });
 });
