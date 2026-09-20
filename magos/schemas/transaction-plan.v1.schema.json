@@ -42,7 +42,18 @@
           "store": {"type": "string"},
           "workbook_role": {"type": "string"},
           "sheet": {"type": "string"},
-          "operation": {"enum": ["UPDATE_BY_KEY", "APPEND_IF_ABSENT"]},
+          "operation": {
+            "enum": [
+              "UPDATE_BY_KEY",
+              "APPEND_IF_ABSENT",
+              "CREATE_IF_ABSENT",
+              "UPSERT_BY_KEY",
+              "PATCH_IF_MATCH",
+              "STATE_TRANSITION",
+              "SET_IF_EMPTY"
+            ]
+          },
+          "intent": {"type": "string"},
           "key": {
             "type": "object",
             "required": ["header", "value"],
@@ -56,7 +67,12 @@
           "link_id": {"type": "string"},
           "required_headers": {"type": "array", "items": {"type": "string"}},
           "changes": {"type": "object"},
-          "values": {"type": "object"}
+          "values": {"type": "object"},
+          "expect": {"type": "object"},
+          "state_field": {"type": "string"},
+          "from_state": {},
+          "from_states": {"type": "array"},
+          "to_state": {}
         }
       }
     }
