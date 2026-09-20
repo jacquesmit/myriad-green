@@ -69,6 +69,11 @@ Example shape:
     "malware": "CLEAR",
     "irrelevant": "CLEAR"
   },
+  "safety_attestation": {
+    "provider": "approved-scanner",
+    "scan_id": "provider-stable-scan-id",
+    "scanned_at": "2026-09-20T12:00:01+02:00"
+  },
   "lead": {
     "contact_name": "Client Name",
     "contact_phone": "+27...",
@@ -111,11 +116,19 @@ for:
 - malware
 - irrelevant
 
-If a source adapter does not supply a guard result, P5O sets that guard to `UNKNOWN`.
+If a source adapter does not supply guard results, P5O sets all guards to `UNKNOWN`.
 
-This is intentional. P5 event policy treats unknown guards as review-required. Missing safety scanning can therefore never silently become `CLEAR`.
+If an adapter asserts any actual decision such as `CLEAR` or `BLOCK`, it must also provide:
 
-A future content-safety worker may populate these guard outcomes before submission or through a separately governed adapter stage. P5O itself does not pretend that unscanned content has passed.
+- `safety_attestation.provider`
+- `safety_attestation.scan_id`
+- `safety_attestation.scanned_at`
+
+Partial or missing attestation is rejected before governed dispatch. The attestation is preserved in EventEnvelope metadata.
+
+This is intentional. P5 event policy treats unknown guards as review-required. Missing safety scanning can therefore never silently become `CLEAR`, and a future WordPress/provider hook cannot bypass scanning by hard-coding guard values.
+
+A future content-safety worker may supply these outcomes and provenance before submission or through a separately governed adapter stage. P5O itself does not pretend that unscanned content has passed.
 
 ## Source attribution
 
@@ -137,6 +150,7 @@ P5O does not:
 - create CRM records itself,
 - bypass P5N,
 - mark unknown safety checks as clear,
+- accept asserted guard decisions without scan provenance,
 - create evidence references,
 - retire the existing MGOS Intake & Sync Watch,
 - activate WordPress or Fluent Forms automatically.
