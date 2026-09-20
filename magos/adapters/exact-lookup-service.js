@@ -178,6 +178,88 @@ class ExactLookupService {
     return candidates;
   }
 
+  async findPaymentEventByProviderTransactionId(providerTransactionId) {
+    if (!providerTransactionId) return null;
+    const found = await safeExactFind(
+      this.store('commercial'),
+      'Payment_Events',
+      'provider_transaction_id',
+      providerTransactionId
+    );
+    return found?.object || null;
+  }
+
+  async findPaymentEventByIdempotencyKey(idempotencyKey) {
+    if (!idempotencyKey) return null;
+    const found = await safeExactFind(
+      this.store('commercial'),
+      'Payment_Events',
+      'idempotency_key',
+      idempotencyKey
+    );
+    return found?.object || null;
+  }
+
+  async findInvoiceByDocumentNo(documentNo) {
+    if (!documentNo) return null;
+    const found = await safeExactFind(
+      this.store('commercial'),
+      'Invoices',
+      'Document No.',
+      documentNo
+    );
+    return found?.object || null;
+  }
+
+  async findQuoteByNumber(quoteNo) {
+    if (!quoteNo) return null;
+    const found = await safeExactFind(
+      this.store('commercial'),
+      'Quotes',
+      'Quote No.',
+      quoteNo
+    );
+    return found?.object || null;
+  }
+
+  async findPaymentControlByQuoteNo(quoteNo) {
+    if (!quoteNo) return null;
+    const found = await safeExactFind(
+      this.store('commercial'),
+      'Payment Control',
+      'Quote No.',
+      quoteNo
+    );
+    return found?.object || null;
+  }
+
+  async findPaymentAllocationByIdempotencyKey(idempotencyKey) {
+    if (!idempotencyKey) return null;
+    const found = await safeExactFind(
+      this.store('commercial'),
+      'Payment_Allocations',
+      'idempotency_key',
+      idempotencyKey
+    );
+    return found?.object || null;
+  }
+
+  paymentResolverDependencies() {
+    return {
+      findEntityByCanonicalId: (type, id) => this.findEntityByCanonicalId(type, id),
+      findPaymentEventByProviderTransactionId: (id) =>
+        this.findPaymentEventByProviderTransactionId(id),
+      findPaymentEventByIdempotencyKey: (key) =>
+        this.findPaymentEventByIdempotencyKey(key),
+      findInvoiceByDocumentNo: (number) => this.findInvoiceByDocumentNo(number),
+      findQuoteByNumber: (number) => this.findQuoteByNumber(number),
+      findPaymentControlByQuoteNo: (number) =>
+        this.findPaymentControlByQuoteNo(number),
+      findPaymentAllocationByIdempotencyKey: (key) =>
+        this.findPaymentAllocationByIdempotencyKey(key)
+    };
+  }
+
   zeroAResolverDependencies() {
     return {
       findEvidenceByDriveFileId: (id) => this.findEvidenceByDriveFileId(id),
