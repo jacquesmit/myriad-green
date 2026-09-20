@@ -45,6 +45,11 @@
       "allowAutoWrite": true,
       "allowCreateWithoutExistingMatch": false,
       "minimumConfidence": 1
+    },
+    "SUPPLIER_PRICE_OBSERVED": {
+      "allowAutoWrite": true,
+      "allowCreateWithoutExistingMatch": false,
+      "minimumConfidence": 1
     }
   }
 }
