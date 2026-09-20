@@ -91,6 +91,54 @@ class PaymentResolver {
           candidates: []
         };
       }
+      const suppliedControlId =
+        p.control_id || envelope?.entity_hints?.control_id || '';
+      if (suppliedControlId) {
+        const control = await this.findEntityByCanonicalId(
+          'PaymentControl',
+          suppliedControlId
+        );
+        if (!control) {
+          return {
+            status: 'CONFLICT',
+            confidence: 0,
+            basis: 'EXACT_ID',
+            reason: 'Supplied payment control ID did not resolve.',
+            candidates: []
+          };
+        }
+        const invoiceOpportunity = invoice.opportunity_id || '';
+        const controlOpportunity =
+          control['Opportunity ID'] || control.opportunity_id || '';
+        if (
+          invoiceOpportunity &&
+          controlOpportunity &&
+          invoiceOpportunity !== controlOpportunity
+        ) {
+          return {
+            status: 'CONFLICT',
+            confidence: 0,
+            basis: 'EXACT_ID',
+            reason: 'Invoice and Payment Control belong to different opportunities.',
+            candidates: [{
+              invoice_id: invoice.invoice_id,
+              invoice_opportunity_id: invoiceOpportunity,
+              control_id: suppliedControlId,
+              control_opportunity_id: controlOpportunity
+            }]
+          };
+        }
+        const matched = this.invoiceMatch(invoice, amount, 'EXACT_ID');
+        if (matched.status === 'MATCHED') {
+          matched.payment_control = control;
+          matched.canonical_ids = {
+            ...canonicalFromControl(control),
+            ...matched.canonical_ids,
+            control_id: suppliedControlId
+          };
+        }
+        return matched;
+      }
       return this.invoiceMatch(invoice, amount, 'EXACT_ID');
     }
 
@@ -134,6 +182,10 @@ class PaymentResolver {
         },
         canonical_ids: canonicalFromControl(control),
         payment_control: control,
+        allocation_target: {
+          type: 'DEPOSIT',
+          id: suppliedDepositId
+        },
         candidates: []
       };
     }
