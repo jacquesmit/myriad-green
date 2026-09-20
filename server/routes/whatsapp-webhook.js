@@ -11,6 +11,11 @@ const {
   appendIntakeRow,
   hasIntakeSourceEvent,
 } = require('../magos/google-sheets');
+const {
+  acquireMessageClaim,
+  markMessageClaimCompleted,
+  markMessageClaimFailed,
+} = require('../magos/idempotency');
 
 const router = express.Router();
 
@@ -233,6 +238,7 @@ router.post('/', async (req, res) => {
   }
 
   const outcomes = [];
+  let retryRequired = false;
 
   try {
     for (const entry of payload.entry || []) {
@@ -304,35 +310,72 @@ router.post('/', async (req, res) => {
             continue;
           }
 
-          const contact = contactsByWaId.get(String(message.from || '')) || null;
-          const values = buildIntakeValues({
-            message,
-            contact,
-            classification,
-            phoneNumberId,
-          });
-          const writeResult = await appendIntakeRow(values, messageId);
+          const claim = await acquireMessageClaim(messageId);
+          if (claim.state === 'COMPLETED') {
+            await logDisposition({
+              messageId,
+              messageType: message.type,
+              category: classification.category,
+              reason: 'completed_idempotency_claim',
+              bodyLength,
+              result: 'DUPLICATE_NO_OP',
+            });
+            outcomes.push({ id: messageFingerprint(messageId), result: 'DUPLICATE_NO_OP' });
+            continue;
+          }
+          if (claim.state === 'BUSY') {
+            retryRequired = true;
+            outcomes.push({ id: messageFingerprint(messageId), result: 'RETRY_IN_PROGRESS' });
+            continue;
+          }
 
-          await appendDiagnostic({
-            tokenPresent: true,
-            eventParameter: 'messages',
-            bodyLength,
-            authorised: true,
-            result: 'BUSINESS_SAFE_INGESTED',
-            note: 'fp=' + messageFingerprint(messageId) +
-              ';row=' + writeResult.rowNumber +
-              ';content_retained=BUSINESS_METADATA_ONLY;media_fetched=NO',
-          });
+          try {
+            // Re-check the canonical sheet after acquiring the atomic claim. This
+            // recovers safely if a prior process appended the row and crashed before
+            // marking the claim COMPLETED.
+            if (await hasIntakeSourceEvent(messageId)) {
+              await markMessageClaimCompleted(messageId, 0);
+              outcomes.push({ id: messageFingerprint(messageId), result: 'DUPLICATE_NO_OP' });
+              continue;
+            }
 
-          outcomes.push({
-            id: messageFingerprint(messageId),
-            result: 'BUSINESS_SAFE_INGESTED',
-            row: writeResult.rowNumber,
-          });
+            const contact = contactsByWaId.get(String(message.from || '')) || null;
+            const values = buildIntakeValues({
+              message,
+              contact,
+              classification,
+              phoneNumberId,
+            });
+            const writeResult = await appendIntakeRow(values, messageId);
+            await markMessageClaimCompleted(messageId, writeResult.rowNumber);
+
+            await appendDiagnostic({
+              tokenPresent: true,
+              eventParameter: 'messages',
+              bodyLength,
+              authorised: true,
+              result: 'BUSINESS_SAFE_INGESTED',
+              note: 'fp=' + messageFingerprint(messageId) +
+                ';row=' + writeResult.rowNumber +
+                ';content_retained=BUSINESS_METADATA_ONLY;media_fetched=NO',
+            });
+
+            outcomes.push({
+              id: messageFingerprint(messageId),
+              result: 'BUSINESS_SAFE_INGESTED',
+              row: writeResult.rowNumber,
+            });
+          } catch (writeError) {
+            await markMessageClaimFailed(messageId, 'SHEETS_OR_READBACK_FAILED');
+            throw writeError;
+          }
         }
       }
     }
 
+    if (retryRequired) {
+      return res.status(503).json({ received: false, retry: true, outcomes });
+    }
     return res.status(200).json({ received: true, outcomes });
   } catch (error) {
     console.error('WhatsApp Cloud ingress failed:', error);
