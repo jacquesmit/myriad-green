@@ -8,6 +8,9 @@ const { createRuntimeApp } = require('../runtime/app');
 const {
   UnsupportedGovernedEventTypeError
 } = require('../processor/processor-registry');
+const {
+  createFluentLeadIngressPayload
+} = require('../adapters/fluent-forms-lead');
 
 async function withServer(app, fn) {
   const server = http.createServer(app);
@@ -695,6 +698,85 @@ test('lead ingress carries safety scan provenance into the EventEnvelope metadat
       provider: 'TEST_SCANNER',
       scan_id: 'SCAN-1001',
       scanned_at: '2026-09-20T10:00:00.000Z'
+    });
+  });
+});
+
+
+test('Fluent Forms adapter survives the P5O HTTP ingress boundary without field inference', async () => {
+  let received = null;
+  const app = createRuntimeApp({
+    token: 'runtime-secret',
+    leadIngressToken: 'lead-secret',
+    leadIngressSources: 'FLUENT_FORMS',
+    writerFactory: () => ({ audit: {} }),
+    eventDispatcherFactory: () => ({
+      async run(envelope) {
+        received = envelope;
+        return { state: 'REVIEW_REQUIRED' };
+      }
+    })
+  });
+
+  const body = createFluentLeadIngressPayload({
+    form_id: '17',
+    entry_id: '9001',
+    evidence_ref:
+      'https://myriadgreen.co.za/wp-admin/admin.php?page=fluent_forms&entry_id=9001',
+    form_name: 'Contact Us / Quote Request',
+    fields: {
+      exact_name: 'Controlled Test',
+      exact_email: 'controlled@example.com',
+      unknown_label: 'must not map'
+    },
+    fieldMap: {
+      contact_name: 'exact_name',
+      contact_email: 'exact_email'
+    },
+    sourceMetadata: {
+      page_url: 'https://myriadgreen.co.za/contact-us/',
+      utm_source: 'controlled-test'
+    }
+  });
+
+  await withServer(app, async (base) => {
+    const result = await request(base, '/v1/ingress/leads', {
+      method: 'POST',
+      ingressToken: 'lead-secret',
+      body
+    });
+
+    assert.equal(result.status, 202);
+    assert.equal(received.event_type, 'LEAD_SUBMITTED');
+    assert.equal(received.source, 'FLUENT_FORMS');
+    assert.equal(
+      received.source_event_id,
+      'FLUENT_FORMS|FORM:17|ENTRY:9001'
+    );
+    assert.equal(received.payload.lead.contact_name, 'Controlled Test');
+    assert.equal(received.payload.lead.contact_email, 'controlled@example.com');
+    assert.equal(
+      Object.values(received.payload.lead).includes('must not map'),
+      false
+    );
+    assert.equal(
+      received.metadata.source_metadata.provider_form_id,
+      '17'
+    );
+    assert.equal(
+      received.metadata.source_metadata.provider_entry_id,
+      '9001'
+    );
+    assert.equal(
+      received.metadata.source_metadata.page_url,
+      'https://myriadgreen.co.za/contact-us/'
+    );
+    assert.deepEqual(received.guards, {
+      spam: 'UNKNOWN',
+      phishing: 'UNKNOWN',
+      explicit_content: 'UNKNOWN',
+      malware: 'UNKNOWN',
+      irrelevant: 'UNKNOWN'
     });
   });
 });
