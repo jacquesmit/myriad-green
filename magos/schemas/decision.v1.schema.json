@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://myriadgreen.co.za/magos/schemas/decision.v1.schema.json",
+  "title": "MAGOS Decision V1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "event_id",
+    "idempotency_key",
+    "decision",
+    "reason_code",
+    "rule_version"
+  ],
+  "properties": {
+    "schema_version": { "const": "MAGOS-DECISION/V1" },
+    "event_id": { "type": "string", "minLength": 1 },
+    "idempotency_key": { "type": "string", "minLength": 1 },
+    "decision": {
+      "enum": ["AUTO_WRITE", "REVIEW_REQUIRED", "IGNORE", "REJECTED"]
+    },
+    "reason_code": { "type": "string", "minLength": 1 },
+    "reason": { "type": "string" },
+    "rule_version": { "type": "string", "minLength": 1 },
+    "match": { "type": ["object", "null"] },
+    "transaction_plan": { "type": ["object", "null"] },
+    "review": { "type": ["object", "null"] }
+  },
+  "additionalProperties": true
+}
