@@ -59,6 +59,7 @@ test('registry exposes only explicitly governed event types', () => {
     writer: writer()
   });
 
+  assert.equal(SUPPORTED_EVENT_TYPES.length, 6);
   assert.deepEqual(
     registry.supportedEventTypes().sort(),
     [...SUPPORTED_EVENT_TYPES].sort()
