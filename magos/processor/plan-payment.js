@@ -76,16 +76,23 @@ function eventValues(envelope, match, now) {
 function allocationValues(envelope, match, paymentEventId, now) {
   const p = envelope.payload.payment;
   const ids = match.canonical_ids || {};
-  const invoiceId = ids.invoice_id || p.invoice_id || '';
-  const depositId = ids.deposit_id || p.deposit_id || '';
+  const targetSpec = match.allocation_target || null;
+  if (!targetSpec) return null;
+
   const controlId = ids.control_id || p.control_id || '';
+  const invoiceId =
+    targetSpec.type === 'INVOICE'
+      ? targetSpec.id
+      : (ids.invoice_id || p.invoice_id || '');
+  const depositId =
+    targetSpec.type === 'DEPOSIT'
+      ? targetSpec.id
+      : '';
 
-  if (!invoiceId && !depositId) return null;
-
-  const target = depositId || invoiceId;
+  const target = targetSpec.id;
   const allocationType =
     p.allocation_type ||
-    (depositId ? 'DEPOSIT' : 'INVOICE');
+    (targetSpec.type === 'DEPOSIT' ? 'DEPOSIT' : 'INVOICE');
   const allocationKey =
     'ALLOC|' + paymentEventId + '|' + target + '|' +
     Number(p.amount).toFixed(2);
