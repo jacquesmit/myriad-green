@@ -7,6 +7,7 @@ const { planZeroADocument } = require('./plan-00a-document');
 const { planDocumentFiled } = require('./00a-filing');
 const { createPaymentProcessor } = require('./payment-processor');
 const { createSupplierPriceProcessor } = require('./supplier-price-processor');
+const { createLeadProcessor } = require('./lead-processor');
 const { GovernedEventRunner } = require('./governed-event-runner');
 const { EventObserver } = require('./event-observer');
 const { ReviewManager } = require('./review-manager');
@@ -16,7 +17,8 @@ const SUPPORTED_EVENT_TYPES = Object.freeze([
   'DOCUMENT_RECEIVED',
   'DOCUMENT_FILED',
   'PAYMENT_OBSERVED',
-  'SUPPLIER_PRICE_OBSERVED'
+  'SUPPLIER_PRICE_OBSERVED',
+  'LEAD_SUBMITTED'
 ]);
 
 class UnsupportedGovernedEventTypeError extends Error {
@@ -83,6 +85,13 @@ class GovernedProcessorRegistry {
       [
         'SUPPLIER_PRICE_OBSERVED',
         () => createSupplierPriceProcessor({
+          lookupService: this.lookupService,
+          now: this.now
+        })
+      ],
+      [
+        'LEAD_SUBMITTED',
+        () => createLeadProcessor({
           lookupService: this.lookupService,
           now: this.now
         })
