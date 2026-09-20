@@ -149,6 +149,15 @@ function buildSupplierPriceEventsFromDocument(documentEnvelope, {
     evidenceLink ||
     driveLink(documentEnvelope.drive_file_id);
 
+  if (!ref) {
+    return {
+      status: 'REVIEW_REQUIRED',
+      reason_code: 'SUPPLIER_EVIDENCE_REFERENCE_REQUIRED',
+      reason: 'Supplier pricing events require an immutable evidence reference.',
+      events: []
+    };
+  }
+
   const events = items.map((item, index) => {
     const line = mapStructuredSupplierLine(item, index, {
       canonicalPartIdsByLine
