@@ -132,7 +132,7 @@ function createLeadEventFromIngress(input = {}, {
     throw error;
   }
 
-  return createLeadSubmittedEvent({
+  const event = createLeadSubmittedEvent({
     source,
     source_event_id: sourceEventId,
     ...(input.occurred_at ? { occurred_at: input.occurred_at } : {}),
