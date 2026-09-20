@@ -18,6 +18,7 @@ const ENTITY_LOCATORS = {
   PaymentControl: { store: 'commercial', sheet: 'Payment Control', key: 'Control ID' },
   Deposit: { store: 'commercial', sheet: 'Payment Control', key: 'deposit_id' },
   Supplier: { store: 'supplier', sheet: 'Suppliers', key: 'supplier_id' },
+  Product: { store: 'supplier', sheet: 'Master_Parts', key: 'part_id' },
   Evidence: { store: 'crm', sheet: 'Evidence_Index', key: 'drive_file_id' }
 };
 
@@ -242,6 +243,72 @@ class ExactLookupService {
       idempotencyKey
     );
     return found?.object || null;
+  }
+
+  async findSupplierQuoteByNumber(supplierQuoteNumber) {
+    if (!supplierQuoteNumber) return null;
+    const found = await safeExactFind(
+      this.store('supplier'),
+      'Supplier_Quotes',
+      'supplier_quote_number',
+      supplierQuoteNumber
+    );
+    return found?.object || null;
+  }
+
+  async findSupplierSourceLineById(sourceLineId) {
+    if (!sourceLineId) return null;
+    const found = await safeExactFind(
+      this.store('supplier'),
+      'Supplier_Source_Lines',
+      'source_line_id',
+      sourceLineId
+    );
+    return found?.object || null;
+  }
+
+  async findSupplierPriceBySourceLineId(sourceLineId) {
+    if (!sourceLineId) return null;
+    const found = await safeExactFind(
+      this.store('supplier'),
+      'Supplier_Prices',
+      'source_line_id',
+      sourceLineId
+    );
+    return found?.object || null;
+  }
+
+  async findProductBySupplierCode(supplierId, supplierCode) {
+    if (!supplierId || !supplierCode) return null;
+    const found = await safeExactFind(
+      this.store('supplier'),
+      'Master_Parts',
+      'supplier_code_primary',
+      supplierCode
+    );
+    if (!found) return null;
+    const row = found.object || {};
+    if (String(row.preferred_supplier_id || '') !== String(supplierId)) {
+      return {
+        ...row,
+        __supplier_code_owner_mismatch: true
+      };
+    }
+    return row;
+  }
+
+  supplierPriceResolverDependencies() {
+    return {
+      findEntityByCanonicalId: (type, id) => this.findEntityByCanonicalId(type, id),
+      findSupplierQuoteByNumber: (number) =>
+        this.findSupplierQuoteByNumber(number),
+      findSupplierSourceLineById: (id) =>
+        this.findSupplierSourceLineById(id),
+      findSupplierPriceBySourceLineId: (id) =>
+        this.findSupplierPriceBySourceLineId(id),
+      findProductBySupplierCode: (supplierId, code) =>
+        this.findProductBySupplierCode(supplierId, code)
+    };
   }
 
   paymentResolverDependencies() {
