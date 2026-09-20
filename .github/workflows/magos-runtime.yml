@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'magos/runtime/**'
+      - 'magos/app.js'
       - 'magos/writer/**'
       - 'magos/adapters/**'
       - 'magos/tests/runtime-http.test.js'
@@ -40,6 +41,7 @@ jobs:
           cache: npm
           cache-dependency-path: magos/package.json
       - run: npm install --no-audit --no-fund
+      - run: node --check app.js
       - run: node --test tests/runtime-http.test.js tests/transaction-writer.test.js
 
   container-smoke:
