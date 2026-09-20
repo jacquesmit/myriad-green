@@ -587,3 +587,42 @@ test('lead ingress requires immutable evidence and source event identity', async
     assert.equal(calls, 0);
   });
 });
+
+
+test('lead ingress rejects invalid safety guard values before governed dispatch', async () => {
+  let calls = 0;
+  const app = createRuntimeApp({
+    token: 'runtime-secret',
+    leadIngressToken: 'lead-secret',
+    leadIngressSources: 'WORDPRESS',
+    writerFactory: () => ({ audit: {} }),
+    eventDispatcherFactory: () => ({
+      async run() {
+        calls += 1;
+        return { state: 'COMMITTED' };
+      }
+    })
+  });
+
+  await withServer(app, async (base) => {
+    const body = sampleLeadIngress({
+      guards: {
+        spam: 'SAFE_ENOUGH',
+        phishing: 'CLEAR',
+        explicit_content: 'CLEAR',
+        malware: 'CLEAR',
+        irrelevant: 'CLEAR'
+      }
+    });
+
+    const result = await request(base, '/v1/ingress/leads', {
+      method: 'POST',
+      ingressToken: 'lead-secret',
+      body
+    });
+
+    assert.equal(result.status, 400);
+    assert.equal(result.payload.error, 'INVALID_GUARD_VALUE');
+    assert.equal(calls, 0);
+  });
+});
