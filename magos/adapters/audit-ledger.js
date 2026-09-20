@@ -133,13 +133,103 @@ class AuditLedger {
     return true;
   }
 
+  async readObjects(sheetName, { maxRows = 1000 } = {}) {
+    const { headers } = await this.getHeaders(sheetName);
+    if (!headers.length) return [];
+    const endColumn = columnLetter(headers.length - 1);
+    const response = await this.sheets.spreadsheets.values.get({
+      spreadsheetId: this.spreadsheetId,
+      range: this.quoteSheetName(sheetName) + '!A2:' + endColumn + Math.max(2, maxRows + 1)
+    });
+    return (response.data.values || []).map((row, index) => {
+      const object = {};
+      headers.forEach((header, column) => {
+        object[header] = row[column] ?? '';
+      });
+      object.__rowNumber = index + 2;
+      return object;
+    });
+  }
+
+  async updateFieldsByKey(sheetName, keyHeader, keyValue, changes) {
+    // Resolve live headers and the canonical row immediately before mutation.
+    // Only named fields are updated; untouched formulas/validations remain intact.
+    const resolved = await this.resolveRowByKey(sheetName, keyHeader, keyValue);
+    if (!resolved) return null;
+
+    const headerMap = {};
+    resolved.headers.forEach((header, index) => {
+      if (header) headerMap[String(header)] = index;
+    });
+
+    const data = [];
+    const before = {};
+    for (const [header, value] of Object.entries(changes || {})) {
+      const index = headerMap[header];
+      if (index === undefined) {
+        throw new Error('Missing header ' + header + ' on ' + sheetName);
+      }
+      before[header] = resolved.object[header] ?? '';
+      data.push({
+        range:
+          this.quoteSheetName(sheetName) + '!' +
+          columnLetter(index) + resolved.rowNumber,
+        values: [[value]]
+      });
+    }
+
+    if (!data.length) {
+      return { rowNumber: resolved.rowNumber, before, changed: false };
+    }
+
+    await this.sheets.spreadsheets.values.batchUpdate({
+      spreadsheetId: this.spreadsheetId,
+      requestBody: {
+        valueInputOption: 'USER_ENTERED',
+        data
+      }
+    });
+    return { rowNumber: resolved.rowNumber, before, changed: true };
+  }
+
+  async deleteRowByKey(sheetName, keyHeader, keyValue) {
+    const resolved = await this.resolveRowByKey(sheetName, keyHeader, keyValue);
+    if (!resolved) return false;
+
+    const meta = await this.sheets.spreadsheets.get({
+      spreadsheetId: this.spreadsheetId,
+      fields: 'sheets(properties(sheetId,title))'
+    });
+    const sheet = (meta.data.sheets || []).find(
+      (item) => item.properties?.title === sheetName
+    );
+    if (!sheet) throw new Error('Missing sheet ' + sheetName);
+
+    await this.sheets.spreadsheets.batchUpdate({
+      spreadsheetId: this.spreadsheetId,
+      requestBody: {
+        requests: [{
+          deleteDimension: {
+            range: {
+              sheetId: sheet.properties.sheetId,
+              dimension: 'ROWS',
+              startIndex: resolved.rowNumber - 1,
+              endIndex: resolved.rowNumber
+            }
+          }
+        }]
+      }
+    });
+    return true;
+  }
+
   async findByKey(sheetName, keyHeader, keyValue) {
     const resolved = await this.resolveRowByKey(sheetName, keyHeader, keyValue);
     if (!resolved) return null;
     return { rowNumber: resolved.rowNumber, object: resolved.object };
   }
 
-  async beginRun({ idempotencyKey, inputScope, evidenceLink = '', triggerType = 'DRIVE_INTAKE' }) {
+  async beginRun({ idempotencyKey, inputScope, evidenceLink = '', triggerType = 'DRIVE_INTAKE', automationId = '' }) {
     const existing = await this.findByKey('Automation_Run_Log', 'idempotency_key', idempotencyKey);
     const terminal = new Set(['COMMITTED', 'REVIEW_REQUIRED', 'RUNNING']);
     if (existing && terminal.has(existing.object.run_state)) {
@@ -162,7 +252,7 @@ class AuditLedger {
     const runLogId = 'ARL-' + crypto.randomUUID();
     await this.appendObject('Automation_Run_Log', {
       run_log_id: runLogId,
-      automation_id: process.env.MAGOS_AUTOMATION_ID || 'MAGOS-DOC-EXTRACT-01',
+      automation_id: automationId || process.env.MAGOS_AUTOMATION_ID || 'MAGOS-DOC-EXTRACT-01',
       provider_run_id: '',
       run_state: 'RUNNING',
       trigger_type: triggerType,
@@ -227,6 +317,80 @@ class AuditLedger {
       notes: notes || ''
     });
     return id;
+  }
+
+  async raiseSyncException({
+    idempotencyKey,
+    entityType = 'TRANSACTION',
+    recordId = '',
+    sourceSystem = 'MAGOS Transaction Writer',
+    destinationSystem = '',
+    exceptionType = 'TRANSACTION_WRITE_FAILURE',
+    severity = 'HIGH',
+    sourceValue = '',
+    destinationValue = '',
+    actionRequired = '',
+    evidence = '',
+    ruleId = 'MAGOS-TRANSACTION-WRITER-V1'
+  }) {
+    const existing = await this.findByKey('Sync_Exceptions', 'idempotency_key', idempotencyKey);
+    if (existing && ['OPEN', 'IN_PROGRESS', 'BLOCKED'].includes(existing.object.status)) {
+      return existing.object.exception_id;
+    }
+    if (existing) {
+      await this.updateFieldsByKey('Sync_Exceptions', 'idempotency_key', idempotencyKey, {
+        detected_at: nowSast(),
+        severity,
+        entity_type: entityType,
+        record_id: recordId,
+        source_system: sourceSystem,
+        destination_system: destinationSystem,
+        exception_type: exceptionType,
+        source_value: sourceValue,
+        destination_value: destinationValue,
+        action_required: actionRequired,
+        owner: 'Jacques / MAGOS',
+        status: 'OPEN',
+        resolved_at: '',
+        evidence,
+        rule_id: ruleId
+      });
+      return existing.object.exception_id;
+    }
+
+    const id = 'SYNC-EXC-' + crypto.randomUUID();
+    await this.appendObject('Sync_Exceptions', {
+      exception_id: id,
+      detected_at: nowSast(),
+      severity,
+      entity_type: entityType,
+      record_id: recordId,
+      source_system: sourceSystem,
+      destination_system: destinationSystem,
+      exception_type: exceptionType,
+      source_value: sourceValue,
+      destination_value: destinationValue,
+      action_required: actionRequired,
+      owner: 'Jacques / MAGOS',
+      status: 'OPEN',
+      resolved_at: '',
+      evidence,
+      rule_id: ruleId,
+      idempotency_key: idempotencyKey
+    });
+    return id;
+  }
+
+  async resolveSyncException(idempotencyKey, evidence = '') {
+    const existing = await this.findByKey('Sync_Exceptions', 'idempotency_key', idempotencyKey);
+    if (!existing) return false;
+    if (existing.object.status === 'RESOLVED') return true;
+    await this.updateFieldsByKey('Sync_Exceptions', 'idempotency_key', idempotencyKey, {
+      status: 'RESOLVED',
+      resolved_at: nowSast(),
+      evidence: evidence || existing.object.evidence || ''
+    });
+    return true;
   }
 
   async raiseReviewException({
