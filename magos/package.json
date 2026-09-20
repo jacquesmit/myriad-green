@@ -1,8 +1,8 @@
 {
   "name": "@myriadgreen/magos-runtime",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
-  "description": "MAGOS in-house runtime workers, writer and HTTP execution boundary",
+  "description": "MAGOS in-house runtime, governed transaction writer and reusable operations library",
   "main": "runtime/server.js",
   "type": "commonjs",
   "engines": {

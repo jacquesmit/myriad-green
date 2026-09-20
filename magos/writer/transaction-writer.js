@@ -36,7 +36,9 @@ function assertPlan(plan) {
   for (const field of ['idempotency_key', 'event_type', 'source_event_id']) {
     if (!plan?.[field]) throw new Error('TransactionPlan missing ' + field);
   }
-  if (!Array.isArray(plan.preconditions)) throw new Error('TransactionPlan.preconditions must be an array');
+  if (!Array.isArray(plan.preconditions)) {
+    throw new Error('TransactionPlan.preconditions must be an array');
+  }
   if (!Array.isArray(plan.writes) || !plan.writes.length) {
     throw new Error('TransactionPlan.writes must contain at least one mutation');
   }
@@ -69,15 +71,21 @@ class TransactionWriter {
     return this.audit.readObjects('Writer_Schema_Registry', { maxRows: 300 });
   }
 
+  requiredHeadersForOperation(op) {
+    return new Set([
+      op.key?.header,
+      op.state_field,
+      ...Object.keys(op.changes || {}),
+      ...Object.keys(op.values || {}),
+      ...Object.keys(op.expect || {}),
+      ...(op.required_headers || [])
+    ].filter(Boolean));
+  }
+
   async validateRegisteredSchema(op, cachedRegistry) {
     const store = this.store(op.store);
     const live = await store.getHeaders(op.sheet);
-    const required = new Set([
-      op.key?.header,
-      ...Object.keys(op.changes || {}),
-      ...Object.keys(op.values || {}),
-      ...(op.required_headers || [])
-    ].filter(Boolean));
+    const required = this.requiredHeadersForOperation(op);
 
     for (const header of required) {
       if (live.map[header] === undefined) {
@@ -115,13 +123,21 @@ class TransactionWriter {
 
   async validateAuthority(op) {
     if (op.authority === 'AUTHORITATIVE') {
-      const owner = await this.audit.findByKey('Data_Ownership_Matrix', 'entity_type', op.entity_type);
+      const owner = await this.audit.findByKey(
+        'Data_Ownership_Matrix', 'entity_type', op.entity_type
+      );
       if (!owner) {
-        throw new WriterControlError('OWNER_NOT_FOUND', 'No Data_Ownership_Matrix row for ' + op.entity_type);
+        throw new WriterControlError(
+          'OWNER_NOT_FOUND',
+          'No Data_Ownership_Matrix row for ' + op.entity_type
+        );
       }
       const row = owner.object;
       if (row.ownership_status !== 'PASS') {
-        throw new WriterControlError('OWNER_NOT_PASS', op.entity_type + ' ownership is not PASS');
+        throw new WriterControlError(
+          'OWNER_NOT_PASS',
+          op.entity_type + ' ownership is not PASS'
+        );
       }
       if (row.source_of_truth_tab !== op.sheet) {
         throw new WriterControlError(
@@ -141,9 +157,21 @@ class TransactionWriter {
     }
 
     if (op.authority === 'CROSS_SYSTEM_LINK') {
-      if (!op.link_id) throw new WriterControlError('LINK_ID_REQUIRED', 'Cross-system mutation requires link_id');
-      const link = await this.audit.findByKey('Cross_System_Links', 'link_id', op.link_id);
-      if (!link) throw new WriterControlError('LINK_NOT_FOUND', 'Missing Cross_System_Links row ' + op.link_id);
+      if (!op.link_id) {
+        throw new WriterControlError(
+          'LINK_ID_REQUIRED',
+          'Cross-system mutation requires link_id'
+        );
+      }
+      const link = await this.audit.findByKey(
+        'Cross_System_Links', 'link_id', op.link_id
+      );
+      if (!link) {
+        throw new WriterControlError(
+          'LINK_NOT_FOUND',
+          'Missing Cross_System_Links row ' + op.link_id
+        );
+      }
       if (link.object.automation_status !== 'ACTIVE') {
         throw new WriterControlError(
           'LINK_NOT_ACTIVE',
@@ -159,17 +187,23 @@ class TransactionWriter {
       return;
     }
 
-    throw new WriterControlError('AUTHORITY_MODE_REQUIRED', 'Mutation must declare AUTHORITATIVE or CROSS_SYSTEM_LINK');
+    throw new WriterControlError(
+      'AUTHORITY_MODE_REQUIRED',
+      'Mutation must declare AUTHORITATIVE or CROSS_SYSTEM_LINK'
+    );
   }
 
   async validatePreconditions(preconditions) {
     for (const pre of preconditions) {
       const store = this.store(pre.store);
-      const found = await store.findByKey(pre.sheet, pre.key.header, pre.key.value);
+      const found = await store.findByKey(
+        pre.sheet, pre.key.header, pre.key.value
+      );
       if (!found) {
         throw new WriterControlError(
           'PRECONDITION_ROW_NOT_FOUND',
-          pre.store + '/' + pre.sheet + ' missing ' + pre.key.header + '=' + pre.key.value,
+          pre.store + '/' + pre.sheet + ' missing ' +
+          pre.key.header + '=' + pre.key.value,
           { retryable: true }
         );
       }
@@ -186,60 +220,143 @@ class TransactionWriter {
     }
   }
 
-  async applyMutation(op) {
-    const store = this.store(op.store);
-    const existing = await store.findByKey(op.sheet, op.key.header, op.key.value);
-
-    if (op.operation === 'UPDATE_BY_KEY') {
-      if (!existing) {
-        throw new WriterControlError(
-          'WRITE_TARGET_NOT_FOUND',
-          op.store + '/' + op.sheet + ' missing ' + op.key.header + '=' + op.key.value,
-          { retryable: true }
-        );
-      }
-      const desired = op.changes || {};
-      const already = Object.entries(desired).every(([field, value]) =>
-        sameValue(existing.object[field], value)
+  assertAppendKey(op, values) {
+    if (!Object.prototype.hasOwnProperty.call(values, op.key.header)) {
+      throw new WriterControlError(
+        'CANONICAL_KEY_MISSING',
+        op.store + '/' + op.sheet + ' append is missing canonical key field ' +
+        op.key.header
       );
-      if (already) {
-        return {
-          noOp: true,
-          compensation: null,
-          affected: op.key.value,
-          readback: existing.object
-        };
-      }
-      const before = {};
-      for (const field of Object.keys(desired)) before[field] = existing.object[field] ?? '';
-      await store.updateFieldsByKey(op.sheet, op.key.header, op.key.value, desired);
-      const readback = await store.findByKey(op.sheet, op.key.header, op.key.value);
-      for (const [field, expected] of Object.entries(desired)) {
-        if (!readback || !sameValue(readback.object[field], expected)) {
-          throw new WriterControlError(
-            'WRITE_READBACK_FAILED',
-            op.store + '/' + op.sheet + ' failed read-back for ' + field,
-            { retryable: true }
-          );
-        }
-      }
+    }
+    if (!sameValue(values[op.key.header], op.key.value)) {
+      throw new WriterControlError(
+        'CANONICAL_KEY_CONFLICT',
+        op.store + '/' + op.sheet + ' append key ' + op.key.header +
+        ' expected=' + op.key.value + ' actual=' + values[op.key.header]
+      );
+    }
+  }
+
+  async updateExisting(op, store, existing, desired) {
+    const entries = Object.entries(desired || {});
+    if (!entries.length) {
+      throw new WriterControlError(
+        'EMPTY_UPDATE',
+        op.operation + ' requires at least one field to change'
+      );
+    }
+
+    const already = entries.every(([field, value]) =>
+      sameValue(existing.object[field], value)
+    );
+    if (already) {
       return {
-        noOp: false,
-        compensation: {
-          type: 'UPDATE_BY_KEY',
-          store: op.store,
-          sheet: op.sheet,
-          key: op.key,
-          changes: before
-        },
+        noOp: true,
+        compensation: null,
         affected: op.key.value,
-        readback: readback.object
+        readback: existing.object
       };
     }
 
-    if (op.operation === 'APPEND_IF_ABSENT') {
+    const before = {};
+    for (const [field] of entries) {
+      before[field] = existing.object[field] ?? '';
+    }
+
+    await store.updateFieldsByKey(
+      op.sheet, op.key.header, op.key.value, desired
+    );
+
+    const readback = await store.findByKey(
+      op.sheet, op.key.header, op.key.value
+    );
+    for (const [field, expected] of entries) {
+      if (!readback || !sameValue(readback.object[field], expected)) {
+        throw new WriterControlError(
+          'WRITE_READBACK_FAILED',
+          op.store + '/' + op.sheet + ' failed read-back for ' + field,
+          { retryable: true }
+        );
+      }
+    }
+
+    return {
+      noOp: false,
+      compensation: {
+        type: 'UPDATE_BY_KEY',
+        store: op.store,
+        sheet: op.sheet,
+        key: op.key,
+        changes: before
+      },
+      affected: op.key.value,
+      readback: readback.object
+    };
+  }
+
+  async appendNew(op, store, values) {
+    this.assertAppendKey(op, values);
+    await store.appendObject(op.sheet, values);
+
+    const readback = await store.findByKey(
+      op.sheet, op.key.header, op.key.value
+    );
+    if (!readback) {
+      throw new WriterControlError(
+        'APPEND_READBACK_FAILED',
+        op.store + '/' + op.sheet + ' append not found by canonical key',
+        { retryable: true }
+      );
+    }
+
+    for (const [field, expected] of Object.entries(values)) {
+      if (!sameValue(readback.object[field], expected)) {
+        throw new WriterControlError(
+          'APPEND_READBACK_FAILED',
+          op.store + '/' + op.sheet + ' read-back mismatch for ' + field,
+          { retryable: true }
+        );
+      }
+    }
+
+    return {
+      noOp: false,
+      compensation: {
+        type: 'DELETE_BY_KEY',
+        store: op.store,
+        sheet: op.sheet,
+        key: op.key
+      },
+      affected: op.key.value,
+      readback: readback.object
+    };
+  }
+
+  async applyMutation(op) {
+    const store = this.store(op.store);
+    const existing = await store.findByKey(
+      op.sheet, op.key.header, op.key.value
+    );
+    const operation = op.operation === 'CREATE_IF_ABSENT'
+      ? 'APPEND_IF_ABSENT'
+      : op.operation;
+
+    if (operation === 'UPDATE_BY_KEY') {
+      if (!existing) {
+        throw new WriterControlError(
+          'WRITE_TARGET_NOT_FOUND',
+          op.store + '/' + op.sheet + ' missing ' +
+          op.key.header + '=' + op.key.value,
+          { retryable: true }
+        );
+      }
+      return this.updateExisting(op, store, existing, op.changes || {});
+    }
+
+    if (operation === 'APPEND_IF_ABSENT') {
+      const desired = op.values || {};
+      this.assertAppendKey(op, desired);
       if (existing) {
-        const desired = op.values || {};
         const same = Object.entries(desired).every(([field, value]) =>
           sameValue(existing.object[field], value)
         );
@@ -257,38 +374,118 @@ class TransactionWriter {
           readback: existing.object
         };
       }
-      await store.appendObject(op.sheet, op.values || {});
-      const readback = await store.findByKey(op.sheet, op.key.header, op.key.value);
-      if (!readback) {
+      return this.appendNew(op, store, desired);
+    }
+
+    if (operation === 'UPSERT_BY_KEY') {
+      if (existing) {
+        const desired = op.changes && Object.keys(op.changes).length
+          ? op.changes
+          : op.values;
+        return this.updateExisting(op, store, existing, desired || {});
+      }
+      return this.appendNew(op, store, op.values || {});
+    }
+
+    if (operation === 'PATCH_IF_MATCH') {
+      if (!existing) {
         throw new WriterControlError(
-          'APPEND_READBACK_FAILED',
-          op.store + '/' + op.sheet + ' append not found by canonical key',
+          'WRITE_TARGET_NOT_FOUND',
+          op.store + '/' + op.sheet + ' missing ' +
+          op.key.header + '=' + op.key.value,
           { retryable: true }
         );
       }
-      for (const [field, expected] of Object.entries(op.values || {})) {
-        if (!sameValue(readback.object[field], expected)) {
+      for (const [field, expected] of Object.entries(op.expect || {})) {
+        if (!sameValue(existing.object[field], expected)) {
           throw new WriterControlError(
-            'APPEND_READBACK_FAILED',
-            op.store + '/' + op.sheet + ' read-back mismatch for ' + field,
+            'PATCH_EXPECTATION_FAILED',
+            op.store + '/' + op.sheet + ' ' + field +
+            ' expected=' + expected + ' actual=' + existing.object[field],
             { retryable: true }
           );
         }
       }
-      return {
-        noOp: false,
-        compensation: {
-          type: 'DELETE_BY_KEY',
-          store: op.store,
-          sheet: op.sheet,
-          key: op.key
-        },
-        affected: op.key.value,
-        readback: readback.object
-      };
+      return this.updateExisting(op, store, existing, op.changes || {});
     }
 
-    throw new WriterControlError('OPERATION_NOT_SUPPORTED', 'Unsupported operation ' + op.operation);
+    if (operation === 'STATE_TRANSITION') {
+      if (!existing) {
+        throw new WriterControlError(
+          'WRITE_TARGET_NOT_FOUND',
+          op.store + '/' + op.sheet + ' missing ' +
+          op.key.header + '=' + op.key.value,
+          { retryable: true }
+        );
+      }
+      if (!op.state_field || op.to_state === undefined) {
+        throw new WriterControlError(
+          'STATE_TRANSITION_INVALID',
+          'STATE_TRANSITION requires state_field and to_state'
+        );
+      }
+
+      const current = existing.object[op.state_field] ?? '';
+      const allowed = Array.isArray(op.from_states)
+        ? op.from_states
+        : (op.from_state !== undefined ? [op.from_state] : []);
+
+      if (!sameValue(current, op.to_state) &&
+          !allowed.some((state) => sameValue(current, state))) {
+        throw new WriterControlError(
+          'STATE_TRANSITION_REJECTED',
+          op.store + '/' + op.sheet + ' ' + op.state_field +
+          ' cannot transition from ' + current + ' to ' + op.to_state,
+          { retryable: true }
+        );
+      }
+
+      return this.updateExisting(op, store, existing, {
+        ...(op.changes || {}),
+        [op.state_field]: op.to_state
+      });
+    }
+
+    if (operation === 'SET_IF_EMPTY') {
+      if (!existing) {
+        throw new WriterControlError(
+          'WRITE_TARGET_NOT_FOUND',
+          op.store + '/' + op.sheet + ' missing ' +
+          op.key.header + '=' + op.key.value,
+          { retryable: true }
+        );
+      }
+
+      const toWrite = {};
+      for (const [field, desired] of Object.entries(op.values || {})) {
+        const current = existing.object[field] ?? '';
+        if (sameValue(current, desired)) continue;
+        if (!sameValue(current, '')) {
+          throw new WriterControlError(
+            'FIELD_NOT_EMPTY',
+            op.store + '/' + op.sheet + ' ' + field +
+            ' already has value=' + current
+          );
+        }
+        toWrite[field] = desired;
+      }
+
+      if (!Object.keys(toWrite).length) {
+        return {
+          noOp: true,
+          compensation: null,
+          affected: op.key.value,
+          readback: existing.object
+        };
+      }
+
+      return this.updateExisting(op, store, existing, toWrite);
+    }
+
+    throw new WriterControlError(
+      'OPERATION_NOT_SUPPORTED',
+      'Unsupported operation ' + op.operation
+    );
   }
 
   async compensate(records) {
@@ -298,14 +495,25 @@ class TransactionWriter {
         const store = this.store(record.store);
         if (record.type === 'UPDATE_BY_KEY') {
           await store.updateFieldsByKey(
-            record.sheet, record.key.header, record.key.value, record.changes
+            record.sheet,
+            record.key.header,
+            record.key.value,
+            record.changes
           );
         } else if (record.type === 'DELETE_BY_KEY') {
-          await store.deleteRowByKey(record.sheet, record.key.header, record.key.value);
+          await store.deleteRowByKey(
+            record.sheet,
+            record.key.header,
+            record.key.value
+          );
         }
         outcomes.push({ ok: true, record });
       } catch (error) {
-        outcomes.push({ ok: false, record, error: error.message });
+        outcomes.push({
+          ok: false,
+          record,
+          error: error.message
+        });
       }
     }
     return outcomes;
@@ -315,6 +523,7 @@ class TransactionWriter {
     assertPlan(plan);
     const transactionId = plan.transaction_id || 'TXN-' + crypto.randomUUID();
     const exceptionKey = 'writer:' + plan.idempotency_key;
+
     const begin = await this.audit.beginRun({
       idempotencyKey: plan.idempotency_key,
       inputScope: plan.input_scope || plan.event_type,
@@ -335,12 +544,14 @@ class TransactionWriter {
     const applied = [];
     const affected = [];
     const summaries = [];
+
     try {
       const registry = await this.registryRows();
       for (const op of plan.writes) {
         await this.validateAuthority(op);
         await this.validateRegisteredSchema(op, registry);
       }
+
       await this.validatePreconditions(plan.preconditions);
 
       for (const op of plan.writes) {
@@ -348,8 +559,10 @@ class TransactionWriter {
         if (result.compensation) applied.push(result.compensation);
         affected.push(result.affected);
         summaries.push(
+          (op.intent ? op.intent + ': ' : '') +
           op.operation + ' ' + op.store + '/' + op.sheet + ' ' +
-          op.key.header + '=' + op.key.value + (result.noOp ? ' [NO_OP]' : ' [WRITTEN]')
+          op.key.header + '=' + op.key.value +
+          (result.noOp ? ' [NO_OP]' : ' [WRITTEN]')
         );
       }
 
@@ -357,17 +570,22 @@ class TransactionWriter {
         state: 'COMMITTED',
         affectedRecordIds: [...new Set(affected)].join(' | '),
         writesSummary: summaries.join('; '),
-        readbackSummary: 'All declared fields read back from live headers and canonical keys.',
+        readbackSummary:
+          'All declared fields read back from live headers and canonical keys.',
         errorOrBlocker: ''
       });
+
       await this.audit.resolveSyncException(
         exceptionKey,
         plan.evidence_link || ''
       );
 
       const auditReadback = await this.audit.findByKey(
-        'Automation_Run_Log', 'idempotency_key', plan.idempotency_key
+        'Automation_Run_Log',
+        'idempotency_key',
+        plan.idempotency_key
       );
+
       if (!auditReadback || auditReadback.object.run_state !== 'COMMITTED') {
         throw new WriterControlError(
           'AUDIT_READBACK_FAILED',
@@ -385,10 +603,13 @@ class TransactionWriter {
         audit: auditReadback.object
       };
     } catch (error) {
-      const compensation = applied.length ? await this.compensate(applied) : [];
+      const compensation = applied.length
+        ? await this.compensate(applied)
+        : [];
       const compensationFailed = compensation.some((item) => !item.ok);
       const state = compensationFailed ? 'FAILED' : 'RETRY_REQUIRED';
-      const errorText = (error.code ? error.code + ': ' : '') + error.message;
+      const errorText =
+        (error.code ? error.code + ': ' : '') + error.message;
 
       try {
         await this.audit.completeRun(plan.idempotency_key, {
@@ -396,10 +617,17 @@ class TransactionWriter {
           affectedRecordIds: [...new Set(affected)].join(' | '),
           writesSummary: summaries.join('; '),
           readbackSummary: compensation.length
-            ? 'Failure path executed; compensation=' + JSON.stringify(compensation.map((x) => ({ ok: x.ok, type: x.record.type })))
+            ? 'Failure path executed; compensation=' +
+              JSON.stringify(
+                compensation.map((x) => ({
+                  ok: x.ok,
+                  type: x.record.type
+                }))
+              )
             : 'Failure occurred before business mutation; no compensation required.',
           errorOrBlocker: errorText
         });
+
         await this.audit.raiseSyncException({
           idempotencyKey: exceptionKey,
           entityType: plan.event_type,
@@ -409,7 +637,8 @@ class TransactionWriter {
           severity: compensationFailed ? 'CRITICAL' : 'HIGH',
           sourceValue: plan.idempotency_key,
           destinationValue: errorText,
-          actionRequired: 'Correct the recorded control failure and replay the same idempotency key. Do not create a second business record.',
+          actionRequired:
+            'Correct the recorded control failure and replay the same idempotency key. Do not create a second business record.',
           evidence: plan.evidence_link || ''
         });
       } catch (auditError) {

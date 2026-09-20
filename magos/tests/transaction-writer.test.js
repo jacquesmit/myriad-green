@@ -3,6 +3,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { TransactionWriter } = require('../writer/transaction-writer');
+const { upsertByKey, stateTransition, setIfEmpty, patchIfMatch, createIfAbsent, composeTransactionPlan } = require('../writer/operations');
 
 class FakeStore {
   constructor(tables = {}) {
@@ -200,4 +201,167 @@ test('precondition failure creates retry state and same idempotency key recovers
   const recovered = await writer.execute(plan('ACCEPTED'));
   assert.equal(recovered.state, 'COMMITTED');
   assert.equal((await audit.findByKey('Sync_Exceptions', 'idempotency_key', 'writer:writer:v1:qte-1')).object.status, 'RESOLVED');
+});
+
+
+function operationPlan(id, write) {
+  return composeTransactionPlan({
+    idempotency_key: 'writer:ops:' + id,
+    event_type: 'WRITER_OPERATION_TEST',
+    source_event_id: 'SRC-' + id,
+    writes: [write]
+  });
+}
+
+function jobTarget(opportunityId = 'OPP-1') {
+  return {
+    store: 'crm',
+    workbook_role: 'CRM',
+    sheet: 'Jobs_Opportunities',
+    key: { header: 'opportunity_id', value: opportunityId },
+    authority: 'AUTHORITATIVE',
+    entity_type: 'Job'
+  };
+}
+
+test('new writer operations create and upsert canonical records through the same controls', async () => {
+  const { crm, commercial, audit } = fixtures();
+  const writer = new TransactionWriter({
+    stores: { audit, crm, commercial },
+    auditStore: audit
+  });
+
+  const created = await writer.execute(operationPlan(
+    'create',
+    createIfAbsent({
+      ...jobTarget('OPP-2'),
+      intent: 'CREATE_JOB_RECORD',
+      values: {
+        job_id: 'JOB-2',
+        quote_number: 'Q-2',
+        job_status: 'ASSESSMENT_NEEDED'
+      }
+    })
+  ));
+
+  assert.equal(created.state, 'COMMITTED');
+  assert.equal(
+    (await crm.findByKey('Jobs_Opportunities', 'opportunity_id', 'OPP-2')).object.job_id,
+    'JOB-2'
+  );
+
+  const upserted = await writer.execute(operationPlan(
+    'upsert',
+    upsertByKey({
+      ...jobTarget('OPP-2'),
+      intent: 'UPSERT_JOB_RECORD',
+      values: {
+        job_id: 'JOB-2',
+        quote_number: 'Q-2',
+        job_status: 'ASSESSMENT_NEEDED'
+      },
+      changes: { job_status: 'READY' }
+    })
+  ));
+
+  assert.equal(upserted.state, 'COMMITTED');
+  assert.equal(
+    (await crm.findByKey('Jobs_Opportunities', 'opportunity_id', 'OPP-2')).object.job_status,
+    'READY'
+  );
+});
+
+test('STATE_TRANSITION and PATCH_IF_MATCH refuse stale live state', async () => {
+  const { crm, commercial, audit } = fixtures();
+  const writer = new TransactionWriter({
+    stores: { audit, crm, commercial },
+    auditStore: audit
+  });
+
+  const transitioned = await writer.execute(operationPlan(
+    'transition-pass',
+    stateTransition({
+      ...jobTarget(),
+      intent: 'ADVANCE_JOB',
+      state_field: 'job_status',
+      from_state: 'ASSESSMENT_NEEDED',
+      to_state: 'READY'
+    })
+  ));
+
+  assert.equal(transitioned.state, 'COMMITTED');
+  assert.equal(
+    (await crm.findByKey('Jobs_Opportunities', 'opportunity_id', 'OPP-1')).object.job_status,
+    'READY'
+  );
+
+  const staleTransition = await writer.execute(operationPlan(
+    'transition-stale',
+    stateTransition({
+      ...jobTarget(),
+      intent: 'ADVANCE_JOB',
+      state_field: 'job_status',
+      from_state: 'ASSESSMENT_NEEDED',
+      to_state: 'DONE'
+    })
+  ));
+
+  assert.equal(staleTransition.state, 'RETRY_REQUIRED');
+  assert.match(staleTransition.error, /STATE_TRANSITION_REJECTED/);
+
+  const stalePatch = await writer.execute(operationPlan(
+    'patch-stale',
+    patchIfMatch({
+      ...jobTarget(),
+      intent: 'PATCH_JOB_IF_CURRENT',
+      expect: { job_status: 'ASSESSMENT_NEEDED' },
+      changes: { quote_number: 'SHOULD-NOT-WRITE' }
+    })
+  ));
+
+  assert.equal(stalePatch.state, 'RETRY_REQUIRED');
+  assert.match(stalePatch.error, /PATCH_EXPECTATION_FAILED/);
+  assert.equal(
+    (await crm.findByKey('Jobs_Opportunities', 'opportunity_id', 'OPP-1')).object.quote_number,
+    ''
+  );
+});
+
+test('SET_IF_EMPTY fills missing values but does not overwrite established values', async () => {
+  const { crm, commercial, audit } = fixtures();
+  const writer = new TransactionWriter({
+    stores: { audit, crm, commercial },
+    auditStore: audit
+  });
+
+  const filled = await writer.execute(operationPlan(
+    'set-empty',
+    setIfEmpty({
+      ...jobTarget(),
+      intent: 'SET_JOB_ID_IF_EMPTY',
+      values: { job_id: 'JOB-1' }
+    })
+  ));
+
+  assert.equal(filled.state, 'COMMITTED');
+  assert.equal(
+    (await crm.findByKey('Jobs_Opportunities', 'opportunity_id', 'OPP-1')).object.job_id,
+    'JOB-1'
+  );
+
+  const conflict = await writer.execute(operationPlan(
+    'set-empty-conflict',
+    setIfEmpty({
+      ...jobTarget(),
+      intent: 'SET_JOB_ID_IF_EMPTY',
+      values: { job_id: 'JOB-DIFFERENT' }
+    })
+  ));
+
+  assert.equal(conflict.state, 'RETRY_REQUIRED');
+  assert.match(conflict.error, /FIELD_NOT_EMPTY/);
+  assert.equal(
+    (await crm.findByKey('Jobs_Opportunities', 'opportunity_id', 'OPP-1')).object.job_id,
+    'JOB-1'
+  );
 });
