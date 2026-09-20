@@ -46,7 +46,7 @@ function normalizeDocument({ text = '', classification, structured = null } = {}
     structuredMap.total ||
     structuredMap.totalAmount ||
     firstMatch(clean, [
-      /(?:grand\s+total|amount\s+due|total)\s*[:\-]?\s*(?:ZAR|R)?\s*([0-9][0-9 ,.]*)/i
+      /^(?:grand\s+total|amount\s+due|total)\s*[:\-]?\s*(?:ZAR|R)?\s*([0-9][0-9 ,.]*)/im
     ]);
 
   const vatRaw =
