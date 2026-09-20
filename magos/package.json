@@ -1,0 +1,19 @@
+{
+  "name": "@myriadgreen/magos-runtime",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MAGOS in-house runtime workers and adapters",
+  "main": "workers/document-extract.worker.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "scan:00a": "node workers/drive-intake.worker.js"
+  },
+  "dependencies": {
+    "googleapis": "^153.0.0",
+    "pdf-parse": "^1.1.1"
+  }
+}
