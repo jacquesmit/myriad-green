@@ -4,6 +4,7 @@ const { AuditLedger } = require('../adapters/audit-ledger');
 const { EventProcessor } = require('./event-processor');
 
 const REVIEW_PREFIX = 'review:event:';
+const FOLLOW_UP_PREFIX = 'review:followup:';
 
 function required(value, name) {
   if (value === undefined || value === null || value === '') {
@@ -14,6 +15,13 @@ function required(value, name) {
 
 function reviewKey(eventIdempotencyKey) {
   return REVIEW_PREFIX + required(eventIdempotencyKey, 'eventIdempotencyKey');
+}
+
+function followUpReviewKey(eventIdempotencyKey, reasonCode) {
+  return FOLLOW_UP_PREFIX +
+    required(eventIdempotencyKey, 'eventIdempotencyKey') +
+    ':' +
+    required(reasonCode, 'reasonCode');
 }
 
 function compactReviewPayload(envelope, decision) {
@@ -73,6 +81,50 @@ class ReviewManager {
       review_key: key,
       event_id: envelope.event_id,
       event_idempotency_key: envelope.idempotency_key
+    };
+  }
+
+  async openFollowUp(envelope, followUp = {}) {
+    const reasonCode = required(
+      followUp.reason_code || followUp.reasonCode,
+      'followUp.reason_code'
+    );
+    const key = followUpReviewKey(envelope.idempotency_key, reasonCode);
+
+    const exceptionId = await this.ledger.raiseSyncException({
+      idempotencyKey: key,
+      entityType: 'EVENT_FOLLOW_UP_REVIEW',
+      recordId: envelope.event_id,
+      sourceSystem: envelope.source,
+      destinationSystem: 'MAGOS Event Processor',
+      exceptionType: reasonCode,
+      severity: followUp.severity || 'MEDIUM',
+      sourceValue: JSON.stringify({
+        event_id: envelope.event_id,
+        event_type: envelope.event_type,
+        event_idempotency_key: envelope.idempotency_key,
+        source_event_id: envelope.source_event_id,
+        context: followUp.context || {},
+        reason: followUp.reason || '',
+        next_event_type: followUp.next_event_type || ''
+      }),
+      destinationValue: '',
+      actionRequired:
+        followUp.action_required ||
+        'Resolve the follow-up using evidence. The original event is already committed; do not replay it to perform a new business action. Use only the explicitly governed child action/event.',
+      evidence:
+        followUp.evidence ||
+        envelope.evidence?.[0]?.ref ||
+        '',
+      ruleId: 'MAGOS-EVENT-FOLLOW-UP-01/V1'
+    });
+
+    return {
+      exception_id: exceptionId,
+      review_key: key,
+      event_id: envelope.event_id,
+      event_idempotency_key: envelope.idempotency_key,
+      follow_up_reason_code: reasonCode
     };
   }
 
@@ -215,5 +267,6 @@ class ReviewManager {
 module.exports = {
   ReviewManager,
   reviewKey,
-  compactReviewPayload
+  compactReviewPayload,
+  followUpReviewKey
 };
