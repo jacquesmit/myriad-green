@@ -25,12 +25,12 @@ Only these event types are registered:
 - PAYMENT_OBSERVED
 - SUPPLIER_PRICE_OBSERVED
 - LEAD_SUBMITTED
+- SUPPLIER_EMAIL_RECEIVED
 
 Each event type has a complete explicit resolver/planner path.
 
 The registry intentionally does not register:
 
-- SUPPLIER_EMAIL_RECEIVED
 - MESSAGE_RECEIVED
 - any future event type without a complete reviewed processor factory
 
@@ -73,6 +73,15 @@ LEAD_SUBMITTED:
     createLeadProcessor
       -> exact CRM identity / safe create resolver
       -> governed Intake_Queue + CRM_Master + Jobs_Opportunities plan
+      -> GovernedEventRunner
+      -> P3 Transaction Writer
+
+SUPPLIER_EMAIL_RECEIVED:
+
+    createSupplierEmailProcessor
+      -> exact canonical supplier ID / exact supplier-email token
+      -> governed Intake_Queue source-event plan
+      -> optional post-commit contact review
       -> GovernedEventRunner
       -> P3 Transaction Writer
 
