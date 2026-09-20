@@ -20,9 +20,15 @@ async function withServer(app, fn) {
   }
 }
 
-async function request(base, path, { method = 'GET', token = '', body } = {}) {
+async function request(base, path, {
+  method = 'GET',
+  token = '',
+  ingressToken = '',
+  body
+} = {}) {
   const headers = {};
   if (token) headers.authorization = 'Bearer ' + token;
+  if (ingressToken) headers['x-magos-ingress-token'] = ingressToken;
   if (body !== undefined) headers['content-type'] = 'application/json';
 
   const response = await fetch(base + path, {
@@ -366,5 +372,329 @@ test('governed event run endpoint rejects unregistered event type with 422', asy
     assert.equal(result.status, 422);
     assert.equal(result.payload.error, 'UNSUPPORTED_GOVERNED_EVENT_TYPE');
     assert.equal(result.payload.event_type, 'SUPPLIER_EMAIL_RECEIVED');
+  });
+});
+
+
+function sampleLeadIngress(overrides = {}) {
+  return {
+    source: 'WORDPRESS',
+    source_event_id: 'WP-FORM-1001',
+    evidence_ref: 'https://myriadgreen.co.za/wp-admin/admin.php?page=form-entry&id=1001',
+    evidence_type: 'WEBSITE_FORM_ENTRY',
+    guards: {
+      spam: 'CLEAR',
+      phishing: 'CLEAR',
+      explicit_content: 'CLEAR',
+      malware: 'CLEAR',
+      irrelevant: 'CLEAR'
+    },
+    safety_attestation: {
+      provider: 'TEST_SCANNER',
+      scan_id: 'SCAN-1001',
+      scanned_at: '2026-09-20T10:00:00Z'
+    },
+    lead: {
+      contact_name: 'Test Lead',
+      contact_phone: '+27 82 555 0199',
+      contact_email: 'test.ingress@example.com',
+      suburb_area: 'Pretoria East',
+      service_category: 'Irrigation installation',
+      issue_summary: 'New system enquiry'
+    },
+    ...overrides
+  };
+}
+
+test('lead ingress is disabled unless a separate ingress token and source allowlist are configured', async () => {
+  const app = createRuntimeApp({
+    token: 'runtime-secret',
+    writerFactory: () => ({ audit: {} }),
+    eventDispatcherFactory: () => ({
+      async run() {
+        return { state: 'COMMITTED' };
+      }
+    })
+  });
+
+  await withServer(app, async (base) => {
+    const result = await request(base, '/v1/ingress/leads', {
+      method: 'POST',
+      ingressToken: 'anything',
+      body: sampleLeadIngress()
+    });
+
+    assert.equal(result.status, 503);
+    assert.equal(result.payload.error, 'MAGOS_LEAD_INGRESS_NOT_CONFIGURED');
+  });
+});
+
+test('lead ingress does not accept the powerful runtime bearer token as ingress authentication', async () => {
+  let calls = 0;
+  const app = createRuntimeApp({
+    token: 'runtime-secret',
+    leadIngressToken: 'lead-secret',
+    leadIngressSources: 'WORDPRESS',
+    writerFactory: () => ({ audit: {} }),
+    eventDispatcherFactory: () => ({
+      async run() {
+        calls += 1;
+        return { state: 'COMMITTED' };
+      }
+    })
+  });
+
+  await withServer(app, async (base) => {
+    const result = await request(base, '/v1/ingress/leads', {
+      method: 'POST',
+      token: 'runtime-secret',
+      body: sampleLeadIngress()
+    });
+
+    assert.equal(result.status, 401);
+    assert.equal(calls, 0);
+  });
+});
+
+test('lead ingress rejects sources outside the configured allowlist before dispatch', async () => {
+  let calls = 0;
+  const app = createRuntimeApp({
+    token: 'runtime-secret',
+    leadIngressToken: 'lead-secret',
+    leadIngressSources: 'WORDPRESS,FLUENT_FORMS',
+    writerFactory: () => ({ audit: {} }),
+    eventDispatcherFactory: () => ({
+      async run() {
+        calls += 1;
+        return { state: 'COMMITTED' };
+      }
+    })
+  });
+
+  await withServer(app, async (base) => {
+    const result = await request(base, '/v1/ingress/leads', {
+      method: 'POST',
+      ingressToken: 'lead-secret',
+      body: sampleLeadIngress({ source: 'META' })
+    });
+
+    assert.equal(result.status, 403);
+    assert.equal(result.payload.error, 'LEAD_INGRESS_SOURCE_NOT_ALLOWED');
+    assert.equal(calls, 0);
+  });
+});
+
+test('lead ingress compiles canonical payload to LEAD_SUBMITTED and dispatches through governed runtime', async () => {
+  let received = null;
+  const app = createRuntimeApp({
+    token: 'runtime-secret',
+    leadIngressToken: 'lead-secret',
+    leadIngressSources: ['WORDPRESS'],
+    writerFactory: () => ({ audit: {} }),
+    eventDispatcherFactory: () => ({
+      async run(envelope) {
+        received = envelope;
+        return { state: 'COMMITTED' };
+      }
+    })
+  });
+
+  await withServer(app, async (base) => {
+    const result = await request(base, '/v1/ingress/leads', {
+      method: 'POST',
+      ingressToken: 'lead-secret',
+      body: sampleLeadIngress()
+    });
+
+    assert.equal(result.status, 200);
+    assert.equal(result.payload.state, 'COMMITTED');
+    assert.equal(received.event_type, 'LEAD_SUBMITTED');
+    assert.equal(received.source, 'WORDPRESS');
+    assert.equal(received.source_event_id, 'WP-FORM-1001');
+    assert.equal(received.payload.lead.record_origin, 'WORDPRESS');
+    assert.equal(received.payload.lead.acquisition_source, 'WORDPRESS');
+    assert.equal(received.payload.lead.first_contact_channel, 'WORDPRESS');
+    assert.equal(received.evidence[0].type, 'WEBSITE_FORM_ENTRY');
+    assert.equal(received.guards.spam, 'CLEAR');
+    assert.equal(result.payload.ingress.event_type, 'LEAD_SUBMITTED');
+  });
+});
+
+test('unscanned lead ingress defaults every safety guard to UNKNOWN rather than CLEAR', async () => {
+  let received = null;
+  const app = createRuntimeApp({
+    token: 'runtime-secret',
+    leadIngressToken: 'lead-secret',
+    leadIngressSources: 'WORDPRESS',
+    writerFactory: () => ({ audit: {} }),
+    eventDispatcherFactory: () => ({
+      async run(envelope) {
+        received = envelope;
+        return { state: 'REVIEW_REQUIRED' };
+      }
+    })
+  });
+
+  await withServer(app, async (base) => {
+    const body = sampleLeadIngress();
+    delete body.guards;
+    delete body.safety_attestation;
+
+    const result = await request(base, '/v1/ingress/leads', {
+      method: 'POST',
+      ingressToken: 'lead-secret',
+      body
+    });
+
+    assert.equal(result.status, 202);
+    assert.deepEqual(received.guards, {
+      spam: 'UNKNOWN',
+      phishing: 'UNKNOWN',
+      explicit_content: 'UNKNOWN',
+      malware: 'UNKNOWN',
+      irrelevant: 'UNKNOWN'
+    });
+  });
+});
+
+test('lead ingress requires immutable evidence and source event identity', async () => {
+  let calls = 0;
+  const app = createRuntimeApp({
+    token: 'runtime-secret',
+    leadIngressToken: 'lead-secret',
+    leadIngressSources: 'WORDPRESS',
+    writerFactory: () => ({ audit: {} }),
+    eventDispatcherFactory: () => ({
+      async run() {
+        calls += 1;
+        return { state: 'COMMITTED' };
+      }
+    })
+  });
+
+  await withServer(app, async (base) => {
+    const noEvidence = sampleLeadIngress({ evidence_ref: '' });
+    const first = await request(base, '/v1/ingress/leads', {
+      method: 'POST',
+      ingressToken: 'lead-secret',
+      body: noEvidence
+    });
+    assert.equal(first.status, 400);
+    assert.equal(first.payload.error, 'LEAD_INGRESS_EVIDENCE_REQUIRED');
+
+    const noEventId = sampleLeadIngress({ source_event_id: '' });
+    const second = await request(base, '/v1/ingress/leads', {
+      method: 'POST',
+      ingressToken: 'lead-secret',
+      body: noEventId
+    });
+    assert.equal(second.status, 400);
+    assert.equal(second.payload.error, 'LEAD_INGRESS_EVENT_ID_REQUIRED');
+    assert.equal(calls, 0);
+  });
+});
+
+
+test('lead ingress rejects invalid safety guard values before governed dispatch', async () => {
+  let calls = 0;
+  const app = createRuntimeApp({
+    token: 'runtime-secret',
+    leadIngressToken: 'lead-secret',
+    leadIngressSources: 'WORDPRESS',
+    writerFactory: () => ({ audit: {} }),
+    eventDispatcherFactory: () => ({
+      async run() {
+        calls += 1;
+        return { state: 'COMMITTED' };
+      }
+    })
+  });
+
+  await withServer(app, async (base) => {
+    const body = sampleLeadIngress({
+      guards: {
+        spam: 'SAFE_ENOUGH',
+        phishing: 'CLEAR',
+        explicit_content: 'CLEAR',
+        malware: 'CLEAR',
+        irrelevant: 'CLEAR'
+      }
+    });
+
+    const result = await request(base, '/v1/ingress/leads', {
+      method: 'POST',
+      ingressToken: 'lead-secret',
+      body
+    });
+
+    assert.equal(result.status, 400);
+    assert.equal(result.payload.error, 'INVALID_GUARD_VALUE');
+    assert.equal(calls, 0);
+  });
+});
+
+
+test('lead ingress rejects asserted safety decisions without scan provenance', async () => {
+  let calls = 0;
+  const app = createRuntimeApp({
+    token: 'runtime-secret',
+    leadIngressToken: 'lead-secret',
+    leadIngressSources: 'WORDPRESS',
+    writerFactory: () => ({ audit: {} }),
+    eventDispatcherFactory: () => ({
+      async run() {
+        calls += 1;
+        return { state: 'COMMITTED' };
+      }
+    })
+  });
+
+  await withServer(app, async (base) => {
+    const body = sampleLeadIngress();
+    delete body.safety_attestation;
+
+    const result = await request(base, '/v1/ingress/leads', {
+      method: 'POST',
+      ingressToken: 'lead-secret',
+      body
+    });
+
+    assert.equal(result.status, 400);
+    assert.equal(
+      result.payload.error,
+      'LEAD_INGRESS_GUARD_ATTESTATION_REQUIRED'
+    );
+    assert.equal(calls, 0);
+  });
+});
+
+test('lead ingress carries safety scan provenance into the EventEnvelope metadata', async () => {
+  let received = null;
+  const app = createRuntimeApp({
+    token: 'runtime-secret',
+    leadIngressToken: 'lead-secret',
+    leadIngressSources: 'WORDPRESS',
+    writerFactory: () => ({ audit: {} }),
+    eventDispatcherFactory: () => ({
+      async run(envelope) {
+        received = envelope;
+        return { state: 'COMMITTED' };
+      }
+    })
+  });
+
+  await withServer(app, async (base) => {
+    const result = await request(base, '/v1/ingress/leads', {
+      method: 'POST',
+      ingressToken: 'lead-secret',
+      body: sampleLeadIngress()
+    });
+
+    assert.equal(result.status, 200);
+    assert.deepEqual(received.metadata.safety_attestation, {
+      provider: 'TEST_SCANNER',
+      scan_id: 'SCAN-1001',
+      scanned_at: '2026-09-20T10:00:00.000Z'
+    });
   });
 });

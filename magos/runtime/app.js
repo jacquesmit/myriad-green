@@ -8,6 +8,10 @@ const {
   GovernedProcessorRegistry,
   UnsupportedGovernedEventTypeError
 } = require('../processor/processor-registry');
+const {
+  parseAllowedLeadSources,
+  createLeadEventFromIngress
+} = require('../adapters/lead-ingress');
 
 function constantTimeEqual(left, right) {
   const a = Buffer.from(String(left || ''));
@@ -37,6 +41,9 @@ function isPlausiblePlan(plan) {
 
 function createRuntimeApp({
   token = process.env.MAGOS_RUNTIME_TOKEN,
+  leadIngressToken = process.env.MAGOS_LEAD_INGRESS_TOKEN,
+  leadIngressSources =
+    process.env.MAGOS_LEAD_INGRESS_SOURCES || '',
   writerFactory = () => new TransactionWriter(),
   eventProcessorFactory = () => new EventProcessor(),
   eventDispatcherFactory = ({ writer }) =>
@@ -50,6 +57,7 @@ function createRuntimeApp({
   let writer;
   let eventProcessor;
   let eventDispatcher;
+  const allowedLeadSources = parseAllowedLeadSources(leadIngressSources);
 
   const getWriter = () => {
     if (!writer) writer = writerFactory();
@@ -87,6 +95,22 @@ function createRuntimeApp({
     });
   });
 
+  function requireLeadIngressAuth(req, res, next) {
+    if (!leadIngressToken || !allowedLeadSources.size) {
+      return res.status(503).json({
+        error: 'MAGOS_LEAD_INGRESS_NOT_CONFIGURED'
+      });
+    }
+
+    const supplied = req.get('x-magos-ingress-token') || '';
+    if (!constantTimeEqual(supplied, leadIngressToken)) {
+      return res.status(401).json({
+        error: 'UNAUTHORIZED'
+      });
+    }
+    return next();
+  }
+
   function requireRuntimeAuth(req, res, next) {
     if (!token) {
       return res.status(503).json({
@@ -102,6 +126,58 @@ function createRuntimeApp({
     }
     return next();
   }
+
+
+  app.post('/v1/ingress/leads', requireLeadIngressAuth, async (req, res) => {
+    try {
+      const requestedSource = String(req.body?.source || '').trim().toUpperCase();
+      if (!requestedSource || !allowedLeadSources.has(requestedSource)) {
+        return res.status(403).json({
+          error: 'LEAD_INGRESS_SOURCE_NOT_ALLOWED',
+          source: requestedSource
+        });
+      }
+
+      const envelope = createLeadEventFromIngress(req.body);
+      const result = await getEventDispatcher().run(envelope);
+      const status =
+        result.state === 'COMMITTED' ||
+        result.state === 'DUPLICATE' ||
+        result.state === 'IGNORED'
+          ? 200
+          : result.state === 'REVIEW_REQUIRED'
+            ? 202
+            : result.state === 'REJECTED'
+              ? 400
+              : result.state === 'RETRY_REQUIRED'
+                ? 409
+                : 500;
+
+      return res.status(status).json({
+        ...result,
+        ingress: {
+          source: envelope.source,
+          source_event_id: envelope.source_event_id,
+          event_id: envelope.event_id,
+          event_type: envelope.event_type
+        }
+      });
+    } catch (error) {
+      if (
+        String(error?.code || '').startsWith('LEAD_INGRESS_') ||
+        error?.code === 'INVALID_GUARD_VALUE'
+      ) {
+        return res.status(400).json({
+          error: error.code,
+          detail: error.message
+        });
+      }
+      return res.status(500).json({
+        error: 'LEAD_INGRESS_FAILURE',
+        detail: error.message
+      });
+    }
+  });
 
   app.post('/v1/probes/google-sheets', requireRuntimeAuth, async (req, res) => {
     try {
