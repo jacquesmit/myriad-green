@@ -389,6 +389,11 @@ function sampleLeadIngress(overrides = {}) {
       malware: 'CLEAR',
       irrelevant: 'CLEAR'
     },
+    safety_attestation: {
+      provider: 'TEST_SCANNER',
+      scan_id: 'SCAN-1001',
+      scanned_at: '2026-09-20T10:00:00Z'
+    },
     lead: {
       contact_name: 'Test Lead',
       contact_phone: '+27 82 555 0199',
@@ -533,6 +538,7 @@ test('unscanned lead ingress defaults every safety guard to UNKNOWN rather than 
   await withServer(app, async (base) => {
     const body = sampleLeadIngress();
     delete body.guards;
+    delete body.safety_attestation;
 
     const result = await request(base, '/v1/ingress/leads', {
       method: 'POST',
@@ -624,5 +630,71 @@ test('lead ingress rejects invalid safety guard values before governed dispatch'
     assert.equal(result.status, 400);
     assert.equal(result.payload.error, 'INVALID_GUARD_VALUE');
     assert.equal(calls, 0);
+  });
+});
+
+
+test('lead ingress rejects asserted safety decisions without scan provenance', async () => {
+  let calls = 0;
+  const app = createRuntimeApp({
+    token: 'runtime-secret',
+    leadIngressToken: 'lead-secret',
+    leadIngressSources: 'WORDPRESS',
+    writerFactory: () => ({ audit: {} }),
+    eventDispatcherFactory: () => ({
+      async run() {
+        calls += 1;
+        return { state: 'COMMITTED' };
+      }
+    })
+  });
+
+  await withServer(app, async (base) => {
+    const body = sampleLeadIngress();
+    delete body.safety_attestation;
+
+    const result = await request(base, '/v1/ingress/leads', {
+      method: 'POST',
+      ingressToken: 'lead-secret',
+      body
+    });
+
+    assert.equal(result.status, 400);
+    assert.equal(
+      result.payload.error,
+      'LEAD_INGRESS_GUARD_ATTESTATION_REQUIRED'
+    );
+    assert.equal(calls, 0);
+  });
+});
+
+test('lead ingress carries safety scan provenance into the EventEnvelope metadata', async () => {
+  let received = null;
+  const app = createRuntimeApp({
+    token: 'runtime-secret',
+    leadIngressToken: 'lead-secret',
+    leadIngressSources: 'WORDPRESS',
+    writerFactory: () => ({ audit: {} }),
+    eventDispatcherFactory: () => ({
+      async run(envelope) {
+        received = envelope;
+        return { state: 'COMMITTED' };
+      }
+    })
+  });
+
+  await withServer(app, async (base) => {
+    const result = await request(base, '/v1/ingress/leads', {
+      method: 'POST',
+      ingressToken: 'lead-secret',
+      body: sampleLeadIngress()
+    });
+
+    assert.equal(result.status, 200);
+    assert.deepEqual(received.metadata.safety_attestation, {
+      provider: 'TEST_SCANNER',
+      scan_id: 'SCAN-1001',
+      scanned_at: '2026-09-20T10:00:00.000Z'
+    });
   });
 });
