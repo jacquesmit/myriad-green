@@ -54,6 +54,27 @@ The writer now has a deployable service boundary under `runtime/`.
 
 The service refuses to start without `MAGOS_RUNTIME_TOKEN`. No channel adapter is enabled by this release.
 
+### P5 EventEnvelope + Decision Processor V1
+
+P5 introduces the common decision boundary that future Gmail, WhatsApp, WordPress, 00A, payment, supplier and website adapters must use.
+
+Flow:
+
+1. Adapter emits `EventEnvelope V1`.
+2. Processor validates the envelope and tri-state guards.
+3. Duplicate events are detected by the deterministic idempotency key boundary.
+4. Entity resolution must be deterministic or explicitly create-allowed.
+5. Ambiguity, conflict, missing evidence, unknown guards, or weak confidence routes to review.
+6. Only an exact approved match may produce `AUTO_WRITE`.
+7. `AUTO_WRITE` must carry a valid P3 `TransactionPlan` with the same idempotency key.
+8. P3 remains the only authoritative mutation path.
+
+Protected decision endpoint:
+
+- `POST /v1/events/decide` — bearer-authenticated; decision only, does not execute the writer.
+
+The first release deliberately keeps event decision and transaction execution separate until P4 live-host validation and source-specific planners are proven.
+
 ### MAGOS-DOC-EXTRACT-01
 
 MAGOS-DOC-EXTRACT-01 processes documents from the 00A intake boundary.

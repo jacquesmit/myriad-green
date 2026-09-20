@@ -3,6 +3,7 @@
 const crypto = require('crypto');
 const express = require('express');
 const { TransactionWriter } = require('../writer/transaction-writer');
+const { EventProcessor } = require('../processor/event-processor');
 
 function constantTimeEqual(left, right) {
   const a = Buffer.from(String(left || ''));
@@ -33,6 +34,7 @@ function isPlausiblePlan(plan) {
 function createRuntimeApp({
   token = process.env.MAGOS_RUNTIME_TOKEN,
   writerFactory = () => new TransactionWriter(),
+  eventProcessorFactory = () => new EventProcessor(),
   version = process.env.MAGOS_RUNTIME_VERSION || 'P2'
 } = {}) {
   const app = express();
@@ -40,9 +42,16 @@ function createRuntimeApp({
   app.use(express.json({ limit: '256kb' }));
 
   let writer;
+  let eventProcessor;
+
   const getWriter = () => {
     if (!writer) writer = writerFactory();
     return writer;
+  };
+
+  const getEventProcessor = () => {
+    if (!eventProcessor) eventProcessor = eventProcessorFactory();
+    return eventProcessor;
   };
 
   app.get('/healthz', (req, res) => {
@@ -94,6 +103,24 @@ function createRuntimeApp({
         status: 'not_ready',
         google_sheets: 'unreachable',
         error: error.message
+      });
+    }
+  });
+
+  app.post('/v1/events/decide', requireRuntimeAuth, async (req, res) => {
+    try {
+      const decision = await getEventProcessor().decide(req.body);
+      const status =
+        decision.decision === 'REJECTED'
+          ? 400
+          : decision.decision === 'REVIEW_REQUIRED'
+            ? 202
+            : 200;
+      return res.status(status).json(decision);
+    } catch (error) {
+      return res.status(500).json({
+        error: 'EVENT_PROCESSOR_FAILURE',
+        detail: error.message
       });
     }
   });

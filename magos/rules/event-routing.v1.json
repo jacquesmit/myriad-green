@@ -1,0 +1,45 @@
+{
+  "ruleVersion": "MAGOS-EVENT-PROCESSOR-01/V1",
+  "sourceOfTruthStandard": "MGOS_SOURCE_OF_TRUTH_STANDARD/V1.0",
+  "truthModeStandard": "MGOS_EVIDENCE_AND_TRUTHMODE_STANDARD/V1.0",
+  "defaultAutoWriteMinimumConfidence": 0.98,
+  "allowedExactMatchBases": [
+    "EXACT_ID",
+    "EXACT_REFERENCE",
+    "EXACT_EMAIL",
+    "EXACT_PHONE",
+    "EXACT_FILE_LINK",
+    "CREATE_ALLOWED"
+  ],
+  "blockedGuardValue": "BLOCK",
+  "unknownGuardValue": "UNKNOWN",
+  "unknownGuardRequiresReview": true,
+  "requireEvidenceForAutoWrite": true,
+  "eventTypes": {
+    "LEAD_SUBMITTED": {
+      "allowAutoWrite": true,
+      "allowCreateWithoutExistingMatch": true,
+      "minimumConfidence": 1.0
+    },
+    "PAYMENT_OBSERVED": {
+      "allowAutoWrite": true,
+      "allowCreateWithoutExistingMatch": false,
+      "minimumConfidence": 1.0
+    },
+    "DOCUMENT_RECEIVED": {
+      "allowAutoWrite": true,
+      "allowCreateWithoutExistingMatch": false,
+      "minimumConfidence": 0.98
+    },
+    "SUPPLIER_EMAIL_RECEIVED": {
+      "allowAutoWrite": true,
+      "allowCreateWithoutExistingMatch": false,
+      "minimumConfidence": 0.98
+    },
+    "MESSAGE_RECEIVED": {
+      "allowAutoWrite": false,
+      "allowCreateWithoutExistingMatch": false,
+      "minimumConfidence": 1.0
+    }
+  }
+}

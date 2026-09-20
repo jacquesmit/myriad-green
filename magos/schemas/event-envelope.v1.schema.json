@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://myriadgreen.co.za/magos/schemas/event-envelope.v1.schema.json",
+  "title": "MAGOS EventEnvelope V1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "event_id",
+    "source",
+    "source_event_id",
+    "event_type",
+    "occurred_at",
+    "received_at",
+    "idempotency_key",
+    "guards",
+    "evidence",
+    "payload"
+  ],
+  "properties": {
+    "schema_version": { "const": "MAGOS-EVENT-ENVELOPE/V1" },
+    "event_id": { "type": "string", "minLength": 1 },
+    "correlation_id": { "type": "string" },
+    "source": { "type": "string", "minLength": 1 },
+    "source_event_id": { "type": "string", "minLength": 1 },
+    "event_type": { "type": "string", "minLength": 1 },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "received_at": { "type": "string", "format": "date-time" },
+    "idempotency_key": { "type": "string", "minLength": 1 },
+    "actor": {
+      "type": ["object", "null"],
+      "properties": {
+        "type": { "type": "string" },
+        "id": { "type": ["string", "null"] },
+        "email": { "type": ["string", "null"] },
+        "phone": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "entity_hints": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "guards": {
+      "type": "object",
+      "required": ["spam", "phishing", "explicit_content", "malware", "irrelevant"],
+      "properties": {
+        "spam": { "enum": ["CLEAR", "BLOCK", "UNKNOWN"] },
+        "phishing": { "enum": ["CLEAR", "BLOCK", "UNKNOWN"] },
+        "explicit_content": { "enum": ["CLEAR", "BLOCK", "UNKNOWN"] },
+        "malware": { "enum": ["CLEAR", "BLOCK", "UNKNOWN"] },
+        "irrelevant": { "enum": ["CLEAR", "BLOCK", "UNKNOWN"] }
+      },
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "ref"],
+        "properties": {
+          "type": { "type": "string", "minLength": 1 },
+          "ref": { "type": "string", "minLength": 1 },
+          "hash": { "type": ["string", "null"] },
+          "label": { "type": ["string", "null"] }
+        },
+        "additionalProperties": true
+      }
+    },
+    "payload": { "type": "object" },
+    "metadata": { "type": "object" }
+  },
+  "additionalProperties": false
+}

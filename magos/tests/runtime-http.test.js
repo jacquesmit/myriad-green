@@ -161,3 +161,84 @@ test('credential probe calls the live audit adapter boundary', async () => {
     assert.equal(probed, true);
   });
 });
+
+
+function sampleEvent() {
+  return {
+    schema_version: 'MAGOS-EVENT-ENVELOPE/V1',
+    event_id: 'EVT-RUNTIME-1',
+    source: 'TEST',
+    source_event_id: 'SRC-EVT-1',
+    event_type: 'PAYMENT_OBSERVED',
+    occurred_at: '2026-09-20T10:00:00.000Z',
+    received_at: '2026-09-20T10:00:01.000Z',
+    idempotency_key: 'MAGOS_EVENT_V1|RUNTIME',
+    actor: null,
+    entity_hints: {},
+    guards: {
+      spam: 'CLEAR',
+      phishing: 'CLEAR',
+      explicit_content: 'CLEAR',
+      malware: 'CLEAR',
+      irrelevant: 'CLEAR'
+    },
+    evidence: [{ type: 'TEST', ref: 'test://event/1' }],
+    payload: {},
+    metadata: {}
+  };
+}
+
+test('event decision endpoint is bearer-authenticated', async () => {
+  const app = createRuntimeApp({
+    token: 'secret-token',
+    eventProcessorFactory: () => ({
+      decide: async () => ({
+        decision: 'REVIEW_REQUIRED',
+        reason_code: 'TEST'
+      })
+    })
+  });
+
+  await withServer(app, async (base) => {
+    const missing = await request(base, '/v1/events/decide', {
+      method: 'POST',
+      body: sampleEvent()
+    });
+    assert.equal(missing.status, 401);
+  });
+});
+
+test('event decision endpoint returns processor decision without executing writer', async () => {
+  let writerCalls = 0;
+  const app = createRuntimeApp({
+    token: 'secret-token',
+    writerFactory: () => ({
+      execute: async () => {
+        writerCalls++;
+        return { state: 'COMMITTED' };
+      }
+    }),
+    eventProcessorFactory: () => ({
+      decide: async (envelope) => ({
+        schema_version: 'MAGOS-DECISION/V1',
+        event_id: envelope.event_id,
+        idempotency_key: envelope.idempotency_key,
+        decision: 'REVIEW_REQUIRED',
+        reason_code: 'NO_DETERMINISTIC_MATCH',
+        rule_version: 'MAGOS-EVENT-PROCESSOR-01/V1'
+      })
+    })
+  });
+
+  await withServer(app, async (base) => {
+    const result = await request(base, '/v1/events/decide', {
+      method: 'POST',
+      token: 'secret-token',
+      body: sampleEvent()
+    });
+
+    assert.equal(result.status, 202);
+    assert.equal(result.payload.decision, 'REVIEW_REQUIRED');
+    assert.equal(writerCalls, 0);
+  });
+});
