@@ -108,11 +108,11 @@ P5N never converts missing do-not-contact information into a false negative.
 
 ## Runtime registration
 
-LEAD_SUBMITTED must remain absent from the strict GovernedProcessorRegistry until this processor passes its test suite.
+The P5N acceptance suite passed before registration.
 
-After code acceptance, the registry may add LEAD_SUBMITTED as an explicit fifth governed type.
+LEAD_SUBMITTED is now an explicit fifth governed type in GovernedProcessorRegistry.
 
-That code registration still does not activate live source adapters.
+This code registration does not activate live source adapters. Legacy MGOS Intake & Sync Watch remains active until P4 hosted validation plus lead-specific live parity/read-back acceptance pass.
 
 ## Production acceptance
 
