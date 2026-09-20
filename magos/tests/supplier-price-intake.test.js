@@ -293,3 +293,47 @@ test('existing supplier price for same source line is not created again', async 
     false
   );
 });
+
+
+test('missing VAT rate and unrecognized VAT basis blocks price promotion', async () => {
+  const env = event({
+    canonical_part_id: 'PART-1',
+    vat_rate: null
+  }, {
+    vat_basis: ''
+  });
+
+  const decision = await createSupplierPriceProcessor({
+    lookupService: baseLookup(),
+    now: () => new Date('2026-09-20T10:01:00Z')
+  }).decide(env);
+
+  assert.equal(decision.decision, 'AUTO_WRITE');
+  assert.equal(decision.post_commit_review.required, true);
+  assert.match(decision.post_commit_review.reason, /VAT-basis evidence/);
+  assert.equal(
+    decision.transaction_plan.writes.some(x => x.sheet === 'Supplier_Prices'),
+    false
+  );
+});
+
+test('recognized VAT basis may supply exact VAT rate when line rate is absent', async () => {
+  const env = event({
+    canonical_part_id: 'PART-1',
+    vat_rate: null
+  }, {
+    vat_basis: 'VAT_15_PERCENT'
+  });
+
+  const match = await new SupplierPriceResolver({
+    lookupService: baseLookup()
+  }).resolve(env);
+  assert.equal(match.price_promotion_allowed, true);
+
+  const plan = planSupplierPriceObservation(env, match, {
+    now: () => new Date('2026-09-20T10:01:00Z')
+  });
+  const price = plan.writes.find(x => x.sheet === 'Supplier_Prices');
+  assert.equal(price.values.vat_rate, 0.15);
+  assert.equal(price.values.unit_price_inc_vat, 115);
+});
