@@ -68,7 +68,9 @@ class TransactionWriter {
   }
 
   async registryRows() {
-    return this.audit.readObjects('Writer_Schema_Registry', { maxRows: 300 });
+    // Use AuditLedger's full default registry capacity. The live registry now exceeds
+    // 300 rows; truncating here makes valid later schema rows invisible to P3.
+    return this.audit.readObjects('Writer_Schema_Registry');
   }
 
   requiredHeadersForOperation(op) {
