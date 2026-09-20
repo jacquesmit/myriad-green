@@ -133,3 +133,37 @@ test('controlled line-to-part map may carry an exact part hint for later verific
     'PART-1'
   );
 });
+
+
+test('supplier document without immutable evidence reference emits no pricing events', () => {
+  const doc = document({
+    drive_file_id: null
+  });
+  const result = buildSupplierPriceEventsFromDocument(doc, {
+    supplierId: 'SUP-AJ',
+    evidenceLink: ''
+  });
+
+  assert.equal(result.status, 'REVIEW_REQUIRED');
+  assert.equal(result.reason_code, 'SUPPLIER_EVIDENCE_REFERENCE_REQUIRED');
+  assert.deepEqual(result.events, []);
+});
+
+test('ambiguous source date is preserved as source data but event timestamp remains valid', () => {
+  const doc = document();
+  doc.normalized.document_date = '20/09/2026';
+
+  const result = buildSupplierPriceEventsFromDocument(doc, {
+    supplierId: 'SUP-AJ'
+  });
+
+  assert.equal(result.status, 'READY');
+  assert.equal(
+    result.events[0].payload.supplier_price_observation.quote.quote_date,
+    '20/09/2026'
+  );
+  assert.equal(
+    Number.isNaN(new Date(result.events[0].occurred_at).getTime()),
+    false
+  );
+});
