@@ -217,3 +217,39 @@ test('P5O rejects unsupported arbitrary source metadata', () => {
     error => error.code === 'LEAD_INGRESS_SOURCE_METADATA_UNSUPPORTED'
   );
 });
+
+
+test('Fluent adapter rejects whitespace provider IDs and non-HTTPS evidence', () => {
+  assert.throws(
+    () => createFluentLeadIngressPayload({
+      form_id: '   ',
+      entry_id: '1',
+      evidence_ref: 'https://example.invalid/1',
+      fields: {},
+      fieldMap: {}
+    }),
+    error => error.code === 'FLUENT_FORM_ID_REQUIRED'
+  );
+
+  assert.throws(
+    () => createFluentLeadIngressPayload({
+      form_id: '17',
+      entry_id: '   ',
+      evidence_ref: 'https://example.invalid/1',
+      fields: {},
+      fieldMap: {}
+    }),
+    error => error.code === 'FLUENT_ENTRY_ID_REQUIRED'
+  );
+
+  assert.throws(
+    () => createFluentLeadIngressPayload({
+      form_id: '17',
+      entry_id: '1',
+      evidence_ref: 'file:///tmp/entry.json',
+      fields: {},
+      fieldMap: {}
+    }),
+    error => error.code === 'FLUENT_EVIDENCE_INVALID'
+  );
+});
