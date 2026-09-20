@@ -2,10 +2,11 @@
 
 const crypto = require('crypto');
 const {
-  createIfAbsent,
+  recordImmutableEvent,
   allocatePayment,
   composeTransactionPlan
 } = require('../writer/operations');
+const { CLEARANCE_AUTHORITIES } = require('./payment-observation');
 
 function required(value, name) {
   if (value === undefined || value === null || value === '') {
@@ -14,132 +15,171 @@ function required(value, name) {
   return value;
 }
 
-function safeId(value) {
-  return String(value).replace(/[^A-Za-z0-9_-]/g, '').slice(0, 80);
+function safeToken(value) {
+  return String(value || '')
+    .replace(/[^A-Za-z0-9_-]/g, '')
+    .slice(0, 80);
 }
 
-function paymentEventId(envelope) {
-  const payment = envelope.payload.payment || {};
-  if (payment.provider_transaction_id) {
-    return 'PAYEVT-' + safeId(payment.provider_transaction_id);
+function deterministicPaymentEventId(envelope) {
+  const p = envelope.payload.payment;
+  if (p.provider_transaction_id) {
+    return 'PAYEVT-' + safeToken(p.provider_transaction_id);
   }
-  const digest = crypto
+  const hash = crypto
     .createHash('sha256')
-    .update(envelope.idempotency_key)
+    .update([
+      envelope.source,
+      envelope.source_event_id,
+      p.event_date,
+      Number(p.amount).toFixed(2),
+      p.payer_reference || ''
+    ].join('|'))
     .digest('hex')
-    .slice(0, 20)
-    .toUpperCase();
-  return 'PAYEVT-PROOF-' + digest;
+    .slice(0, 24);
+  return 'PAYEVT-' + hash;
 }
 
-function allocationId(paymentEventIdValue) {
-  return 'ALLOC-' + safeId(paymentEventIdValue) + '-01';
-}
-
-function buildPaymentEventValues(envelope, match, now = new Date()) {
-  const payment = envelope.payload.payment || {};
-  const observation = String(payment.observation_type || '').toUpperCase();
+function eventValues(envelope, match, now) {
+  const p = envelope.payload.payment;
   const ids = match.canonical_ids || {};
-  const id = paymentEventId(envelope);
+  const cleared = CLEARANCE_AUTHORITIES.has(p.clearance_authority);
 
   return {
-    payment_event_id: id,
-    control_id: ids.control_id || '',
-    event_type: observation === 'CLEARED'
-      ? 'PAYMENT_CLEARED'
-      : 'PAYMENT_PROOF_RECEIVED',
-    event_date: required(payment.event_date, 'payment.event_date'),
-    amount: String(required(payment.amount, 'payment.amount')),
-    currency: payment.currency || 'ZAR',
-    payer_reference: payment.payer_reference || '',
-    provider_transaction_id: payment.provider_transaction_id || '',
-    clearance_state: observation === 'CLEARED' ? 'CLEARED' : 'PROOF_RECEIVED',
-    crm_id: ids.crm_id || '',
-    opportunity_id: ids.opportunity_id || '',
-    invoice_id: ids.invoice_id || '',
-    job_id: ids.job_id || '',
-    parent_payment_event_id: payment.parent_payment_event_id || '',
+    payment_event_id: deterministicPaymentEventId(envelope),
+    control_id: ids.control_id || p.control_id || '',
+    event_type: cleared ? 'PAYMENT_CLEARED' : 'PAYMENT_PROOF_RECEIVED',
+    event_date: p.event_date,
+    amount: Number(p.amount),
+    currency: p.currency || 'ZAR',
+    payer_reference: p.payer_reference || '',
+    provider_transaction_id: p.provider_transaction_id || '',
+    clearance_state: cleared ? 'CLEARED' : 'PROOF_RECEIVED',
+    crm_id: ids.crm_id || p.crm_id || '',
+    opportunity_id: ids.opportunity_id || p.opportunity_id || '',
+    invoice_id: ids.invoice_id || p.invoice_id || '',
+    job_id: ids.job_id || p.job_id || '',
+    parent_payment_event_id: '',
     evidence_link: envelope.evidence?.[0]?.ref || '',
     idempotency_key: envelope.idempotency_key,
     source_system: envelope.source,
     created_at: now.toISOString(),
-    created_by: 'MAGOS-P5H',
-    notes: observation === 'CLEARED'
-      ? 'Cleared payment record from approved clearance evidence and exact canonical match.'
-      : 'Payment proof received. Clearance remains unproven until separate bank/gateway authority is captured.'
+    created_by: 'MAGOS P5H',
+    notes: [
+      'Payment observation recorded from immutable source evidence.',
+      'clearance_authority=' + p.clearance_authority,
+      p.notes || ''
+    ].filter(Boolean).join(' ')
   };
 }
 
-function buildAllocationValues(envelope, match, paymentEventIdValue) {
-  const payment = envelope.payload.payment || {};
+function allocationValues(envelope, match, paymentEventId, now) {
+  const p = envelope.payload.payment;
   const ids = match.canonical_ids || {};
-  const invoiceId = required(ids.invoice_id, 'canonical invoice_id for allocation');
-  const amount = String(required(payment.amount, 'payment.amount'));
+  const targetSpec = match.allocation_target || null;
+  if (!targetSpec) return null;
+
+  const controlId = ids.control_id || p.control_id || '';
+  const invoiceId =
+    targetSpec.type === 'INVOICE'
+      ? targetSpec.id
+      : (ids.invoice_id || p.invoice_id || '');
+  const depositId =
+    targetSpec.type === 'DEPOSIT'
+      ? targetSpec.id
+      : '';
+
+  const target = targetSpec.id;
+  const allocationType =
+    p.allocation_type ||
+    (targetSpec.type === 'DEPOSIT' ? 'DEPOSIT' : 'INVOICE');
+  const allocationKey =
+    'ALLOC|' + paymentEventId + '|' + target + '|' +
+    Number(p.amount).toFixed(2);
 
   return {
-    allocation_id: allocationId(paymentEventIdValue),
-    payment_event_id: paymentEventIdValue,
-    control_id: ids.control_id || '',
+    allocation_id:
+      'ALLOC-' +
+      crypto.createHash('sha256').update(allocationKey).digest('hex').slice(0, 24),
+    payment_event_id: paymentEventId,
+    control_id: controlId,
     invoice_id: invoiceId,
-    deposit_id: ids.deposit_id || '',
-    allocation_type: ids.deposit_id ? 'DEPOSIT' : 'INVOICE',
-    amount,
+    deposit_id: depositId,
+    allocation_type: allocationType,
+    amount: Number(p.amount),
     allocation_state: 'CLEARED',
-    allocated_at: payment.event_date,
+    allocated_at: now.toISOString(),
     evidence_link: envelope.evidence?.[0]?.ref || '',
-    idempotency_key: 'ALLOC|' + paymentEventIdValue + '|' + invoiceId + '|' + amount,
-    created_by: 'MAGOS-P5H',
-    notes: 'Exact allocation from cleared payment record. Payment Control remains derived and is not directly mutated here.'
+    idempotency_key: allocationKey,
+    created_by: 'MAGOS P5H',
+    notes: 'Created only from a CLEARED parent payment event with exact canonical target.'
   };
 }
 
 function planPaymentObservation(envelope, match, { now = () => new Date() } = {}) {
-  const payment = envelope.payload.payment || {};
-  const observation = String(payment.observation_type || '').toUpperCase();
-  const eventValues = buildPaymentEventValues(envelope, match, now());
+  const p = envelope?.payload?.payment || {};
+  required(p.amount, 'payment.amount');
+  required(p.event_date, 'payment.event_date');
+  required(p.clearance_authority, 'payment.clearance_authority');
 
+  const at = now();
+  const payment = eventValues(envelope, match, at);
   const writes = [
-    createIfAbsent({
+    recordImmutableEvent({
       store: 'commercial',
       workbook_role: 'COMMERCIAL',
       sheet: 'Payment_Events',
       key: {
         header: 'payment_event_id',
-        value: eventValues.payment_event_id
+        value: payment.payment_event_id
       },
       authority: 'AUTHORITATIVE',
       entity_type: 'Payment event',
-      intent: 'RECORD_PAYMENT_OBSERVATION',
-      values: eventValues
+      intent: 'RECORD_PAYMENT_EVENT',
+      values: payment,
+      required_headers: [
+        'payment_event_id',
+        'event_type',
+        'event_date',
+        'amount',
+        'currency',
+        'clearance_state',
+        'idempotency_key',
+        'source_system'
+      ]
     })
   ];
 
-  if (observation === 'CLEARED') {
-    if (!match.canonical_ids?.invoice_id) {
-      throw new Error('CLEARED payment requires exact invoice_id before allocation');
-    }
-
-    const allocValues = buildAllocationValues(
+  if (payment.clearance_state === 'CLEARED') {
+    const allocation = allocationValues(
       envelope,
       match,
-      eventValues.payment_event_id
+      payment.payment_event_id,
+      at
     );
-
-    writes.push(
-      allocatePayment({
+    if (allocation) {
+      writes.push(allocatePayment({
         store: 'commercial',
         workbook_role: 'COMMERCIAL',
         sheet: 'Payment_Allocations',
         key: {
           header: 'allocation_id',
-          value: allocValues.allocation_id
+          value: allocation.allocation_id
         },
         authority: 'AUTHORITATIVE',
         entity_type: 'Payment allocation',
         intent: 'ALLOCATE_CLEARED_PAYMENT',
-        values: allocValues
-      })
-    );
+        values: allocation,
+        required_headers: [
+          'allocation_id',
+          'payment_event_id',
+          'allocation_type',
+          'amount',
+          'allocation_state',
+          'idempotency_key'
+        ]
+      }));
+    }
   }
 
   return composeTransactionPlan({
@@ -156,8 +196,7 @@ function planPaymentObservation(envelope, match, { now = () => new Date() } = {}
 
 module.exports = {
   planPaymentObservation,
-  buildPaymentEventValues,
-  buildAllocationValues,
-  paymentEventId,
-  allocationId
+  deterministicPaymentEventId,
+  eventValues,
+  allocationValues
 };
