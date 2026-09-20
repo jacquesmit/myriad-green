@@ -32,6 +32,7 @@ class GovernedEventRunner {
     this.retryController =
       retryController ||
       new RetryController({ ledger: this.observer.ledger });
+    this.rawProcessor = processor;
 
     this.processor = new ObservedEventProcessor({
       processor,
@@ -44,7 +45,144 @@ class GovernedEventRunner {
   }
 
   async run(envelope) {
+    const current = await this.observer.ensure(envelope);
+
+    if (current.event_state === 'RETRY_REQUIRED') {
+      return this.retry(envelope);
+    }
+
+    if ([
+      'COMMITTED',
+      'DUPLICATE',
+      'REJECTED',
+      'IGNORED',
+      'FAILED'
+    ].includes(current.event_state)) {
+      return {
+        state: current.event_state,
+        terminal_no_op: true,
+        observation: current
+      };
+    }
+
+    if (current.event_state === 'REVIEW_REQUIRED') {
+      return {
+        state: 'REVIEW_REQUIRED',
+        terminal_no_op: true,
+        observation: current
+      };
+    }
+
+    if (current.event_state !== 'RECEIVED') {
+      throw new Error(
+        'Cannot start normal decision flow from event_state=' +
+        current.event_state
+      );
+    }
+
     const decision = await this.processor.decide(envelope);
+    return this.executeDecision(envelope, decision);
+  }
+
+  async retry(envelope) {
+    const current = await this.observer.ensure(envelope);
+    if (current.event_state !== 'RETRY_REQUIRED') {
+      throw new Error(
+        'Retry requires event_state=RETRY_REQUIRED; actual=' +
+        current.event_state
+      );
+    }
+
+    const decision = await this.rawProcessor.decide(envelope);
+
+    if (decision.decision !== 'AUTO_WRITE' || !decision.transaction_plan) {
+      await this.observer.transition(envelope, 'REVIEW_REQUIRED', {
+        stage: 'RETRY_REDECISION',
+        reasonCode: 'RETRY_REDECISION_NOT_AUTOWRITE',
+        reason:
+          'Re-resolving the original event no longer produced an AUTO_WRITE plan. Manual review is required before any further mutation.'
+      });
+
+      const reviewDecision = {
+        schema_version: decision.schema_version || 'MAGOS-DECISION/V1',
+        event_id: envelope.event_id,
+        idempotency_key: envelope.idempotency_key,
+        decision: 'REVIEW_REQUIRED',
+        reason_code: 'RETRY_REDECISION_NOT_AUTOWRITE',
+        reason:
+          'Retry re-decision returned ' +
+          String(decision.decision || 'UNKNOWN') +
+          '; preserve original event lineage and review.',
+        rule_version:
+          decision.rule_version || 'MAGOS-EVENT-PROCESSOR-01/V1',
+        match: decision.match || null
+      };
+      const review = await this.reviewManager.open(
+        envelope,
+        reviewDecision
+      );
+
+      return {
+        state: 'REVIEW_REQUIRED',
+        decision,
+        review
+      };
+    }
+
+    if (
+      decision.idempotency_key &&
+      decision.idempotency_key !== envelope.idempotency_key
+    ) {
+      throw new Error('Retry changed event idempotency key');
+    }
+
+    return this.executeDecision(envelope, {
+      ...decision,
+      retried_event: true
+    });
+  }
+
+  async resumeApproved(envelope, {
+    approvedMatch,
+    planner,
+    duplicateChecker = async () => false
+  } = {}) {
+    const current = await this.observer.ensure(envelope);
+    if (current.event_state !== 'REVIEW_REQUIRED') {
+      throw new Error(
+        'Approved review resume requires event_state=REVIEW_REQUIRED; actual=' +
+        current.event_state
+      );
+    }
+
+    const decision = await this.reviewManager.resume(envelope, {
+      approvedMatch,
+      planner,
+      duplicateChecker
+    });
+
+    if (decision.decision !== 'AUTO_WRITE' || !decision.transaction_plan) {
+      return {
+        state: 'REVIEW_REQUIRED',
+        decision
+      };
+    }
+
+    await this.observer.transition(envelope, 'DECIDED', {
+      stage: 'REVIEW_RESUME',
+      reasonCode: 'APPROVED_REVIEW_MATCH',
+      reason: 'Approved exact match restored deterministic event resolution.',
+      related: decision.match?.canonical_ids || {}
+    });
+    await this.observer.transition(envelope, 'PLANNED', {
+      stage: 'REVIEW_RESUME',
+      reasonCode: 'TRANSACTION_PLAN_READY',
+      related: {
+        transaction_event_type:
+          decision.transaction_plan?.event_type || ''
+      }
+    });
+
     return this.executeDecision(envelope, decision);
   }
 
