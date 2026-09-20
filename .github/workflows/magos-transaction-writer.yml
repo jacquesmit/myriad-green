@@ -1,0 +1,22 @@
+name: MAGOS Transaction Writer CI
+
+on:
+  pull_request:
+    paths:
+      - 'magos/writer/**'
+      - 'magos/adapters/audit-ledger.js'
+      - 'magos/schemas/transaction-plan.v1.schema.json'
+      - 'magos/tests/transaction-writer.test.js'
+      - '.github/workflows/magos-transaction-writer.yml'
+  workflow_dispatch:
+
+jobs:
+  writer-unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Transaction writer unit acceptance
+        run: node --test magos/tests/transaction-writer.test.js
