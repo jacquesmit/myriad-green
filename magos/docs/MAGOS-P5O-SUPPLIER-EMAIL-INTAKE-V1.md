@@ -97,6 +97,8 @@ P5O does not:
 
 ## Runtime registration
 
-SUPPLIER_EMAIL_RECEIVED stays outside the strict GovernedProcessorRegistry until the P5O acceptance suite passes.
+The P5O acceptance suite passed before registration.
 
-After code acceptance it may be registered explicitly. That code registration still does not connect Gmail or enable provider actions.
+SUPPLIER_EMAIL_RECEIVED is now an explicit governed type in GovernedProcessorRegistry.
+
+This code registration still does not connect Gmail, download attachments, send replies, or retire the legacy intake watcher. Production remains blocked by P4 plus source-specific Gmail parity acceptance.
