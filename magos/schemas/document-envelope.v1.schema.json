@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://myriadgreen.co.za/magos/schemas/document-envelope.v1.schema.json",
+  "title": "MAGOS Document Envelope V1",
+  "type": "object",
+  "required": [
+    "document_id",
+    "file_hash",
+    "document_type",
+    "classification_confidence",
+    "extraction_confidence",
+    "extraction_method",
+    "review_required",
+    "normalized",
+    "idempotency_key",
+    "rule_version"
+  ],
+  "properties": {
+    "document_id": { "type": "string", "minLength": 1 },
+    "source_event_id": { "type": ["string", "null"] },
+    "drive_file_id": { "type": ["string", "null"] },
+    "file_name": { "type": "string" },
+    "mime_type": { "type": "string" },
+    "file_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "document_type": { "type": "string" },
+    "classification_confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "extraction_confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "extraction_method": { "type": "string" },
+    "extraction_quality": { "type": "object" },
+    "paid_actions": { "type": "array", "items": { "type": "string" } },
+    "review_required": { "type": "boolean" },
+    "normalized": { "type": "object" },
+    "idempotency_key": { "type": "string", "minLength": 1 },
+    "rule_version": { "const": "MAGOS-DOC-EXTRACT-01/V1" }
+  },
+  "additionalProperties": true
+}
