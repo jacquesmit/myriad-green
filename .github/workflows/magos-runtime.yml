@@ -42,7 +42,7 @@ jobs:
           cache-dependency-path: magos/package.json
       - run: npm install --no-audit --no-fund
       - run: node --check app.js
-      - run: node --test tests/runtime-http.test.js tests/transaction-writer.test.js
+      - run: node --test tests/runtime-http.test.js tests/transaction-writer.test.js tests/fluent-forms-adapter.test.js
 
   container-smoke:
     runs-on: ubuntu-latest
