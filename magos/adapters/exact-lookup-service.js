@@ -15,6 +15,8 @@ const ENTITY_LOCATORS = {
   Quote: { store: 'commercial', sheet: 'Quotes', key: 'quote_id' },
   Invoice: { store: 'commercial', sheet: 'Invoices', key: 'invoice_id' },
   Payment: { store: 'commercial', sheet: 'Payment_Events', key: 'payment_event_id' },
+  PaymentControl: { store: 'commercial', sheet: 'Payment Control', key: 'Control ID' },
+  Deposit: { store: 'commercial', sheet: 'Payment Control', key: 'deposit_id' },
   Supplier: { store: 'supplier', sheet: 'Suppliers', key: 'supplier_id' },
   Evidence: { store: 'crm', sheet: 'Evidence_Index', key: 'drive_file_id' }
 };
