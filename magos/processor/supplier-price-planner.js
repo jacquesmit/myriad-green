@@ -47,14 +47,30 @@ function deterministicPriceRecordId(obs, partId) {
   ].join('-');
 }
 
-function parseVatRate(value) {
-  if (value === undefined || value === null || value === '') return 0;
-  const raw = String(value).trim();
-  const n = Number(raw.replace('%', ''));
-  if (!Number.isFinite(n) || n < 0) {
-    throw new Error('vat_rate must be a non-negative number or percentage');
+function parseVatRate(value, basis = '') {
+  if (value !== undefined && value !== null && value !== '') {
+    const raw = String(value).trim();
+    const n = Number(raw.replace('%', ''));
+    if (!Number.isFinite(n) || n < 0) {
+      throw new Error('vat_rate must be a non-negative number or percentage');
+    }
+    return raw.includes('%') || n > 1 ? n / 100 : n;
   }
-  return raw.includes('%') || n > 1 ? n / 100 : n;
+
+  const normalizedBasis = String(basis || '').trim().toUpperCase();
+  if (
+    normalizedBasis === 'VAT_15_PERCENT' ||
+    normalizedBasis === 'VAT15' ||
+    normalizedBasis === 'VAT_15'
+  ) return 0.15;
+  if (
+    normalizedBasis === 'VAT_0_PERCENT' ||
+    normalizedBasis === 'ZERO_RATED' ||
+    normalizedBasis === 'VAT_EXEMPT' ||
+    normalizedBasis === 'EXEMPT'
+  ) return 0;
+
+  throw new Error('Explicit VAT rate or recognized VAT basis is required');
 }
 
 function rounded(value) {
@@ -121,7 +137,10 @@ function priceValues(obs, match, quoteId) {
   const partId = required(match.part?.part_id, 'exact canonical part_id');
   const quantity = Number(required(l.quantity, 'line.quantity'));
   const unitEx = Number(required(l.unit_price_ex_vat, 'line.unit_price_ex_vat'));
-  const vatRate = parseVatRate(l.vat_rate);
+  const vatRate = parseVatRate(
+    l.vat_rate,
+    l.source_price_vat_basis || q.vat_basis
+  );
   const lineEx = l.line_total_ex_vat === null
     ? rounded(quantity * unitEx)
     : Number(l.line_total_ex_vat);

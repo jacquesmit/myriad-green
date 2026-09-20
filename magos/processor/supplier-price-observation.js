@@ -25,6 +25,14 @@ function supplierSourceLineId(source, sourceEventId, lineNo) {
   return [String(source), String(sourceEventId), padLine(lineNo)].join('|');
 }
 
+function eventOccurredAt(sourceDate, fallback) {
+  if (sourceDate) {
+    const parsed = new Date(sourceDate);
+    if (!Number.isNaN(parsed.getTime())) return parsed;
+  }
+  return fallback instanceof Date ? fallback : new Date(fallback);
+}
+
 function normalizeSupplierPriceObservation(input = {}) {
   const source = required(input.source, 'source');
   const sourceEventId = required(input.source_event_id, 'source_event_id');
@@ -91,8 +99,7 @@ function createSupplierPriceObservedEvent(input = {}, {
     event_type: 'SUPPLIER_PRICE_OBSERVED',
     occurred_at:
       input.occurred_at ||
-      normalized.quote.quote_date ||
-      receivedAt,
+      eventOccurredAt(normalized.quote.quote_date, receivedAt),
     received_at: input.received_at || receivedAt,
     ...(input.correlation_id
       ? { correlation_id: String(input.correlation_id) }
@@ -128,5 +135,6 @@ module.exports = {
   createSupplierPriceObservedEvent,
   supplierSourceLineId,
   numberOrNull,
-  padLine
+  padLine,
+  eventOccurredAt
 };
