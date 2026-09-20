@@ -50,12 +50,51 @@ class AuditLedger {
     return { headers, map };
   }
 
-  async getRows(sheetName, endColumn) {
-    const response = await this.sheets.spreadsheets.values.get({
+  quoteSheetName(sheetName) {
+    return "'" + sheetName.replace(/'/g, "''") + "'";
+  }
+
+  async resolveRowByKey(sheetName, keyHeader, keyValue) {
+    const { headers, map } = await this.getHeaders(sheetName);
+    const keyIndex = map[keyHeader];
+    if (keyIndex === undefined) {
+      throw new Error('Missing header ' + keyHeader + ' on ' + sheetName);
+    }
+
+    const keyColumn = columnLetter(keyIndex);
+    const quoted = this.quoteSheetName(sheetName);
+    const keyResponse = await this.sheets.spreadsheets.values.get({
       spreadsheetId: this.spreadsheetId,
-      range: "'" + sheetName.replace(/'/g, "''") + "'!A:" + endColumn
+      range: quoted + '!' + keyColumn + '2:' + keyColumn
     });
-    return response.data.values || [];
+
+    const keyRows = keyResponse.data.values || [];
+    const matches = [];
+    keyRows.forEach((row, index) => {
+      if ((row?.[0] ?? '') === keyValue) matches.push(index + 2);
+    });
+
+    if (matches.length > 1) {
+      throw new Error(
+        'Duplicate key ' + keyHeader + '=' + keyValue +
+        ' on ' + sheetName + ' rows ' + matches.join(',')
+      );
+    }
+    if (matches.length === 0) return null;
+
+    const rowNumber = matches[0];
+    const endColumn = columnLetter(headers.length - 1);
+    const rowResponse = await this.sheets.spreadsheets.values.get({
+      spreadsheetId: this.spreadsheetId,
+      range: quoted + '!A' + rowNumber + ':' + endColumn + rowNumber
+    });
+    const row = rowResponse.data.values?.[0] || [];
+    const object = {};
+    headers.forEach((header, index) => {
+      object[header] = row[index] ?? '';
+    });
+
+    return { rowNumber, object, headers, endColumn };
   }
 
   async appendObject(sheetName, object) {
@@ -72,21 +111,22 @@ class AuditLedger {
   }
 
   async updateObjectByKey(sheetName, keyHeader, keyValue, changes) {
-    const { headers, map } = await this.getHeaders(sheetName);
-    if (map[keyHeader] === undefined) throw new Error('Missing header ' + keyHeader + ' on ' + sheetName);
-    const endColumn = columnLetter(headers.length - 1);
-    const rows = await this.getRows(sheetName, endColumn);
-    const rowIndex = rows.findIndex((row, index) => index > 0 && row[map[keyHeader]] === keyValue);
-    if (rowIndex < 1) return false;
+    // Resolve the current key column and exact row immediately before mutation.
+    // This avoids cached offsets and wide-sheet scans.
+    const resolved = await this.resolveRowByKey(sheetName, keyHeader, keyValue);
+    if (!resolved) return false;
 
-    const existing = rows[rowIndex] || [];
-    const replacement = headers.map((header, index) =>
-      Object.prototype.hasOwnProperty.call(changes, header) ? changes[header] : (existing[index] ?? '')
+    const replacement = resolved.headers.map((header) =>
+      Object.prototype.hasOwnProperty.call(changes, header)
+        ? changes[header]
+        : (resolved.object[header] ?? '')
     );
 
     await this.sheets.spreadsheets.values.update({
       spreadsheetId: this.spreadsheetId,
-      range: "'" + sheetName.replace(/'/g, "''") + "'!A" + (rowIndex + 1) + ':' + endColumn + (rowIndex + 1),
+      range:
+        this.quoteSheetName(sheetName) +
+        '!A' + resolved.rowNumber + ':' + resolved.endColumn + resolved.rowNumber,
       valueInputOption: 'USER_ENTERED',
       requestBody: { values: [replacement] }
     });
@@ -94,18 +134,9 @@ class AuditLedger {
   }
 
   async findByKey(sheetName, keyHeader, keyValue) {
-    const { headers, map } = await this.getHeaders(sheetName);
-    if (map[keyHeader] === undefined) throw new Error('Missing header ' + keyHeader + ' on ' + sheetName);
-    const endColumn = columnLetter(headers.length - 1);
-    const rows = await this.getRows(sheetName, endColumn);
-    for (let i = 1; i < rows.length; i++) {
-      if (rows[i][map[keyHeader]] === keyValue) {
-        const object = {};
-        headers.forEach((header, index) => { object[header] = rows[i][index] ?? ''; });
-        return { rowNumber: i + 1, object };
-      }
-    }
-    return null;
+    const resolved = await this.resolveRowByKey(sheetName, keyHeader, keyValue);
+    if (!resolved) return null;
+    return { rowNumber: resolved.rowNumber, object: resolved.object };
   }
 
   async beginRun({ idempotencyKey, inputScope, evidenceLink = '', triggerType = 'DRIVE_INTAKE' }) {
