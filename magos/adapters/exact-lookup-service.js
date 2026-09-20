@@ -10,6 +10,8 @@ const DEFAULT_IDS = {
 
 const ENTITY_LOCATORS = {
   CRM: { store: 'crm', sheet: 'CRM_Master', key: 'crm_id' },
+  Client: { store: 'crm', sheet: 'CRM_Master', key: 'crm_id' },
+  Contact: { store: 'crm', sheet: 'CRM_Master', key: 'contact_id' },
   Opportunity: { store: 'crm', sheet: 'Jobs_Opportunities', key: 'opportunity_id' },
   Job: { store: 'crm', sheet: 'Jobs_Opportunities', key: 'job_id' },
   Quote: { store: 'commercial', sheet: 'Quotes', key: 'quote_id' },
@@ -104,6 +106,53 @@ function invoiceCandidate(row) {
   };
 }
 
+
+function normalizeEmail(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function phoneVariants(value) {
+  const original = String(value || '').trim();
+  if (!original) return [];
+
+  let digits = original.replace(/\D/g, '');
+  if (digits.startsWith('00')) digits = digits.slice(2);
+
+  let e164 = digits;
+  if (/^0\d{9}$/.test(digits)) {
+    e164 = '27' + digits.slice(1);
+  }
+
+  const variants = new Set([original, digits, e164]);
+  if (/^27\d{9}$/.test(e164)) {
+    const local = '0' + e164.slice(2);
+    variants.add(local);
+    variants.add(
+      '+27 ' +
+      e164.slice(2, 4) + ' ' +
+      e164.slice(4, 7) + ' ' +
+      e164.slice(7)
+    );
+    variants.add(
+      local.slice(0, 3) + ' ' +
+      local.slice(3, 6) + ' ' +
+      local.slice(6)
+    );
+  }
+  return [...variants].filter(Boolean);
+}
+
+function candidateIdentity(row, matchedBy) {
+  return {
+    crm_id: row.crm_id || '',
+    contact_id: row.contact_id || '',
+    opportunity_id: row.opportunity_id || '',
+    property_id: row.property_id || '',
+    matched_by: matchedBy,
+    record: row
+  };
+}
+
 function buildStores(overrides = {}) {
   return {
     crm: overrides.crm || new AuditLedger({ spreadsheetId: DEFAULT_IDS.crm }),
@@ -177,6 +226,88 @@ class ExactLookupService {
     }
 
     return candidates;
+  }
+
+
+  async findIntakeBySourceEvent(sourceSystem, sourceEventId) {
+    if (!sourceSystem || !sourceEventId) return null;
+    const found = await safeExactFind(
+      this.store('crm'),
+      'Intake_Queue',
+      'source_event_id',
+      sourceEventId
+    );
+    if (!found) return null;
+    const row = found.object || {};
+    if (String(row.source_system || '') !== String(sourceSystem)) {
+      return {
+        ...row,
+        __source_system_mismatch: true
+      };
+    }
+    return row;
+  }
+
+  async findCrmCandidatesByIdentity({ phone = '', email = '' } = {}) {
+    const store = this.store('crm');
+    const candidates = new Map();
+
+    const add = (found, basis) => {
+      if (!found) return;
+      const row = found.object || {};
+      const key = row.crm_id || ('ROW:' + found.rowNumber);
+      const existing = candidates.get(key);
+      const matchedBy = new Set(existing?.matched_by || []);
+      matchedBy.add(basis);
+      candidates.set(key, candidateIdentity(row, [...matchedBy]));
+    };
+
+    for (const value of phoneVariants(phone)) {
+      for (const header of [
+        'phone',
+        'preferred_call_number',
+        'whatsapp_number',
+        'preferred_whatsapp_number'
+      ]) {
+        const found = await safeExactFind(
+          store,
+          'CRM_Master',
+          header,
+          value
+        );
+        add(found, 'PHONE:' + header);
+      }
+    }
+
+    const emailVariants = new Set([
+      String(email || '').trim(),
+      normalizeEmail(email)
+    ]);
+    emailVariants.delete('');
+    for (const value of emailVariants) {
+      for (const header of ['email', 'preferred_email']) {
+        const found = await safeExactFind(
+          store,
+          'CRM_Master',
+          header,
+          value
+        );
+        add(found, 'EMAIL:' + header);
+      }
+    }
+
+    return [...candidates.values()];
+  }
+
+  leadResolverDependencies() {
+    return {
+      findIntakeBySourceEvent: (source, id) =>
+        this.findIntakeBySourceEvent(source, id),
+      findCrmCandidatesByIdentity: (identity) =>
+        this.findCrmCandidatesByIdentity(identity),
+      findEntityByCanonicalId: (type, id) =>
+        this.findEntityByCanonicalId(type, id)
+    };
   }
 
   async findPaymentEventByProviderTransactionId(providerTransactionId) {
@@ -340,5 +471,7 @@ module.exports = {
   ExactLookupService,
   ENTITY_LOCATORS,
   DOCUMENT_REFERENCE_LOCATORS,
-  DEFAULT_IDS
+  DEFAULT_IDS,
+  normalizeEmail,
+  phoneVariants
 };
