@@ -279,14 +279,18 @@ class ExactLookupService {
       }
     }
 
-    const normalizedEmail = normalizeEmail(email);
-    if (normalizedEmail) {
+    const emailVariants = new Set([
+      String(email || '').trim(),
+      normalizeEmail(email)
+    ]);
+    emailVariants.delete('');
+    for (const value of emailVariants) {
       for (const header of ['email', 'preferred_email']) {
         const found = await safeExactFind(
           store,
           'CRM_Master',
           header,
-          normalizedEmail
+          value
         );
         add(found, 'EMAIL:' + header);
       }
