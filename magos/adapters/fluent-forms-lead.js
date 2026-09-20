@@ -168,6 +168,24 @@ function mapSourceMetadata(fields, metadataMap = {}, explicit = {}) {
   return metadata;
 }
 
+function validateEvidenceRef(value) {
+  const ref = str(value);
+  let parsed;
+  try {
+    parsed = new URL(ref);
+  } catch {
+    const error = new Error('evidence_ref must be an absolute HTTPS URL');
+    error.code = 'FLUENT_EVIDENCE_INVALID';
+    throw error;
+  }
+  if (parsed.protocol !== 'https:') {
+    const error = new Error('evidence_ref must use HTTPS');
+    error.code = 'FLUENT_EVIDENCE_INVALID';
+    throw error;
+  }
+  return ref;
+}
+
 function stableSourceEventId(formId, entryId) {
   return [
     'FLUENT_FORMS',
@@ -193,20 +211,21 @@ function createFluentLeadIngressPayload({
   evidence_label = ''
 } = {}) {
   const formId = required(
-    form_id,
+    str(form_id),
     'form_id',
     'FLUENT_FORM_ID_REQUIRED'
   );
   const entryId = required(
-    entry_id,
+    str(entry_id),
     'entry_id',
     'FLUENT_ENTRY_ID_REQUIRED'
   );
-  const evidenceRef = required(
+  required(
     str(evidence_ref),
     'evidence_ref',
     'FLUENT_EVIDENCE_REQUIRED'
   );
+  const evidenceRef = validateEvidenceRef(evidence_ref);
 
   if (!fields || typeof fields !== 'object' || Array.isArray(fields)) {
     const error = new Error('fields object is required');
@@ -270,6 +289,7 @@ module.exports = {
   mapLeadFields,
   mapSourceMetadata,
   normalizeUploadRefs,
+  validateEvidenceRef,
   stableSourceEventId,
   createFluentLeadIngressPayload
 };
