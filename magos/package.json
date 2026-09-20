@@ -1,18 +1,23 @@
 {
   "name": "@myriadgreen/magos-runtime",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "MAGOS in-house runtime workers and adapters",
-  "main": "workers/document-extract.worker.js",
+  "description": "MAGOS in-house runtime workers, writer and HTTP execution boundary",
+  "main": "runtime/server.js",
   "type": "commonjs",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
+    "start": "node runtime/server.js",
     "test": "node --test tests/*.test.js",
+    "test:runtime": "node --test tests/runtime-http.test.js",
+    "probe:runtime": "node runtime/smoke.js",
     "scan:00a": "node workers/drive-intake.worker.js"
   },
   "dependencies": {
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
     "googleapis": "^153.0.0",
     "pdf-parse": "^1.1.1"
   }
