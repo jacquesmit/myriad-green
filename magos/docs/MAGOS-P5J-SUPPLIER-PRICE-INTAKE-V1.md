@@ -79,9 +79,10 @@ A price may be promoted only when:
 - source line identity is exact,
 - canonical part is exact,
 - quantity is positive,
-- unit_price_ex_vat is present.
+- unit_price_ex_vat is present,
+- VAT is supported by an explicit line rate or a recognized source VAT basis.
 
-VAT-inclusive values are arithmetic derivations from the cited ex-VAT source value and VAT rate.
+Missing VAT evidence never defaults to zero. Recognized explicit bases currently include VAT_15_PERCENT and controlled zero/exempt bases. VAT-inclusive values are arithmetic derivations from that cited VAT evidence.
 
 The worker deliberately does not set quote_eligible or release procurement. Existing Supplier_Price_Audit / TEST-037 remains the downstream commercial eligibility authority.
 
@@ -104,3 +105,19 @@ P5J does not:
 - retire existing supplier workflows.
 
 All of those remain separate governed stages.
+
+
+## 00A bridge
+
+A validated SUPPLIER_QUOTE Document Envelope may be converted into one SUPPLIER_PRICE_OBSERVED event per structured source line.
+
+The bridge requires:
+
+- the document extraction state is not REVIEW_REQUIRED,
+- exact canonical supplier_id is supplied by the upstream resolver/context,
+- supplier quote number is extracted,
+- structured line_items exist.
+
+The bridge only maps declared parser field aliases. It does not infer a canonical product from description text. An optional controlled canonicalPartIdsByLine map may carry exact part hints, but P5J still verifies every part against Master_Parts before promotion.
+
+If extraction/classification, supplier identity, quote number, or line structure is unresolved, the bridge emits no pricing mutation event and returns REVIEW_REQUIRED.
