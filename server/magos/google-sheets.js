@@ -162,7 +162,7 @@ async function copyIntakeRowControls(rowNumber) {
   });
 }
 
-async function appendIntakeRow(values, expectedSourceEventId) {
+async function appendIntakeRow(values, expectedSourceEventId, expectedSource = 'WHATSAPP', expectedEventType = 'CUSTOMER_MESSAGE') {
   if (!Array.isArray(values) || values.length !== 31) {
     throw new Error('Intake_Queue row must contain exactly 31 columns (A:AE).');
   }
@@ -192,7 +192,7 @@ async function appendIntakeRow(values, expectedSourceEventId) {
   if (String(row[4] || '') !== String(expectedSourceEventId || '')) {
     throw new Error('Intake_Queue read-back failed: source_event_id mismatch.');
   }
-  if (String(row[2] || '') !== 'WHATSAPP' || String(row[3] || '') !== 'CUSTOMER_MESSAGE') {
+  if (String(row[2] || '') !== String(expectedSource || '') || String(row[3] || '') !== String(expectedEventType || '')) {
     throw new Error('Intake_Queue read-back failed: source schema mismatch.');
   }
 
