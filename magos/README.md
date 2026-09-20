@@ -2,7 +2,37 @@
 
 This subtree is the in-house MAGOS execution layer. It is deliberately separated from the Myriad Green website application even though it currently lives in the same repository.
 
-## Implemented capability
+## Implemented capabilities
+
+### MAGOS Transaction Writer V1
+
+The shared writer is the only approved path for authoritative business mutations once an adapter migrates onto the runtime.
+
+It enforces:
+
+1. Idempotency through `Automation_Run_Log`.
+2. Live schema/header resolution.
+3. `Writer_Schema_Registry` validation.
+4. `Data_Ownership_Matrix` authority.
+5. `Cross_System_Links` authority for downstream projections.
+6. Preconditions before mutation.
+7. Named-field writes.
+8. Immediate read-back.
+9. Compensation on later failure.
+10. `Sync_Exceptions` evidence and same-key recovery.
+
+### P2 private HTTP runtime
+
+The writer now has a deployable service boundary under `runtime/`.
+
+- `GET /healthz`
+- `GET /readyz`
+- `POST /v1/probes/google-sheets` — bearer-authenticated
+- `POST /v1/transactions` — bearer-authenticated
+
+The service refuses to start without `MAGOS_RUNTIME_TOKEN`. No channel adapter is enabled by this release.
+
+### MAGOS-DOC-EXTRACT-01
 
 MAGOS-DOC-EXTRACT-01 processes documents from the 00A intake boundary.
 
@@ -19,7 +49,7 @@ Flow:
 9. Send uncertain extraction/classification to Sync_Exceptions.
 10. Terminalise the run only after the audit writes complete.
 
-No supplier, CRM, finance, procurement, quote, invoice, or job table is mutated by this worker. Clear outputs must be handed to the MAGOS Transaction Writer when that runtime endpoint is deployed.
+No supplier, CRM, finance, procurement, quote, invoice, or job table is mutated directly by this worker. Clear outputs must be handed to the MAGOS Transaction Writer.
 
 ## Local commands
 
@@ -27,20 +57,34 @@ Install:
 
     npm install
 
-Test:
+Test all MAGOS components:
 
     npm test
+
+Start the private runtime:
+
+    MAGOS_RUNTIME_TOKEN=<secret> npm start
+
+Probe a deployed runtime:
+
+    MAGOS_RUNTIME_URL=https://<host> MAGOS_RUNTIME_TOKEN=<secret> npm run probe:runtime
 
 Scan the configured 00A folder:
 
     npm run scan:00a
 
-Copy .env.example to .env and configure service credentials. Never commit secrets.
+Copy `.env.example` to `.env` for local development. Never commit secrets.
 
-## PDF.co cost control
+## Container build
 
-PDF.co is an escalation adapter. Native text extraction is attempted first. The optional AI invoice parser is disabled unless PDFCO_ENABLE_AI_INVOICE=true. Supplier-specific Document Parser templates can be enabled with PDFCO_TEMPLATE_MAP_JSON.
+From the repository root:
 
-## Production requirement
+    docker build -f magos/Dockerfile -t magos-runtime .
 
-The service identity must have read access to the 00A Drive folder and write access to the MGOS Global Audit & Remediation Register. PDFCO_API_KEY is optional; without it, difficult scans are routed to review rather than silently accepted.
+## Production requirements
+
+The runtime host must provide HTTPS and secret injection. The service identity must have the minimum Google Drive/Sheets access needed by the current MAGOS authorities.
+
+The hosting provider is infrastructure only. Do not move MAGOS business logic, source-of-truth state, or idempotency into the host.
+
+Before any WhatsApp, Gmail, WordPress, 00A business-write, or other adapter is enabled, the deployed runtime must pass the protected Google Sheets probe and TEST-045 through the actual HTTP `TransactionWriter` entrypoint.
