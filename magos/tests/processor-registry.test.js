@@ -26,7 +26,14 @@ function lookupService() {
     async findSupplierQuoteByNumber() { return null; },
     async findSupplierSourceLineById() { return null; },
     async findSupplierPriceBySourceLineId() { return null; },
-    async findProductBySupplierCode() { return null; }
+    async findProductBySupplierCode() { return null; },
+    leadResolverDependencies() {
+      return {
+        findIntakeBySourceEvent: async () => null,
+        findCrmCandidatesByIdentity: async () => [],
+        findEntityByCanonicalId: async () => null
+      };
+    }
   };
 }
 
@@ -53,7 +60,7 @@ test('registry exposes only explicitly governed event types', () => {
   assert.equal(registry.supports('DOCUMENT_FILED'), true);
   assert.equal(registry.supports('PAYMENT_OBSERVED'), true);
   assert.equal(registry.supports('SUPPLIER_PRICE_OBSERVED'), true);
-  assert.equal(registry.supports('LEAD_SUBMITTED'), false);
+  assert.equal(registry.supports('LEAD_SUBMITTED'), true);
   assert.equal(registry.supports('SUPPLIER_EMAIL_RECEIVED'), false);
 });
 
@@ -64,7 +71,7 @@ test('unregistered event type throws hard unsupported error with no generic fall
   });
 
   assert.throws(
-    () => registry.processorFor('LEAD_SUBMITTED'),
+    () => registry.processorFor('SUPPLIER_EMAIL_RECEIVED'),
     (error) =>
       error instanceof UnsupportedGovernedEventTypeError &&
       error.code === 'UNSUPPORTED_GOVERNED_EVENT_TYPE'
