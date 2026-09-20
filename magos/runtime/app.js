@@ -4,6 +4,10 @@ const crypto = require('crypto');
 const express = require('express');
 const { TransactionWriter } = require('../writer/transaction-writer');
 const { EventProcessor } = require('../processor/event-processor');
+const {
+  GovernedProcessorRegistry,
+  UnsupportedGovernedEventTypeError
+} = require('../processor/processor-registry');
 
 function constantTimeEqual(left, right) {
   const a = Buffer.from(String(left || ''));
@@ -35,6 +39,8 @@ function createRuntimeApp({
   token = process.env.MAGOS_RUNTIME_TOKEN,
   writerFactory = () => new TransactionWriter(),
   eventProcessorFactory = () => new EventProcessor(),
+  eventDispatcherFactory = ({ writer }) =>
+    new GovernedProcessorRegistry({ writer }),
   version = process.env.MAGOS_RUNTIME_VERSION || 'P2'
 } = {}) {
   const app = express();
@@ -43,6 +49,7 @@ function createRuntimeApp({
 
   let writer;
   let eventProcessor;
+  let eventDispatcher;
 
   const getWriter = () => {
     if (!writer) writer = writerFactory();
@@ -52,6 +59,15 @@ function createRuntimeApp({
   const getEventProcessor = () => {
     if (!eventProcessor) eventProcessor = eventProcessorFactory();
     return eventProcessor;
+  };
+
+  const getEventDispatcher = () => {
+    if (!eventDispatcher) {
+      eventDispatcher = eventDispatcherFactory({
+        writer: getWriter()
+      });
+    }
+    return eventDispatcher;
   };
 
   app.get('/healthz', (req, res) => {
@@ -120,6 +136,37 @@ function createRuntimeApp({
     } catch (error) {
       return res.status(500).json({
         error: 'EVENT_PROCESSOR_FAILURE',
+        detail: error.message
+      });
+    }
+  });
+
+  app.post('/v1/events/run', requireRuntimeAuth, async (req, res) => {
+    try {
+      const result = await getEventDispatcher().run(req.body);
+      const status =
+        result.state === 'COMMITTED' ||
+        result.state === 'DUPLICATE' ||
+        result.state === 'IGNORED'
+          ? 200
+          : result.state === 'REVIEW_REQUIRED'
+            ? 202
+            : result.state === 'REJECTED'
+              ? 400
+              : result.state === 'RETRY_REQUIRED'
+                ? 409
+                : 500;
+      return res.status(status).json(result);
+    } catch (error) {
+      if (error instanceof UnsupportedGovernedEventTypeError ||
+          error?.code === 'UNSUPPORTED_GOVERNED_EVENT_TYPE') {
+        return res.status(422).json({
+          error: 'UNSUPPORTED_GOVERNED_EVENT_TYPE',
+          event_type: error.event_type || req.body?.event_type || ''
+        });
+      }
+      return res.status(500).json({
+        error: 'GOVERNED_EVENT_RUNNER_FAILURE',
         detail: error.message
       });
     }

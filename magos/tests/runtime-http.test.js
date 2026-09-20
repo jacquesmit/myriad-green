@@ -5,6 +5,9 @@ const http = require('node:http');
 const test = require('node:test');
 
 const { createRuntimeApp } = require('../runtime/app');
+const {
+  UnsupportedGovernedEventTypeError
+} = require('../processor/processor-registry');
 
 async function withServer(app, fn) {
   const server = http.createServer(app);
@@ -240,5 +243,128 @@ test('event decision endpoint returns processor decision without executing write
     assert.equal(result.status, 202);
     assert.equal(result.payload.decision, 'REVIEW_REQUIRED');
     assert.equal(writerCalls, 0);
+  });
+});
+
+
+test('governed event run endpoint is bearer-authenticated', async () => {
+  let calls = 0;
+  const app = createRuntimeApp({
+    token: 'secret-token',
+    writerFactory: () => ({ audit: {} }),
+    eventDispatcherFactory: () => ({
+      async run() {
+        calls += 1;
+        return { state: 'COMMITTED' };
+      }
+    })
+  });
+
+  await withServer(app, async (base) => {
+    const result = await request(base, '/v1/events/run', {
+      method: 'POST',
+      body: sampleEvent()
+    });
+
+    assert.equal(result.status, 401);
+    assert.equal(calls, 0);
+  });
+});
+
+test('governed event run endpoint invokes dispatcher and returns commit', async () => {
+  let received = null;
+  const runtimeWriter = { audit: {} };
+  let suppliedWriter = null;
+
+  const app = createRuntimeApp({
+    token: 'secret-token',
+    writerFactory: () => runtimeWriter,
+    eventDispatcherFactory: ({ writer }) => {
+      suppliedWriter = writer;
+      return {
+        async run(envelope) {
+          received = envelope;
+          return {
+            state: 'COMMITTED',
+            writer: {
+              state: 'COMMITTED',
+              transaction_id: 'TXN-EVENT-1'
+            }
+          };
+        }
+      };
+    }
+  });
+
+  await withServer(app, async (base) => {
+    const event = sampleEvent();
+    const result = await request(base, '/v1/events/run', {
+      method: 'POST',
+      token: 'secret-token',
+      body: event
+    });
+
+    assert.equal(result.status, 200);
+    assert.equal(result.payload.state, 'COMMITTED');
+    assert.equal(received.idempotency_key, event.idempotency_key);
+    assert.equal(suppliedWriter, runtimeWriter);
+  });
+});
+
+test('governed event run endpoint maps review and retry states', async () => {
+  let state = 'REVIEW_REQUIRED';
+  const app = createRuntimeApp({
+    token: 'secret-token',
+    writerFactory: () => ({ audit: {} }),
+    eventDispatcherFactory: () => ({
+      async run() {
+        return { state };
+      }
+    })
+  });
+
+  await withServer(app, async (base) => {
+    const review = await request(base, '/v1/events/run', {
+      method: 'POST',
+      token: 'secret-token',
+      body: sampleEvent()
+    });
+    assert.equal(review.status, 202);
+
+    state = 'RETRY_REQUIRED';
+    const retry = await request(base, '/v1/events/run', {
+      method: 'POST',
+      token: 'secret-token',
+      body: sampleEvent()
+    });
+    assert.equal(retry.status, 409);
+  });
+});
+
+test('governed event run endpoint rejects unregistered event type with 422', async () => {
+  const app = createRuntimeApp({
+    token: 'secret-token',
+    writerFactory: () => ({ audit: {} }),
+    eventDispatcherFactory: () => ({
+      async run(envelope) {
+        throw new UnsupportedGovernedEventTypeError(envelope.event_type);
+      }
+    })
+  });
+
+  await withServer(app, async (base) => {
+    const event = {
+      ...sampleEvent(),
+      event_type: 'LEAD_SUBMITTED'
+    };
+    const result = await request(base, '/v1/events/run', {
+      method: 'POST',
+      token: 'secret-token',
+      body: event
+    });
+
+    assert.equal(result.status, 422);
+    assert.equal(result.payload.error, 'UNSUPPORTED_GOVERNED_EVENT_TYPE');
+    assert.equal(result.payload.event_type, 'LEAD_SUBMITTED');
   });
 });
