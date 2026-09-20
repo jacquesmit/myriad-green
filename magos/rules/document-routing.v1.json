@@ -1,0 +1,19 @@
+{
+  "ruleVersion": "MAGOS-DOC-EXTRACT-01/V1",
+  "nativeFirst": true,
+  "paidFallback": "PDFCO",
+  "autoRelease": {
+    "minimumExtractionConfidence": 0.8,
+    "minimumClassificationConfidence": 0.78,
+    "disallowDocumentTypes": ["OTHER"]
+  },
+  "reviewDestination": "MGOS Global Audit & Remediation Register V1 / Sync_Exceptions",
+  "idempotencyAuthority": "MGOS Global Audit & Remediation Register V1 / Automation_Run_Log",
+  "evidenceAuthority": "MGOS Global Audit & Remediation Register V1 / Document_State_Register",
+  "businessMutationAuthority": "MAGOS Transaction Writer",
+  "pdfco": {
+    "ocrOnlyWhenNativeInsufficient": true,
+    "aiInvoiceParserDefault": false,
+    "documentParserTemplateMapEnv": "PDFCO_TEMPLATE_MAP_JSON"
+  }
+}
