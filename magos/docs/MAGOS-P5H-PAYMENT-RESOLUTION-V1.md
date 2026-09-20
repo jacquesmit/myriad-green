@@ -1,71 +1,96 @@
-# MAGOS P5H — Payment Resolution + Allocation V1
+# MAGOS P5H — Payment Resolution + Reconciliation V1
 
 ## Status
 
-Code/control implementation while P4 hosted runtime remains blocked. No live payment automation is enabled.
+Code/control implementation only. Production payment mutation remains OFF until P4 hosted runtime validation and a controlled live acceptance test.
 
-## Core rule
+## Ownership repair
 
-Payment proof is not cleared funds.
+The previous conceptual Payment ownership row named both Payment_Events and Payment_Allocations in one source-of-truth tab field. That is too broad for the P3 writer, which requires one exact authoritative tab per entity.
 
-P5H separates two observations:
+P5H adds explicit writer-facing ownership contracts:
 
-- PROOF_RECEIVED
-- CLEARED
+- Payment event -> Commercial / Payment_Events
+- Payment allocation -> Commercial / Payment_Allocations
 
-A proof-only event may create an immutable Payment_Events row with:
+Payment Control remains a derived contract view and is not directly mutated by P5H.
 
-    event_type = PAYMENT_PROOF_RECEIVED
-    clearance_state = PROOF_RECEIVED
+## Truth rule
 
-It does not create a cleared Payment_Allocation.
+Payment proof is not cleared money.
 
-## Automatic CLEARED gate
+The payment observation normalizer derives clearance from source authority, not from user-facing wording.
 
-Automatic CLEARED recording requires all of:
+Approved clearance authorities for CLEARED are:
 
-1. Exact canonical invoice_id or Payment Control ID.
-2. Positive amount.
-3. Payment event date.
-4. Explicit clearance_authority of:
-   - BENEFICIARY_BANK
-   - PAYMENT_GATEWAY
-   - AUTHORISED_BANK_REVIEWER
-5. Exposed provider/bank transaction ID.
-6. No existing same provider transaction with a conflicting amount.
-7. Evidence attached to the EventEnvelope.
+- BENEFICIARY_BANK
+- BANK_API
+- PAYMENT_GATEWAY
+- OWNER_VERIFIED_BANK
 
-If any gate is missing, the resolver returns uncertainty/conflict and P5 routes to review.
+Everything else, including CLIENT_PROOF, becomes PROOF_RECEIVED.
 
-## Exact business matching
+A missing provider transaction ID does not block OWNER_VERIFIED_BANK evidence; MAGOS uses deterministic payment-event identity instead of inventing a bank transaction ID.
 
-P5H verifies canonical invoice and/or Payment Control IDs against the authoritative Commercial workbook.
+## Resolution
 
-Where both are supplied, the linked invoice/opportunity identities must agree.
+P5H resolves only exact identities:
 
-Client name, payment amount, or free-text reference alone is not sufficient for automatic allocation.
+1. invoice_id verified against Invoices,
+2. exact invoice document number,
+3. exact Payment Control ID,
+4. exact deposit_id,
+5. exact quote number resolving to one Payment Control row.
 
-## Payment event creation
+Client name or amount alone is never enough.
 
-Payment_Events uses deterministic CREATE_IF_ABSENT semantics.
+If both an invoice and Payment Control ID are supplied, their opportunity lineage must agree where both sides expose it.
 
-Provider transaction ID is preferred for payment_event_id.
+If an observed payment exceeds the exact invoice outstanding balance, the event routes to review.
 
-Proof-only events without a provider transaction use a deterministic hash derived from the EventEnvelope idempotency key. They remain proof-only.
+## Duplicate suppression
 
-## Cleared allocation
+Before planning, P5H checks:
 
-Only a CLEARED event can create Payment_Allocations.
+- existing Payment_Events.idempotency_key,
+- existing provider_transaction_id where supplied.
 
-The allocation requires an exact invoice_id and inherits the exact payment amount. If an exact deposit_id is present, allocation_type is DEPOSIT; otherwise INVOICE.
+A duplicate is ignored before the planner runs.
 
-P5H does not directly mutate Payment Control totals or release procurement gates. Payment Control remains a derived contract view. A later reconciliation stage must calculate it from authoritative payment events and allocations.
+## Planning
 
-## Ownership refinement
+Every valid observation may create one immutable Payment_Events row.
 
-The prior conceptual Payment ownership row covered both Payment_Events and Payment_Allocations. P5H adds exact writer-facing authority rows:
+PROOF_RECEIVED:
 
-- Payment event -> Payment_Events
-- Payment allocation -> Payment_Allocations
+- records evidence and exact canonical linkage,
+- does not create a CLEARED allocation,
+- does not release Payment Control or procurement gates.
 
-This allows P3 to enforce exact source-of-truth tabs instead of weakening authority checks.
+CLEARED:
+
+- records a CLEARED payment event,
+- may create one exact Payment_Allocations row only when the resolver has an explicit allocation_target,
+- does not infer allocation merely because Payment Control contains an invoice/deposit pointer,
+- never writes Payment Control directly.
+
+An exact invoice match yields an INVOICE allocation target.
+
+An exact deposit_id match yields a DEPOSIT allocation target.
+
+A Payment Control or quote-number match alone can record the cleared event but does not auto-allocate because the control can represent more than one payment stage.
+
+The derived finance projection can be reconciled separately after Payment_Events and Payment_Allocations read back successfully.
+
+## Safety
+
+P5H deliberately does not:
+
+- infer a payment from client name,
+- clear money from client proof,
+- invent bank transaction IDs,
+- overwrite prior payment events,
+- mutate Payment Control directly,
+- reopen or close invoices from payment text alone,
+- infer a deposit/final allocation from Payment Control alone,
+- split one payment across multiple targets without explicit allocation evidence.
