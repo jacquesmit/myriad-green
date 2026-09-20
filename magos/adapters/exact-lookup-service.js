@@ -111,6 +111,14 @@ function normalizeEmail(value) {
   return String(value || '').trim().toLowerCase();
 }
 
+
+function emailTokens(value) {
+  return String(value || '')
+    .split(/[;,\n]+/)
+    .map((item) => normalizeEmail(item))
+    .filter(Boolean);
+}
+
 function phoneVariants(value) {
   const original = String(value || '').trim();
   if (!original) return [];
@@ -376,6 +384,34 @@ class ExactLookupService {
     return found?.object || null;
   }
 
+
+  async findSupplierCandidatesByEmail(email) {
+    const target = normalizeEmail(email);
+    if (!target) return [];
+
+    const rows = await this.store('supplier').readObjects('Suppliers');
+    return rows
+      .filter((row) => emailTokens(row.email).includes(target))
+      .map((row) => ({
+        supplier_id: row.supplier_id || '',
+        supplier_name: row.supplier_name || '',
+        supplier_approval_state: row.supplier_approval_state || '',
+        active_status: row.active_status || '',
+        record: row
+      }));
+  }
+
+  supplierEmailResolverDependencies() {
+    return {
+      findIntakeBySourceEvent: (source, id) =>
+        this.findIntakeBySourceEvent(source, id),
+      findEntityByCanonicalId: (type, id) =>
+        this.findEntityByCanonicalId(type, id),
+      findSupplierCandidatesByEmail: (email) =>
+        this.findSupplierCandidatesByEmail(email)
+    };
+  }
+
   async findSupplierQuoteByNumber(supplierQuoteNumber) {
     if (!supplierQuoteNumber) return null;
     const found = await safeExactFind(
@@ -473,5 +509,6 @@ module.exports = {
   DOCUMENT_REFERENCE_LOCATORS,
   DEFAULT_IDS,
   normalizeEmail,
+  emailTokens,
   phoneVariants
 };
