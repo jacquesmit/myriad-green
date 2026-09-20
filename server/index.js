@@ -18,6 +18,7 @@ const calendarRoute = require('./routes/calendar');
 const weatherRoute = require('./routes/weather');
 const orderRoute = require('./routes/order');
 const trendsRoute = require('./routes/trends');
+const whatsappWebhookRoute = require('./routes/whatsapp-webhook');
 
 const app = express();
 
@@ -65,6 +66,10 @@ app.use((err, req, res, next) => {
 
 // Middleware
 app.use(express.json({ verify: (req, res, buf) => { req.rawBody = buf } }));
+
+// MAGOS WhatsApp Business Cloud ingress.
+// express.json() above preserves req.rawBody for Meta signature verification.
+app.use('/webhooks/whatsapp', whatsappWebhookRoute);
 
 // URL normalization for shop product pages BEFORE static handling
 // 301 redirect /shop/:slug.html -> /shop/:slug
