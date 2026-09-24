@@ -11,9 +11,11 @@ const REQUIRED_GUARDS = [
   'irrelevant'
 ];
 
-function required(value, name) {
+function required(value, name, code = '') {
   if (value === undefined || value === null || value === '') {
-    throw new Error(name + ' is required');
+    const error = new Error(name + ' is required');
+    if (code) error.code = code;
+    throw error;
   }
   return value;
 }
@@ -23,9 +25,7 @@ function str(value) {
 }
 
 function list(value) {
-  if (Array.isArray(value)) {
-    return value.map(str).filter(Boolean);
-  }
+  if (Array.isArray(value)) return value.map(str).filter(Boolean);
   if (value === undefined || value === null || value === '') return [];
   return [str(value)].filter(Boolean);
 }
@@ -46,7 +46,9 @@ function normalizeSafetyAttestation(input = {}) {
 
   const parsed = new Date(scannedAt);
   if (Number.isNaN(parsed.getTime())) {
-    const error = new Error('safety_attestation.scanned_at must be a valid date');
+    const error = new Error(
+      'safety_attestation.scanned_at must be a valid date'
+    );
     error.code = 'SUPPLIER_EMAIL_GUARD_ATTESTATION_INVALID';
     throw error;
   }
@@ -59,39 +61,38 @@ function normalizeSafetyAttestation(input = {}) {
 }
 
 function normalizeGuards(input = {}, attestation = null) {
-  const suppliedKeys = REQUIRED_GUARDS.filter(
+  const supplied = REQUIRED_GUARDS.some(
     key => str(input[key]) !== ''
   );
 
-  if (!suppliedKeys.length) {
+  if (!supplied) {
     return Object.fromEntries(
       REQUIRED_GUARDS.map(key => [key, 'UNKNOWN'])
     );
   }
 
-  const out = {};
+  const guards = {};
   let assertsDecision = false;
   for (const key of REQUIRED_GUARDS) {
-    const raw = str(input[key]).toUpperCase() || 'UNKNOWN';
-    if (!GUARD_VALUES.has(raw)) {
+    const value = str(input[key]).toUpperCase() || 'UNKNOWN';
+    if (!GUARD_VALUES.has(value)) {
       const error = new Error('Invalid guard value for ' + key);
       error.code = 'SUPPLIER_EMAIL_GUARD_INVALID';
-      error.guard = key;
       throw error;
     }
-    if (raw !== 'UNKNOWN') assertsDecision = true;
-    out[key] = raw;
+    if (value !== 'UNKNOWN') assertsDecision = true;
+    guards[key] = value;
   }
 
   if (assertsDecision && !attestation) {
     const error = new Error(
-      'Supplier email safety decisions require safety_attestation provenance'
+      'Supplier-email safety decisions require scan provenance'
     );
     error.code = 'SUPPLIER_EMAIL_GUARD_ATTESTATION_REQUIRED';
     throw error;
   }
 
-  return out;
+  return guards;
 }
 
 function normalizeSupplierEmail(input = {}) {
@@ -108,7 +109,7 @@ function normalizeSupplierEmail(input = {}) {
     attachment_filenames: list(input.attachment_filenames),
     attachment_refs: list(input.attachment_refs),
     attachment_accessibility:
-      str(input.attachment_accessibility).toUpperCase(),
+      str(input.attachment_accessibility).toUpperCase() || 'UNKNOWN',
     urgency: str(input.urgency).toUpperCase() || 'UNKNOWN',
     requires_review: input.requires_review === true,
     review_reason: str(input.review_reason),
@@ -119,14 +120,37 @@ function normalizeSupplierEmail(input = {}) {
 function createSupplierEmailReceivedEvent(input = {}, {
   receivedAt = new Date()
 } = {}) {
-  const source = required(input.source || 'GMAIL', 'source');
-  const sourceEventId = required(input.source_event_id, 'source_event_id');
-  const email = normalizeSupplierEmail(input.email || input);
+  const source = required(
+    str(input.source || 'GMAIL'),
+    'source',
+    'SUPPLIER_EMAIL_SOURCE_REQUIRED'
+  );
+  const sourceEventId = required(
+    str(input.source_event_id),
+    'source_event_id',
+    'SUPPLIER_EMAIL_EVENT_ID_REQUIRED'
+  );
+  const evidence = Array.isArray(input.evidence)
+    ? input.evidence.filter(item => str(item?.ref))
+    : [];
+  if (!evidence.length) {
+    const error = new Error(
+      'Supplier email requires immutable source evidence'
+    );
+    error.code = 'SUPPLIER_EMAIL_EVIDENCE_REQUIRED';
+    throw error;
+  }
+
   const attestation = normalizeSafetyAttestation(
     input.safety_attestation || {}
   );
+  const guards = normalizeGuards(
+    input.guards || {},
+    attestation
+  );
+  const email = normalizeSupplierEmail(input.email || input);
 
-  return createEventEnvelope({
+  const event = createEventEnvelope({
     source,
     source_event_id: sourceEventId,
     event_type: 'SUPPLIER_EMAIL_RECEIVED',
@@ -138,15 +162,20 @@ function createSupplierEmailReceivedEvent(input = {}, {
     entity_hints: {
       ...(email.supplier_id ? { supplier_id: email.supplier_id } : {})
     },
-    guards: normalizeGuards(input.guards || {}, attestation),
-    evidence: Array.isArray(input.evidence) ? input.evidence : [],
+    guards,
+    evidence,
     payload: { supplier_email: email },
     metadata: {
       supplier_email_observation_version:
-        'MAGOS-SUPPLIER-EMAIL-OBSERVATION/V1',
-      ...(attestation ? { safety_attestation: attestation } : {})
+        'MAGOS-SUPPLIER-EMAIL-OBSERVATION/V1'
     }
   });
+
+  if (attestation) {
+    event.metadata.safety_attestation = attestation;
+  }
+
+  return event;
 }
 
 module.exports = {
