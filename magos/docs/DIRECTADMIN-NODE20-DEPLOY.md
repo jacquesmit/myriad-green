@@ -1,4 +1,6 @@
-# MAGOS P4 — DirectAdmin / Node.js 20 Deployment
+# MAGOS P4 — DirectAdmin / Node.js 20 Deployment — PROVIDER-TUTORIAL REFERENCE ONLY
+
+> **Not the current production control panel.** HOSTAFRICA supplied a DirectAdmin tutorial, but the migrated Myriad Green account is visibly running cPanel and exposes **Setup Node.js App**. Use `CPANEL-NODE20-SELECTOR-DEPLOY.md` for the actual P4 deployment. This document is retained only as evidence of the provider guidance received.
 
 ## Status
 
