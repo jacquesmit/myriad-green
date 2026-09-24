@@ -17,6 +17,58 @@ function supplierHasEmail(supplier, email) {
   return emailTokens(supplier?.email).includes(target);
 }
 
+function supplierStatusReview(supplier = {}) {
+  const approval = String(
+    supplier.supplier_approval_state || ''
+  ).trim().toUpperCase();
+  const active = String(
+    supplier.active_status || ''
+  ).trim().toUpperCase();
+
+  if (approval === 'APPROVED' && active === 'ACTIVE') {
+    return null;
+  }
+
+  return {
+    reason_code: 'SUPPLIER_STATUS_REVIEW_REQUIRED',
+    reason:
+      'Supplier identity is exact, but automated downstream handling is blocked ' +
+      'because the supplier is not both APPROVED and ACTIVE.',
+    approval_state: approval,
+    active_status: active
+  };
+}
+
+function reviewSummary(supplier, senderKnown, senderEmail) {
+  const reasons = [];
+  const codes = [];
+
+  const statusReview = supplierStatusReview(supplier);
+  if (statusReview) {
+    codes.push(statusReview.reason_code);
+    reasons.push(statusReview.reason);
+  }
+
+  if (senderEmail && !senderKnown) {
+    codes.push('SUPPLIER_CONTACT_EMAIL_REVIEW_REQUIRED');
+    reasons.push(
+      'Canonical supplier_id is exact, but the sender email is not listed ' +
+      'in the supplier master. Retain the email as evidence and review the ' +
+      'contact address before changing supplier identity data.'
+    );
+  }
+
+  return {
+    required: reasons.length > 0,
+    reason_code:
+      codes.length === 1
+        ? codes[0]
+        : (codes.length ? 'SUPPLIER_EMAIL_REVIEW_REQUIRED' : ''),
+    reason: reasons.join(' '),
+    reason_codes: codes
+  };
+}
+
 class SupplierEmailResolver {
   constructor({
     findIntakeBySourceEvent = async () => null,
@@ -70,8 +122,11 @@ class SupplierEmailResolver {
       const senderKnown = email.sender_email
         ? supplierHasEmail(supplier, email.sender_email)
         : false;
-      const unfamiliarSender =
-        Boolean(email.sender_email) && !senderKnown;
+      const review = reviewSummary(
+        supplier,
+        senderKnown,
+        email.sender_email
+      );
 
       return {
         status: 'MATCHED',
@@ -86,15 +141,10 @@ class SupplierEmailResolver {
         },
         supplier,
         sender_email_known: senderKnown,
-        review_required_after_capture: unfamiliarSender,
-        review_reason_code:
-          unfamiliarSender
-            ? 'SUPPLIER_CONTACT_EMAIL_REVIEW_REQUIRED'
-            : '',
-        review_reason:
-          unfamiliarSender
-            ? 'Canonical supplier_id is exact, but the sender email is not listed in the supplier master. Retain the email as evidence and review the contact address before changing supplier identity data.'
-            : '',
+        review_required_after_capture: review.required,
+        review_reason_code: review.reason_code,
+        review_reason: review.reason,
+        review_reason_codes: review.reason_codes,
         candidates: []
       };
     }
@@ -121,7 +171,7 @@ class SupplierEmailResolver {
         basis: 'EXACT_EMAIL',
         reason:
           'Exact sender email is listed against more than one supplier.',
-        candidates: candidates.map((candidate) => ({
+        candidates: candidates.map(candidate => ({
           supplier_id: candidate.supplier_id,
           supplier_name: candidate.supplier_name
         }))
@@ -140,6 +190,12 @@ class SupplierEmailResolver {
     }
 
     const supplier = candidates[0].record;
+    const review = reviewSummary(
+      supplier,
+      true,
+      email.sender_email
+    );
+
     return {
       status: 'MATCHED',
       confidence: 1,
@@ -153,9 +209,10 @@ class SupplierEmailResolver {
       },
       supplier,
       sender_email_known: true,
-      review_required_after_capture: false,
-      review_reason_code: '',
-      review_reason: '',
+      review_required_after_capture: review.required,
+      review_reason_code: review.reason_code,
+      review_reason: review.reason,
+      review_reason_codes: review.reason_codes,
       candidates: []
     };
   }
@@ -165,5 +222,7 @@ module.exports = {
   SupplierEmailResolver,
   normalizeEmail,
   emailTokens,
-  supplierHasEmail
+  supplierHasEmail,
+  supplierStatusReview,
+  reviewSummary
 };
