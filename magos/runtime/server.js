@@ -10,7 +10,7 @@ if (!token) {
   process.exit(1);
 }
 
-const port = Number(process.env.MAGOS_PORT || process.env.PORT || 8080);
+const port = Number(process.env.PORT || process.env.MAGOS_PORT || 8080);
 const app = createRuntimeApp({ token });
 
 const server = app.listen(port, '0.0.0.0', () => {
