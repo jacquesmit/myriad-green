@@ -17,17 +17,17 @@ const app = createRuntimeApp({
 });
 
 const port = Number(process.env.PORT || process.env.MAGOS_PORT || 3000);
-const host = process.env.MAGOS_BIND_HOST || '127.0.0.1';
+const host = process.env.MAGOS_BIND_HOST || '0.0.0.0';
 
 const server = app.listen(port, host, () => {
   console.log(
-    'MAGOS Automation Runtime V1 (cPanel/Passenger) listening on ' +
+    'MAGOS Automation Runtime V1 hosted entrypoint listening on ' +
     host + ':' + port
   );
 });
 
 function shutdown(signal) {
-  console.log('MAGOS cPanel runtime received ' + signal + '; shutting down.');
+  console.log('MAGOS hosted runtime received ' + signal + '; shutting down.');
   server.close(() => process.exit(0));
   setTimeout(() => process.exit(1), 10000).unref();
 }
