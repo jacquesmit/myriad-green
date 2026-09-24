@@ -7,7 +7,9 @@ on:
       - 'magos/app.js'
       - 'magos/writer/**'
       - 'magos/adapters/**'
+      - 'magos/processor/**'
       - 'magos/tests/runtime-http.test.js'
+      - 'magos/tests/supplier-email-intake.test.js'
       - 'magos/package.json'
       - 'magos/Dockerfile'
       - '.github/workflows/magos-runtime.yml'
@@ -18,7 +20,9 @@ on:
       - 'magos/runtime/**'
       - 'magos/writer/**'
       - 'magos/adapters/**'
+      - 'magos/processor/**'
       - 'magos/tests/runtime-http.test.js'
+      - 'magos/tests/supplier-email-intake.test.js'
       - 'magos/package.json'
       - 'magos/Dockerfile'
       - '.github/workflows/magos-runtime.yml'
@@ -42,7 +46,7 @@ jobs:
           cache-dependency-path: magos/package.json
       - run: npm install --no-audit --no-fund
       - run: node --check app.js
-      - run: node --test tests/runtime-http.test.js tests/transaction-writer.test.js tests/fluent-forms-adapter.test.js
+      - run: node --test tests/runtime-http.test.js tests/transaction-writer.test.js tests/fluent-forms-adapter.test.js tests/supplier-email-intake.test.js tests/processor-registry.test.js
 
   container-smoke:
     runs-on: ubuntu-latest
