@@ -8,6 +8,9 @@ const { planDocumentFiled } = require('./00a-filing');
 const { createPaymentProcessor } = require('./payment-processor');
 const { createSupplierPriceProcessor } = require('./supplier-price-processor');
 const { createLeadProcessor } = require('./lead-processor');
+const {
+  createSupplierEmailProcessor
+} = require('./supplier-email-processor');
 const { GovernedEventRunner } = require('./governed-event-runner');
 const { EventObserver } = require('./event-observer');
 const { ReviewManager } = require('./review-manager');
@@ -18,6 +21,7 @@ const SUPPORTED_EVENT_TYPES = Object.freeze([
   'DOCUMENT_FILED',
   'PAYMENT_OBSERVED',
   'SUPPLIER_PRICE_OBSERVED',
+  'SUPPLIER_EMAIL_RECEIVED',
   'LEAD_SUBMITTED'
 ]);
 
@@ -85,6 +89,13 @@ class GovernedProcessorRegistry {
       [
         'SUPPLIER_PRICE_OBSERVED',
         () => createSupplierPriceProcessor({
+          lookupService: this.lookupService,
+          now: this.now
+        })
+      ],
+      [
+        'SUPPLIER_EMAIL_RECEIVED',
+        () => createSupplierEmailProcessor({
           lookupService: this.lookupService,
           now: this.now
         })
