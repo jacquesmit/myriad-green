@@ -1,4 +1,6 @@
-# cPanel / Passenger Deployment
+# cPanel / Passenger Deployment — HISTORICAL
+
+> **Superseded for production.** HOSTAFRICA moved the MAGOS runtime domain to a DirectAdmin server with Node.js 20 support on 24 September 2026. Use `DIRECTADMIN-NODE20-DEPLOY.md` for the current production deployment. Keep this document only as evidence of the previous server configuration.
 
 This repository includes a cPanel-compatible Passenger entrypoint at `magos/app.js`.
 
