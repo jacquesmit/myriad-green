@@ -6,13 +6,6 @@ const {
   composeTransactionPlan
 } = require('../writer/operations');
 
-const INACCESSIBLE_STATES = new Set([
-  'INACCESSIBLE',
-  'NOT_CAPTURED',
-  'UNAVAILABLE',
-  'MISSING'
-]);
-
 function sourceHash(envelope) {
   return crypto
     .createHash('sha256')
@@ -38,60 +31,117 @@ function join(items) {
     : '';
 }
 
-function attachmentIntegrity(email = {}) {
+function attachmentReview(email = {}) {
   const filenames = Array.isArray(email.attachment_filenames)
-    ? email.attachment_filenames
+    ? email.attachment_filenames.filter(Boolean)
     : [];
   const refs = Array.isArray(email.attachment_refs)
-    ? email.attachment_refs
+    ? email.attachment_refs.filter(Boolean)
     : [];
-  const accessibility = String(
-    email.attachment_accessibility || ''
+  const access = String(
+    email.attachment_accessibility || 'UNKNOWN'
   ).toUpperCase();
 
-  if (filenames.length > refs.length) {
+  if (!filenames.length && !refs.length) {
     return {
-      review_required: true,
-      reason_code: 'SUPPLIER_ATTACHMENT_REFERENCE_MISSING',
-      reason:
-        'One or more supplier-email attachment filenames do not have a retained attachment reference.'
+      required: false,
+      reason_code: '',
+      reason: '',
+      route_ready: false
     };
   }
 
-  if (refs.length && INACCESSIBLE_STATES.has(accessibility)) {
+  if (filenames.length && !refs.length) {
     return {
-      review_required: true,
-      reason_code: 'SUPPLIER_ATTACHMENT_NOT_ACCESSIBLE',
+      required: true,
+      reason_code: 'SUPPLIER_ATTACHMENT_REFERENCE_REQUIRED',
       reason:
-        'Supplier email has attachment references but the source marks the attachment evidence inaccessible.'
+        'Supplier email names an attachment but no retrievable attachment reference is available.',
+      route_ready: false
+    };
+  }
+
+  if (
+    filenames.length &&
+    refs.length &&
+    filenames.length !== refs.length
+  ) {
+    return {
+      required: true,
+      reason_code: 'SUPPLIER_ATTACHMENT_REFERENCE_MISMATCH',
+      reason:
+        'Attachment filename/reference counts do not match; document routing requires review.',
+      route_ready: false
+    };
+  }
+
+  if (access !== 'ACCESSIBLE') {
+    return {
+      required: true,
+      reason_code: 'SUPPLIER_ATTACHMENT_ACCESS_REVIEW_REQUIRED',
+      reason:
+        'Supplier attachment reference exists but accessibility is not confirmed as ACCESSIBLE.',
+      route_ready: false
     };
   }
 
   return {
-    review_required: false,
+    required: false,
     reason_code: '',
-    reason: ''
+    reason: '',
+    route_ready: true
   };
 }
 
-function routingAction(email, integrity = attachmentIntegrity(email)) {
-  if (integrity.review_required) {
-    return 'HOLD_ATTACHMENT_REVIEW';
-  }
-  if (email.attachment_refs?.length) {
-    return 'ROUTE_DOCUMENT_EXTRACTION';
-  }
+function routingAction(email) {
+  const attachment = attachmentReview(email);
+  if (attachment.required) return 'REVIEW_ATTACHMENT_ACCESS';
+  if (attachment.route_ready) return 'ROUTE_DOCUMENT_EXTRACTION';
   return 'SUPPLIER_EMAIL_LINKED';
+}
+
+function reviewState(email, match) {
+  const attachment = attachmentReview(email);
+  const reasons = [];
+  const codes = [];
+
+  if (match.review_required_after_capture) {
+    codes.push(
+      match.review_reason_code ||
+      'SUPPLIER_EMAIL_REVIEW_REQUIRED'
+    );
+    if (match.review_reason) reasons.push(match.review_reason);
+  }
+
+  if (attachment.required) {
+    codes.push(attachment.reason_code);
+    reasons.push(attachment.reason);
+  }
+
+  if (email.requires_review) {
+    codes.push('SUPPLIER_EMAIL_REVIEW_REQUIRED');
+    reasons.push(
+      email.review_reason ||
+      'Supplier email requires explicit review.'
+    );
+  }
+
+  return {
+    required: reasons.length > 0,
+    reason_code:
+      codes.length === 1
+        ? codes[0]
+        : (codes.length ? 'SUPPLIER_EMAIL_REVIEW_REQUIRED' : ''),
+    reason: reasons.join(' '),
+    reason_codes: codes,
+    attachment
+  };
 }
 
 function intakeValues(envelope, match, now) {
   const email = envelope.payload.supplier_email || {};
   const supplier = match.supplier || {};
-  const integrity = attachmentIntegrity(email);
-  const explicitReview =
-    Boolean(email.requires_review) ||
-    Boolean(match.review_required_after_capture) ||
-    integrity.review_required;
+  const review = reviewState(email, match);
 
   return {
     intake_id: deterministicIntakeId(envelope),
@@ -115,23 +165,17 @@ function intakeValues(envelope, match, now) {
     match_status: 'EXACT_MATCH',
     matched_crm_id: '',
     matched_opportunity_id: '',
-    routing_action: routingAction(email, integrity),
+    routing_action: routingAction(email),
     processing_status:
-      explicitReview ? 'REVIEW_REQUIRED' : 'LINKED',
-    review_reason: [
-      match.review_reason || '',
-      integrity.reason || '',
-      email.requires_review
-        ? (email.review_reason || 'Supplier email requires explicit review.')
-        : ''
-    ].filter(Boolean).join(' '),
+      review.required ? 'REVIEW_REQUIRED' : 'LINKED',
+    review_reason: review.reason,
     last_checked_at: now.toISOString(),
     notes: email.notes || email.message_summary || '',
     supplier_id: match.canonical_ids?.supplier_id || '',
     business_document_type: email.business_document_type || '',
     attachment_filenames: join(email.attachment_filenames),
     attachment_refs: join(email.attachment_refs),
-    attachment_accessibility: email.attachment_accessibility || ''
+    attachment_accessibility: email.attachment_accessibility || 'UNKNOWN'
   };
 }
 
@@ -174,11 +218,11 @@ function planSupplierEmail(envelope, match, {
 }
 
 module.exports = {
-  INACCESSIBLE_STATES,
   planSupplierEmail,
   deterministicIntakeId,
   intakeValues,
-  attachmentIntegrity,
   routingAction,
+  attachmentReview,
+  reviewState,
   sourceHash
 };
