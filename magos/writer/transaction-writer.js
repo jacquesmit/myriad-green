@@ -521,6 +521,106 @@ class TransactionWriter {
     return outcomes;
   }
 
+  desiredFieldsForOperation(op, existing) {
+    const operation =
+      op.operation === 'CREATE_IF_ABSENT'
+        ? 'APPEND_IF_ABSENT'
+        : op.operation;
+
+    if (operation === 'UPDATE_BY_KEY' || operation === 'PATCH_IF_MATCH') {
+      return op.changes || {};
+    }
+    if (operation === 'APPEND_IF_ABSENT') return op.values || {};
+    if (operation === 'UPSERT_BY_KEY') {
+      if (existing && op.changes && Object.keys(op.changes).length) {
+        return op.changes;
+      }
+      return op.values || {};
+    }
+    if (operation === 'STATE_TRANSITION') {
+      return {
+        ...(op.changes || {}),
+        [op.state_field]: op.to_state
+      };
+    }
+    if (operation === 'SET_IF_EMPTY') return op.values || {};
+    return {};
+  }
+
+  async inspectPlanState(plan) {
+    assertPlan(plan);
+    const writerRun = await this.audit.findByKey(
+      'Automation_Run_Log',
+      'idempotency_key',
+      plan.idempotency_key
+    );
+    const writes = [];
+
+    for (const op of plan.writes) {
+      const store = this.store(op.store);
+      const existing = await store.findByKey(
+        op.sheet,
+        op.key.header,
+        op.key.value
+      );
+      const operation =
+        op.operation === 'CREATE_IF_ABSENT'
+          ? 'APPEND_IF_ABSENT'
+          : op.operation;
+
+      if (!existing) {
+        writes.push({
+          store: op.store,
+          sheet: op.sheet,
+          key: op.key,
+          operation,
+          state: ['APPEND_IF_ABSENT', 'UPSERT_BY_KEY'].includes(operation)
+            ? 'NOT_APPLIED'
+            : 'CONFLICT'
+        });
+        continue;
+      }
+
+      const desired = this.desiredFieldsForOperation(op, existing.object);
+      const entries = Object.entries(desired);
+      const matched = entries.filter(([field, value]) =>
+        sameValue(existing.object[field], value)
+      ).length;
+
+      let state = 'CONFLICT';
+      if (entries.length && matched === entries.length) state = 'APPLIED';
+      else if (operation !== 'APPEND_IF_ABSENT' && matched === 0) {
+        state = 'NOT_APPLIED';
+      } else if (matched > 0) {
+        state = 'PARTIAL';
+      }
+
+      writes.push({
+        store: op.store,
+        sheet: op.sheet,
+        key: op.key,
+        operation,
+        state
+      });
+    }
+
+    const allApplied =
+      writes.length > 0 &&
+      writes.every((item) => item.state === 'APPLIED');
+    const allNotApplied =
+      writes.length > 0 &&
+      writes.every((item) => item.state === 'NOT_APPLIED');
+
+    return {
+      writer_run: writerRun?.object || null,
+      writer_run_state: writerRun?.object?.run_state || '',
+      business_state: allApplied
+        ? 'APPLIED'
+        : (allNotApplied ? 'NOT_APPLIED' : 'PARTIAL_OR_CONFLICT'),
+      writes
+    };
+  }
+
   async execute(plan) {
     assertPlan(plan);
     const transactionId = plan.transaction_id || 'TXN-' + crypto.randomUUID();
