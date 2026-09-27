@@ -20,7 +20,10 @@ class GovernedEventRunner {
     writer,
     observer,
     reviewManager,
-    retryController
+    retryController,
+    executingStaleMs = Number(
+      process.env.MAGOS_EXECUTING_STALE_MS || 60000
+    )
   } = {}) {
     if (!processor) throw new Error('processor is required');
     if (!writer) throw new Error('writer is required');
@@ -33,6 +36,11 @@ class GovernedEventRunner {
       retryController ||
       new RetryController({ ledger: this.observer.ledger });
     this.rawProcessor = processor;
+    this.writer = writer;
+    this.executingStaleMs =
+      Number.isFinite(executingStaleMs) && executingStaleMs >= 0
+        ? executingStaleMs
+        : 60000;
 
     this.processor = new ObservedEventProcessor({
       processor,
@@ -49,6 +57,10 @@ class GovernedEventRunner {
 
     if (current.event_state === 'RETRY_REQUIRED') {
       return this.retry(envelope);
+    }
+
+    if (current.event_state === 'EXECUTING') {
+      return this.reconcileExecuting(envelope, current);
     }
 
     if ([
@@ -82,6 +94,169 @@ class GovernedEventRunner {
 
     const decision = await this.processor.decide(envelope);
     return this.executeDecision(envelope, decision);
+  }
+
+  executingAgeMs(current) {
+    const raw =
+      current?.state_changed_at ||
+      current?.logged_at ||
+      current?.started_at ||
+      '';
+    const changedAt = Date.parse(raw);
+    if (!Number.isFinite(changedAt)) return Number.POSITIVE_INFINITY;
+    return Math.max(0, Date.now() - changedAt);
+  }
+
+  async reconcileExecuting(envelope, current) {
+    const ageMs = this.executingAgeMs(current);
+    if (ageMs < this.executingStaleMs) {
+      return {
+        state: 'EXECUTING',
+        terminal_no_op: true,
+        recovery: 'WAITING_FOR_STALE_BOUNDARY',
+        age_ms: ageMs,
+        retry_after_ms: Math.max(0, this.executingStaleMs - ageMs),
+        observation: current
+      };
+    }
+
+    const decision = await this.rawProcessor.decide(envelope);
+
+    if (decision.decision !== 'AUTO_WRITE' || !decision.transaction_plan) {
+      const writerRun = this.writer.audit
+        ? await this.writer.audit.findByKey(
+          'Automation_Run_Log',
+          'idempotency_key',
+          envelope.idempotency_key
+        )
+        : null;
+
+      if (
+        writerRun?.object?.run_state === 'COMMITTED' &&
+        decision.reason_code === 'DUPLICATE_EVENT'
+      ) {
+        await this.observer.transition(envelope, 'COMMITTED', {
+          stage: 'EXECUTING_RECOVERY',
+          reasonCode: 'STALE_EXECUTING_RECONCILED_COMMITTED',
+          reason:
+            'P3 audit is COMMITTED and source re-resolution confirms the source event already exists.',
+          related: {
+            writer_run_log_id: writerRun.object.run_log_id || ''
+          }
+        });
+        return {
+          state: 'COMMITTED',
+          reconciled: true,
+          reconciliation: {
+            state: 'COMMITTED',
+            reason_code: 'STALE_EXECUTING_RECONCILED_COMMITTED',
+            writer_run: writerRun.object
+          }
+        };
+      }
+
+      await this.observer.transition(envelope, 'RETRY_REQUIRED', {
+        stage: 'EXECUTING_RECOVERY',
+        reasonCode: 'STALE_EXECUTING_REDECISION_NOT_AUTOWRITE',
+        reason:
+          'Stale EXECUTING recovery could not reproduce the original AUTO_WRITE plan. Re-enter governed retry/review using the same event lineage.'
+      });
+      return this.retry(envelope);
+    }
+
+    if (
+      decision.transaction_plan.idempotency_key !==
+      envelope.idempotency_key
+    ) {
+      await this.observer.transition(envelope, 'FAILED', {
+        stage: 'EXECUTING_RECOVERY',
+        reasonCode: 'STALE_EXECUTING_IDEMPOTENCY_MISMATCH',
+        reason:
+          'Recovered TransactionPlan changed the original event idempotency key.'
+      });
+      return {
+        state: 'FAILED',
+        decision,
+        reconciliation: {
+          state: 'FAILED',
+          reason_code: 'STALE_EXECUTING_IDEMPOTENCY_MISMATCH'
+        }
+      };
+    }
+
+    if (typeof this.writer.reconcileStalePlan !== 'function') {
+      await this.observer.transition(envelope, 'FAILED', {
+        stage: 'EXECUTING_RECOVERY',
+        reasonCode: 'STALE_EXECUTING_RECONCILER_UNAVAILABLE',
+        reason:
+          'Writer does not expose governed stale-execution reconciliation.'
+      });
+      return {
+        state: 'FAILED',
+        decision,
+        reconciliation: {
+          state: 'FAILED',
+          reason_code: 'STALE_EXECUTING_RECONCILER_UNAVAILABLE'
+        }
+      };
+    }
+
+    const reconciliation = await this.writer.reconcileStalePlan(
+      decision.transaction_plan
+    );
+
+    if (reconciliation.state === 'COMMITTED') {
+      await this.observer.transition(envelope, 'COMMITTED', {
+        stage: 'EXECUTING_RECOVERY',
+        reasonCode:
+          reconciliation.reason_code ||
+          'STALE_EXECUTING_RECONCILED_COMMITTED',
+        reason: reconciliation.reason || '',
+        related: {
+          transaction_id: reconciliation.transaction_id || '',
+          writer_run_log_id:
+            reconciliation.writer_run?.run_log_id || ''
+        }
+      });
+      return {
+        state: 'COMMITTED',
+        decision,
+        reconciled: true,
+        reconciliation
+      };
+    }
+
+    if (reconciliation.state === 'RETRY_REQUIRED') {
+      await this.observer.transition(envelope, 'RETRY_REQUIRED', {
+        stage: 'EXECUTING_RECOVERY',
+        reasonCode:
+          reconciliation.reason_code ||
+          'STALE_EXECUTING_SAFE_RETRY',
+        reason: reconciliation.reason || ''
+      });
+      return {
+        state: 'RETRY_REQUIRED',
+        decision,
+        reconciliation,
+        replay_rule:
+          'Replay the original EventEnvelope with the same idempotency key.'
+      };
+    }
+
+    await this.observer.transition(envelope, 'FAILED', {
+      stage: 'EXECUTING_RECOVERY',
+      reasonCode:
+        reconciliation.reason_code ||
+        'STALE_EXECUTING_RECONCILIATION_FAILED',
+      reason:
+        reconciliation.reason ||
+        'Stale EXECUTING state could not be reconciled safely.'
+    });
+    return {
+      state: 'FAILED',
+      decision,
+      reconciliation
+    };
   }
 
   async retry(envelope) {

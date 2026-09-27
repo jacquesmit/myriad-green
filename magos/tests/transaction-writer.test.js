@@ -385,3 +385,93 @@ test('registryRows does not truncate Writer_Schema_Registry at 300 rows', async 
   assert.deepEqual(rows, []);
   assert.equal(seenOptions, undefined);
 });
+
+
+test('stale reconciliation marks no-run unapplied plan safe for same-key retry', async () => {
+  const { crm, commercial, audit } = fixtures();
+  const writer = new TransactionWriter({
+    stores: { audit, crm, commercial },
+    auditStore: audit
+  });
+
+  const result = await writer.reconcileStalePlan(plan());
+  assert.equal(result.state, 'RETRY_REQUIRED');
+  assert.equal(result.reason_code, 'STALE_EXECUTING_NO_WRITER_RUN');
+  assert.equal(result.inspection.business_state, 'NOT_APPLIED');
+});
+
+
+test('stale RUNNING writer reconciles COMMITTED only after exact authoritative read-back', async () => {
+  const { crm, commercial, audit } = fixtures();
+  crm.tables.Jobs_Opportunities[0].job_id = 'JOB-1';
+  crm.tables.Jobs_Opportunities[0].quote_number = 'Q-1';
+  crm.tables.Jobs_Opportunities[0].job_status = 'AWAITING_MATERIALS';
+  commercial.tables['Job Execution'].push({
+    'Execution ID': 'EXEC-1',
+    'Job ID': 'JOB-1',
+    opportunity_id: 'OPP-1',
+    quote_id: 'QTE-1'
+  });
+  audit.tables.Automation_Run_Log.push({
+    run_log_id: 'ARL-STALE-1',
+    idempotency_key: 'writer:v1:qte-1',
+    run_state: 'RUNNING',
+    affected_record_ids: '',
+    writes_summary: '',
+    readback_summary: '',
+    error_or_blocker: ''
+  });
+
+  const writer = new TransactionWriter({
+    stores: { audit, crm, commercial },
+    auditStore: audit
+  });
+
+  const result = await writer.reconcileStalePlan(plan());
+  assert.equal(result.state, 'COMMITTED');
+  assert.equal(result.reason_code, 'STALE_RUNNING_RECONCILED_COMMITTED');
+
+  const run = await audit.findByKey(
+    'Automation_Run_Log',
+    'idempotency_key',
+    'writer:v1:qte-1'
+  );
+  assert.equal(run.object.run_state, 'COMMITTED');
+});
+
+
+test('stale RUNNING writer with no declared mutation becomes RETRY_REQUIRED', async () => {
+  const { crm, commercial, audit } = fixtures();
+  audit.tables.Automation_Run_Log.push({
+    run_log_id: 'ARL-STALE-2',
+    idempotency_key: 'writer:v1:qte-1',
+    run_state: 'RUNNING',
+    affected_record_ids: '',
+    writes_summary: '',
+    readback_summary: '',
+    error_or_blocker: ''
+  });
+
+  const writer = new TransactionWriter({
+    stores: { audit, crm, commercial },
+    auditStore: audit
+  });
+
+  const result = await writer.reconcileStalePlan(plan());
+  assert.equal(result.state, 'RETRY_REQUIRED');
+  assert.equal(result.reason_code, 'STALE_RUNNING_NO_BUSINESS_MUTATION');
+
+  const run = await audit.findByKey(
+    'Automation_Run_Log',
+    'idempotency_key',
+    'writer:v1:qte-1'
+  );
+  assert.equal(run.object.run_state, 'RETRY_REQUIRED');
+
+  const exception = await audit.findByKey(
+    'Sync_Exceptions',
+    'idempotency_key',
+    'writer:writer:v1:qte-1'
+  );
+  assert.equal(exception.object.status, 'OPEN');
+});
