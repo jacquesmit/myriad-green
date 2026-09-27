@@ -69,6 +69,19 @@ A retry replay does not restart the normal RECEIVED/VALIDATED path. It re-resolv
 
 If re-resolution no longer produces AUTO_WRITE, P5L routes to review instead of forcing the stale plan.
 
+## Stale EXECUTING recovery
+
+If an event remains in EXECUTING after the configured stale boundary, P5L must reconcile the original P3 writer idempotency record and the declared authoritative write targets before replay.
+
+- Exact P3 COMMITTED plus exact authoritative read-back reconciles the event to COMMITTED.
+- No P3 run plus no declared mutation reconciles the event to RETRY_REQUIRED.
+- Stale P3 RUNNING plus exact authoritative read-back closes P3 as COMMITTED.
+- Stale P3 RUNNING plus no declared mutation closes P3 as RETRY_REQUIRED.
+- Partial, conflicting, or unaudited-applied state fails closed and requires investigation.
+- A fresh EXECUTING event is left untouched to prevent concurrent writer execution.
+
+Default stale boundary: 60000 ms. Override only when required with MAGOS_EXECUTING_STALE_MS.
+
 ## Post-commit follow-up
 
 Some event types legitimately commit safe evidence while still requiring a separate human follow-up.
