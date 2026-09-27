@@ -621,6 +621,194 @@ class TransactionWriter {
     };
   }
 
+  async reconcileStalePlan(plan) {
+    const inspection = await this.inspectPlanState(plan);
+    const auditState = inspection.writer_run_state;
+    const exceptionKey = 'writer:' + plan.idempotency_key;
+
+    const failClosed = async (reasonCode, reason) => {
+      if (inspection.writer_run) {
+        await this.audit.completeRun(plan.idempotency_key, {
+          state: 'FAILED',
+          affectedRecordIds:
+            inspection.writer_run.affected_record_ids || '',
+          writesSummary:
+            inspection.writer_run.writes_summary || '',
+          readbackSummary:
+            'Stale execution reconciliation failed closed. business_state=' +
+            inspection.business_state,
+          errorOrBlocker: reasonCode + ': ' + reason
+        });
+      }
+
+      await this.audit.raiseSyncException({
+        idempotencyKey: exceptionKey,
+        entityType: plan.event_type,
+        recordId: plan.source_event_id,
+        destinationSystem: 'MAGOS authoritative stores',
+        exceptionType: reasonCode,
+        severity: 'HIGH',
+        sourceValue: plan.idempotency_key,
+        destinationValue: JSON.stringify(inspection.writes),
+        actionRequired:
+          'Investigate stale EXECUTING reconciliation before replay. Preserve original event and writer idempotency keys.',
+        evidence: plan.evidence_link || ''
+      });
+
+      return {
+        state: 'FAILED',
+        reason_code: reasonCode,
+        reason,
+        inspection,
+        writer_run: inspection.writer_run
+      };
+    };
+
+    if (auditState === 'COMMITTED') {
+      if (inspection.business_state !== 'APPLIED') {
+        return failClosed(
+          'STALE_COMMITTED_READBACK_MISMATCH',
+          'P3 audit is COMMITTED but authoritative read-back does not match every declared write.'
+        );
+      }
+      return {
+        state: 'COMMITTED',
+        reason_code: 'STALE_EXECUTING_RECONCILED_COMMITTED',
+        reason:
+          'P3 audit is COMMITTED and all declared authoritative writes read back exactly.',
+        inspection,
+        writer_run: inspection.writer_run
+      };
+    }
+
+    if (auditState === 'RUNNING') {
+      if (inspection.business_state === 'APPLIED') {
+        await this.audit.completeRun(plan.idempotency_key, {
+          state: 'COMMITTED',
+          affectedRecordIds:
+            inspection.writer_run?.affected_record_ids || '',
+          writesSummary:
+            inspection.writer_run?.writes_summary ||
+            'Recovered stale RUNNING transaction by exact authoritative read-back.',
+          readbackSummary:
+            'All declared fields read back exactly during stale RUNNING reconciliation.',
+          errorOrBlocker: ''
+        });
+        await this.audit.resolveSyncException(
+          exceptionKey,
+          plan.evidence_link || ''
+        );
+        const reconciled = await this.audit.findByKey(
+          'Automation_Run_Log',
+          'idempotency_key',
+          plan.idempotency_key
+        );
+        return {
+          state: 'COMMITTED',
+          reason_code: 'STALE_RUNNING_RECONCILED_COMMITTED',
+          reason:
+            'Stale P3 RUNNING audit reconciled to COMMITTED after exact authoritative read-back.',
+          inspection,
+          writer_run: reconciled?.object || inspection.writer_run
+        };
+      }
+
+      if (inspection.business_state === 'NOT_APPLIED') {
+        await this.audit.completeRun(plan.idempotency_key, {
+          state: 'RETRY_REQUIRED',
+          affectedRecordIds: '',
+          writesSummary: '',
+          readbackSummary:
+            'No declared business mutation is present after stale RUNNING execution.',
+          errorOrBlocker:
+            'STALE_RUNNING_NO_BUSINESS_MUTATION: safe same-key retry required.'
+        });
+        await this.audit.raiseSyncException({
+          idempotencyKey: exceptionKey,
+          entityType: plan.event_type,
+          recordId: plan.source_event_id,
+          destinationSystem: 'MAGOS authoritative stores',
+          exceptionType: 'STALE_RUNNING_NO_BUSINESS_MUTATION',
+          severity: 'HIGH',
+          sourceValue: plan.idempotency_key,
+          destinationValue: 'No declared business mutation present.',
+          actionRequired:
+            'Replay the original event with the same idempotency key after stale-run reconciliation.',
+          evidence: plan.evidence_link || ''
+        });
+        const retryRun = await this.audit.findByKey(
+          'Automation_Run_Log',
+          'idempotency_key',
+          plan.idempotency_key
+        );
+        return {
+          state: 'RETRY_REQUIRED',
+          reason_code: 'STALE_RUNNING_NO_BUSINESS_MUTATION',
+          reason:
+            'Stale P3 RUNNING audit has no declared business mutation; same-key retry is safe.',
+          inspection,
+          writer_run: retryRun?.object || inspection.writer_run
+        };
+      }
+
+      return failClosed(
+        'STALE_RUNNING_PARTIAL_OR_CONFLICT',
+        'Stale P3 RUNNING execution has partial or conflicting authoritative state.'
+      );
+    }
+
+    if (auditState === 'RETRY_REQUIRED') {
+      if (inspection.business_state === 'NOT_APPLIED') {
+        return {
+          state: 'RETRY_REQUIRED',
+          reason_code: 'STALE_EXECUTING_WRITER_RETRY_REQUIRED',
+          reason:
+            'P3 already records RETRY_REQUIRED and no declared mutation remains.',
+          inspection,
+          writer_run: inspection.writer_run
+        };
+      }
+      return failClosed(
+        'STALE_RETRY_READBACK_CONFLICT',
+        'P3 records RETRY_REQUIRED but authoritative state is not cleanly unapplied.'
+      );
+    }
+
+    if (auditState === 'FAILED') {
+      return {
+        state: 'FAILED',
+        reason_code: 'STALE_EXECUTING_WRITER_FAILED',
+        reason:
+          inspection.writer_run?.error_or_blocker ||
+          'P3 writer already records FAILED.',
+        inspection,
+        writer_run: inspection.writer_run
+      };
+    }
+
+    if (!inspection.writer_run) {
+      if (inspection.business_state === 'NOT_APPLIED') {
+        return {
+          state: 'RETRY_REQUIRED',
+          reason_code: 'STALE_EXECUTING_NO_WRITER_RUN',
+          reason:
+            'No P3 writer run exists and no declared business mutation is present; same-key retry is safe.',
+          inspection,
+          writer_run: null
+        };
+      }
+      return failClosed(
+        'STALE_EXECUTING_UNAUDITED_MUTATION',
+        'No P3 writer audit exists but authoritative state is applied, partial, or conflicting.'
+      );
+    }
+
+    return failClosed(
+      'STALE_EXECUTING_UNKNOWN_WRITER_STATE',
+      'Unsupported P3 writer run_state=' + auditState
+    );
+  }
+
   async execute(plan) {
     assertPlan(plan);
     const transactionId = plan.transaction_id || 'TXN-' + crypto.randomUUID();
