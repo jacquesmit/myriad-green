@@ -157,7 +157,8 @@ function makeRunner({
   processor,
   writer,
   ledger,
-  maxRetries = 3
+  maxRetries = 3,
+  executingStaleMs = 60000
 } = {}) {
   const actualLedger = ledger || fakeLedger();
   const observer = new EventObserver({ ledger: actualLedger });
@@ -188,7 +189,8 @@ function makeRunner({
       writer: actualWriter,
       observer,
       reviewManager,
-      retryController
+      retryController,
+      executingStaleMs
     })
   };
 }
@@ -438,4 +440,122 @@ test('retry exhaustion dead-letters original event identity and terminates obser
 
   const current = ledger.runs.get(observationKey(env.idempotency_key));
   assert.equal(current.event_state, 'FAILED');
+});
+
+
+test('stale EXECUTING with no writer run becomes safe RETRY_REQUIRED without mutation', async () => {
+  let executeCalls = 0;
+  const writer = {
+    async execute() {
+      executeCalls += 1;
+      return { state: 'COMMITTED' };
+    },
+    async reconcileStalePlan() {
+      return {
+        state: 'RETRY_REQUIRED',
+        reason_code: 'STALE_EXECUTING_NO_WRITER_RUN',
+        reason: 'no writer run and no business mutation'
+      };
+    }
+  };
+  const { ledger, runner } = makeRunner({
+    writer,
+    executingStaleMs: 0
+  });
+  const env = envelope();
+
+  await runner.observer.ensure(env);
+  await runner.observer.transition(env, 'VALIDATED');
+  await runner.observer.transition(env, 'DECIDED');
+  await runner.observer.transition(env, 'PLANNED');
+  await runner.observer.transition(env, 'EXECUTING');
+
+  const result = await runner.run(env);
+  assert.equal(result.state, 'RETRY_REQUIRED');
+  assert.equal(executeCalls, 0);
+
+  const current = ledger.runs.get(observationKey(env.idempotency_key));
+  assert.equal(current.event_state, 'RETRY_REQUIRED');
+  assert.equal(
+    current.decision_reason,
+    'STALE_EXECUTING_NO_WRITER_RUN'
+  );
+});
+
+
+test('stale EXECUTING reconciles COMMITTED from writer audit/read-back without replaying writer', async () => {
+  let executeCalls = 0;
+  const writer = {
+    async execute() {
+      executeCalls += 1;
+      return { state: 'COMMITTED' };
+    },
+    async reconcileStalePlan() {
+      return {
+        state: 'COMMITTED',
+        reason_code: 'STALE_RUNNING_RECONCILED_COMMITTED',
+        reason: 'exact authoritative read-back',
+        writer_run: {
+          run_log_id: 'ARL-WRITER-1',
+          run_state: 'COMMITTED'
+        }
+      };
+    }
+  };
+  const { ledger, runner } = makeRunner({
+    writer,
+    executingStaleMs: 0
+  });
+  const env = envelope();
+
+  await runner.observer.ensure(env);
+  await runner.observer.transition(env, 'VALIDATED');
+  await runner.observer.transition(env, 'DECIDED');
+  await runner.observer.transition(env, 'PLANNED');
+  await runner.observer.transition(env, 'EXECUTING');
+
+  const result = await runner.run(env);
+  assert.equal(result.state, 'COMMITTED');
+  assert.equal(result.reconciled, true);
+  assert.equal(executeCalls, 0);
+
+  const current = ledger.runs.get(observationKey(env.idempotency_key));
+  assert.equal(current.event_state, 'COMMITTED');
+  assert.equal(
+    current.decision_reason,
+    'STALE_RUNNING_RECONCILED_COMMITTED'
+  );
+});
+
+
+test('fresh EXECUTING event is not reconciled before stale boundary', async () => {
+  let reconcileCalls = 0;
+  const writer = {
+    async execute() {
+      return { state: 'COMMITTED' };
+    },
+    async reconcileStalePlan() {
+      reconcileCalls += 1;
+      return { state: 'RETRY_REQUIRED' };
+    }
+  };
+  const { ledger, runner } = makeRunner({
+    writer,
+    executingStaleMs: 60000
+  });
+  const env = envelope();
+
+  await runner.observer.ensure(env);
+  await runner.observer.transition(env, 'VALIDATED');
+  await runner.observer.transition(env, 'DECIDED');
+  await runner.observer.transition(env, 'PLANNED');
+  await runner.observer.transition(env, 'EXECUTING');
+
+  const result = await runner.run(env);
+  assert.equal(result.state, 'EXECUTING');
+  assert.equal(result.recovery, 'WAITING_FOR_STALE_BOUNDARY');
+  assert.equal(reconcileCalls, 0);
+
+  const current = ledger.runs.get(observationKey(env.idempotency_key));
+  assert.equal(current.event_state, 'EXECUTING');
 });
