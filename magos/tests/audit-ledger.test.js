@@ -2,7 +2,10 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { AuditLedger } = require('../adapters/audit-ledger');
+const {
+  AuditLedger,
+  isTransientSheetsError
+} = require('../adapters/audit-ledger');
 
 function makeLedger({ duplicate = false } = {}) {
   const calls = [];
@@ -93,5 +96,112 @@ test('duplicate idempotency keys fail closed instead of picking an arbitrary row
       'doc-extract:v1:file:hash'
     ),
     /Duplicate key idempotency_key/
+  );
+});
+
+
+test('retries transient Google Sheets quota reads with bounded backoff', async () => {
+  let attempts = 0;
+  const waits = [];
+
+  const ledger = Object.create(AuditLedger.prototype);
+  ledger.spreadsheetId = 'audit-sheet';
+  ledger.sheetsRetryAttempts = 3;
+  ledger.sheetsRetryBaseMs = 10;
+  ledger.sheetsRetryMaxMs = 100;
+  ledger.sleepFn = async (ms) => { waits.push(ms); };
+  ledger.sheets = {
+    spreadsheets: {
+      values: {
+        async get() {
+          attempts += 1;
+          if (attempts === 1) {
+            const error = new Error(
+              "Quota exceeded for quota metric 'Read requests' and limit 'Read requests per minute per user'"
+            );
+            error.response = {
+              status: 429,
+              data: {
+                error: {
+                  code: 429,
+                  status: 'RESOURCE_EXHAUSTED',
+                  message: error.message
+                }
+              }
+            };
+            throw error;
+          }
+          return { data: { values: [['idempotency_key']] } };
+        }
+      }
+    }
+  };
+
+  const headers = await ledger.getHeaders('Automation_Run_Log');
+  assert.deepEqual(headers.headers, ['idempotency_key']);
+  assert.equal(attempts, 2);
+  assert.deepEqual(waits, [10]);
+});
+
+test('does not retry non-transient Google Sheets permission failures', async () => {
+  let attempts = 0;
+  const waits = [];
+
+  const ledger = Object.create(AuditLedger.prototype);
+  ledger.spreadsheetId = 'audit-sheet';
+  ledger.sheetsRetryAttempts = 3;
+  ledger.sheetsRetryBaseMs = 10;
+  ledger.sheetsRetryMaxMs = 100;
+  ledger.sleepFn = async (ms) => { waits.push(ms); };
+  ledger.sheets = {
+    spreadsheets: {
+      values: {
+        async get() {
+          attempts += 1;
+          const error = new Error('The caller does not have permission');
+          error.response = {
+            status: 403,
+            data: {
+              error: {
+                code: 403,
+                status: 'PERMISSION_DENIED',
+                message: error.message,
+                errors: [{ reason: 'forbidden' }]
+              }
+            }
+          };
+          throw error;
+        }
+      }
+    }
+  };
+
+  await assert.rejects(
+    ledger.getHeaders('Automation_Run_Log'),
+    /does not have permission/
+  );
+  assert.equal(attempts, 1);
+  assert.deepEqual(waits, []);
+});
+
+test('recognises Google 403 rate-limit reasons as transient but not ordinary permission denial', () => {
+  assert.equal(
+    isTransientSheetsError({
+      response: {
+        status: 403,
+        data: { error: { errors: [{ reason: 'userRateLimitExceeded' }] } }
+      }
+    }),
+    true
+  );
+  assert.equal(
+    isTransientSheetsError({
+      response: {
+        status: 403,
+        data: { error: { errors: [{ reason: 'forbidden' }] } }
+      },
+      message: 'The caller does not have permission'
+    }),
+    false
   );
 });
