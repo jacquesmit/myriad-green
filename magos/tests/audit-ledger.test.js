@@ -205,3 +205,47 @@ test('recognises Google 403 rate-limit reasons as transient but not ordinary per
     false
   );
 });
+
+
+test('does not raw-retry append after a transient response because commit state may be ambiguous', async () => {
+  let appendAttempts = 0;
+  const waits = [];
+
+  const ledger = Object.create(AuditLedger.prototype);
+  ledger.spreadsheetId = 'audit-sheet';
+  ledger.sheetsRetryAttempts = 3;
+  ledger.sheetsRetryBaseMs = 10;
+  ledger.sheetsRetryMaxMs = 100;
+  ledger.sleepFn = async (ms) => { waits.push(ms); };
+  ledger.sheets = {
+    spreadsheets: {
+      values: {
+        async get() {
+          return { data: { values: [['idempotency_key']] } };
+        },
+        async append() {
+          appendAttempts += 1;
+          const error = new Error('Quota exceeded for write requests');
+          error.response = {
+            status: 429,
+            data: {
+              error: {
+                code: 429,
+                status: 'RESOURCE_EXHAUSTED',
+                message: error.message
+              }
+            }
+          };
+          throw error;
+        }
+      }
+    }
+  };
+
+  await assert.rejects(
+    ledger.appendObject('Automation_Run_Log', { idempotency_key: 'writer:test' }),
+    /Quota exceeded/
+  );
+  assert.equal(appendAttempts, 1);
+  assert.deepEqual(waits, []);
+});
