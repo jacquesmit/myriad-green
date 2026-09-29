@@ -7,6 +7,80 @@ const { createGoogleAuth } = require('./google-auth');
 const SHEETS_SCOPE = 'https://www.googleapis.com/auth/spreadsheets';
 const DEFAULT_AUDIT_ID = '1Y4iP2mVCIph8MrIL51mo-KpzgUkZbWW7ZUIlkH8lOTw';
 
+const DEFAULT_SHEETS_RETRY_ATTEMPTS = 7;
+const DEFAULT_SHEETS_RETRY_BASE_MS = 1000;
+const DEFAULT_SHEETS_RETRY_MAX_MS = 30000;
+
+function positiveInteger(value, fallback) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0
+    ? Math.floor(parsed)
+    : fallback;
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function sheetsErrorStatus(error) {
+  const raw =
+    error?.response?.status ??
+    error?.status ??
+    error?.code ??
+    error?.response?.data?.error?.code;
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function sheetsErrorReasons(error) {
+  const reasons = error?.response?.data?.error?.errors;
+  if (!Array.isArray(reasons)) return [];
+  return reasons
+    .map((item) => item?.reason)
+    .filter(Boolean)
+    .map(String);
+}
+
+function isTransientSheetsError(error) {
+  const status = sheetsErrorStatus(error);
+  if (status === 429 || [500, 502, 503, 504].includes(status)) return true;
+
+  const reasons = sheetsErrorReasons(error);
+  const retryableReasons = new Set([
+    'rateLimitExceeded',
+    'userRateLimitExceeded',
+    'quotaExceeded',
+    'backendError'
+  ]);
+  if (reasons.some((reason) => retryableReasons.has(reason))) return true;
+
+  const text = [
+    error?.message,
+    error?.response?.data?.error?.status,
+    error?.response?.data?.error?.message
+  ].filter(Boolean).join(' ');
+
+  return /RESOURCE_EXHAUSTED|quota exceeded|rate limit|rateLimitExceeded|userRateLimitExceeded|backend error/i.test(text);
+}
+
+function retryAfterMs(error) {
+  const headers = error?.response?.headers || {};
+  const raw =
+    headers['retry-after'] ??
+    headers['Retry-After'] ??
+    (typeof headers.get === 'function' ? headers.get('retry-after') : null);
+  if (!raw) return 0;
+
+  const seconds = Number(raw);
+  if (Number.isFinite(seconds) && seconds >= 0) {
+    return Math.ceil(seconds * 1000);
+  }
+
+  const at = Date.parse(String(raw));
+  if (!Number.isNaN(at)) return Math.max(0, at - Date.now());
+  return 0;
+}
+
 function nowSast() {
   return new Intl.DateTimeFormat('en-ZA', {
     timeZone: 'Africa/Johannesburg',
@@ -30,18 +104,81 @@ function columnLetter(indexZeroBased) {
 class AuditLedger {
   constructor({
     spreadsheetId = process.env.MAGOS_AUDIT_SPREADSHEET_ID || DEFAULT_AUDIT_ID,
-    auth
+    auth,
+    sheetsRetryAttempts = process.env.MAGOS_SHEETS_RETRY_ATTEMPTS,
+    sheetsRetryBaseMs = process.env.MAGOS_SHEETS_RETRY_BASE_MS,
+    sheetsRetryMaxMs = process.env.MAGOS_SHEETS_RETRY_MAX_MS,
+    sleepFn = sleep
   } = {}) {
     this.spreadsheetId = spreadsheetId;
     this.auth = auth || createGoogleAuth([SHEETS_SCOPE]);
     this.sheets = google.sheets({ version: 'v4', auth: this.auth });
+    this.sheetsRetryAttempts = positiveInteger(
+      sheetsRetryAttempts,
+      DEFAULT_SHEETS_RETRY_ATTEMPTS
+    );
+    this.sheetsRetryBaseMs = positiveInteger(
+      sheetsRetryBaseMs,
+      DEFAULT_SHEETS_RETRY_BASE_MS
+    );
+    this.sheetsRetryMaxMs = positiveInteger(
+      sheetsRetryMaxMs,
+      DEFAULT_SHEETS_RETRY_MAX_MS
+    );
+    this.sleepFn = sleepFn;
+  }
+
+  async withSheetsRetry(label, operation) {
+    const maxAttempts = positiveInteger(
+      this.sheetsRetryAttempts,
+      DEFAULT_SHEETS_RETRY_ATTEMPTS
+    );
+    const baseMs = positiveInteger(
+      this.sheetsRetryBaseMs,
+      DEFAULT_SHEETS_RETRY_BASE_MS
+    );
+    const maxMs = positiveInteger(
+      this.sheetsRetryMaxMs,
+      DEFAULT_SHEETS_RETRY_MAX_MS
+    );
+    const wait = this.sleepFn || sleep;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+      try {
+        return await operation();
+      } catch (error) {
+        if (!isTransientSheetsError(error) || attempt >= maxAttempts) {
+          error.magos_sheets_retry = {
+            operation: label,
+            attempts: attempt,
+            exhausted: attempt >= maxAttempts
+          };
+          throw error;
+        }
+
+        const exponentialMs = Math.min(
+          maxMs,
+          baseMs * (2 ** (attempt - 1))
+        );
+        const delayMs = Math.min(
+          maxMs,
+          Math.max(exponentialMs, retryAfterMs(error))
+        );
+        await wait(delayMs);
+      }
+    }
+
+    throw new Error('Unreachable Google Sheets retry state for ' + label);
   }
 
   async getHeaders(sheetName) {
-    const response = await this.sheets.spreadsheets.values.get({
-      spreadsheetId: this.spreadsheetId,
-      range: "'" + sheetName.replace(/'/g, "''") + "'!1:1"
-    });
+    const response = await this.withSheetsRetry(
+      'getHeaders:' + sheetName,
+      () => this.sheets.spreadsheets.values.get({
+        spreadsheetId: this.spreadsheetId,
+        range: "'" + sheetName.replace(/'/g, "''") + "'!1:1"
+      })
+    );
     const headers = response.data.values?.[0] || [];
     const map = {};
     headers.forEach((header, index) => {
@@ -63,10 +200,13 @@ class AuditLedger {
 
     const keyColumn = columnLetter(keyIndex);
     const quoted = this.quoteSheetName(sheetName);
-    const keyResponse = await this.sheets.spreadsheets.values.get({
-      spreadsheetId: this.spreadsheetId,
-      range: quoted + '!' + keyColumn + '2:' + keyColumn
-    });
+    const keyResponse = await this.withSheetsRetry(
+      'resolveRowByKey:key:' + sheetName,
+      () => this.sheets.spreadsheets.values.get({
+        spreadsheetId: this.spreadsheetId,
+        range: quoted + '!' + keyColumn + '2:' + keyColumn
+      })
+    );
 
     const keyRows = keyResponse.data.values || [];
     const matches = [];
@@ -84,10 +224,13 @@ class AuditLedger {
 
     const rowNumber = matches[0];
     const endColumn = columnLetter(headers.length - 1);
-    const rowResponse = await this.sheets.spreadsheets.values.get({
-      spreadsheetId: this.spreadsheetId,
-      range: quoted + '!A' + rowNumber + ':' + endColumn + rowNumber
-    });
+    const rowResponse = await this.withSheetsRetry(
+      'resolveRowByKey:row:' + sheetName,
+      () => this.sheets.spreadsheets.values.get({
+        spreadsheetId: this.spreadsheetId,
+        range: quoted + '!A' + rowNumber + ':' + endColumn + rowNumber
+      })
+    );
     const row = rowResponse.data.values?.[0] || [];
     const object = {};
     headers.forEach((header, index) => {
@@ -100,6 +243,10 @@ class AuditLedger {
   async appendObject(sheetName, object) {
     const { headers } = await this.getHeaders(sheetName);
     const row = headers.map((header) => object[header] ?? '');
+    // APPEND is not retried at the raw Sheets layer. A transient response may
+    // arrive after Google has committed the row, so blind retry could duplicate
+    // a business or audit record. Higher-level canonical-key reconciliation owns
+    // safe replay for append-if-absent flows.
     await this.sheets.spreadsheets.values.append({
       spreadsheetId: this.spreadsheetId,
       range: "'" + sheetName.replace(/'/g, "''") + "'!A1",
@@ -122,14 +269,17 @@ class AuditLedger {
         : (resolved.object[header] ?? '')
     );
 
-    await this.sheets.spreadsheets.values.update({
-      spreadsheetId: this.spreadsheetId,
-      range:
-        this.quoteSheetName(sheetName) +
-        '!A' + resolved.rowNumber + ':' + resolved.endColumn + resolved.rowNumber,
-      valueInputOption: 'USER_ENTERED',
-      requestBody: { values: [replacement] }
-    });
+    await this.withSheetsRetry(
+      'updateObjectByKey:' + sheetName,
+      () => this.sheets.spreadsheets.values.update({
+        spreadsheetId: this.spreadsheetId,
+        range:
+          this.quoteSheetName(sheetName) +
+          '!A' + resolved.rowNumber + ':' + resolved.endColumn + resolved.rowNumber,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: { values: [replacement] }
+      })
+    );
     return true;
   }
 
@@ -137,10 +287,13 @@ class AuditLedger {
     const { headers } = await this.getHeaders(sheetName);
     if (!headers.length) return [];
     const endColumn = columnLetter(headers.length - 1);
-    const response = await this.sheets.spreadsheets.values.get({
-      spreadsheetId: this.spreadsheetId,
-      range: this.quoteSheetName(sheetName) + '!A2:' + endColumn + Math.max(2, maxRows + 1)
-    });
+    const response = await this.withSheetsRetry(
+      'readObjects:' + sheetName,
+      () => this.sheets.spreadsheets.values.get({
+        spreadsheetId: this.spreadsheetId,
+        range: this.quoteSheetName(sheetName) + '!A2:' + endColumn + Math.max(2, maxRows + 1)
+      })
+    );
     return (response.data.values || []).map((row, index) => {
       const object = {};
       headers.forEach((header, column) => {
@@ -182,13 +335,16 @@ class AuditLedger {
       return { rowNumber: resolved.rowNumber, before, changed: false };
     }
 
-    await this.sheets.spreadsheets.values.batchUpdate({
-      spreadsheetId: this.spreadsheetId,
-      requestBody: {
-        valueInputOption: 'USER_ENTERED',
-        data
-      }
-    });
+    await this.withSheetsRetry(
+      'updateFieldsByKey:' + sheetName,
+      () => this.sheets.spreadsheets.values.batchUpdate({
+        spreadsheetId: this.spreadsheetId,
+        requestBody: {
+          valueInputOption: 'USER_ENTERED',
+          data
+        }
+      })
+    );
     return { rowNumber: resolved.rowNumber, before, changed: true };
   }
 
@@ -196,15 +352,20 @@ class AuditLedger {
     const resolved = await this.resolveRowByKey(sheetName, keyHeader, keyValue);
     if (!resolved) return false;
 
-    const meta = await this.sheets.spreadsheets.get({
-      spreadsheetId: this.spreadsheetId,
-      fields: 'sheets(properties(sheetId,title))'
-    });
+    const meta = await this.withSheetsRetry(
+      'deleteRowByKey:metadata:' + sheetName,
+      () => this.sheets.spreadsheets.get({
+        spreadsheetId: this.spreadsheetId,
+        fields: 'sheets(properties(sheetId,title))'
+      })
+    );
     const sheet = (meta.data.sheets || []).find(
       (item) => item.properties?.title === sheetName
     );
     if (!sheet) throw new Error('Missing sheet ' + sheetName);
 
+    // Row deletion is also non-idempotent at a raw dimension index. Do not
+    // repeat it automatically after an ambiguous transient response.
     await this.sheets.spreadsheets.batchUpdate({
       spreadsheetId: this.spreadsheetId,
       requestBody: {
@@ -430,4 +591,12 @@ class AuditLedger {
   }
 }
 
-module.exports = { AuditLedger, nowSast };
+module.exports = {
+  AuditLedger,
+  nowSast,
+  isTransientSheetsError,
+  retryAfterMs,
+  DEFAULT_SHEETS_RETRY_ATTEMPTS,
+  DEFAULT_SHEETS_RETRY_BASE_MS,
+  DEFAULT_SHEETS_RETRY_MAX_MS
+};
