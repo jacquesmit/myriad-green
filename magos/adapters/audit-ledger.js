@@ -243,16 +243,17 @@ class AuditLedger {
   async appendObject(sheetName, object) {
     const { headers } = await this.getHeaders(sheetName);
     const row = headers.map((header) => object[header] ?? '');
-    await this.withSheetsRetry(
-      'appendObject:' + sheetName,
-      () => this.sheets.spreadsheets.values.append({
-        spreadsheetId: this.spreadsheetId,
-        range: "'" + sheetName.replace(/'/g, "''") + "'!A1",
-        valueInputOption: 'USER_ENTERED',
-        insertDataOption: 'INSERT_ROWS',
-        requestBody: { values: [row] }
-      })
-    );
+    // APPEND is not retried at the raw Sheets layer. A transient response may
+    // arrive after Google has committed the row, so blind retry could duplicate
+    // a business or audit record. Higher-level canonical-key reconciliation owns
+    // safe replay for append-if-absent flows.
+    await this.sheets.spreadsheets.values.append({
+      spreadsheetId: this.spreadsheetId,
+      range: "'" + sheetName.replace(/'/g, "''") + "'!A1",
+      valueInputOption: 'USER_ENTERED',
+      insertDataOption: 'INSERT_ROWS',
+      requestBody: { values: [row] }
+    });
     return row;
   }
 
@@ -363,24 +364,23 @@ class AuditLedger {
     );
     if (!sheet) throw new Error('Missing sheet ' + sheetName);
 
-    await this.withSheetsRetry(
-      'deleteRowByKey:delete:' + sheetName,
-      () => this.sheets.spreadsheets.batchUpdate({
-        spreadsheetId: this.spreadsheetId,
-        requestBody: {
-          requests: [{
-            deleteDimension: {
-              range: {
-                sheetId: sheet.properties.sheetId,
-                dimension: 'ROWS',
-                startIndex: resolved.rowNumber - 1,
-                endIndex: resolved.rowNumber
-              }
+    // Row deletion is also non-idempotent at a raw dimension index. Do not
+    // repeat it automatically after an ambiguous transient response.
+    await this.sheets.spreadsheets.batchUpdate({
+      spreadsheetId: this.spreadsheetId,
+      requestBody: {
+        requests: [{
+          deleteDimension: {
+            range: {
+              sheetId: sheet.properties.sheetId,
+              dimension: 'ROWS',
+              startIndex: resolved.rowNumber - 1,
+              endIndex: resolved.rowNumber
             }
-          }]
-        }
-      })
-    );
+          }
+        }]
+      }
+    });
     return true;
   }
 
