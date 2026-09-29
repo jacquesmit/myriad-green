@@ -180,3 +180,49 @@ test('illegal state transition fails closed', async () => {
     /Illegal event transition/
   );
 });
+
+
+test('transient Google Sheets writer failure becomes RETRY_REQUIRED instead of FAILED', async () => {
+  const ledger = fakeLedger();
+  const observer = new EventObserver({ ledger });
+  const env = envelope();
+  const decision = await new ObservedEventProcessor({
+    observer,
+    processor: autoWriteProcessor()
+  }).decide(env);
+
+  const executor = new ObservedTransactionExecutor({
+    observer,
+    writer: {
+      async execute() {
+        const error = new Error(
+          "Quota exceeded for quota metric 'Read requests' and limit 'Read requests per minute per user'"
+        );
+        error.response = {
+          status: 429,
+          data: {
+            error: {
+              code: 429,
+              status: 'RESOURCE_EXHAUSTED',
+              message: error.message
+            }
+          }
+        };
+        throw error;
+      }
+    }
+  });
+
+  const result = await executor.execute(env, decision);
+  assert.equal(result.state, 'RETRY_REQUIRED');
+  assert.equal(result.transient, true);
+  assert.match(result.error, /TRANSIENT_GOOGLE_SHEETS_FAILURE/);
+
+  const current = ledger.runs.get(observationKey(env.idempotency_key));
+  assert.equal(current.event_state, 'RETRY_REQUIRED');
+  assert.equal(current.retry_count, '1');
+
+  const last = ledger.transitions.at(-1);
+  assert.equal(last.new_state, 'RETRY_REQUIRED');
+  assert.equal(last.reason_code, 'RETRY_REQUIRED');
+});
