@@ -2,6 +2,7 @@
 
 const { EventProcessor } = require('./event-processor');
 const { EventObserver } = require('./event-observer');
+const { isTransientSheetsError } = require('../adapters/audit-ledger');
 
 class ObservedEventProcessor {
   constructor({ processor, observer } = {}) {
@@ -89,12 +90,22 @@ class ObservedTransactionExecutor {
     try {
       result = await this.writer.execute(decision.transaction_plan);
     } catch (error) {
-      await this.observer.transition(envelope, 'FAILED', {
-        stage: 'WRITER',
-        reasonCode: 'WRITER_THROWN_ERROR',
-        reason: error.message
-      });
-      throw error;
+      if (isTransientSheetsError(error)) {
+        result = {
+          transaction_id: '',
+          state: 'RETRY_REQUIRED',
+          duplicate: false,
+          transient: true,
+          error: 'TRANSIENT_GOOGLE_SHEETS_FAILURE: ' + error.message
+        };
+      } else {
+        await this.observer.transition(envelope, 'FAILED', {
+          stage: 'WRITER',
+          reasonCode: 'WRITER_THROWN_ERROR',
+          reason: error.message
+        });
+        throw error;
+      }
     }
 
     const stateMap = {
