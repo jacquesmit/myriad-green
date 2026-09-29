@@ -37,7 +37,7 @@ No WhatsApp, Gmail, WordPress or 00A channel adapter is allowed to call this wri
 
 ## Google Sheets transient-failure hardening
 
-AuditLedger applies bounded retry to Google Sheets reads and writes used by observability, idempotency, schema validation, business mutation, read-back, and recovery.
+AuditLedger applies bounded retry to Google Sheets reads and idempotent overwrite operations used by observability, idempotency, schema validation, read-back, and recovery.
 
 Default controls:
 
@@ -46,5 +46,7 @@ Default controls:
 - `MAGOS_SHEETS_RETRY_MAX_MS=30000`
 
 The delay doubles per retry and is capped by the configured maximum. A provider `Retry-After` value is honoured within the same cap. Retry classification includes HTTP 429, transient Google 5xx responses, `RESOURCE_EXHAUSTED`, and Google rate-limit/quota reasons. Ordinary permission-denied failures are not retried.
+
+Raw row append and row deletion are deliberately excluded from automatic API-level retry because their commit state can be ambiguous after a transient response. Those flows remain under MAGOS canonical-key, transaction, compensation, and stale-execution reconciliation controls so replay cannot blindly duplicate a row or delete the wrong row.
 
 This control is deliberately bounded. It does not convert persistent permission, schema, identity, or authority failures into success and it does not create a replacement event or idempotency key.
