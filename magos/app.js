@@ -13,7 +13,7 @@ if (!token) {
 
 const app = createRuntimeApp({
   token,
-  version: process.env.MAGOS_RUNTIME_VERSION || 'P3'
+  version: process.env.MAGOS_RUNTIME_VERSION || 'P5'
 });
 
 const port = Number(process.env.PORT || process.env.MAGOS_PORT || 3000);
