@@ -266,3 +266,10 @@ Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decis
 - `POST /v1/governance/create-job` uses a dedicated `MAGOS_JOB_CREATION_TOKEN`, rejects caller payment/acceptance assertions and blocks generic CRM job_id writes by runtime token; returns review rather than writing on missing proof.
 - `tests/accepted-job-execution.test.js` covers writer execution with trusted server-attested state, rejection, proof-only, dry-run and authenticated HTTP. Tests committed but hosting verification PENDING; real acceptance/payment verification service not yet connected.
 - This is functioning guarded route code, NOT a verified production workflow. Production writes must not be enabled with a stub verifier. Current full suite most recently 225/225 PASS prior to subsequent changes.
+
+## Integrated operator quote-to-job inspection batch — 2026-10-11
+
+- Added canonical `job-release-inspection.js` read-only quote/opportunity lookup, explicit signed-acceptance and cleared-funds or approved-terms evidence requirements, and pre-existing job rejection. The API intentionally never asserts financial clearance.
+- New authenticated `GET /v1/operator/job-readiness/:quoteId` endpoint; operator UI now allows direct per-quote readiness inspection from the browser, without exposing mutation privileges.
+- Added `tests/job-release-inspection.test.js` with canonical inspection, safety-negative cases, and HTTP authorization. New code/tests COMMITTED, HOSTED VERIFICATION PENDING. Full production rollout must include current operator interface and previous job/procurement security changes in ONE suite and deployment acceptance run.
+- Honest release scope: actionable read-only quote inspections are developed; true approved job mutation still depends on independently sourced acceptance and payment evidence. No live customer records changed.
