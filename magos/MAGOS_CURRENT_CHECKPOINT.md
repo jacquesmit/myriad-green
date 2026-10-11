@@ -214,3 +214,10 @@ Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decis
 - Added `tests/procurement-issue-approval.test.js` with happy path and negative cases; new tests not yet executed on hosted Node.
 - RELEASE BLOCKER: approvalEvidence/approverId are caller inputs and require independently authenticated operator authority plus durable evidence verification before exposing or executing this plan in production. No production route or order issue created.
 - Production procurement capability remains PARTIAL: true order dispatch, complete PO lines/requirements workflow and authenticated approval endpoint remain pending. Development of other capabilities is not blocked.
+
+## P5 procurement approval runtime batch — 2026-10-11
+
+- `runtime/app.js`: dedicated `/v1/governance/procurement-approve` route requires `MAGOS_PROCUREMENT_APPROVAL_TOKEN` distinct from normal runtime, lead ingress and supplier approval credentials. Caller IDs and evidence are validated before canonical lookup. Authenticated request plans exact PO/BOQ/deposit review via `procurement-issue-approval`, then executes the P3 writer; generic `/v1/transactions` blocks supplier `Purchase_Orders` mutations.
+- `tests/procurement-approval-http.test.js`: 4 HTTP security and integration tests committed; hosted execution NOT YET VERIFIED. Earlier 210 tests passed on host at 8987523.
+- Important production LIMITATION: this is internal `APPROVED_FOR_ISSUE` state only; no supplier PO dispatch or money movement. Approval evidence is caller-supplied and not independently verified in this route. Production deployment remains BLOCKED until evidence provenance and authentic operator permissions are verified; do not configure an external webhook with the privileged token.
+- Live Supplier Master not mutated by this code; current production route deployment not independently confirmed.
