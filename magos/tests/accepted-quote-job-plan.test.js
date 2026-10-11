@@ -24,3 +24,17 @@ test('existing execution for same opportunity prevents alternate job ID',async()
  assert.equal(r.reason_code,'OPPORTUNITY_EXECUTION_ALREADY_EXISTS');
  assert.equal(r.plan,undefined);
 });
+
+test('CRM existing job ID must remain empty at P3 commit time',async()=>{
+ const f=fixture();
+ const r=await planAcceptedJob({...f.args,stores:f.stores});
+ assert.equal(r.state,'READY_FOR_GOVERNED_JOB_CREATION');
+ assert.ok(r.plan.preconditions.some(p=>p.store==='crm'&&p.sheet==='Jobs_Opportunities'&&p.expect.job_id===''));
+});
+test('unavailable execution index fails closed, not create duplicate job',async()=>{
+ const f=fixture();
+ delete f.stores.commercial.readObjects;
+ const r=await planAcceptedJob({...f.args,stores:f.stores});
+ assert.equal(r.reason_code,'EXECUTION_INDEX_UNAVAILABLE');
+ assert.equal(r.plan,undefined);
+});
