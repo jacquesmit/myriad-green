@@ -280,3 +280,9 @@ Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decis
 - Live checks initially showed `/healthz` HTTP 200, `/readyz` HTTP 200, `/operator` HTTP 404, despite local `/operator` HTTP 200. Two old lsnode processes predated latest code.
 - After controlled hosting application process restart, user reported `/healthz`, `/readyz`, `/operator` all HTTP 200. ROUTE DEPLOYMENT PASS; operator API with canonical credentials, authoritative record read, signed acceptance, P3 production writes and audit readback still NOT VERIFIED.
 - No more repeated restart requests are needed. Keep developing integrated customer-to-job lifecycle; one consolidated hosted suite for next release batch.
+
+## Operator live-schema alignment batch — 2026-10-11
+
+- Checked actual authoritative headers of `Intake_Queue`, `Quotes`, `Procurement`, and `Sync_Exceptions` using the native spreadsheet connection. Updated operator projection: `processing_status`, `matched_crm_id`, `matched_opportunity_id`, `routing_action`, `action_required`; accepted canonical procurement technical state `PASS` or `PASSED`.
+- Surfaced accepted quotations without an attached job inside the existing quotation workstream, preserving pending-quotation KPI separately. This allows the already-deployed Inspect Job Readiness UI to inspect accepted quotes rather than hiding them.
+- Added live-schema regression cases and accepted-quote visibility test. Commit branch updated, NOT YET tested or deployed to cPanel. Next release cycle to run consolidated test suite and restart once; no production job writes.
