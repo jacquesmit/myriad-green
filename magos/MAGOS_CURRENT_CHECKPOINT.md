@@ -303,3 +303,9 @@ Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decis
 - Verified the canonical `Cross_System_Links` register: `LNK-009` is ACTIVE, points to commercial `Job Execution`. The prior accepted-job plan incorrectly used `opportunity_id` as `link_id`, which P3 authority validation would reject. Fixed planner to use `LNK-009`; regression test added.
 - Also committed earlier in this development batch: refuse unavailable execution index and add live CRM job_id-empty precondition. All unverified changes remain pending the NEXT ONE consolidated hosted verification, not represented as deployed.
 - **Business workflow is still not production released**: the jobAuthorityVerifier defaults to fail-closed and requires an independently authenticated signed-acceptance/payment attestation. No production job write was attempted.
+
+## Canonical deposit-evidence operator deliverable — 2026-10-11
+
+- Added read-only `processor/deposit-evidence-inspection.js`, using canonical Commercial `Payment Control` deposit requirements and `Payment_Allocations` with `allocation_state=CLEARED`, matching control IDs, deposit allocation type, and bank evidence links; payment proof alone cannot clear an obligation. No financial mutations.
+- Added authenticated `GET /v1/operator/deposit-evidence/:opportunityId`, displayed alongside the quote-to-job readiness view in `runtime/operator-page.js`; isolated tests for cleared, proof-only, inadequate/invalid allocation, and HTTP authorization.
+- Live canonical sheet headers were inspected for both `Payment Control` and `Payment_Allocations`. This is **read-only evidence visibility**, not a trusted job-creation authority verifier. Signed acceptance and approval remains separately required. Branch commits remain pending one consolidated hosted suite and release deployment. No customer records changed.
