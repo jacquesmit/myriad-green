@@ -48,6 +48,7 @@ function createRuntimeApp({
     process.env.MAGOS_LEAD_INGRESS_SOURCES || '',
   writerFactory = () => new TransactionWriter(),
   procurementLookupFactory = () => new (require('../adapters/exact-lookup-service').ExactLookupService)(),
+  procurementAuthorityVerifier = async () => ({ verified: false, reason_code: 'APPROVAL_AUTHORITY_NOT_VERIFIED' }),
   eventProcessorFactory = () => new EventProcessor(),
   eventDispatcherFactory = ({ writer }) =>
     new GovernedProcessorRegistry({ writer }),
@@ -313,9 +314,27 @@ function createRuntimeApp({
     try {
       const { planPurchaseOrderIssueApproval } = require('../processor/procurement-issue-approval');
       const lookupService = procurementLookupFactory();
+      // A privileged HTTP token authorizes access, NOT the business decision.
+      // Verification must come from a trusted server-side authority service,
+      // never from caller-controlled request fields or submitted booleans.
+      const attestation = await procurementAuthorityVerifier({
+        poId: b.poId, sourceEventId: b.sourceEventId,
+        evidenceRef: b.approvalEvidence, claimedApproverId: b.approverId
+      });
+      if (!attestation || attestation.verified !== true ||
+          attestation.po_id !== b.poId ||
+          attestation.source_event_id !== b.sourceEventId ||
+          attestation.evidence_ref !== b.approvalEvidence ||
+          !attestation.authorized_actor_id) {
+        return res.status(202).json({
+          state: 'REVIEW_REQUIRED',
+          reason_code: attestation?.reason_code || 'APPROVAL_AUTHORITY_NOT_VERIFIED',
+          writes: []
+        });
+      }
       const result = await planPurchaseOrderIssueApproval({
         lookupService, poId: b.poId, sourceEventId: b.sourceEventId,
-        approvalEvidence: b.approvalEvidence, approverId: b.approverId
+        approvalEvidence: b.approvalEvidence, approverId: attestation.authorized_actor_id
       });
       if (result.state !== 'READY_FOR_APPROVAL') {
         return res.status(202).json(result);
