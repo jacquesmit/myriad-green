@@ -13,6 +13,13 @@ function projectOperations({leads=[],jobs=[],quotes=[],procurement=[],exceptions
   schema_version:'MAGOS_OPERATOR_SNAPSHOT/V1',
   authority:'READ_ONLY_DERIVED',
   counts:{open_leads:openLeads.length,pending_quotes:pendingQuotes.length,active_jobs:activeJobs.length,procurement_review:purchaseReview.length,open_exceptions:openExceptions.length},
+  records:{
+   leads:openLeads.map(r=>({id:txt(r.source_event_id),status:txt(r.status||r.intake_status),opportunity_id:txt(r.opportunity_id),client_id:txt(r.client_crm_id),next_action:txt(r.next_action)})),
+   quotes:pendingQuotes.map(r=>({id:txt(r.quote_id),status:txt(r['Quote Status']),opportunity_id:txt(r.opportunity_id),job_id:txt(r.job_id),next_action:txt(r['Next Action']),drive_link:txt(r['Drive Link'])})),
+   jobs:activeJobs.map(r=>({id:txt(r.opportunity_id),status:txt(r.job_status),job_id:txt(r.job_id),client_id:txt(r.client_crm_id),next_action:txt(r.next_action)})),
+   procurement:purchaseReview.map(r=>({id:txt(r['Procurement ID']),status:txt(r['Procurement Gate']),job_id:txt(r['Job ID']),supplier_id:txt(r.supplier_id),next_action:txt(r['Next Action'])})),
+   exceptions:openExceptions.map(r=>({id:txt(r.exception_id),status:txt(r.status),next_action:txt(r.next_action||r.error_or_blocker)}))
+  },
   attention:[
    ...openExceptions.map(r=>({type:'EXCEPTION',id:r.exception_id,next_action:txt(r.next_action||r.error_or_blocker)})),
    ...purchaseReview.map(r=>({type:'PROCUREMENT_REVIEW',id:r['Procurement ID'],next_action:txt(r['Next Action'])})),
