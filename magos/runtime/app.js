@@ -42,6 +42,7 @@ function isPlausiblePlan(plan) {
 function createRuntimeApp({
   token = process.env.MAGOS_RUNTIME_TOKEN,
   leadIngressToken = process.env.MAGOS_LEAD_INGRESS_TOKEN,
+  supplierApprovalToken = process.env.MAGOS_SUPPLIER_APPROVAL_TOKEN,
   leadIngressSources =
     process.env.MAGOS_LEAD_INGRESS_SOURCES || '',
   writerFactory = () => new TransactionWriter(),
@@ -217,7 +218,50 @@ function createRuntimeApp({
     }
   });
 
-  app.post('/v1/events/run', requireRuntimeAuth, async (req, res) => {
+  // Supplier-approval authority is never inferred from caller-controlled event metadata.
+  app.post('/v1/governance/supplier-approval', async (req, res) => {
+    if (!supplierApprovalToken || supplierApprovalToken === token || supplierApprovalToken === leadIngressToken) {
+      return res.status(503).json({ error: 'SUPPLIER_APPROVAL_AUTH_NOT_CONFIGURED' });
+    }
+    if (!constantTimeEqual(req.get('x-magos-supplier-approval-token') || '', supplierApprovalToken)) {
+      return res.status(401).json({ error: 'UNAUTHORIZED' });
+    }
+    try {
+      const { createEventEnvelope } = require('../processor/event-envelope');
+      const change = req.body || {};
+      if (!['VETTING', 'APPROVED', 'EXCLUDED', 'SUSPENDED'].includes(change.from_state) ||
+          !['VETTING', 'APPROVED', 'EXCLUDED', 'SUSPENDED'].includes(change.to_state) ||
+          change.from_state === change.to_state ||
+          typeof change.supplier_id !== 'string' || !change.supplier_id.trim() ||
+          typeof change.source_event_id !== 'string' || !change.source_event_id.trim() ||
+          typeof change.actor_id !== 'string' || !change.actor_id.trim() ||
+          typeof change.evidence_ref !== 'string' || !change.evidence_ref.trim()) {
+        return res.status(400).json({ error: 'INVALID_SUPPLIER_APPROVAL_REQUEST' });
+      }
+      const envelope = createEventEnvelope({
+        source: 'MGOS_GOVERNANCE',
+        source_event_id: change.source_event_id,
+        event_type: 'SUPPLIER_APPROVAL_CHANGED',
+        actor: { id: change.actor_id },
+        entity_hints: { supplier_id: change.supplier_id },
+        guards: { spam: 'CLEAR', phishing: 'CLEAR', explicit_content: 'CLEAR', malware: 'CLEAR', irrelevant: 'CLEAR' },
+        evidence: [{ type: 'DOCUMENT', ref: change.evidence_ref }],
+        metadata: { approval_authorized: true, authorization_origin: 'SUPPLIER_APPROVAL_ENDPOINT' },
+        payload: { supplier_approval_change: {
+          supplier_id: change.supplier_id, from_state: change.from_state, to_state: change.to_state
+        }}
+      });
+      const result = await getEventDispatcher().run(envelope);
+      return res.status(result.state === 'COMMITTED' || result.state === 'DUPLICATE' ? 200 : 202).json(result);
+    } catch (error) {
+      return res.status(500).json({ error: 'SUPPLIER_APPROVAL_EXECUTION_FAILED', detail: error.message });
+    }
+  });
+
+    app.post('/v1/events/run', requireRuntimeAuth, async (req, res) => {
+    if (req.body?.event_type === 'SUPPLIER_APPROVAL_CHANGED') {
+      return res.status(403).json({ error: 'SUPPLIER_APPROVAL_REQUIRES_GOVERNANCE_ENDPOINT' });
+    }
     try {
       const result = await getEventDispatcher().run(req.body);
       const status =
@@ -249,6 +293,9 @@ function createRuntimeApp({
   });
 
   app.post('/v1/transactions', requireRuntimeAuth, async (req, res) => {
+    if (req.body?.event_type === 'SUPPLIER_APPROVAL_CHANGED' || req.body?.writes?.some(w => w.sheet === 'Suppliers' && (w.state_field === 'supplier_approval_state' || Object.hasOwn(w.changes || {}, 'supplier_approval_state')))) {
+      return res.status(403).json({ error: 'SUPPLIER_APPROVAL_REQUIRES_GOVERNANCE_ENDPOINT' });
+    }
     if (!isPlausiblePlan(req.body)) {
       return res.status(400).json({
         error: 'INVALID_TRANSACTION_PLAN'
