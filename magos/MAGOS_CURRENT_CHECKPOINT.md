@@ -315,3 +315,10 @@ Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decis
 - Added `runtime/release-acceptance.js`, exposed as `npm run verify:release`. One run executes the full hosted Node test suite, public `/healthz`, `/readyz`, `/operator` availability and authenticated authoritative operator snapshot schema/read, and writes `tmp/magos-release-acceptance.json` with commit/checks/verdict. No production transaction is performed and no credentials are printed.
 - A missing runtime credential or failed live canonical read produces BLOCKED/FAIL, **not PASS**. This gate verifies code + read-only live integration; financial and job-creation transaction acceptance MUST be added and evidenced separately before describing them as operational. A full-suite PASS is not an end-to-end job PASS.
 - This code is COMMITTED ONLY. Run one consolidated release check after the next integrated development batch and deploy; do not run it separately after each change.
+
+## Job activation evidence-to-P3 integration — 2026-10-11
+
+- Added `signed-acceptance-verification.js`: a trusted server-side evidence verifier must attest exact quote/opportunity, immutable signed artifact, signer, time and source event; a user-entered confirmation or accepted quote field alone cannot pass.
+- `job-activation-assessment.js` combines signed provider acceptance with canonical cleared deposit evidence; operator assessment displays both dimensions. Incomplete evidence remains REVIEW_REQUIRED.
+- Added `canonical-job-authority.js` to reuse the same source-verified signed event and canonical `Payment_Allocations` deposit evidence at governed P3 execution. Job endpoint now uses this resolver by default when no explicit test verifier is supplied; absent production provider verifier fails closed. Tests added for exact source events, missing provider and integrated readiness.
+- DELIVERY VERDICT: code committed; hosted consolidated verification and live provider integration PENDING. This is **not** signed-document verification from a real provider until an independent acceptance verifier is configured. No live job mutated.
