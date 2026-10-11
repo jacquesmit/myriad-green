@@ -252,3 +252,10 @@ Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decis
 - Added read-only, canonical per-record workstream queues to the existing `operator-snapshot.js` projection for leads, quotes, jobs, procurement and exceptions. Relevant exact opportunity/job/supplier IDs remain linked in returned records.
 - Browser `/operator` now offers workstream buttons and selectable record details, enabling actual navigation of an individual item instead of only aggregate counts.
 - Added two regression tests. Branch implementation committed; newest tests and actual hosted dashboard remain TO_CONFIRM until full-host run and live API acceptance. This is record inspection, not yet quote/job write operations.
+
+## Canonical accepted quote → job transaction planning — 2026-10-11
+
+- Added `processor/accepted-quote-job-plan.js` tying canonical commercial Quotes, CRM Jobs_Opportunities and Job Execution to the existing P3 `createJobFromAcceptedScope` recipe. The planner verifies exact opportunity linkage, accepted status, line-control state, clearance input, absence of an existing execution row and produces one two-write plan; it does not execute a job automatically.
+- Added `tests/accepted-quote-job-plan.test.js`: positive path, unaccepted quote, proof-not-cleared and duplicate job. These tests are committed but not hosted-verified.
+- SECURITY/PRODUCTION REMAINS PENDING: caller-supplied acceptanceEvidence and paymentClearance are NOT independently attested in the new planner; never expose this plan for execution without canonical source verification and approval. Not yet a production job-creation endpoint.
+- Next meaningful release: attach authoritative acceptance/payment evidence resolver, confirm schema/ownership for CRM and Job Execution, then governed writer execution from authenticated operator action with verified audit readback.
