@@ -1,5 +1,7 @@
 'use strict';
 
+const { ACTIONS, scopeGate } = require('./scoped-action-gate');
+
 function value(v) { return String(v === undefined || v === null ? '' : v).trim(); }
 function upper(v) { return value(v).toUpperCase(); }
 function assessQuoteToJob({ quote, job, paymentClearance, acceptanceEvidence } = {}) {
@@ -24,7 +26,12 @@ function assessQuoteToJob({ quote, job, paymentClearance, acceptanceEvidence } =
     review_reasons: unknown,
     // This is a read-only release gate. Existing business operations continue independently.
     writes: [],
-    side_effects: false
+    side_effects: false,
+    action_gates: {
+      create_job: scopeGate({ targetAction: ACTIONS.CREATE_JOB, blockedReasons: failures, reviewReasons: unknown }),
+      prepare_draft: scopeGate({ targetAction: ACTIONS.PREPARE_DRAFT, blockedReasons: failures, reviewReasons: unknown }),
+      plan_work: scopeGate({ targetAction: ACTIONS.PLAN_WORK, blockedReasons: failures, reviewReasons: unknown })
+    }
   };
 }
 module.exports = { assessQuoteToJob };
