@@ -34,6 +34,25 @@ async function main(){
    }
   }catch(error){record('CANONICAL_SNAPSHOT','BLOCKED',{reason:error.name||'READ_ERROR'});}
  }
+ // Business activation gate is explicit: a healthy dashboard is not a job release.
+ const releaseQuote=String(process.env.MAGOS_RELEASE_QUOTE_ID||'').trim();
+ if(!releaseQuote){
+  record('JOB_ACTIVATION_EVIDENCE','BLOCKED',{reason:'RELEASE_QUOTE_ID_NOT_CONFIGURED; NO_LIVE_BUSINESS_TRANSACTION_TESTED'});
+ }else if(!token){
+  record('JOB_ACTIVATION_EVIDENCE','BLOCKED',{reason:'MAGOS_RUNTIME_TOKEN_NOT_IN_PROCESS_ENV'});
+ }else{
+  try{
+   const response=await request('/v1/operator/job-activation/'+encodeURIComponent(releaseQuote),true);
+   if(response.status!==200){
+    record('JOB_ACTIVATION_EVIDENCE',response.status===202?'BLOCKED':'FAIL',{http:response.status});
+   }else{
+    const result=await response.json();
+    const ok=result.state==='READY_FOR_GOVERNED_AUTHORIZATION'&&result.checks?.signed_acceptance==='VERIFIED'&&result.checks?.financial_evidence==='EVIDENCED'&&result.writes?.length===0;
+    record('JOB_ACTIVATION_EVIDENCE',ok?'PASS':'BLOCKED',{state:result.state,checks:result.checks});
+   }
+  }catch(error){record('JOB_ACTIVATION_EVIDENCE','BLOCKED',{reason:error.name||'READ_ERROR'});}
+ }
+ record('P3_PRODUCTION_JOB_COMMIT','BLOCKED',{reason:'NO_AUTHORIZED_CONTROLLED_TRANSACTION_OR_AUDIT_READBACK_EVIDENCE'});
  const verdict=checks.some(x=>x.state==='FAIL')?'FAIL':checks.some(x=>x.state==='BLOCKED')?'BLOCKED':'PASS';
  const report={release:'MAGOS_INTEGRATED_ACCEPTANCE_V1',commit:spawnSync('git',['rev-parse','--short','HEAD'],{encoding:'utf8'}).stdout?.trim()||'UNKNOWN',verdict,checks,scope:'READ_ONLY_ACCEPTANCE_NO_PRODUCTION_TRANSACTIONS',generated_at:new Date().toISOString()};
  fs.mkdirSync('tmp',{recursive:true});
