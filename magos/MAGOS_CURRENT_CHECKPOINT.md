@@ -159,6 +159,16 @@ At the end of every material MAGOS development session:
 - Current development branch commit: `08cf5d0` before this checkpoint update.
 - TO_CONFIRM: Node unit/integration test outcome, event ingress authorization provenance, writer schema/authority registry compatibility, production readback and idempotent replay.
 
+## 2026-10-11 implementation continuation
+
+- Server confirmed 12/12 focused supplier-approval and registry tests PASS at `34a2932`.
+- Added separate-token `/v1/governance/supplier-approval` ingress on development branch, with server-built approval attestation rather than caller-supplied `approval_authorized` metadata.
+- Generic `/v1/events/run` rejects supplier approval; generic `/v1/transactions` rejects direct writes to canonical `supplier/Suppliers`.
+- Approval governance endpoint requires explicit guard results rather than inventing CLEAR attestations.
+- Added runtime HTTP tests for credential isolation, prohibited paths and guard preservation.
+- These subsequent runtime authorization changes have NOT YET been executed/tested on the hosted checkout.
+- Aquadam production mutation NOT EXECUTED.
+
 ## Exact next action
 
-Fast-forward the existing hosted development branch and execute the focused supplier-approval tests. Fix any failures before production mutation. Keep Aquadam unchanged until independent write/readback controls pass.
+Fast-forward hosted development branch and run `tests/runtime-http.test.js` with Node.js 20. Correct failures, then validate writer registry/authority before authorizing a real Supplier Master transition.
