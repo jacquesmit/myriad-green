@@ -53,8 +53,13 @@ async function main(){
   }catch(error){record('JOB_ACTIVATION_EVIDENCE','BLOCKED',{reason:error.name||'READ_ERROR'});}
  }
  record('P3_PRODUCTION_JOB_COMMIT','BLOCKED',{reason:'NO_AUTHORIZED_CONTROLLED_TRANSACTION_OR_AUDIT_READBACK_EVIDENCE'});
- const verdict=checks.some(x=>x.state==='FAIL')?'FAIL':checks.some(x=>x.state==='BLOCKED')?'BLOCKED':'PASS';
- const report={release:'MAGOS_INTEGRATED_ACCEPTANCE_V1',commit:spawnSync('git',['rev-parse','--short','HEAD'],{encoding:'utf8'}).stdout?.trim()||'UNKNOWN',verdict,checks,scope:'READ_ONLY_ACCEPTANCE_NO_PRODUCTION_TRANSACTIONS',generated_at:new Date().toISOString()};
+ const platformNames=new Set(['FULL_CODE_SUITE','LIVE_/healthz','LIVE_/readyz','LIVE_/operator','CANONICAL_SNAPSHOT']);
+ const platform=checks.filter(x=>platformNames.has(x.name));
+ const business=checks.filter(x=>!platformNames.has(x.name));
+ const grade=items=>items.some(x=>x.state==='FAIL')?'FAIL':items.some(x=>x.state==='BLOCKED')?'BLOCKED':'PASS';
+ const platform_verdict=grade(platform),business_verdict=grade(business);
+ const verdict=grade(checks);
+ const report={release:'MAGOS_INTEGRATED_ACCEPTANCE_V1',platform_verdict,business_verdict,commit:spawnSync('git',['rev-parse','--short','HEAD'],{encoding:'utf8'}).stdout?.trim()||'UNKNOWN',verdict,checks,scope:'READ_ONLY_ACCEPTANCE_NO_PRODUCTION_TRANSACTIONS',generated_at:new Date().toISOString()};
  fs.mkdirSync('tmp',{recursive:true});
  fs.writeFileSync('tmp/magos-release-acceptance.json',JSON.stringify(report,null,2)+'\n',{mode:0o600});
  console.log(JSON.stringify(report,null,2));
