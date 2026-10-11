@@ -22,3 +22,14 @@ Production gate must enforce both the signature verifier and the canonical finan
 4. Only then classify **Job Activation V1: PRODUCTION PASS**.
 
 Neither a 272/272 suite result nor `/healthz`/`/readyz`/`/operator` HTTP 200 proves business activation. Scraper prospects remain separate from operational leads and jobs.
+
+## Provider integration implemented (pending real credentials and live verification)
+
+`adapters/signing-provider-verifier.js` is wired as the runtime default. It requires two server-side environment variables:
+
+- `MAGOS_SIGNING_VERIFY_URL`: an actual trusted signature-provider HTTPS verification endpoint; never use a fabricated URL
+- `MAGOS_SIGNING_VERIFY_TOKEN`: the independent provider's authenticated read-only verification credential
+
+MAGOS makes an authenticated server-to-server GET with exact `quote_id` and `opportunity_id` query parameters. The source must respond with JSON fields `verified: true`, exact IDs, `status: COMPLETED` or `SIGNED`, `evidence_ref`, `signer_identity`, ISO-parsable `signed_at`, and `source_event_id`. All fields are checked independently; invalid, pending, mismatched or unavailable responses fail closed.
+
+**Not configured** does not mean a signature exists. As of this checkpoint the live signing provider has not been identified or connected; no credentials have been supplied. Do not mark live production acceptance PASS until authenticated verification from the real provider returns evidence for an approved test quote, subsequent P3 transaction succeeds, and audit/readback is evidenced.
