@@ -82,6 +82,14 @@ function createRuntimeApp({
     return eventDispatcher;
   };
 
+  // Browser shell exposes no business data; API remains authenticated.
+  app.get('/operator', (req, res) => {
+    const { operatorPage } = require('./operator-page');
+    res.set('Cache-Control','no-store');
+    res.set('Content-Security-Policy',"default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'");
+    res.type('html').status(200).send(operatorPage());
+  });
+
   app.get('/healthz', (req, res) => {
     res.status(200).json({
       service: 'MAGOS Automation Runtime V1',
