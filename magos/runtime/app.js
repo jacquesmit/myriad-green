@@ -216,6 +216,15 @@ function createRuntimeApp({
     }
   });
 
+  // Read-only canonical financial evidence, not authorization to release a job.
+  app.get('/v1/operator/deposit-evidence/:opportunityId', requireRuntimeAuth, async(req,res)=>{
+    try {
+      const {inspectDepositEvidence}=require('../processor/deposit-evidence-inspection');
+      const report=await inspectDepositEvidence({stores:getWriter().stores,opportunityId:req.params.opportunityId});
+      return res.status(report.state==='CLEARED_ALLOCATION_EVIDENCED'?200:202).json(report);
+    }catch(error){return res.status(503).json({error:'DEPOSIT_EVIDENCE_UNAVAILABLE',detail:error.message});}
+  });
+
   app.post('/v1/probes/google-sheets', requireRuntimeAuth, async (req, res) => {
     try {
       const runtimeWriter = getWriter();
