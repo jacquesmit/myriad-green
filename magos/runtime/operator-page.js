@@ -39,6 +39,20 @@ function showSection(section){
     const dd=document.createElement('dd');dd.textContent=String(v);dl.append(dt,dd);
    }
    view.appendChild(dl);
+   if(section==='quotes'){
+    const inspect=document.createElement('button');inspect.type='button';inspect.textContent='Inspect job readiness';
+    inspect.addEventListener('click',async()=>{
+      inspect.disabled=true;
+      try{
+        const response=await fetch('/v1/operator/job-readiness/'+encodeURIComponent(record.id),{headers:{Authorization:'Bearer '+credential},cache:'no-store'});
+        const result=await response.json();
+        const pre=document.createElement('pre');pre.style.whiteSpace='pre-wrap';pre.textContent=JSON.stringify(result,null,2);
+        dl.appendChild(pre);
+      }catch(error){const p=document.createElement('p');p.textContent='Inspection failed: '+error.message;dl.appendChild(p);}
+      finally{inspect.disabled=false;}
+    });
+    dl.appendChild(inspect);
+   }
   });view.appendChild(b);
  }
 }
