@@ -62,7 +62,7 @@ test('runtime token cannot perform generic Purchase_Orders writes',async()=>{
 test('an unapproved supplier returns review with no writer mutation',async()=>{
  const d=data();d.lookup.findEntityByCanonicalId=async()=>({supplier_id:'SUP-1',supplier_approval_state:'VETTING',active_status:'ACTIVE'});
  let called=0;
- const app=createRuntimeApp({token:'runtime-token',procurementApprovalToken:'purchase-token',procurementLookupFactory:()=>d.lookup,writerFactory:()=>({execute:async()=>{called++;return {state:'COMMITTED'};}})});
+ const app=createRuntimeApp({token:'runtime-token',procurementApprovalToken:'purchase-token',procurementLookupFactory:()=>d.lookup,procurementAuthorityVerifier:async b=>({verified:true,po_id:b.poId,source_event_id:b.sourceEventId,evidence_ref:b.evidenceRef,authorized_actor_id:'owner-verified'}),writerFactory:()=>({execute:async()=>{called++;return {state:'COMMITTED'};}})});
  const result=await send(app,'purchase-token',payload);
  assert.equal(result.status,202);
  assert.equal(result.body.reason_code,'SUPPLIER_NOT_APPROVED_ACTIVE');
