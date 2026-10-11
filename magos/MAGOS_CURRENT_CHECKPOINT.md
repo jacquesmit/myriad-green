@@ -237,3 +237,12 @@ Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decis
 - `tests/operator-snapshot.test.js`: four new tests for aggregation, read-only boundary, missing authority and HTTP authentication. COMMITTED; HOSTED TESTS PENDING.
 - This is a backend command-center API, NOT a completed user-facing operator interface. The live deployment is NOT verified.
 - Next integration: real authorization-backed command center, client-to-job operations, and tested hosted deployment; preserve scoped controls and avoid new sources of truth.
+
+## Usable operator web interface — 2026-10-11
+
+- `runtime/operator-page.js` provides a responsive browser-accessible command centre at `GET /operator` showing five KPI counts and an actionable live work queue.
+- It calls the existing authenticated `GET /v1/operator/snapshot`; credential is kept in browser memory only and cleared on demand, no localStorage/sessionStorage, no external JS/CDN. No business data embedded in public HTML shell.
+- `runtime/app.js` serves `/operator` with no-store and restrictive browser CSP; original API remains bearer-authenticated.
+- `tests/operator-page.test.js` checks shell, no server-side privileged data read, CSP and secret absence.
+- CODE COMMITTED; HOSTED VERIFICATION AND RESTART NOT YET VERIFIED. Actual dashboard counts and source tab mapping need real-host acceptance before production PASS; no claims about actual live workload.
+- Development next: connect individual business action execution (lead→quote→job) behind scoped governance and build financial/procurement operator screens without shadow sources.
