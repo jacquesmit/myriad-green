@@ -1,0 +1,24 @@
+/* Myriad Green quote acceptance V1 — scoped to wrapper .mg-quote-accept */
+.mg-quote-accept{--mg-green:#006B2E;--mg-dark:#00441F;--mg-lime:#7AC943;--mg-ink:#202924;--mg-line:#dce5df;max-width:760px;margin-inline:auto;padding:32px 20px 52px;font:400 16px/1.55 system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--mg-ink)}
+.mg-quote-accept *{box-sizing:border-box}
+.mg-quote-accept .mg-brand{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+.mg-quote-accept .mg-brand img{display:block;max-width:190px;max-height:72px;width:auto;height:auto;object-fit:contain}
+.mg-quote-accept h1{font-size:clamp(25px,4.2vw,35px);line-height:1.2;color:var(--mg-dark);margin:0 0 10px;font-weight:750}
+.mg-quote-accept h2{font-size:20px;color:var(--mg-dark);line-height:1.3;margin:0 0 16px}
+.mg-quote-accept .mg-muted{color:#526259;font-size:14px}
+.mg-quote-accept .mg-summary{border:1px solid var(--mg-line);border-radius:12px;padding:22px;margin:24px 0;background:#fff}
+.mg-quote-accept .mg-summary dl{display:grid;grid-template-columns:minmax(110px,1fr) 2fr;gap:9px 16px;margin:0}
+.mg-quote-accept .mg-summary dt{font-size:14px;color:#526259}
+.mg-quote-accept .mg-summary dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+.mg-quote-accept .mg-total{border-top:1px solid var(--mg-line);margin-top:18px;padding-top:18px;font-size:22px;font-weight:750}
+.mg-quote-accept .ff-el-group{margin-bottom:19px}
+.mg-quote-accept .ff-el-input--label label,.mg-quote-accept .ff-el-input--label{font-weight:650;color:var(--mg-ink)}
+.mg-quote-accept input:not([type=checkbox]),.mg-quote-accept textarea,.mg-quote-accept select{min-height:46px;border:1px solid #829588;border-radius:7px;width:100%;padding:10px 12px;font:inherit;background:#fff;color:var(--mg-ink)}
+.mg-quote-accept input:focus-visible,.mg-quote-accept button:focus-visible,.mg-quote-accept a:focus-visible{outline:3px solid var(--mg-lime);outline-offset:3px}
+.mg-quote-accept input[type=checkbox]{min-width:20px;min-height:20px;accent-color:var(--mg-green)}
+.mg-quote-accept .ff-btn-submit{display:block;width:100%;min-height:50px;border:0;border-radius:7px;background:var(--mg-green);color:#fff;font-size:17px;font-weight:750;cursor:pointer}
+.mg-quote-accept .ff-btn-submit:hover{background:var(--mg-dark)}
+.mg-quote-accept .mg-status{border-left:4px solid var(--mg-green);background:#f4f8f5;padding:12px 16px;border-radius:3px}
+.mg-quote-accept .mg-footer{border-top:1px solid var(--mg-line);margin-top:38px;padding-top:16px;font-size:13px;color:#526259}
+@media(max-width:540px){.mg-quote-accept{padding:24px 16px 42px}.mg-quote-accept .mg-summary{padding:16px}.mg-quote-accept .mg-summary dl{grid-template-columns:1fr;gap:2px}.mg-quote-accept .mg-summary dd{margin-bottom:10px}}
+@media print{.mg-quote-accept{max-width:100%;padding:0}.mg-quote-accept .ff-btn-submit{display:none}}
