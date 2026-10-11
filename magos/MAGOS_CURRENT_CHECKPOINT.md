@@ -188,6 +188,14 @@ At the end of every material MAGOS development session:
 - TO_CONFIRM: live Supplier Master `Suppliers` headers, Writer_Schema_Registry mappings, Data_Ownership_Matrix row, hosted deployment and real governance credential.
 - Aquadam production mutation remains NOT EXECUTED.
 
+## P5 business-lifecycle development — 2026-10-11
+
+- Built read-only `processor/quote-to-job-readiness.js` to evaluate accepted quote, exact opportunity, signed acceptance evidence, canonical line status, cleared payment and existing job duplication independently.
+- Added focused unit tests in `tests/quote-to-job-readiness.test.js`.
+- These newly added tests have NOT YET been executed; code is development-only, no production workflow changed.
+- No job, payment, quote or supplier business record has been mutated by this development.
+- Aquadam remains business-approved but canonical supplier state VETTING pending governed production transition; quote-access controls remain separate.
+
 ## Exact next action
 
-Perform read-only live Supplier Master/Writer_Schema_Registry/Data_Ownership_Matrix compatibility preflight. Do not mutate Aquadam before successful independent verification.
+Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decisions to verified authoritative lookups and the existing `createJobFromAcceptedScope` transaction-plan helper; do not invent payment clearance or acceptance evidence.
