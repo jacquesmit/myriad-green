@@ -46,7 +46,7 @@ function createRuntimeApp({
   procurementApprovalToken = process.env.MAGOS_PROCUREMENT_APPROVAL_TOKEN,
   jobCreationToken = process.env.MAGOS_JOB_CREATION_TOKEN,
   jobAuthorityVerifier = null,
-  signedAcceptanceVerifier = async () => ({verified:false,reason_code:'SIGNED_ACCEPTANCE_NOT_VERIFIED'}),
+  signedAcceptanceVerifier = require('../adapters/signing-provider-verifier').createSigningProviderVerifier(),
   leadIngressSources =
     process.env.MAGOS_LEAD_INGRESS_SOURCES || '',
   writerFactory = () => new TransactionWriter(),
