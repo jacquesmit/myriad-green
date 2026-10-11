@@ -225,6 +225,14 @@ function createRuntimeApp({
     }catch(error){return res.status(503).json({error:'DEPOSIT_EVIDENCE_UNAVAILABLE',detail:error.message});}
   });
 
+  app.get('/v1/operator/job-activation/:quoteId', requireRuntimeAuth, async(req,res)=>{
+    try{
+      const {assessJobActivation}=require('../processor/job-activation-assessment');
+      const result=await assessJobActivation({stores:getWriter().stores,quoteId:req.params.quoteId});
+      return res.status(result.state==='BLOCKED'?202:200).json(result);
+    }catch(error){return res.status(503).json({error:'JOB_ACTIVATION_ASSESSMENT_UNAVAILABLE',detail:error.message});}
+  });
+
   app.post('/v1/probes/google-sheets', requireRuntimeAuth, async (req, res) => {
     try {
       const runtimeWriter = getWriter();
