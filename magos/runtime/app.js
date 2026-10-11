@@ -44,6 +44,8 @@ function createRuntimeApp({
   leadIngressToken = process.env.MAGOS_LEAD_INGRESS_TOKEN,
   supplierApprovalToken = process.env.MAGOS_SUPPLIER_APPROVAL_TOKEN,
   procurementApprovalToken = process.env.MAGOS_PROCUREMENT_APPROVAL_TOKEN,
+  jobCreationToken = process.env.MAGOS_JOB_CREATION_TOKEN,
+  jobAuthorityVerifier = async () => ({verified:false,reason_code:'JOB_AUTHORITY_NOT_VERIFIED'}),
   leadIngressSources =
     process.env.MAGOS_LEAD_INGRESS_SOURCES || '',
   writerFactory = () => new TransactionWriter(),
@@ -317,6 +319,19 @@ function createRuntimeApp({
   });
 
 
+  // Governed job creation never accepts caller-controlled acceptance/payment flags.
+  app.post('/v1/governance/create-job', async (req,res)=>{
+    if(!jobCreationToken || [token,leadIngressToken,supplierApprovalToken,procurementApprovalToken].includes(jobCreationToken))return res.status(503).json({error:'JOB_CREATION_AUTH_NOT_CONFIGURED'});
+    if(!constantTimeEqual(req.get('x-magos-job-token')||'',jobCreationToken))return res.status(401).json({error:'UNAUTHORIZED'});
+    const b=req.body||{};
+    if(!['quoteId','jobId','sourceEventId'].every(k=>typeof b[k]==='string'&&b[k].trim()))return res.status(400).json({error:'JOB_IDENTIFIERS_REQUIRED'});
+    try {
+      const {executeAcceptedJob}=require('../processor/accepted-job-execution');
+      const result=await executeAcceptedJob({writer:getWriter(),quoteId:b.quoteId,jobId:b.jobId,sourceEventId:b.sourceEventId,authorityVerifier:jobAuthorityVerifier,dryRun:b.dryRun===true});
+      return res.status(['COMMITTED','DUPLICATE_NO_OP','DRY_RUN'].includes(result.state)?200:result.state==='REVIEW_REQUIRED'||result.state==='BLOCKED'?202:409).json(result);
+    }catch(error){return res.status(500).json({error:'GOVERNED_JOB_CREATION_FAILED',detail:error.message});}
+  });
+
   // Procurement approval is scoped to an internal PO state transition.
   // It never dispatches a supplier order or authorizes a payment.
   app.post('/v1/governance/procurement-approve', async (req, res) => {
@@ -369,7 +384,7 @@ function createRuntimeApp({
   });
 
   app.post('/v1/transactions', requireRuntimeAuth, async (req, res) => {
-    if (req.body?.event_type === 'SUPPLIER_APPROVAL_CHANGED' || req.body?.writes?.some(w => w.store === 'supplier' && (w.sheet === 'Suppliers' || w.sheet === 'Purchase_Orders'))) {
+    if (req.body?.event_type === 'SUPPLIER_APPROVAL_CHANGED' || req.body?.event_type === 'JOB_CREATE_FROM_ACCEPTED_SCOPE' || req.body?.writes?.some(w => (w.store === 'supplier' && (w.sheet === 'Suppliers' || w.sheet === 'Purchase_Orders')) || (w.store === 'crm' && w.sheet === 'Jobs_Opportunities' && (w.changes?.job_id || w.values?.job_id)))) {
       return res.status(403).json({ error: 'SUPPLIER_APPROVAL_REQUIRES_GOVERNANCE_ENDPOINT' });
     }
     if (!isPlausiblePlan(req.body)) {
