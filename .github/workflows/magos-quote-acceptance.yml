@@ -1,0 +1,30 @@
+name: Quote Acceptance Bridge Checks
+on:
+  push:
+    paths:
+      - 'magos/wordpress/mgos-quote-acceptance/**'
+      - '.github/workflows/magos-quote-acceptance.yml'
+  pull_request:
+    paths:
+      - 'magos/wordpress/mgos-quote-acceptance/**'
+jobs:
+  php-js-static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: PHP bridge syntax
+        run: php -l magos/wordpress/mgos-quote-acceptance/mgos-quote-acceptance.php
+      - name: Signature canvas JavaScript syntax
+        run: node --check magos/wordpress/mgos-quote-acceptance/assets/signature-pad-v1.js
+      - name: Critical fail-closed contract preserved
+        shell: bash
+        run: |
+          grep -q 'PENDING_REVIEW' magos/wordpress/mgos-quote-acceptance/mgos-quote-acceptance.php
+          grep -q 'CANONICAL_QUOTE_VERSION_VERIFIER_NOT_CONNECTED' magos/wordpress/mgos-quote-acceptance/mgos-quote-acceptance.php
+          grep -q 'mgos_signature_png' magos/wordpress/mgos-quote-acceptance/assets/signature-pad-v1.js
