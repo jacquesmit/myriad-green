@@ -294,7 +294,7 @@ function createRuntimeApp({
   });
 
   app.post('/v1/transactions', requireRuntimeAuth, async (req, res) => {
-    if (req.body?.event_type === 'SUPPLIER_APPROVAL_CHANGED' || req.body?.writes?.some(w => w.sheet === 'Suppliers' && (w.state_field === 'supplier_approval_state' || Object.hasOwn(w.changes || {}, 'supplier_approval_state')))) {
+    if (req.body?.event_type === 'SUPPLIER_APPROVAL_CHANGED' || req.body?.writes?.some(w => w.store === 'supplier' && w.sheet === 'Suppliers')) {
       return res.status(403).json({ error: 'SUPPLIER_APPROVAL_REQUIRES_GOVERNANCE_ENDPOINT' });
     }
     if (!isPlausiblePlan(req.body)) {
