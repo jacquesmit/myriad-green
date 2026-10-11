@@ -18,7 +18,7 @@ function projectOperations({leads=[],jobs=[],quotes=[],procurement=[],exceptions
  const allQuotes=unique(quotes,'quote_id');
  const acceptedForJob=allQuotes.filter(r=>upper(r['Quote Status'])==='ACCEPTED'&&!txt(r.job_id));
  const pendingQuotes=allQuotes.filter(r=>!['ACCEPTED','DECLINED','EXPIRED','CANCELLED'].includes(upper(r['Quote Status'])));
- const activeJobs=unique(jobs,'opportunity_id').filter(r=>!['JOB_COMPLETED','CANCELLED','CLOSED'].includes(upper(r.job_status)));
+ const activeJobs=unique(jobs,'opportunity_id').filter(r=>txt(r.job_id)&&!['JOB_COMPLETED','COMPLETED','CANCELLED','CLOSED','JOB_CANCELLED'].includes(upper(r.job_status)));
  const purchaseReview=unique(procurement,'Procurement ID').filter(r=>!['AUTHORISED','AUTHORIZED'].includes(upper(r['Procurement Gate']))||!['PASSED','PASS'].includes(upper(r.technical_gate)));
  const openExceptions=unique(exceptions,'exception_id').filter(r=>!['RESOLVED','CLOSED'].includes(upper(r.status)));
  return {
