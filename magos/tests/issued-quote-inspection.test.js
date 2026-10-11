@@ -1,0 +1,12 @@
+'use strict';
+const test=require('node:test');const assert=require('node:assert/strict');
+const {inspectIssuedQuote}=require('../processor/issued-quote-inspection');
+const sha='a'.repeat(64);
+const quote={quote_id:'Q1',opportunity_id:'O1','Quote Status':'ISSUED','Line Control State':'PASS','Drive Link':'https://drive.google.com/file/d/immutable-file/view','Quote Version':'v2','Issued PDF SHA256':sha};
+const stores=row=>({commercial:{findByKey:async()=>row?{object:row}:null}});
+test('an unknown issued quotation cannot sign',async()=>{assert.equal((await inspectIssuedQuote({stores:stores(null),quoteId:'Q1',opportunityId:'O1'})).verified,false)});
+test('mismatched opportunity fails closed',async()=>{assert.equal((await inspectIssuedQuote({stores:stores(quote),quoteId:'Q1',opportunityId:'OTHER'})).reason_code,'QUOTE_OPPORTUNITY_MISMATCH')});
+test('no immutable quote version fails closed',async()=>{const q={...quote};delete q['Quote Version'];assert.equal((await inspectIssuedQuote({stores:stores(q),quoteId:'Q1',opportunityId:'O1'})).reason_code,'IMMUTABLE_QUOTE_VERSION_NOT_REGISTERED')});
+test('no issuance digest fails closed',async()=>{const q={...quote};delete q['Issued PDF SHA256'];assert.equal((await inspectIssuedQuote({stores:stores(q),quoteId:'Q1',opportunityId:'O1'})).reason_code,'ISSUED_PDF_DIGEST_NOT_REGISTERED')});
+test('wrong status fails closed',async()=>{assert.equal((await inspectIssuedQuote({stores:stores({...quote,'Quote Status':'DRAFT'}),quoteId:'Q1',opportunityId:'O1'})).reason_code,'QUOTE_NOT_ISSUED')});
+test('fully evidenced exact issued version attests without writes',async()=>{const r=await inspectIssuedQuote({stores:stores(quote),quoteId:'Q1',opportunityId:'O1'});assert.equal(r.verified,true);assert.equal(r.version,'v2');assert.equal(r.issued_pdf_sha256,sha)});
