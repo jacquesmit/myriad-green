@@ -206,6 +206,19 @@ function createRuntimeApp({
     }
   });
 
+  // Canonical read-only authority for WordPress quote-specific signing links.
+  // Missing immutable version or PDF digest MUST NOT be treated as an issued quote.
+  app.get('/v1/authority/issued-quote/:quoteId',requireRuntimeAuth,async(req,res)=>{
+    try{
+      const {inspectIssuedQuote}=require('../processor/issued-quote-inspection');
+      const result=await inspectIssuedQuote({stores:getWriter().stores,quoteId:req.params.quoteId,opportunityId:req.query.opportunity_id});
+      res.set('Cache-Control','no-store');
+      return res.status(result.verified?200:202).json(result);
+    }catch(error){
+      return res.status(503).json({verified:false,reason_code:'ISSUED_QUOTE_AUTHORITY_UNAVAILABLE'});
+    }
+  });
+
   // Inspect a real quote before attempting any governed job-creation mutation.
   app.get('/v1/operator/job-readiness/:quoteId', requireRuntimeAuth, async(req,res)=>{
     try{
