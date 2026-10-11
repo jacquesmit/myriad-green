@@ -329,3 +329,9 @@ Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decis
 - Consolidated release report now explicitly marks signed-acceptance activation and authorized P3 job transaction/audit readback as BLOCKED unless actually evidenced, preventing a misleading overall PASS on HTTP and unit tests alone. No production writes in the acceptance script.
 - Inspected LIVE `Writer_Schema_Registry`: `Jobs_Opportunities` registered under workbook_role `CRM`, **not `CRM_MASTER`**. Corrected accepted quote P3 job plan and added regression test. An actual authoritative write would otherwise fail schema validation.
 - All changes committed to branch; next hosted consolidated run and deployment pending. No client data mutated.
+
+## Inbound Lead Queue Isolation — 2026-10-11
+
+- Operator dashboard lead projection now explicitly excludes scraper/outbound prospect records, RFQ, supplier and other non-lead intake. Inbound channels qualify through named source types and supported inbound systems. This changes the read-only dashboard projection only; it does not mutate or relocate the scraper, `today_outreach`, or operational records, and does not alter CRM source-of-truth ownership.
+- Added regression test for scraper, outbound, supplier RFQ, website form and Amelia booking. Existing snapshot fixture data updated with canonical source fields. The resulting source filters require full batch verification on hosting before production PASS.
+- Remains open: trusted provider acceptance-source adapter, controlled P3 job activation and audit readback. Code repository ahead of latest deployed/verified branch.
