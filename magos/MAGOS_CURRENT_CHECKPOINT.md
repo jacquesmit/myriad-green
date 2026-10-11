@@ -291,3 +291,9 @@ Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decis
 
 - Extended accepted quote P3 planning to detect an existing `Job Execution` row for the same `opportunity_id` or `quote_id`, not only the requested new Job ID. Blocks alternate-ID duplication before writer execution; no client records changed.
 - New regression test for duplicate execution under a different job ID. Committed to GitHub; consolidated hosted verification and deployment of this batch PENDING.
+
+## P3 quote-to-job concurrent execution safeguards — 2026-10-11
+
+- Planner now fails closed if authoritative `Job Execution` index cannot be read, instead of silently permitting a potentially duplicated job.
+- Adds a P3 transaction precondition requiring the live CRM `Jobs_Opportunities.job_id` to remain empty at commit time. Intended to refuse races after readiness inspection and before transactional execution.
+- Added regression tests for missing execution index and CRM precondition. Changes committed, next full hosted verification and live deployment are deliberately consolidated with the upcoming batch. No live records changed.
