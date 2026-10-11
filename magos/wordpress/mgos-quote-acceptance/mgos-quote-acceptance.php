@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Myriad Green Quote Acceptance Bridge
  * Description: Controlled Fluent Forms acceptance evidence for MAGOS.
- * Version: 0.1.0
+ * Version: 0.2.0
  */
 if (!defined('ABSPATH')) exit;
 final class MG_Quote_Acceptance_Bridge {
@@ -22,6 +22,7 @@ final class MG_Quote_Acceptance_Bridge {
    entry_id bigint(20) unsigned NOT NULL,
    signer varchar(240) NOT NULL,
    signature_ref text NOT NULL,
+   signature_png longblob NOT NULL,
    signed_at datetime NOT NULL,
    status varchar(24) NOT NULL,
    PRIMARY KEY  (id),
@@ -30,6 +31,7 @@ final class MG_Quote_Acceptance_Bridge {
   ) $collate;");
  }
  static function init(){
+  add_action('admin_init',function(){if(current_user_can('manage_options') && get_option('mgos_acceptance_db_version')!=='0.2.0'){self::activate();update_option('mgos_acceptance_db_version','0.2.0',false);}});
   add_shortcode('mg_quote_acceptance',[__CLASS__,'page']);
   add_action('fluentform/submission_inserted',[__CLASS__,'submitted'],10,3);
   add_action('rest_api_init',function(){
@@ -39,7 +41,7 @@ final class MG_Quote_Acceptance_Bridge {
   });
   add_action('wp_enqueue_scripts',function(){
    if(is_singular() && has_shortcode(get_post()->post_content??'','mg_quote_acceptance'))
-    wp_enqueue_style('mgos-acceptance',plugins_url('assets/quote-acceptance-v1.css',__FILE__),[],'0.1.0');
+    {wp_enqueue_style('mgos-acceptance',plugins_url('assets/quote-acceptance-v1.css',__FILE__),[],'0.2.0');wp_enqueue_script('mgos-signature-pad',plugins_url('assets/signature-pad-v1.js',__FILE__),[],'0.2.0',true);}
   });
  }
  static function auth($request){
@@ -73,28 +75,38 @@ final class MG_Quote_Acceptance_Bridge {
   $quote=esc_html($p['quote_id']);$version=esc_html($p['version']);
   $url=esc_url($p['issued_pdf_ref']);
   $form=do_shortcode('[fluentform id="'.absint($config['form_id']).'"]');
-  return '<section class="mg-quote-accept"><header><h1>Accept and sign your quotation</h1><p>Review the issued quotation before signing. Acceptance is separate from payment and booking.</p></header><div class="mg-summary"><h2>Quotation for review</h2><dl><dt>Reference</dt><dd>'.$quote.'</dd><dt>Version</dt><dd>'.$version.'</dd></dl><p><a target="_blank" rel="noopener noreferrer" href="'.$url.'">Review issued quotation (PDF)</a></p></div>'.$form.'<p class="mg-muted">Submitting the form records an acceptance request. Our team verifies the signature, quotation version and commercial release conditions separately.</p><footer class="mg-footer">Myriad Green Group (Pty) Ltd · info@myriadgreen.co.za · +27 62 923 3952</footer></section>';
+  return '<section class="mg-quote-accept"><header><h1>Accept and sign your quotation</h1><p>Review the issued quotation before signing. Acceptance is separate from payment and booking.</p></header><div class="mg-summary"><h2>Quotation for review</h2><dl><dt>Reference</dt><dd>'.$quote.'</dd><dt>Version</dt><dd>'.$version.'</dd></dl><p><a target="_blank" rel="noopener noreferrer" href="'.$url.'">Review issued quotation (PDF)</a></p></div>'.$form.'<div class="mg-signature" data-mgos-signature><label for="mgos-signature-canvas">Electronic signature (required)</label><canvas id="mgos-signature-canvas" width="660" height="200" aria-label="Draw your signature here with your mouse, finger or stylus"></canvas><div><button type="button" data-mgos-clear>Clear signature</button></div><p class="mg-muted">Your signature is captured with this exact quotation reference. Acceptance remains pending independent verification.</p></div><p class="mg-muted">Submitting the form records an acceptance request. Our team verifies the signature, quotation version and commercial release conditions separately.</p><footer class="mg-footer">Myriad Green Group (Pty) Ltd · info@myriadgreen.co.za · +27 62 923 3952</footer></section>';
  }
  static function submitted($entryId,$data,$form){
   global $wpdb;
   $config=self::config();
   if((int)($form->id??0)!==(int)($config['form_id']??0))return;
-  $token=(string)($data['quote_accept_token']??'');
+  // The browser-provided payload is untrusted. Require the signed link and exact form entry.
+  $token=(string)($_POST['mgos_quote_token']??'');
   $p=self::payload($token);
   if(!$p)return;
-  // All critical fields must be saved and reconciled; this is an unverified intake only.
   $consent=$data['quote_accept_consent']??null;
-  $signer=sanitize_text_field((string)($data['quote_accept_signer']??''));
-  $signature=$data['quote_accept_signature']??'';
-  if(!in_array((string)$consent,['1','yes','on'],true)||!$signer||!is_string($signature)||!$signature)return;
+  $consent_ok=is_array($consent)?in_array('1',array_map('strval',$consent),true):in_array((string)$consent,['1','yes','on'],true);
+  $name=$data['quote_accept_signer']??'';
+  if(!$name && !empty($data['names']) && is_array($data['names']))
+   $name=trim((string)($data['names']['first_name']??'').' '.(string)($data['names']['last_name']??''));
+  $signer=sanitize_text_field((string)$name);
+  $dataUri=(string)($_POST['mgos_signature_png']??'');
+  if(!$consent_ok || !$signer || strlen($dataUri)>125000 ||
+    !preg_match('/^data:image\\/png;base64,([A-Za-z0-9+\\/=]+)$/D',$dataUri,$match))return;
+  $bytes=base64_decode($match[1],true);
+  if(!$bytes || strlen($bytes)<400 || strlen($bytes)>90000 || substr($bytes,0,8)!=="\\x89PNG\\r\\n\\x1a\\n")return;
+  $size=@getimagesizefromstring($bytes);
+  if(!$size || ($size[2]??null)!==IMAGETYPE_PNG || $size[0]<200 || $size[1]<70 || $size[0]>1800 || $size[1]>700)return;
+  $hash=hash('sha256',$bytes);
   $wpdb->insert(self::table(),[
    'quote_id'=>sanitize_text_field($p['quote_id']),
    'opportunity_id'=>sanitize_text_field($p['opportunity_id']),
    'quote_version'=>sanitize_text_field($p['version']),
    'form_id'=>(int)$form->id,'entry_id'=>(int)$entryId,'signer'=>$signer,
-   'signature_ref'=>esc_url_raw($signature),'signed_at'=>current_time('mysql',true),
-   'status'=>'PENDING_REVIEW'
-  ],['%s','%s','%s','%d','%d','%s','%s','%s','%s']);
+   'signature_ref'=>'sha256:'.$hash,'signature_png'=>$bytes,
+   'signed_at'=>current_time('mysql',true),'status'=>'PENDING_REVIEW'
+  ],['%s','%s','%s','%d','%d','%s','%s','%s','%s','%s']);
  }
  static function verify($request){
   global $wpdb;
