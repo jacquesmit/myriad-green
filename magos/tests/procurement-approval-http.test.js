@@ -37,6 +37,7 @@ test('authorized release approval invokes P3 exactly once and does not dispatch'
  const d=data();let called=0;let written;
  const app=createRuntimeApp({token:'runtime-token',procurementApprovalToken:'purchase-token',
  procurementLookupFactory:()=>d.lookup,
+ procurementAuthorityVerifier:async b=>({verified:true,po_id:b.poId,source_event_id:b.sourceEventId,evidence_ref:b.evidenceRef,authorized_actor_id:'owner-verified'}),
  writerFactory:()=>({execute:async plan=>{called++;written=plan;return {state:'COMMITTED'};}})});
  assert.equal((await send(app,'wrong',payload)).status,401);
  assert.equal((await send(app,'purchase-token',{})).status,400);
@@ -66,4 +67,27 @@ test('an unapproved supplier returns review with no writer mutation',async()=>{
  assert.equal(result.status,202);
  assert.equal(result.body.reason_code,'SUPPLIER_NOT_APPROVED_ACTIVE');
  assert.equal(called,0);
+});
+
+test('token and asserted approval evidence alone cannot execute writer',async()=>{
+ const d=data();let writes=0;
+ const app=createRuntimeApp({token:'runtime-token',procurementApprovalToken:'purchase-token',
+   procurementLookupFactory:()=>d.lookup,
+   writerFactory:()=>({execute:async()=>{writes++;return {state:'COMMITTED'};}})
+ });
+ const result=await send(app,'purchase-token',payload);
+ assert.equal(result.status,202);
+ assert.equal(result.body.reason_code,'APPROVAL_AUTHORITY_NOT_VERIFIED');
+ assert.equal(writes,0);
+});
+test('mismatched trusted authority attestation cannot authorize a different PO',async()=>{
+ const d=data();let writes=0;
+ const app=createRuntimeApp({token:'runtime-token',procurementApprovalToken:'purchase-token',
+   procurementLookupFactory:()=>d.lookup,
+   procurementAuthorityVerifier:async()=>({verified:true,po_id:'PO-OTHER',source_event_id:payload.sourceEventId,evidence_ref:payload.approvalEvidence,authorized_actor_id:'owner'}),
+   writerFactory:()=>({execute:async()=>{writes++;return {state:'COMMITTED'};}})
+ });
+ const result=await send(app,'purchase-token',payload);
+ assert.equal(result.status,202);
+ assert.equal(writes,0);
 });
