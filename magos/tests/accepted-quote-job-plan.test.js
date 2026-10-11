@@ -38,3 +38,10 @@ test('unavailable execution index fails closed, not create duplicate job',async(
  assert.equal(r.reason_code,'EXECUTION_INDEX_UNAVAILABLE');
  assert.equal(r.plan,undefined);
 });
+
+test('job execution write uses registered active cross-system link instead of opportunity ID',async()=>{
+ const f=fixture(); const r=await planAcceptedJob({...f.args,stores:f.stores});
+ assert.equal(r.state,'READY_FOR_GOVERNED_JOB_CREATION');
+ assert.equal(r.plan.writes[1].link_id,'LNK-009');
+ assert.equal(r.plan.writes[1].sheet,'Job Execution');
+});
