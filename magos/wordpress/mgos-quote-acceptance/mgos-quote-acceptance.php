@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Myriad Green Quote Acceptance Bridge
  * Description: Controlled Fluent Forms acceptance evidence for MAGOS.
- * Version: 0.2.0
+ * Version: 0.3.0
  */
 if (!defined('ABSPATH')) exit;
 final class MG_Quote_Acceptance_Bridge {
@@ -35,6 +35,10 @@ final class MG_Quote_Acceptance_Bridge {
   add_shortcode('mg_quote_acceptance',[__CLASS__,'page']);
   add_action('fluentform/submission_inserted',[__CLASS__,'submitted'],10,3);
   add_action('rest_api_init',function(){
+   register_rest_route('mgos/v1','/quote-acceptance/issue-link',[
+    'methods'=>'POST','callback'=>[__CLASS__,'issue_link'],
+    'permission_callback'=>function(){return current_user_can('manage_options');}
+   ]);
    register_rest_route('mgos/v1','/quote-acceptance/verify',[
     'methods'=>'GET','callback'=>[__CLASS__,'verify'],'permission_callback'=>[__CLASS__,'auth']
    ]);
@@ -65,6 +69,18 @@ final class MG_Quote_Acceptance_Bridge {
   if(!is_array($p)||empty($p['quote_id'])||empty($p['opportunity_id'])||empty($p['version'])||
    !isset($p['expiry'])||(int)$p['expiry']<time()||empty($p['issued_pdf_ref']))return false;
   return $p;
+ }
+ static function issue_link($request){
+  $c=self::config();
+  if(empty($c['link_secret'])||strlen((string)$c['link_secret'])<32)return new WP_Error('not_configured','Signing links are not configured',['status'=>503]);
+  $p=$request->get_json_params();
+  if(!is_array($p))return new WP_Error('invalid','Invalid request',['status'=>400]);
+  $quote=sanitize_text_field((string)($p['quote_id']??''));
+  $opp=sanitize_text_field((string)($p['opportunity_id']??''));
+  $version=sanitize_text_field((string)($p['version']??''));
+  $pdf=esc_url_raw((string)($p['issued_pdf_ref']??''));
+  // This endpoint is gated until a server-side authoritative quote lookup exists.
+  return new WP_Error('canonical_quote_unverified','Canonical quotation and revision lookup must be connected before issuing links',['status'=>503]);
  }
  static function page($attrs){
   $config=self::config();
