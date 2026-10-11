@@ -43,6 +43,7 @@ function createRuntimeApp({
   token = process.env.MAGOS_RUNTIME_TOKEN,
   leadIngressToken = process.env.MAGOS_LEAD_INGRESS_TOKEN,
   supplierApprovalToken = process.env.MAGOS_SUPPLIER_APPROVAL_TOKEN,
+  procurementApprovalToken = process.env.MAGOS_PROCUREMENT_APPROVAL_TOKEN,
   leadIngressSources =
     process.env.MAGOS_LEAD_INGRESS_SOURCES || '',
   writerFactory = () => new TransactionWriter(),
@@ -293,8 +294,43 @@ function createRuntimeApp({
     }
   });
 
+
+  // Procurement approval is scoped to an internal PO state transition.
+  // It never dispatches a supplier order or authorizes a payment.
+  app.post('/v1/governance/procurement-approve', async (req, res) => {
+    if (!procurementApprovalToken || [token, leadIngressToken, supplierApprovalToken].includes(procurementApprovalToken)) {
+      return res.status(503).json({ error: 'PROCUREMENT_APPROVAL_AUTH_NOT_CONFIGURED' });
+    }
+    if (!constantTimeEqual(req.get('x-magos-procurement-token') || '', procurementApprovalToken)) {
+      return res.status(401).json({ error: 'UNAUTHORIZED' });
+    }
+    const b = req.body || {};
+    if (!['poId', 'sourceEventId', 'approvalEvidence', 'approverId'].every(k =>
+      typeof b[k] === 'string' && b[k].trim())) {
+      return res.status(400).json({ error: 'PROCUREMENT_APPROVAL_INPUT_REQUIRED' });
+    }
+    try {
+      const { ExactLookupService } = require('../adapters/exact-lookup-service');
+      const { planPurchaseOrderIssueApproval } = require('../processor/procurement-issue-approval');
+      const lookupService = new ExactLookupService();
+      const result = await planPurchaseOrderIssueApproval({
+        lookupService, poId: b.poId, sourceEventId: b.sourceEventId,
+        approvalEvidence: b.approvalEvidence, approverId: b.approverId
+      });
+      if (result.state !== 'READY_FOR_APPROVAL') {
+        return res.status(202).json(result);
+      }
+      const written = await getWriter().execute(result.plan);
+      return res.status(written.state === 'COMMITTED' || written.state === 'DUPLICATE_NO_OP' ? 200 : 409)
+        .json({ state: written.state, po_id: b.poId, transaction: written,
+          external_order_sent: false, payment_authorized: false });
+    } catch (error) {
+      return res.status(500).json({ error: 'PROCUREMENT_APPROVAL_EXECUTION_FAILED', detail: error.message });
+    }
+  });
+
   app.post('/v1/transactions', requireRuntimeAuth, async (req, res) => {
-    if (req.body?.event_type === 'SUPPLIER_APPROVAL_CHANGED' || req.body?.writes?.some(w => w.store === 'supplier' && w.sheet === 'Suppliers')) {
+    if (req.body?.event_type === 'SUPPLIER_APPROVAL_CHANGED' || req.body?.writes?.some(w => w.store === 'supplier' && (w.sheet === 'Suppliers' || w.sheet === 'Purchase_Orders'))) {
       return res.status(403).json({ error: 'SUPPLIER_APPROVAL_REQUIRES_GOVERNANCE_ENDPOINT' });
     }
     if (!isPlausiblePlan(req.body)) {
