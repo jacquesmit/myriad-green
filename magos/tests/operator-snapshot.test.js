@@ -45,3 +45,16 @@ test('records preserve canonical cross-workflow links and avoid hidden writes',a
  assert.equal(data.records.procurement[0].id,'PROC-1');
  assert.deepEqual(data.writes,[]);
 });
+
+test('live Intake_Queue canonical columns drive status, linkage and routing',()=>{
+ const data=projectOperations({leads:[{source_event_id:'EV-9',processing_status:'REVIEW_REQUIRED',matched_crm_id:'CRM-9',matched_opportunity_id:'OPP-9',routing_action:'Request photos'}]});
+ assert.equal(data.counts.open_leads,1);
+ assert.deepEqual(data.records.leads[0],{id:'EV-9',status:'REVIEW_REQUIRED',opportunity_id:'OPP-9',client_id:'CRM-9',next_action:'Request photos'});
+});
+test('live Sync_Exceptions action_required and procurement PASS gate are respected',()=>{
+ const data=projectOperations({exceptions:[{exception_id:'EX-9',status:'OPEN',action_required:'Resolve bank mismatch'}],procurement:[{'Procurement ID':'P-OK','Procurement Gate':'AUTHORISED',technical_gate:'PASS'},{'Procurement ID':'P-HOLD','Procurement Gate':'BLOCK',technical_gate:'PASSED'}]});
+ assert.equal(data.counts.open_exceptions,1);
+ assert.equal(data.records.exceptions[0].next_action,'Resolve bank mismatch');
+ assert.equal(data.counts.procurement_review,1);
+ assert.equal(data.records.procurement[0].id,'P-HOLD');
+});
