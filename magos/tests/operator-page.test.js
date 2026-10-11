@@ -25,3 +25,5 @@ test('public browser shell serves zero authoritative data and carries restrictiv
   assert.doesNotMatch(text,/test-runtime/);
  }finally{await new Promise(done=>server.close(done));}
 });
+
+test('operator browser provides drill-down workstreams without external scripts',()=>{const html=operatorPage();assert.match(html,/id="filters"/);assert.match(html,/showSection\(section\)/);assert.match(html,/Object\.entries\(record\)/);});
