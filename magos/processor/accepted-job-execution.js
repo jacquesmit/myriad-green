@@ -16,6 +16,10 @@ async function executeAcceptedJob({writer,quoteId,jobId,sourceEventId,authorityV
  const committed=await writer.execute(result.plan);
  if(committed?.state!=='COMMITTED' && committed?.state!=='DUPLICATE_NO_OP')
   return {state:committed?.state||'REVIEW_REQUIRED',job_id:jobId,transaction:committed,execution_id:result.execution_id};
+ // P3 must prove its own authoritative audit ledger entry, not merely report a status.
+ const audit=committed.state==='COMMITTED'?committed.audit:committed.existing_run;
+ if(!audit||audit.run_state!=='COMMITTED'||text(audit.idempotency_key)!==result.plan.idempotency_key)
+  return {state:'COMMIT_AUDIT_UNVERIFIED',job_id:jobId,execution_id:result.execution_id,reason_code:'P3_AUDIT_MISSING_OR_MISMATCHED'};
  const {verifyJobReadback}=require('./job-commit-readback');
  const readback=await verifyJobReadback({stores:writer.stores,jobId,opportunityId:result.readiness.opportunity_id,executionId:result.execution_id,quoteId});
  return {state:readback.verified?committed.state:'COMMIT_READBACK_UNVERIFIED',job_id:jobId,transaction:committed,execution_id:result.execution_id,readback};
