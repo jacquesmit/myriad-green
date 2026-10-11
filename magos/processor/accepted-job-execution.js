@@ -14,6 +14,10 @@ async function executeAcceptedJob({writer,quoteId,jobId,sourceEventId,authorityV
  if(result.state!=='READY_FOR_GOVERNED_JOB_CREATION')return result;
  if(dryRun)return {state:'DRY_RUN',job_id:jobId,readiness:result.readiness,plan:result.plan};
  const committed=await writer.execute(result.plan);
- return {state:committed.state,job_id:jobId,transaction:committed,execution_id:result.execution_id};
+ if(committed?.state!=='COMMITTED' && committed?.state!=='DUPLICATE_NO_OP')
+  return {state:committed?.state||'REVIEW_REQUIRED',job_id:jobId,transaction:committed,execution_id:result.execution_id};
+ const {verifyJobReadback}=require('./job-commit-readback');
+ const readback=await verifyJobReadback({stores:writer.stores,jobId,opportunityId:result.readiness.opportunity_id,executionId:result.execution_id,quoteId});
+ return {state:readback.verified?committed.state:'COMMIT_READBACK_UNVERIFIED',job_id:jobId,transaction:committed,execution_id:result.execution_id,readback};
 }
 module.exports={executeAcceptedJob};
