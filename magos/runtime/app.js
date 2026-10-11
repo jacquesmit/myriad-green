@@ -205,6 +205,17 @@ function createRuntimeApp({
     }
   });
 
+  // Inspect a real quote before attempting any governed job-creation mutation.
+  app.get('/v1/operator/job-readiness/:quoteId', requireRuntimeAuth, async(req,res)=>{
+    try{
+      const {inspectJobRelease}=require('../processor/job-release-inspection');
+      const result=await inspectJobRelease({stores:getWriter().stores,quoteId:req.params.quoteId});
+      return res.status(result.state==='READY_FOR_EVIDENCE_REVIEW'?200:202).json(result);
+    }catch(error){
+      return res.status(503).json({error:'JOB_READINESS_UNAVAILABLE',detail:error.message});
+    }
+  });
+
   app.post('/v1/probes/google-sheets', requireRuntimeAuth, async (req, res) => {
     try {
       const runtimeWriter = getWriter();
