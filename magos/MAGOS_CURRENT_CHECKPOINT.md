@@ -286,3 +286,8 @@ Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decis
 - Checked actual authoritative headers of `Intake_Queue`, `Quotes`, `Procurement`, and `Sync_Exceptions` using the native spreadsheet connection. Updated operator projection: `processing_status`, `matched_crm_id`, `matched_opportunity_id`, `routing_action`, `action_required`; accepted canonical procurement technical state `PASS` or `PASSED`.
 - Surfaced accepted quotations without an attached job inside the existing quotation workstream, preserving pending-quotation KPI separately. This allows the already-deployed Inspect Job Readiness UI to inspect accepted quotes rather than hiding them.
 - Added live-schema regression cases and accepted-quote visibility test. Commit branch updated, NOT YET tested or deployed to cPanel. Next release cycle to run consolidated test suite and restart once; no production job writes.
+
+## Quote-to-job duplicate guard — 2026-10-11
+
+- Extended accepted quote P3 planning to detect an existing `Job Execution` row for the same `opportunity_id` or `quote_id`, not only the requested new Job ID. Blocks alternate-ID duplication before writer execution; no client records changed.
+- New regression test for duplicate execution under a different job ID. Committed to GitHub; consolidated hosted verification and deployment of this batch PENDING.
