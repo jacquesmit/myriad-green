@@ -183,6 +183,18 @@ function createRuntimeApp({
     }
   });
 
+  // Unified operator view: reads only the existing MGOS authoritative sheets.
+  app.get('/v1/operator/snapshot', requireRuntimeAuth, async (req,res)=>{
+    try {
+      const { loadOperatorSnapshot }=require('../processor/operator-snapshot');
+      const w=getWriter();
+      const result=await loadOperatorSnapshot({stores:w.stores});
+      return res.status(200).json(result);
+    } catch(error) {
+      return res.status(503).json({error:'OPERATOR_SNAPSHOT_UNAVAILABLE',detail:error.message});
+    }
+  });
+
   app.post('/v1/probes/google-sheets', requireRuntimeAuth, async (req, res) => {
     try {
       const runtimeWriter = getWriter();
