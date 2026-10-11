@@ -335,3 +335,10 @@ Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decis
 - Operator dashboard lead projection now explicitly excludes scraper/outbound prospect records, RFQ, supplier and other non-lead intake. Inbound channels qualify through named source types and supported inbound systems. This changes the read-only dashboard projection only; it does not mutate or relocate the scraper, `today_outreach`, or operational records, and does not alter CRM source-of-truth ownership.
 - Added regression test for scraper, outbound, supplier RFQ, website form and Amelia booking. Existing snapshot fixture data updated with canonical source fields. The resulting source filters require full batch verification on hosting before production PASS.
 - Remains open: trusted provider acceptance-source adapter, controlled P3 job activation and audit readback. Code repository ahead of latest deployed/verified branch.
+
+## Integrated release candidate — 2026-10-11 (latest)
+
+- Release gate now reports separate `platform_verdict` and `business_verdict`; an unverified real-job transaction remains BLOCKED even if runtime and tests pass.
+- `accepted-job-execution.js` now requires independent post-P3 CRM `Jobs_Opportunities` and Commercial `Job Execution` readback before reporting COMMITTED. A committed writer with missing/mismatched canonical records returns COMMIT_READBACK_UNVERIFIED. New `job-commit-readback.js` and tests; accepted-job mocked writer fixture now actually updates both linked rows for readback assertions.
+- Operator active jobs counts only rows with a real `job_id` and an unfinished status, not all opportunities. This complements prior scraper/inbound lead separation and is covered by regression tests.
+- Development changes COMMITTED, not hosted-deployed or consolidated-test VERIFIED. Production signature provider is not connected, and no genuine job creation/audit completion claim is made. Avoid reusing old 245/245 baseline for this new revision.
