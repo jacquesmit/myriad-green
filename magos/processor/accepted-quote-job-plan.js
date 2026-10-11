@@ -14,6 +14,8 @@ async function planAcceptedJob({stores,quoteId,jobId,sourceEventId,acceptanceEvi
  if(readiness.decision!=='READY_FOR_GOVERNED_JOB_CREATION')return {state:readiness.decision,readiness};
  if(!v(jobId).startsWith('JOB-'))return {state:'REVIEW_REQUIRED',reason_code:'INVALID_JOB_ID'};
  const existing=(await stores.commercial.findByKey('Job Execution','Job ID',jobId))?.object;
+ const existingOpportunityExecution=typeof stores.commercial.readObjects==='function'?(await stores.commercial.readObjects('Job Execution')).find(r=>v(r.opportunity_id)===v(quote.opportunity_id)||v(r.quote_id)===v(quoteId)):null;
+ if(existingOpportunityExecution)return {state:'REVIEW_REQUIRED',reason_code:'OPPORTUNITY_EXECUTION_ALREADY_EXISTS'};
  if(existing)return {state:'REVIEW_REQUIRED',reason_code:'JOB_EXECUTION_ALREADY_EXISTS'};
  const executionId='EXEC-'+jobId.slice(4);
  const plan=createJobFromAcceptedScope({
