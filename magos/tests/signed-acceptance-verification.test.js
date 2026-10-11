@@ -27,3 +27,20 @@ test('activation combines canonical cleared funds and provider signature, but ne
  assert.equal(r.checks.financial_evidence,'EVIDENCED');
  assert.deepEqual(r.writes,[]);
 });
+
+test('operator HTTP returns 202 for unverified acceptance even when the quote and deposit qualify',async()=>{
+ const http=require('node:http');
+ const {createRuntimeApp}=require('../runtime/app');
+ const app=createRuntimeApp({token:'operator-token',writerFactory:()=>({stores})});
+ const server=http.createServer(app);
+ await new Promise(ok=>server.listen(0,'127.0.0.1',ok));
+ try{
+  const url='http://127.0.0.1:'+server.address().port+'/v1/operator/job-activation/Q-1';
+  assert.equal((await fetch(url)).status,401);
+  const r=await fetch(url,{headers:{Authorization:'Bearer operator-token'}});
+  assert.equal(r.status,202);
+  const body=await r.json();
+  assert.equal(body.state,'REVIEW_REQUIRED');
+  assert.equal(body.checks.signed_acceptance,'NOT_VERIFIED');
+ }finally{await new Promise(ok=>server.close(ok));}
+});
