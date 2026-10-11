@@ -230,7 +230,7 @@ function createRuntimeApp({
     try{
       const {assessJobActivation}=require('../processor/job-activation-assessment');
       const result=await assessJobActivation({stores:getWriter().stores,quoteId:req.params.quoteId,evidenceVerifier:signedAcceptanceVerifier});
-      return res.status(result.state==='BLOCKED'?202:200).json(result);
+      return res.status(result.state==='READY_FOR_GOVERNED_AUTHORIZATION'?200:202).json(result);
     }catch(error){return res.status(503).json({error:'JOB_ACTIVATION_ASSESSMENT_UNAVAILABLE',detail:error.message});}
   });
 
