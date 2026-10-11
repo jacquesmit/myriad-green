@@ -273,3 +273,10 @@ Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decis
 - New authenticated `GET /v1/operator/job-readiness/:quoteId` endpoint; operator UI now allows direct per-quote readiness inspection from the browser, without exposing mutation privileges.
 - Added `tests/job-release-inspection.test.js` with canonical inspection, safety-negative cases, and HTTP authorization. New code/tests COMMITTED, HOSTED VERIFICATION PENDING. Full production rollout must include current operator interface and previous job/procurement security changes in ONE suite and deployment acceptance run.
 - Honest release scope: actionable read-only quote inspections are developed; true approved job mutation still depends on independently sourced acceptance and payment evidence. No live customer records changed.
+
+## Hosted deployment verification — 2026-10-11
+
+- Operator-provided cPanel output: repository `ff4c0f6` hosted Node 20 test command resulted 245 tests, 245 PASS, 0 FAIL (about 32.6 seconds). This is automated code verification, not live transactional proof.
+- Live checks initially showed `/healthz` HTTP 200, `/readyz` HTTP 200, `/operator` HTTP 404, despite local `/operator` HTTP 200. Two old lsnode processes predated latest code.
+- After controlled hosting application process restart, user reported `/healthz`, `/readyz`, `/operator` all HTTP 200. ROUTE DEPLOYMENT PASS; operator API with canonical credentials, authoritative record read, signed acceptance, P3 production writes and audit readback still NOT VERIFIED.
+- No more repeated restart requests are needed. Keep developing integrated customer-to-job lifecycle; one consolidated hosted suite for next release batch.
