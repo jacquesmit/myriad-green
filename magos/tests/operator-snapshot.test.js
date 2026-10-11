@@ -5,7 +5,7 @@ const http=require('node:http');
 const {projectOperations,loadOperatorSnapshot}=require('../processor/operator-snapshot');
 const {createRuntimeApp}=require('../runtime/app');
 const stores={
- crm:{readObjects:async t=>t==='Intake_Queue'?[{source_event_id:'LEAD-1',source_system:'GMAIL',source_type:'WEBSITE_FORM',status:'NEW'}]:[{opportunity_id:'OPP-1',job_status:'IN_PROGRESS',next_action:'Visit site'}]},
+ crm:{readObjects:async t=>t==='Intake_Queue'?[{source_event_id:'LEAD-1',source_system:'GMAIL',source_type:'WEBSITE_FORM',status:'NEW'}]:[{opportunity_id:'OPP-1',job_id:'JOB-1',job_status:'IN_PROGRESS',next_action:'Visit site'}]},
  commercial:{readObjects:async t=>t==='Quotes'?[{quote_id:'Q-1','Quote Status':'SENT','Next Action':'Follow up'}]:[{'Procurement ID':'PROC-1','Procurement Gate':'BLOCK','Next Action':'Confirm stock'}]},
  audit:{readObjects:async()=>[{exception_id:'EXC-1',status:'OPEN',next_action:'Review mapping'}]}
 };
@@ -77,4 +77,14 @@ test('scraped outbound prospects and supplier emails never become active inbound
  ]});
  assert.equal(data.counts.open_leads,2);
  assert.deepEqual(data.records.leads.map(x=>x.id),['IN-4','IN-5']);
+});
+
+test('active jobs KPI excludes unconverted prospects and completed jobs',()=>{
+ const result=projectOperations({jobs:[
+  {opportunity_id:'OPP-OPEN',job_id:'',job_status:'OPEN'},
+  {opportunity_id:'OPP-ACTIVE',job_id:'JOB-1',job_status:'IN_PROGRESS'},
+  {opportunity_id:'OPP-DONE',job_id:'JOB-2',job_status:'JOB_COMPLETED'}
+ ]});
+ assert.equal(result.counts.active_jobs,1);
+ assert.equal(result.records.jobs[0].job_id,'JOB-1');
 });
