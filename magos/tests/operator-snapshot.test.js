@@ -36,3 +36,12 @@ test('HTTP operator endpoint requires runtime credential and returns authoritati
   assert.equal(json.authority,'READ_ONLY_DERIVED');
  }finally{await new Promise(ok=>server.close(ok));}
 });
+
+test('records preserve canonical cross-workflow links and avoid hidden writes',async()=>{
+ const data=await loadOperatorSnapshot({stores});
+ assert.equal(data.records.leads[0].id,'LEAD-1');
+ assert.equal(data.records.quotes[0].id,'Q-1');
+ assert.equal(data.records.jobs[0].id,'OPP-1');
+ assert.equal(data.records.procurement[0].id,'PROC-1');
+ assert.deepEqual(data.writes,[]);
+});
