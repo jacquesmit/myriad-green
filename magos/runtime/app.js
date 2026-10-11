@@ -46,6 +46,7 @@ function createRuntimeApp({
   procurementApprovalToken = process.env.MAGOS_PROCUREMENT_APPROVAL_TOKEN,
   jobCreationToken = process.env.MAGOS_JOB_CREATION_TOKEN,
   jobAuthorityVerifier = async () => ({verified:false,reason_code:'JOB_AUTHORITY_NOT_VERIFIED'}),
+  signedAcceptanceVerifier = async () => ({verified:false,reason_code:'SIGNED_ACCEPTANCE_NOT_VERIFIED'}),
   leadIngressSources =
     process.env.MAGOS_LEAD_INGRESS_SOURCES || '',
   writerFactory = () => new TransactionWriter(),
@@ -228,7 +229,7 @@ function createRuntimeApp({
   app.get('/v1/operator/job-activation/:quoteId', requireRuntimeAuth, async(req,res)=>{
     try{
       const {assessJobActivation}=require('../processor/job-activation-assessment');
-      const result=await assessJobActivation({stores:getWriter().stores,quoteId:req.params.quoteId});
+      const result=await assessJobActivation({stores:getWriter().stores,quoteId:req.params.quoteId,evidenceVerifier:signedAcceptanceVerifier});
       return res.status(result.state==='BLOCKED'?202:200).json(result);
     }catch(error){return res.status(503).json({error:'JOB_ACTIVATION_ASSESSMENT_UNAVAILABLE',detail:error.message});}
   });
