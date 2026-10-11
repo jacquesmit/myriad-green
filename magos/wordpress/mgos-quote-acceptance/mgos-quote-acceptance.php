@@ -86,7 +86,7 @@ final class MG_Quote_Acceptance_Bridge {
   $p=self::payload($token);
   if(!$p)return;
   $consent=$data['quote_accept_consent']??null;
-  $consent_ok=is_array($consent)?in_array('1',array_map('strval',$consent),true):in_array((string)$consent,['1','yes','on'],true);
+  $consent_ok=is_array($consent)?count(array_filter($consent,fn($x)=>is_scalar($x)&&strlen(trim((string)$x))>0))>0:in_array((string)$consent,['1','yes','on'],true);
   $name=$data['quote_accept_signer']??'';
   if(!$name){foreach(['name','names'] as $key){if(!empty($data[$key]) && is_array($data[$key])){$name=trim((string)($data[$key]['first_name']??'').' '.(string)($data[$key]['last_name']??''));if($name)break;}}}
   $signer=sanitize_text_field((string)$name);
@@ -94,7 +94,7 @@ final class MG_Quote_Acceptance_Bridge {
   if(!$consent_ok || !$signer || strlen($dataUri)>125000 ||
     !preg_match('/^data:image\\/png;base64,([A-Za-z0-9+\\/=]+)$/D',$dataUri,$match))return;
   $bytes=base64_decode($match[1],true);
-  if(!$bytes || strlen($bytes)<400 || strlen($bytes)>90000 || bin2hex(substr($bytes,0,8))!=='89504e470d0a1a0a'return;
+  if(!$bytes || strlen($bytes)<400 || strlen($bytes)>90000 || bin2hex(substr($bytes,0,8))!=='89504e470d0a1a0a')return;
   $size=@getimagesizefromstring($bytes);
   if(!$size || ($size[2]??null)!==IMAGETYPE_PNG || $size[0]<200 || $size[1]<70 || $size[0]>1800 || $size[1]>700)return;
   $hash=hash('sha256',$bytes);
