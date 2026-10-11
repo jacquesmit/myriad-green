@@ -169,6 +169,16 @@ At the end of every material MAGOS development session:
 - These subsequent runtime authorization changes have NOT YET been executed/tested on the hosted checkout.
 - Aquadam production mutation NOT EXECUTED.
 
+## Verified hosted test evidence — 2026-10-11
+
+- Server fast-forwarded successfully to `49c1c0a`.
+- Node.js 20 ran `tests/runtime-http.test.js`, `tests/supplier-approval-governance.test.js` and `tests/processor-registry.test.js`.
+- Result: **35 tests PASS, 0 FAIL** (runtime HTTP + governed supplier approval + registry).
+- Dedicated supplier approval auth, generic event/transaction bypass rejection, guard preservation and exact P3 transition planning passed test execution.
+- Evidence source: operator-provided hosted terminal transcript, 2026-10-11.
+- Not yet verified: production deployment, writer authority/schema registry parity, authenticated live approval event and independent supplier/audit readback.
+- Aquadam Supplier Master has not been mutated through this implementation.
+
 ## Exact next action
 
-Fast-forward hosted development branch and run `tests/runtime-http.test.js` with Node.js 20. Correct failures, then validate writer registry/authority before authorizing a real Supplier Master transition.
+Validate supplier-approval TransactionPlan against the P3 writer registry and the authoritative Supplier Master schema, then run non-production writer integration/negative tests. Do not issue Aquadam production approval until this gate passes.
