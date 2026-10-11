@@ -5,9 +5,9 @@ const {createRuntimeApp}=require('../runtime/app');
 const quote={quote_id:'Q1',opportunity_id:'O1','Quote Status':'ACCEPTED','Line Control State':'PASS','Project / Scope':'Backup water'};
 const opportunity={opportunity_id:'O1',job_id:'',client_crm_id:'CRM1',client_name:'Client'};
 function fixture(){
- let written=0;
- const stores={commercial:{findByKey:async(t,k,id)=>t==='Quotes'&&id==='Q1'?{object:quote}:null},crm:{findByKey:async(t,k,id)=>t==='Jobs_Opportunities'&&id==='O1'?{object:opportunity}:null}};
- const writer={stores,execute:async plan=>{written++;return {state:'COMMITTED',plan_id:plan.idempotency_key}}};
+ let written=0,executed=false;
+ const stores={commercial:{readObjects:async()=>[],findByKey:async(t,k,id)=>t==='Quotes'&&id==='Q1'?{object:quote}:t==='Job Execution'&&executed&&id==='EXEC-1'?{object:{'Execution ID':'EXEC-1','Job ID':'JOB-1',opportunity_id:'O1',quote_id:'Q1'}}:null},crm:{findByKey:async(t,k,id)=>t==='Jobs_Opportunities'&&id==='O1'?{object:{...opportunity,job_id:executed?'JOB-1':''}}:null}};
+ const writer={stores,execute:async plan=>{written++;executed=true;return {state:'COMMITTED',plan_id:plan.idempotency_key}}};
  return {writer,count:()=>written};
 }
 const args={quoteId:'Q1',jobId:'JOB-1',sourceEventId:'E1'};
