@@ -322,3 +322,10 @@ Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decis
 - `job-activation-assessment.js` combines signed provider acceptance with canonical cleared deposit evidence; operator assessment displays both dimensions. Incomplete evidence remains REVIEW_REQUIRED.
 - Added `canonical-job-authority.js` to reuse the same source-verified signed event and canonical `Payment_Allocations` deposit evidence at governed P3 execution. Job endpoint now uses this resolver by default when no explicit test verifier is supplied; absent production provider verifier fails closed. Tests added for exact source events, missing provider and integrated readiness.
 - DELIVERY VERDICT: code committed; hosted consolidated verification and live provider integration PENDING. This is **not** signed-document verification from a real provider until an independent acceptance verifier is configured. No live job mutated.
+
+## Active build verification hardening — 2026-10-11
+
+- Corrected `runtime/release-acceptance.js` test enumeration: Node child process does not shell-expand `tests/*.test.js` with `spawnSync`. Script now supplies the actual discovered `.test.js` paths.
+- Consolidated release report now explicitly marks signed-acceptance activation and authorized P3 job transaction/audit readback as BLOCKED unless actually evidenced, preventing a misleading overall PASS on HTTP and unit tests alone. No production writes in the acceptance script.
+- Inspected LIVE `Writer_Schema_Registry`: `Jobs_Opportunities` registered under workbook_role `CRM`, **not `CRM_MASTER`**. Corrected accepted quote P3 job plan and added regression test. An actual authoritative write would otherwise fail schema validation.
+- All changes committed to branch; next hosted consolidated run and deployment pending. No client data mutated.
