@@ -147,16 +147,18 @@ At the end of every material MAGOS development session:
 5. Record exactly one next implementation action.
 6. Never mark production PASS without independent live readback.
 
+## Implementation update — 2026-10-11
+
+- Development branch already existed; no new branch created.
+- Added governed `SUPPLIER_APPROVAL_CHANGED` processor using existing P3 `STATE_TRANSITION`.
+- Registered processor and event-routing allowlist on development branch.
+- Added exact canonical supplier ID and expected current-state checks; no supplier creation.
+- Added governance-source/actor/authorization attestation requirements and evidence/guard gating.
+- Added focused negative and positive tests. Tests are committed but NOT YET EXECUTED on the hosted working tree.
+- No Aquadam production mutation performed. No production PASS claimed.
+- Current development branch commit: `08cf5d0` before this checkpoint update.
+- TO_CONFIRM: Node unit/integration test outcome, event ingress authorization provenance, writer schema/authority registry compatibility, production readback and idempotent replay.
+
 ## Exact next action
 
-Create development branch:
-
-magos/supplier-approval-governance
-
-from baseline:
-
-3029f57
-
-Then implement SUPPLIER_APPROVAL_CHANGED using the existing governed event pipeline and STATE_TRANSITION operation.
-
-No Aquadam production mutation has occurred yet.
+Fast-forward the existing hosted development branch and execute the focused supplier-approval tests. Fix any failures before production mutation. Keep Aquadam unchanged until independent write/readback controls pass.
