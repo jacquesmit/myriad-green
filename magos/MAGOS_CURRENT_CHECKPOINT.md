@@ -207,3 +207,10 @@ Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decis
 - Live Audit `Writer_Schema_Registry` now has WSR-480..492 for Supplier Purchase_Orders needed fields, exact columns and readback verified, 13/13.
 - Live purchase order creation or release NOT executed; supplier financial permissions and PO line/requirement reconciliation NOT claimed complete. Do not treat draft as authorization to buy.
 - Remaining integrated release work: P3 real writer integration test, authoritative BOQ/PO-line reconciliation, authenticated release endpoint and independent audit readback. No unrelated workflow should be blocked by these work items.
+
+## Procurement issue approval integration, 2026-10-11
+
+- Added `processor/procurement-issue-approval.js`: read-only join of authoritative `Purchase_Orders`, `Purchase_Order_Lines`, Commercial `Procurement`, `Supplier_Quotes` and Suppliers; validates exact job, PO line to procurement, BOQ part, approval status, cleared deposit and arithmetic; compiles a P3 `STATE_TRANSITION` DRAFT→APPROVED_FOR_ISSUE. This means internal approval only, never supplier dispatch or payment.
+- Added `tests/procurement-issue-approval.test.js` with happy path and negative cases; new tests not yet executed on hosted Node.
+- RELEASE BLOCKER: approvalEvidence/approverId are caller inputs and require independently authenticated operator authority plus durable evidence verification before exposing or executing this plan in production. No production route or order issue created.
+- Production procurement capability remains PARTIAL: true order dispatch, complete PO lines/requirements workflow and authenticated approval endpoint remain pending. Development of other capabilities is not blocked.
