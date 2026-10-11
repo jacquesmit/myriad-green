@@ -7,7 +7,7 @@ const opportunity={opportunity_id:'O1',job_id:'',client_crm_id:'CRM1',client_nam
 function fixture(){
  let written=0,executed=false;
  const stores={commercial:{readObjects:async()=>[],findByKey:async(t,k,id)=>t==='Quotes'&&id==='Q1'?{object:quote}:t==='Job Execution'&&executed&&id==='EXEC-1'?{object:{'Execution ID':'EXEC-1','Job ID':'JOB-1',opportunity_id:'O1',quote_id:'Q1'}}:null},crm:{findByKey:async(t,k,id)=>t==='Jobs_Opportunities'&&id==='O1'?{object:{...opportunity,job_id:executed?'JOB-1':''}}:null}};
- const writer={stores,execute:async plan=>{written++;executed=true;return {state:'COMMITTED',plan_id:plan.idempotency_key}}};
+ const writer={stores,execute:async plan=>{written++;executed=true;return {state:'COMMITTED',plan_id:plan.idempotency_key,audit:{run_state:'COMMITTED',idempotency_key:plan.idempotency_key}}}};
  return {writer,count:()=>written};
 }
 const args={quoteId:'Q1',jobId:'JOB-1',sourceEventId:'E1'};
@@ -38,4 +38,11 @@ test('HTTP job creation enforces separate token, attestation and canonical write
   assert.equal((await post('job-token',{quoteId:'Q1'})).status,400);
   const r=await post('job-token',args);assert.equal(r.status,200);assert.equal((await r.json()).state,'COMMITTED');assert.equal(f.count(),1);
  }finally{await new Promise(resolve=>server.close(resolve));}
+});
+
+test('claimed P3 COMMITTED without matching audit ledger cannot activate job',async()=>{
+ const f=fixture();
+ f.writer.execute=async()=>({state:'COMMITTED',audit:{run_state:'RUNNING',idempotency_key:'OTHER'}});
+ const r=await executeAcceptedJob({...args,writer:f.writer,authorityVerifier:verifier});
+ assert.equal(r.state,'COMMIT_AUDIT_UNVERIFIED');
 });
