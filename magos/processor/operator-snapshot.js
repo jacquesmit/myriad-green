@@ -4,7 +4,17 @@ const txt=v=>String(v??'').trim();
 const upper=v=>txt(v).toUpperCase();
 function projectOperations({leads=[],jobs=[],quotes=[],procurement=[],exceptions=[]}={}){
  const unique=(rows,key)=>{const seen=new Set();return rows.filter(r=>{const id=txt(r[key]);if(!id||seen.has(id))return false;seen.add(id);return true;});};
- const openLeads=unique(leads,'source_event_id').filter(r=>!['COMPLETED','CLOSED','IGNORED','FILED','RESOLVED'].includes(upper(r.processing_status||r.processing_status||r.status||r.intake_status)));
+ // Only operational inbound enquiries belong in this queue. Scraper and outbound
+ // prospecting stay outside active leads; other intake documents are not leads.
+ const inboundTypes=new Set(['WEBSITE_FORM','WEB_FORM','CONTACT_FORM','LEAD','ENQUIRY','INQUIRY','WHATSAPP_LEAD','FACEBOOK_LEAD','BOOKING_ORDER','BOOKING','SERVICE_REQUEST']);
+ const inboundSystems=new Set(['WEBSITE','WHATSAPP','FACEBOOK','FLUENT_FORMS','AMELIA']);
+ const isInbound=r=>{
+  const system=upper(r.source_system),type=upper(r.source_type);
+  const combined=[system,type,upper(r.source),upper(r.source_category)].join('|');
+  if(/SCRAPER|OUTBOUND|PROSPECTING|TODAY_OUTREACH/.test(combined))return false;
+  return inboundTypes.has(type)||(inboundSystems.has(system)&&!['SUPPLIER_EMAIL','SUPPLIER_QUOTE','INVOICE','OTHER','RFQ'].includes(type));
+ };
+ const openLeads=unique(leads,'source_event_id').filter(r=>isInbound(r)&&!['COMPLETED','CLOSED','IGNORED','FILED','RESOLVED'].includes(upper(r.processing_status||r.status||r.intake_status)));
  const allQuotes=unique(quotes,'quote_id');
  const acceptedForJob=allQuotes.filter(r=>upper(r['Quote Status'])==='ACCEPTED'&&!txt(r.job_id));
  const pendingQuotes=allQuotes.filter(r=>!['ACCEPTED','DECLINED','EXPIRED','CANCELLED'].includes(upper(r['Quote Status'])));
@@ -23,7 +33,7 @@ function projectOperations({leads=[],jobs=[],quotes=[],procurement=[],exceptions
    exceptions:openExceptions.map(r=>({id:txt(r.exception_id),status:txt(r.status),next_action:txt(r.action_required||r.next_action||r.error_or_blocker)}))
   },
   attention:[
-   ...openExceptions.map(r=>({type:'EXCEPTION',id:r.exception_id,next_action:txt(r.next_action||r.error_or_blocker)})),
+   ...openExceptions.map(r=>({type:'EXCEPTION',id:r.exception_id,next_action:txt(r.action_required||r.next_action||r.error_or_blocker)})),
    ...purchaseReview.map(r=>({type:'PROCUREMENT_REVIEW',id:r['Procurement ID'],next_action:txt(r['Next Action'])})),
    ...pendingQuotes.map(r=>({type:'QUOTE_FOLLOWUP',id:r.quote_id,next_action:txt(r['Next Action'])})),
    ...acceptedForJob.map(r=>({type:'ACCEPTED_QUOTE_REVIEW',id:r.quote_id,next_action:'Inspect acceptance evidence and job creation readiness'})),
