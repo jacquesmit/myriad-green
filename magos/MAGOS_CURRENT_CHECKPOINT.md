@@ -246,3 +246,9 @@ Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decis
 - `tests/operator-page.test.js` checks shell, no server-side privileged data read, CSP and secret absence.
 - CODE COMMITTED; HOSTED VERIFICATION AND RESTART NOT YET VERIFIED. Actual dashboard counts and source tab mapping need real-host acceptance before production PASS; no claims about actual live workload.
 - Development next: connect individual business action execution (lead→quote→job) behind scoped governance and build financial/procurement operator screens without shadow sources.
+
+## Operator record drill-down — 2026-10-11
+
+- Added read-only, canonical per-record workstream queues to the existing `operator-snapshot.js` projection for leads, quotes, jobs, procurement and exceptions. Relevant exact opportunity/job/supplier IDs remain linked in returned records.
+- Browser `/operator` now offers workstream buttons and selectable record details, enabling actual navigation of an individual item instead of only aggregate counts.
+- Added two regression tests. Branch implementation committed; newest tests and actual hosted dashboard remain TO_CONFIRM until full-host run and live API acceptance. This is record inspection, not yet quote/job write operations.
