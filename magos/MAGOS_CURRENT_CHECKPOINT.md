@@ -199,3 +199,11 @@ At the end of every material MAGOS development session:
 ## Exact next action
 
 Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decisions to verified authoritative lookups and the existing `createJobFromAcceptedScope` transaction-plan helper; do not invent payment clearance or acceptance evidence.
+
+## P5 procurement draft transaction implementation — 2026-10-11
+
+- New `processor/procurement-draft-transaction.js` binds canonical supplier and quote through existing ExactLookupService, computes a governed P3 `CREATE_IF_ABSENT` transaction plan for an **UNRELEASED DRAFT** Purchase_Orders record, and exposes `dryRun` and execution paths.
+- New `tests/procurement-draft-transaction.test.js` covers write invocation, replay no-op, missing quote, supplier exclusion, mismatched supplier, no evidence/project and dry-run. Newly committed tests awaiting hosted execution. The suite uses a fake writer; actual P3 integration remains TO_CONFIRM.
+- Live Audit `Writer_Schema_Registry` now has WSR-480..492 for Supplier Purchase_Orders needed fields, exact columns and readback verified, 13/13.
+- Live purchase order creation or release NOT executed; supplier financial permissions and PO line/requirement reconciliation NOT claimed complete. Do not treat draft as authorization to buy.
+- Remaining integrated release work: P3 real writer integration test, authoritative BOQ/PO-line reconciliation, authenticated release endpoint and independent audit readback. No unrelated workflow should be blocked by these work items.
