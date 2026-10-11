@@ -88,8 +88,7 @@ final class MG_Quote_Acceptance_Bridge {
   $consent=$data['quote_accept_consent']??null;
   $consent_ok=is_array($consent)?in_array('1',array_map('strval',$consent),true):in_array((string)$consent,['1','yes','on'],true);
   $name=$data['quote_accept_signer']??'';
-  if(!$name && !empty($data['names']) && is_array($data['names']))
-   $name=trim((string)($data['names']['first_name']??'').' '.(string)($data['names']['last_name']??''));
+  if(!$name){foreach(['name','names'] as $key){if(!empty($data[$key]) && is_array($data[$key])){$name=trim((string)($data[$key]['first_name']??'').' '.(string)($data[$key]['last_name']??''));if($name)break;}}}
   $signer=sanitize_text_field((string)$name);
   $dataUri=(string)($_POST['mgos_signature_png']??'');
   if(!$consent_ok || !$signer || strlen($dataUri)>125000 ||
