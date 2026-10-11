@@ -297,3 +297,9 @@ Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decis
 - Planner now fails closed if authoritative `Job Execution` index cannot be read, instead of silently permitting a potentially duplicated job.
 - Adds a P3 transaction precondition requiring the live CRM `Jobs_Opportunities.job_id` to remain empty at commit time. Intended to refuse races after readiness inspection and before transactional execution.
 - Added regression tests for missing execution index and CRM precondition. Changes committed, next full hosted verification and live deployment are deliberately consolidated with the upcoming batch. No live records changed.
+
+## Governing release blocker fixed — 2026-10-11
+
+- Verified the canonical `Cross_System_Links` register: `LNK-009` is ACTIVE, points to commercial `Job Execution`. The prior accepted-job plan incorrectly used `opportunity_id` as `link_id`, which P3 authority validation would reject. Fixed planner to use `LNK-009`; regression test added.
+- Also committed earlier in this development batch: refuse unavailable execution index and add live CRM job_id-empty precondition. All unverified changes remain pending the NEXT ONE consolidated hosted verification, not represented as deployed.
+- **Business workflow is still not production released**: the jobAuthorityVerifier defaults to fail-closed and requires an independently authenticated signed-acceptance/payment attestation. No production job write was attempted.
