@@ -221,3 +221,11 @@ Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decis
 - `tests/procurement-approval-http.test.js`: 4 HTTP security and integration tests committed; hosted execution NOT YET VERIFIED. Earlier 210 tests passed on host at 8987523.
 - Important production LIMITATION: this is internal `APPROVED_FOR_ISSUE` state only; no supplier PO dispatch or money movement. Approval evidence is caller-supplied and not independently verified in this route. Production deployment remains BLOCKED until evidence provenance and authentic operator permissions are verified; do not configure an external webhook with the privileged token.
 - Live Supplier Master not mutated by this code; current production route deployment not independently confirmed.
+
+## Procurement authority boundary hardening — 2026-10-11
+
+- Separate procurement token no longer substitutes for a documented business approval.
+- `runtime/app.js` requires server-side `procurementAuthorityVerifier` attestation bound to the exact poId, sourceEventId and evidenceRef, with an independently identified `authorized_actor_id` before P3 writer execution.
+- Default verifier fails closed (`APPROVAL_AUTHORITY_NOT_VERIFIED`), so no live procurement approval is unlocked accidentally by configuring just the token.
+- HTTP tests updated to inject trusted fake attestation for positive path; added rejection of absent/mismatched attestation. Newly changed tests not yet run; previous host baseline 223/223 PASS at 74ef5b0.
+- Next: attach verifier to a genuine persisted, explicitly approved MGOS authority/evidence record and verify live readback; then hosted full test and controlled release. Treat as production PENDING, not globally blocking MAGOS development.
