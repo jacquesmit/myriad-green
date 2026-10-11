@@ -229,3 +229,11 @@ Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decis
 - Default verifier fails closed (`APPROVAL_AUTHORITY_NOT_VERIFIED`), so no live procurement approval is unlocked accidentally by configuring just the token.
 - HTTP tests updated to inject trusted fake attestation for positive path; added rejection of absent/mismatched attestation. Newly changed tests not yet run; previous host baseline 223/223 PASS at 74ef5b0.
 - Next: attach verifier to a genuine persisted, explicitly approved MGOS authority/evidence record and verify live readback; then hosted full test and controlled release. Treat as production PENDING, not globally blocking MAGOS development.
+
+## Operator command-center slice — 2026-10-11
+
+- `processor/operator-snapshot.js`: unified, read-only projection from canonical CRM Intake_Queue, Jobs_Opportunities, commercial Quotes and Procurement, and Audit Sync_Exceptions. No shadow database or business mutations.
+- `GET /v1/operator/snapshot` is runtime-token authenticated and reads existing TransactionWriter stores; JSON counts and actionable exceptions, purchasing reviews, quote follow-ups and job actions.
+- `tests/operator-snapshot.test.js`: four new tests for aggregation, read-only boundary, missing authority and HTTP authentication. COMMITTED; HOSTED TESTS PENDING.
+- This is a backend command-center API, NOT a completed user-facing operator interface. The live deployment is NOT verified.
+- Next integration: real authorization-backed command center, client-to-job operations, and tested hosted deployment; preserve scoped controls and avoid new sources of truth.
