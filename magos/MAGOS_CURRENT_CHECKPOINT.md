@@ -259,3 +259,10 @@ Run `tests/quote-to-job-readiness.test.js`, then bind quote-to-job release decis
 - Added `tests/accepted-quote-job-plan.test.js`: positive path, unaccepted quote, proof-not-cleared and duplicate job. These tests are committed but not hosted-verified.
 - SECURITY/PRODUCTION REMAINS PENDING: caller-supplied acceptanceEvidence and paymentClearance are NOT independently attested in the new planner; never expose this plan for execution without canonical source verification and approval. Not yet a production job-creation endpoint.
 - Next meaningful release: attach authoritative acceptance/payment evidence resolver, confirm schema/ownership for CRM and Job Execution, then governed writer execution from authenticated operator action with verified audit readback.
+
+## Governed quote-to-job execution — 2026-10-11
+
+- `accepted-job-execution.js` now composes canonical accepted-scope job plan into the P3 writer behind an independently supplied server-side authority verifier. Default authority is fail-closed.
+- `POST /v1/governance/create-job` uses a dedicated `MAGOS_JOB_CREATION_TOKEN`, rejects caller payment/acceptance assertions and blocks generic CRM job_id writes by runtime token; returns review rather than writing on missing proof.
+- `tests/accepted-job-execution.test.js` covers writer execution with trusted server-attested state, rejection, proof-only, dry-run and authenticated HTTP. Tests committed but hosting verification PENDING; real acceptance/payment verification service not yet connected.
+- This is functioning guarded route code, NOT a verified production workflow. Production writes must not be enabled with a stub verifier. Current full suite most recently 225/225 PASS prior to subsequent changes.
