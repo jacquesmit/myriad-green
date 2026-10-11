@@ -44,12 +44,12 @@ function showSection(section){
     inspect.addEventListener('click',async()=>{
       inspect.disabled=true;
       try{
-        const response=await fetch('/v1/operator/job-readiness/'+encodeURIComponent(record.id),{headers:{Authorization:'Bearer '+credential},cache:'no-store'});
+        const response=await fetch('/v1/operator/job-activation/'+encodeURIComponent(record.id),{headers:{Authorization:'Bearer '+credential},cache:'no-store'});
         const result=await response.json();
         const pre=document.createElement('pre');pre.style.whiteSpace='pre-wrap';pre.textContent=JSON.stringify(result,null,2);
         dl.appendChild(pre);
-        if(result.opportunity_id){
-          const evidenceResponse=await fetch('/v1/operator/deposit-evidence/'+encodeURIComponent(result.opportunity_id),{headers:{Authorization:'Bearer '+credential},cache:'no-store'});
+        if(result.quote?.opportunity_id){
+          const evidenceResponse=await fetch('/v1/operator/deposit-evidence/'+encodeURIComponent(result.quote.opportunity_id),{headers:{Authorization:'Bearer '+credential},cache:'no-store'});
           const evidence=await evidenceResponse.json();
           const financial=document.createElement('pre');financial.style.whiteSpace='pre-wrap';
           financial.textContent='Canonical deposit evidence (read-only): '+JSON.stringify(evidence,null,2);
