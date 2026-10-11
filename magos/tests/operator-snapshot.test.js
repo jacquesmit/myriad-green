@@ -5,7 +5,7 @@ const http=require('node:http');
 const {projectOperations,loadOperatorSnapshot}=require('../processor/operator-snapshot');
 const {createRuntimeApp}=require('../runtime/app');
 const stores={
- crm:{readObjects:async t=>t==='Intake_Queue'?[{source_event_id:'LEAD-1',status:'NEW'}]:[{opportunity_id:'OPP-1',job_status:'IN_PROGRESS',next_action:'Visit site'}]},
+ crm:{readObjects:async t=>t==='Intake_Queue'?[{source_event_id:'LEAD-1',source_system:'GMAIL',source_type:'WEBSITE_FORM',status:'NEW'}]:[{opportunity_id:'OPP-1',job_status:'IN_PROGRESS',next_action:'Visit site'}]},
  commercial:{readObjects:async t=>t==='Quotes'?[{quote_id:'Q-1','Quote Status':'SENT','Next Action':'Follow up'}]:[{'Procurement ID':'PROC-1','Procurement Gate':'BLOCK','Next Action':'Confirm stock'}]},
  audit:{readObjects:async()=>[{exception_id:'EXC-1',status:'OPEN',next_action:'Review mapping'}]}
 };
@@ -47,7 +47,7 @@ test('records preserve canonical cross-workflow links and avoid hidden writes',a
 });
 
 test('live Intake_Queue canonical columns drive status, linkage and routing',()=>{
- const data=projectOperations({leads:[{source_event_id:'EV-9',processing_status:'REVIEW_REQUIRED',matched_crm_id:'CRM-9',matched_opportunity_id:'OPP-9',routing_action:'Request photos'}]});
+ const data=projectOperations({leads:[{source_event_id:'EV-9',source_system:'GMAIL',source_type:'WEBSITE_FORM',processing_status:'REVIEW_REQUIRED',matched_crm_id:'CRM-9',matched_opportunity_id:'OPP-9',routing_action:'Request photos'}]});
  assert.equal(data.counts.open_leads,1);
  assert.deepEqual(data.records.leads[0],{id:'EV-9',status:'REVIEW_REQUIRED',opportunity_id:'OPP-9',client_id:'CRM-9',next_action:'Request photos'});
 });
@@ -65,4 +65,16 @@ test('accepted quotation without linked job remains accessible for job readiness
  assert.equal(data.records.quotes.length,1);
  assert.equal(data.records.quotes[0].id,'Q-ACCEPT');
  assert.ok(data.attention.some(x=>x.type==='ACCEPTED_QUOTE_REVIEW'&&x.id==='Q-ACCEPT'));
+});
+
+test('scraped outbound prospects and supplier emails never become active inbound leads',()=>{
+ const data=projectOperations({leads:[
+  {source_event_id:'SCRAPE-1',source_system:'SCRAPER',source_type:'OUTBOUND_PROSPECTING',processing_status:'NEW'},
+  {source_event_id:'OUT-2',source_system:'OUTBOUND',source_type:'LEAD',processing_status:'NEW'},
+  {source_event_id:'RFQ-3',source_system:'GMAIL',source_type:'RFQ',processing_status:'NEW'},
+  {source_event_id:'IN-4',source_system:'GMAIL',source_type:'WEBSITE_FORM',processing_status:'NEW',routing_action:'Call client'},
+  {source_event_id:'IN-5',source_system:'AMELIA',source_type:'BOOKING_ORDER',processing_status:'NEW'}
+ ]});
+ assert.equal(data.counts.open_leads,2);
+ assert.deepEqual(data.records.leads.map(x=>x.id),['IN-4','IN-5']);
 });
