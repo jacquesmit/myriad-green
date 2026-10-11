@@ -8,6 +8,7 @@ const { planDocumentFiled } = require('./00a-filing');
 const { createPaymentProcessor } = require('./payment-processor');
 const { createSupplierPriceProcessor } = require('./supplier-price-processor');
 const { createLeadProcessor } = require('./lead-processor');
+const { createSupplierApprovalProcessor } = require('./supplier-approval-processor');
 const {
   createSupplierEmailProcessor
 } = require('./supplier-email-processor');
@@ -22,7 +23,8 @@ const SUPPORTED_EVENT_TYPES = Object.freeze([
   'PAYMENT_OBSERVED',
   'SUPPLIER_PRICE_OBSERVED',
   'SUPPLIER_EMAIL_RECEIVED',
-  'LEAD_SUBMITTED'
+  'LEAD_SUBMITTED',
+  'SUPPLIER_APPROVAL_CHANGED'
 ]);
 
 class UnsupportedGovernedEventTypeError extends Error {
@@ -63,6 +65,7 @@ class GovernedProcessorRegistry {
     this.now = now;
 
     this.factories = new Map([
+      ['SUPPLIER_APPROVAL_CHANGED', () => createSupplierApprovalProcessor({ lookupService: this.lookupService })],
       [
         'DOCUMENT_RECEIVED',
         () => createZeroAProcessor({
