@@ -48,6 +48,13 @@ function showSection(section){
         const result=await response.json();
         const pre=document.createElement('pre');pre.style.whiteSpace='pre-wrap';pre.textContent=JSON.stringify(result,null,2);
         dl.appendChild(pre);
+        if(result.opportunity_id){
+          const evidenceResponse=await fetch('/v1/operator/deposit-evidence/'+encodeURIComponent(result.opportunity_id),{headers:{Authorization:'Bearer '+credential},cache:'no-store'});
+          const evidence=await evidenceResponse.json();
+          const financial=document.createElement('pre');financial.style.whiteSpace='pre-wrap';
+          financial.textContent='Canonical deposit evidence (read-only): '+JSON.stringify(evidence,null,2);
+          dl.appendChild(financial);
+        }
       }catch(error){const p=document.createElement('p');p.textContent='Inspection failed: '+error.message;dl.appendChild(p);}
       finally{inspect.disabled=false;}
     });
