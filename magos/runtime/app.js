@@ -47,6 +47,7 @@ function createRuntimeApp({
   leadIngressSources =
     process.env.MAGOS_LEAD_INGRESS_SOURCES || '',
   writerFactory = () => new TransactionWriter(),
+  procurementLookupFactory = () => new (require('../adapters/exact-lookup-service').ExactLookupService)(),
   eventProcessorFactory = () => new EventProcessor(),
   eventDispatcherFactory = ({ writer }) =>
     new GovernedProcessorRegistry({ writer }),
@@ -310,9 +311,8 @@ function createRuntimeApp({
       return res.status(400).json({ error: 'PROCUREMENT_APPROVAL_INPUT_REQUIRED' });
     }
     try {
-      const { ExactLookupService } = require('../adapters/exact-lookup-service');
       const { planPurchaseOrderIssueApproval } = require('../processor/procurement-issue-approval');
-      const lookupService = new ExactLookupService();
+      const lookupService = procurementLookupFactory();
       const result = await planPurchaseOrderIssueApproval({
         lookupService, poId: b.poId, sourceEventId: b.sourceEventId,
         approvalEvidence: b.approvalEvidence, approverId: b.approverId
