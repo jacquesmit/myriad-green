@@ -45,3 +45,9 @@ test('job execution write uses registered active cross-system link instead of op
  assert.equal(r.plan.writes[1].link_id,'LNK-009');
  assert.equal(r.plan.writes[1].sheet,'Job Execution');
 });
+
+test('CRM job mutation uses the production Writer_Schema_Registry workbook role',async()=>{
+ const f=fixture();const r=await planAcceptedJob({...f.args,stores:f.stores});
+ assert.equal(r.plan.writes[0].workbook_role,'CRM');
+ assert.equal(r.plan.writes[0].sheet,'Jobs_Opportunities');
+});
