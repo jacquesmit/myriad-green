@@ -14,14 +14,17 @@ async function planAcceptedJob({stores,quoteId,jobId,sourceEventId,acceptanceEvi
  if(readiness.decision!=='READY_FOR_GOVERNED_JOB_CREATION')return {state:readiness.decision,readiness};
  if(!v(jobId).startsWith('JOB-'))return {state:'REVIEW_REQUIRED',reason_code:'INVALID_JOB_ID'};
  const existing=(await stores.commercial.findByKey('Job Execution','Job ID',jobId))?.object;
- const existingOpportunityExecution=typeof stores.commercial.readObjects==='function'?(await stores.commercial.readObjects('Job Execution')).find(r=>v(r.opportunity_id)===v(quote.opportunity_id)||v(r.quote_id)===v(quoteId)):null;
+ if(typeof stores.commercial.readObjects!=='function')return {state:'REVIEW_REQUIRED',reason_code:'EXECUTION_INDEX_UNAVAILABLE'};
+ const executions=await stores.commercial.readObjects('Job Execution');
+ if(!Array.isArray(executions))return {state:'REVIEW_REQUIRED',reason_code:'EXECUTION_INDEX_UNAVAILABLE'};
+ const existingOpportunityExecution=executions.find(r=>v(r.opportunity_id)===v(quote.opportunity_id)||v(r.quote_id)===v(quoteId));
  if(existingOpportunityExecution)return {state:'REVIEW_REQUIRED',reason_code:'OPPORTUNITY_EXECUTION_ALREADY_EXISTS'};
  if(existing)return {state:'REVIEW_REQUIRED',reason_code:'JOB_EXECUTION_ALREADY_EXISTS'};
  const executionId='EXEC-'+jobId.slice(4);
  const plan=createJobFromAcceptedScope({
    idempotency_key:'MAGOS_JOB_CREATE_V1|'+sourceEventId+'|'+quoteId,
    source_event_id:sourceEventId,evidence_link:acceptanceEvidence,
-   quote_preconditions:[{store:'commercial',sheet:'Quotes',key:{header:'quote_id',value:quoteId},expect:{'Quote Status':'ACCEPTED','Line Control State':'PASS',opportunity_id:quote.opportunity_id}}],
+   quote_preconditions:[{store:'commercial',sheet:'Quotes',key:{header:'quote_id',value:quoteId},expect:{'Quote Status':'ACCEPTED','Line Control State':'PASS',opportunity_id:quote.opportunity_id}},{store:'crm',sheet:'Jobs_Opportunities',key:{header:'opportunity_id',value:quote.opportunity_id},expect:{job_id:''}}],
    job_target:{store:'crm',workbook_role:'CRM_MASTER',sheet:'Jobs_Opportunities',key:{header:'opportunity_id',value:quote.opportunity_id},authority:'AUTHORITATIVE',entity_type:'Job'},
    job_changes:{job_id:jobId,job_status:'JOB_CREATED'},
    execution_target:{store:'commercial',workbook_role:'COMMERCIAL',sheet:'Job Execution',key:{header:'Execution ID',value:executionId},link_id:quote.opportunity_id},
