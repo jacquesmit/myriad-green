@@ -58,3 +58,11 @@ test('live Sync_Exceptions action_required and procurement PASS gate are respect
  assert.equal(data.counts.procurement_review,1);
  assert.equal(data.records.procurement[0].id,'P-HOLD');
 });
+
+test('accepted quotation without linked job remains accessible for job readiness inspection',()=>{
+ const data=projectOperations({quotes:[{quote_id:'Q-ACCEPT','Quote Status':'ACCEPTED',opportunity_id:'OPP-A',job_id:''},{quote_id:'Q-LINKED','Quote Status':'ACCEPTED',job_id:'JOB-A'}]});
+ assert.equal(data.counts.pending_quotes,0);
+ assert.equal(data.records.quotes.length,1);
+ assert.equal(data.records.quotes[0].id,'Q-ACCEPT');
+ assert.ok(data.attention.some(x=>x.type==='ACCEPTED_QUOTE_REVIEW'&&x.id==='Q-ACCEPT'));
+});
