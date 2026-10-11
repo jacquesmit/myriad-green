@@ -780,3 +780,66 @@ test('Fluent Forms adapter survives the P5O HTTP ingress boundary without field 
     });
   });
 });
+
+test('supplier approval refuses generic event and transaction bypasses', async () => {
+  let calls = 0;
+  const app = createRuntimeApp({
+    token: 'runtime-secret',
+    supplierApprovalToken: 'different-governance-secret',
+    writerFactory: () => ({ audit: {}, execute: async () => { calls++; return { state: 'COMMITTED' }; } }),
+    eventDispatcherFactory: () => ({ run: async () => { calls++; return { state: 'COMMITTED' }; } })
+  });
+  await withServer(app, async base => {
+    const event = { ...sampleEvent(), event_type: 'SUPPLIER_APPROVAL_CHANGED', metadata: { approval_authorized: true } };
+    const run = await request(base, '/v1/events/run', { method: 'POST', token: 'runtime-secret', body: event });
+    assert.equal(run.status, 403);
+    const plan = { ...samplePlan(), event_type: 'SUPPLIER_APPROVAL_CHANGED' };
+    const direct = await request(base, '/v1/transactions', { method: 'POST', token: 'runtime-secret', body: plan });
+    assert.equal(direct.status, 403);
+    const forged = { ...samplePlan(), writes: [{ ...samplePlan().writes[0], store: 'supplier', sheet: 'Suppliers', key: { header: 'supplier_id', value: 'SUP-X' }, state_field: 'supplier_approval_state', operation: 'STATE_TRANSITION' }] };
+    const forbidden = await request(base, '/v1/transactions', { method: 'POST', token: 'runtime-secret', body: forged });
+    assert.equal(forbidden.status, 403);
+    assert.equal(calls, 0);
+  });
+});
+
+test('dedicated supplier approval route requires separate credential and preserves truthful guards', async () => {
+  let seen = null;
+  const app = createRuntimeApp({
+    token: 'runtime-secret',
+    supplierApprovalToken: 'governance-secret',
+    writerFactory: () => ({ audit: {} }),
+    eventDispatcherFactory: () => ({ run: async event => { seen = event; return { state: 'COMMITTED' }; } })
+  });
+  const payload = {
+    supplier_id: 'SUP-AQUADAM-GAUTENG',
+    from_state: 'VETTING',
+    to_state: 'APPROVED',
+    source_event_id: 'GOV-TEST-1',
+    actor_id: 'operator-1',
+    evidence_ref: 'https://example.test/approval',
+    guards: { spam: 'CLEAR', phishing: 'CLEAR', explicit_content: 'CLEAR', malware: 'CLEAR', irrelevant: 'UNKNOWN' }
+  };
+  await withServer(app, async base => {
+    const unauthorized = await request(base, '/v1/governance/supplier-approval', { method: 'POST', token: 'runtime-secret', body: payload });
+    assert.equal(unauthorized.status, 401);
+    assert.equal(seen, null);
+    const missingGuards = await fetch(base + '/v1/governance/supplier-approval', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-magos-supplier-approval-token': 'governance-secret' },
+      body: JSON.stringify({ ...payload, guards: undefined })
+    });
+    assert.equal(missingGuards.status, 400);
+    const valid = await fetch(base + '/v1/governance/supplier-approval', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-magos-supplier-approval-token': 'governance-secret' },
+      body: JSON.stringify(payload)
+    });
+    assert.equal(valid.status, 200);
+    assert.equal(seen.event_type, 'SUPPLIER_APPROVAL_CHANGED');
+    assert.equal(seen.source, 'MGOS_GOVERNANCE');
+    assert.equal(seen.metadata.approval_authorized, true);
+    assert.equal(seen.guards.irrelevant, 'UNKNOWN');
+    assert.equal(seen.payload.supplier_approval_change.to_state, 'APPROVED');
+  });
+});
