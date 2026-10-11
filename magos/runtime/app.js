@@ -235,7 +235,8 @@ function createRuntimeApp({
           typeof change.supplier_id !== 'string' || !change.supplier_id.trim() ||
           typeof change.source_event_id !== 'string' || !change.source_event_id.trim() ||
           typeof change.actor_id !== 'string' || !change.actor_id.trim() ||
-          typeof change.evidence_ref !== 'string' || !change.evidence_ref.trim()) {
+          typeof change.evidence_ref !== 'string' || !change.evidence_ref.trim() ||
+          !change.guards || !['spam','phishing','explicit_content','malware','irrelevant'].every(k => change.guards[k] === 'CLEAR' || change.guards[k] === 'BLOCK' || change.guards[k] === 'UNKNOWN')) {
         return res.status(400).json({ error: 'INVALID_SUPPLIER_APPROVAL_REQUEST' });
       }
       const envelope = createEventEnvelope({
@@ -244,7 +245,7 @@ function createRuntimeApp({
         event_type: 'SUPPLIER_APPROVAL_CHANGED',
         actor: { id: change.actor_id },
         entity_hints: { supplier_id: change.supplier_id },
-        guards: { spam: 'CLEAR', phishing: 'CLEAR', explicit_content: 'CLEAR', malware: 'CLEAR', irrelevant: 'CLEAR' },
+        guards: change.guards,
         evidence: [{ type: 'DOCUMENT', ref: change.evidence_ref }],
         metadata: { approval_authorized: true, authorization_origin: 'SUPPLIER_APPROVAL_ENDPOINT' },
         payload: { supplier_approval_change: {
