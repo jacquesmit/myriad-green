@@ -12,7 +12,8 @@ async function request(path,authorization=false){
  return response;
 }
 async function main(){
- const tests=spawnSync(process.execPath,['--test','tests/*.test.js'],{cwd:process.cwd(),encoding:'utf8',timeout:180000,maxBuffer:5*1024*1024});
+ const testFiles=fs.readdirSync('tests').filter(name=>name.endsWith('.test.js')).sort().map(name=>'tests/'+name);
+ const tests=spawnSync(process.execPath,['--test',...testFiles],{cwd:process.cwd(),encoding:'utf8',timeout:180000,maxBuffer:5*1024*1024});
  const output=(tests.stdout||'')+'\n'+(tests.stderr||'');
  const result=output.match(/(?:^|\n)ℹ pass (\d+)/),fails=output.match(/(?:^|\n)ℹ fail (\d+)/);
  record('FULL_CODE_SUITE',tests.status===0&&Number(fails?.[1])===0&&Number(result?.[1])>0?'PASS':'FAIL',{passed:Number(result?.[1]||0),failed:Number(fails?.[1]||0),exit:tests.status});
