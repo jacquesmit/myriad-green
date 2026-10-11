@@ -27,7 +27,7 @@ async function planAcceptedJob({stores,quoteId,jobId,sourceEventId,acceptanceEvi
    quote_preconditions:[{store:'commercial',sheet:'Quotes',key:{header:'quote_id',value:quoteId},expect:{'Quote Status':'ACCEPTED','Line Control State':'PASS',opportunity_id:quote.opportunity_id}},{store:'crm',sheet:'Jobs_Opportunities',key:{header:'opportunity_id',value:quote.opportunity_id},expect:{job_id:''}}],
    job_target:{store:'crm',workbook_role:'CRM_MASTER',sheet:'Jobs_Opportunities',key:{header:'opportunity_id',value:quote.opportunity_id},authority:'AUTHORITATIVE',entity_type:'Job'},
    job_changes:{job_id:jobId,job_status:'JOB_CREATED'},
-   execution_target:{store:'commercial',workbook_role:'COMMERCIAL',sheet:'Job Execution',key:{header:'Execution ID',value:executionId},link_id:quote.opportunity_id},
+   execution_target:{store:'commercial',workbook_role:'COMMERCIAL',sheet:'Job Execution',key:{header:'Execution ID',value:executionId},link_id:'LNK-009'},
    execution_values:{'Execution ID':executionId,'Job ID':jobId,opportunity_id:quote.opportunity_id,quote_id:quoteId,'CRM ID':v(opportunity.client_crm_id),'Client':v(opportunity.client_name),'Site Address':v(opportunity.site_address),'Service':v(opportunity.primary_service),'Accepted Scope':v(quote['Project / Scope']),'Deposit Cleared':'CLEARED','Job Status':'JOB_CREATED','Schedule Status':'TO_SCHEDULE','Next Action':'Confirm date and crew'}
  });
  return {state:'READY_FOR_GOVERNED_JOB_CREATION',readiness,job_id:jobId,execution_id:executionId,plan};
