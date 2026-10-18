@@ -1,0 +1,13 @@
+'use strict';
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const { resolveAgentTask } = require('../processor/agent-owner-resolver');
+const request = {tenant_id:'MG',country_id:'ZA',region_id:'GP',branch_id:'PTA',business_record_id:'READONLY-1',job_type_id:'JT-101',correlation_id:'C1',idempotency_key:'K1'};
+const catalog = { agents:[{Agent_ID:'AG-018'},{Agent_ID:'AG-025'},{Agent_ID:'AG-026'}],jobTypes:[{Job_Type_ID:'JT-101',Primary_Agent_ID:'AG-018'}],allocations:[{Job_Type_ID:'JT-101',Primary_Agent_ID:'AG-018',Support_Agent_IDs:'AG-025,AG-026'}]};
+test('canonical footer owner resolves but never authorises a mutation',()=>{const r=resolveAgentTask(request,catalog);assert.equal(r.status,'REVIEW_REQUIRED');assert.equal(r.task.primary_agent_id,'AG-018');assert.deepEqual(r.task.support_agent_ids,['AG-025','AG-026']);assert.equal(r.task.mutation_authorised,false)});
+test('missing branch is rejected',()=>assert.equal(resolveAgentTask({...request,branch_id:''},catalog).reason_code,'MISSING_REQUIRED_SCOPE_OR_IDENTITY'));
+test('unknown job type is rejected',()=>assert.equal(resolveAgentTask({...request,job_type_id:'JT-999'},catalog).reason_code,'UNKNOWN_JOB_TYPE'));
+test('missing registry is rejected',()=>assert.equal(resolveAgentTask(request,{}).reason_code,'CANONICAL_REGISTRY_UNAVAILABLE'));
+test('conflicting owners are rejected',()=>assert.equal(resolveAgentTask(request,{...catalog,allocations:[{...catalog.allocations[0],Primary_Agent_ID:'AG-025'}]}).reason_code,'OWNER_REGISTRY_CONFLICT'));
+test('duplicate owner allocations are rejected',()=>assert.equal(resolveAgentTask(request,{...catalog,allocations:[...catalog.allocations,...catalog.allocations]}).reason_code,'AMBIGUOUS_OWNER_ALLOCATION'));
+test('unknown support agent is rejected',()=>assert.equal(resolveAgentTask(request,{...catalog,allocations:[{...catalog.allocations[0],Support_Agent_IDs:'AG-999'}]}).reason_code,'UNKNOWN_SUPPORT_AGENT'));
