@@ -1,0 +1,14 @@
+'use strict';
+const test=require('node:test');const assert=require('node:assert/strict');
+const {inspectTask}=require('../processor/agent-readonly-guard');
+const manifest=require('../rules/corporate-agent-roles.candidate.v1.json');
+const cat={agents:[{Agent_ID:'AG-037'},{Agent_ID:'AG-010'},{Agent_ID:'AG-013'}],jobTypes:[{Job_Type_ID:'JT-212',Primary_Agent_ID:'AG-037'}],allocations:[{Job_Type_ID:'JT-212',Primary_Agent_ID:'AG-037',Support_Agent_IDs:'AG-010,AG-013'}]};
+const req={tenant_id:'MG',country_id:'ZA',region_id:'GP',branch_id:'PTA',business_record_id:'METRIC-1',job_type_id:'JT-212',correlation_id:'C1',idempotency_key:'K1',action:'READ_ONLY_INSPECT',evidence_refs:['EVIDENCE-1']};
+const ledger=()=>({record:()=>true});
+test('valid agent only gets review receipt',()=>{const r=inspectTask(req,cat,manifest,ledger());assert.equal(r.status,'REVIEW_REQUIRED');assert.equal(r.receipt.mutation_authorised,false);assert.equal(r.task.primary_agent_id,'AG-037')});
+test('write rejected',()=>assert.equal(inspectTask({...req,action:'WRITE'},cat,manifest,ledger()).reason_code,'ACTION_NOT_ALLOWED'));
+test('missing audit sink rejected',()=>assert.equal(inspectTask(req,cat,manifest,null).reason_code,'AUDIT_SINK_REQUIRED'));
+test('missing evidence rejected',()=>assert.equal(inspectTask({...req,evidence_refs:[]},cat,manifest,ledger()).reason_code,'EVIDENCE_REQUIRED'));
+test('enabled production manifest rejected',()=>assert.equal(inspectTask(req,cat,{...manifest,production_dispatch_enabled:true},ledger()).reason_code,'UNVERIFIED_MANIFEST'));
+test('owner mismatch rejected',()=>assert.equal(inspectTask(req,{...cat,jobTypes:[{Job_Type_ID:'JT-212',Primary_Agent_ID:'AG-010'}]},manifest,ledger()).reason_code,'OWNER_REGISTRY_CONFLICT'));
+test('audit failure rejected',()=>assert.equal(inspectTask(req,cat,manifest,{record:()=>false}).reason_code,'AUDIT_NOT_CONFIRMED'));
