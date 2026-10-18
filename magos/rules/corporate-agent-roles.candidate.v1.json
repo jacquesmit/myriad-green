@@ -1,0 +1,179 @@
+{
+  "manifest_version": "MAGOS-CORPORATE-AGENTS-CANDIDATE-V1",
+  "as_of": "2026-10-18",
+  "source_register": "MAGOS Agent Job Allocation Matrix V1",
+  "lifecycle": "REGISTERED_NOT_ACTIVE",
+  "production_dispatch_enabled": false,
+  "scoped_write_permissions": [],
+  "human_approval_for_all_business_mutations": true,
+  "agent_roles": [
+    {
+      "agent_id": "AG-032",
+      "name": "Corporate Strategy & Performance Agent",
+      "domain": "Executive",
+      "mission": "Govern annual plans, KPIs and capital proposals; decisions remain with executive owner",
+      "owned_job_types": [
+        "JT-207"
+      ],
+      "allowed_runtime_actions": [
+        "READ_ONLY_INSPECT",
+        "PROPOSE_FOR_HUMAN_REVIEW"
+      ],
+      "forbidden_runtime_actions": [
+        "FINANCIAL_TRANSFER",
+        "PAYMENT_CLEARANCE",
+        "PAYROLL_MUTATION",
+        "PUBLIC_PUBLISHING",
+        "PRODUCTION_RELEASE",
+        "CONTRACT_SIGNATURE",
+        "UNAUTHORISED_STATE_CHANGE"
+      ],
+      "status": "REGISTERED_NOT_ACTIVE",
+      "qa_required": "AG-013"
+    },
+    {
+      "agent_id": "AG-033",
+      "name": "Accounting & Tax Control Agent",
+      "domain": "Finance",
+      "mission": "Prepare GL reconciliation, tax and month-end evidence for authorised finance review",
+      "owned_job_types": [
+        "JT-208"
+      ],
+      "allowed_runtime_actions": [
+        "READ_ONLY_INSPECT",
+        "PROPOSE_FOR_HUMAN_REVIEW"
+      ],
+      "forbidden_runtime_actions": [
+        "FINANCIAL_TRANSFER",
+        "PAYMENT_CLEARANCE",
+        "PAYROLL_MUTATION",
+        "PUBLIC_PUBLISHING",
+        "PRODUCTION_RELEASE",
+        "CONTRACT_SIGNATURE",
+        "UNAUTHORISED_STATE_CHANGE"
+      ],
+      "status": "REGISTERED_NOT_ACTIVE",
+      "qa_required": "AG-013"
+    },
+    {
+      "agent_id": "AG-034",
+      "name": "People & Payroll Control Agent",
+      "domain": "People",
+      "mission": "Maintain employee, payroll, training and leave control tasks subject to human approval",
+      "owned_job_types": [
+        "JT-209"
+      ],
+      "allowed_runtime_actions": [
+        "READ_ONLY_INSPECT",
+        "PROPOSE_FOR_HUMAN_REVIEW"
+      ],
+      "forbidden_runtime_actions": [
+        "FINANCIAL_TRANSFER",
+        "PAYMENT_CLEARANCE",
+        "PAYROLL_MUTATION",
+        "PUBLIC_PUBLISHING",
+        "PRODUCTION_RELEASE",
+        "CONTRACT_SIGNATURE",
+        "UNAUTHORISED_STATE_CHANGE"
+      ],
+      "status": "REGISTERED_NOT_ACTIVE",
+      "qa_required": "AG-013"
+    },
+    {
+      "agent_id": "AG-035",
+      "name": "Fleet & Asset Lifecycle Agent",
+      "domain": "Assets",
+      "mission": "Coordinate asset register evidence, maintenance scheduling and custody reconciliation",
+      "owned_job_types": [
+        "JT-210"
+      ],
+      "allowed_runtime_actions": [
+        "READ_ONLY_INSPECT",
+        "PROPOSE_FOR_HUMAN_REVIEW"
+      ],
+      "forbidden_runtime_actions": [
+        "FINANCIAL_TRANSFER",
+        "PAYMENT_CLEARANCE",
+        "PAYROLL_MUTATION",
+        "PUBLIC_PUBLISHING",
+        "PRODUCTION_RELEASE",
+        "CONTRACT_SIGNATURE",
+        "UNAUTHORISED_STATE_CHANGE"
+      ],
+      "status": "REGISTERED_NOT_ACTIVE",
+      "qa_required": "AG-013"
+    },
+    {
+      "agent_id": "AG-036",
+      "name": "Health, Safety & Field Quality Agent",
+      "domain": "Safety",
+      "mission": "Coordinate safety checklists, incident escalation and field inspections",
+      "owned_job_types": [
+        "JT-211"
+      ],
+      "allowed_runtime_actions": [
+        "READ_ONLY_INSPECT",
+        "PROPOSE_FOR_HUMAN_REVIEW"
+      ],
+      "forbidden_runtime_actions": [
+        "FINANCIAL_TRANSFER",
+        "PAYMENT_CLEARANCE",
+        "PAYROLL_MUTATION",
+        "PUBLIC_PUBLISHING",
+        "PRODUCTION_RELEASE",
+        "CONTRACT_SIGNATURE",
+        "UNAUTHORISED_STATE_CHANGE"
+      ],
+      "status": "REGISTERED_NOT_ACTIVE",
+      "qa_required": "AG-013"
+    },
+    {
+      "agent_id": "AG-037",
+      "name": "Management Intelligence Agent",
+      "domain": "Intelligence",
+      "mission": "Validate data freshness and produce evidence-linked management metrics",
+      "owned_job_types": [
+        "JT-212"
+      ],
+      "allowed_runtime_actions": [
+        "READ_ONLY_INSPECT",
+        "PROPOSE_FOR_HUMAN_REVIEW"
+      ],
+      "forbidden_runtime_actions": [
+        "FINANCIAL_TRANSFER",
+        "PAYMENT_CLEARANCE",
+        "PAYROLL_MUTATION",
+        "PUBLIC_PUBLISHING",
+        "PRODUCTION_RELEASE",
+        "CONTRACT_SIGNATURE",
+        "UNAUTHORISED_STATE_CHANGE"
+      ],
+      "status": "REGISTERED_NOT_ACTIVE",
+      "qa_required": "AG-013"
+    },
+    {
+      "agent_id": "AG-038",
+      "name": "Legal & Compliance Control Agent",
+      "domain": "Compliance",
+      "mission": "Track contracts, statutory obligations and policy review with human signoff",
+      "owned_job_types": [
+        "JT-213"
+      ],
+      "allowed_runtime_actions": [
+        "READ_ONLY_INSPECT",
+        "PROPOSE_FOR_HUMAN_REVIEW"
+      ],
+      "forbidden_runtime_actions": [
+        "FINANCIAL_TRANSFER",
+        "PAYMENT_CLEARANCE",
+        "PAYROLL_MUTATION",
+        "PUBLIC_PUBLISHING",
+        "PRODUCTION_RELEASE",
+        "CONTRACT_SIGNATURE",
+        "UNAUTHORISED_STATE_CHANGE"
+      ],
+      "status": "REGISTERED_NOT_ACTIVE",
+      "qa_required": "AG-013"
+    }
+  ]
+}
