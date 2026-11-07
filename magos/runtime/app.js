@@ -12,6 +12,11 @@ const {
   parseAllowedLeadSources,
   createLeadEventFromIngress
 } = require('../adapters/lead-ingress');
+const {
+  supplierEmailSource,
+  parseAllowedSupplierEmailSources,
+  createSupplierEmailEventFromIngress
+} = require('../adapters/supplier-email-ingress');
 
 function constantTimeEqual(left, right) {
   const a = Buffer.from(String(left || ''));
@@ -44,6 +49,8 @@ function createRuntimeApp({
   leadIngressToken = process.env.MAGOS_LEAD_INGRESS_TOKEN,
   leadIngressSources =
     process.env.MAGOS_LEAD_INGRESS_SOURCES || '',
+  supplierEmailIngressToken = process.env.MAGOS_SUPPLIER_EMAIL_INGRESS_TOKEN,
+  supplierEmailIngressSources = process.env.MAGOS_SUPPLIER_EMAIL_INGRESS_SOURCES || '',
   writerFactory = () => new TransactionWriter(),
   eventProcessorFactory = () => new EventProcessor(),
   eventDispatcherFactory = ({ writer }) =>
@@ -58,6 +65,7 @@ function createRuntimeApp({
   let eventProcessor;
   let eventDispatcher;
   const allowedLeadSources = parseAllowedLeadSources(leadIngressSources);
+  const allowedSupplierEmailSources = parseAllowedSupplierEmailSources(supplierEmailIngressSources);
 
   const getWriter = () => {
     if (!writer) writer = writerFactory();
@@ -175,6 +183,50 @@ function createRuntimeApp({
       return res.status(500).json({
         error: 'LEAD_INGRESS_FAILURE',
         detail: error.message
+      });
+    }
+  });
+
+  app.post('/v1/ingress/supplier-email', async (req, res) => {
+    if (!supplierEmailIngressToken || !allowedSupplierEmailSources.size ||
+        constantTimeEqual(supplierEmailIngressToken, token) ||
+        constantTimeEqual(supplierEmailIngressToken, leadIngressToken)) {
+      return res.status(503).json({ error: 'MAGOS_SUPPLIER_EMAIL_INGRESS_NOT_CONFIGURED' });
+    }
+    if (!constantTimeEqual(req.get('x-magos-ingress-token'), supplierEmailIngressToken)) {
+      return res.status(401).json({ error: 'UNAUTHORIZED' });
+    }
+
+    const source = supplierEmailSource(req.body?.source);
+    if (!allowedSupplierEmailSources.has(source)) {
+      return res.status(403).json({ error: 'SUPPLIER_EMAIL_INGRESS_SOURCE_NOT_ALLOWED' });
+    }
+
+    let envelope;
+    try {
+      envelope = createSupplierEmailEventFromIngress(req.body, { source });
+    } catch (error) {
+      return res.status(400).json({
+        error: error.code || 'SUPPLIER_EMAIL_INGRESS_INVALID_PAYLOAD'
+      });
+    }
+
+    try {
+      const { state } = await getEventDispatcher().run(envelope);
+      const status = {
+        COMMITTED: 200,
+        DUPLICATE: 200,
+        IGNORED: 200,
+        REVIEW_REQUIRED: 202,
+        REJECTED: 400,
+        EXECUTING: 409,
+        RETRY_REQUIRED: 409
+      }[state] || 500;
+      return res.status(status).json({ state, event_id: envelope.event_id });
+    } catch {
+      return res.status(500).json({
+        error: 'SUPPLIER_EMAIL_INGRESS_FAILURE',
+        event_id: envelope.event_id
       });
     }
   });
