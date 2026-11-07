@@ -125,3 +125,33 @@ Run controlled cases for:
 12. attested CLEAR/BLOCK guard provenance.
 
 Only after those cases pass may a live Gmail/source adapter be connected.
+
+## Source transport
+
+An optional HTTPS route, `POST /v1/ingress/supplier-email`, accepts an observed
+supplier message from a trusted server-side mailbox collector. It sends only
+`SUPPLIER_EMAIL_RECEIVED` to the existing registry and returns the event ID and
+disposition. The collector must not receive the general runtime or lead token.
+
+The route is disabled unless both settings are present:
+
+- `MAGOS_SUPPLIER_EMAIL_INGRESS_TOKEN` is an independent server-side secret.
+- `MAGOS_SUPPLIER_EMAIL_INGRESS_SOURCES` explicitly enables Gmail, Outlook, or both
+  with a comma-separated list of `GMAIL` and `OUTLOOK`.
+
+Send the token in `X-MAGOS-Ingress-Token`. The body requires the source,
+the immutable provider message ID in `source_event_id`, a retained source
+reference in `evidence_ref`, and `email.sender_email`. Use the message ID even
+when several messages share one thread. Preserve the thread separately in
+`email.source_thread_id`. The route discards caller-supplied supplier IDs so
+that supplier identity resolves from the exact sender on the canonical register.
+A transport must preserve attachment names, accessible references and actual
+accessibility when known. It must never equate a filename with an accessible file.
+Safety guard decisions still require scan provenance. Unknown stays under review.
+
+A 200 receipt reports the existing runner's committed, duplicate or ignored
+disposition. A 202 means review is outstanding. A 409 may be retried with the same
+source message ID. Reconcile an ambiguous response against the event ledger
+before changing the source identity or advancing the collector's checkpoint.
+Activate each mailbox separately after the hosted writer, source evidence,
+exact sender, duplicate replay and Intake_Queue read-back gates pass.
