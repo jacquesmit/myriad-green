@@ -253,3 +253,32 @@ test('Fluent adapter rejects whitespace provider IDs and non-HTTPS evidence', ()
     error => error.code === 'FLUENT_EVIDENCE_INVALID'
   );
 });
+
+test('the live Myriad Green form profile maps compound names and keeps quote acceptance separate', () => {
+  const { createMyriadQuoteRequestPayload } = require('../adapters/fluent-forms-lead');
+  const fixture = {
+    form_id: 4,
+    entry_id: 95,
+    evidence_ref: 'https://example.test/private/fluent/95',
+    sourceMetadata: { upload_refs: ['https://example.test/private/evidence/image'] },
+    fields: {
+      name: { first_name: ' Test ', last_name: 'Customer' },
+      phone: '0123456789', email: 'customer@example.test', suburb: 'Irene',
+      service_required: 'Irrigation', dropdown: 'High', message: 'Controller fault',
+      preferred_contact_method: 'WhatsApp', property_type: 'Residential',
+      checkbox: ['Agreed'], 'image-upload': 'unverified-original'
+    }
+  };
+  const event = createMyriadQuoteRequestPayload(fixture);
+  assert.equal(event.source_event_id, 'FLUENT_FORMS|FORM:4|ENTRY:95');
+  assert.equal(event.lead.contact_name, 'Test Customer');
+  assert.equal(event.lead.service_category, 'Irrigation');
+  assert.equal(event.lead.urgency, 'High');
+  assert.equal(event.lead.notes, 'Property type: Residential');
+  assert.equal(event.lead.preferred_contact_method, 'WhatsApp');
+  assert.equal(event.lead.media_consent_status, undefined);
+  assert.deepEqual(event.source_metadata.upload_refs, fixture.sourceMetadata.upload_refs);
+  assert.throws(() => createMyriadQuoteRequestPayload({...fixture,form_id:5}), {
+    code: 'FLUENT_FORM_PROFILE_MISMATCH'
+  });
+});

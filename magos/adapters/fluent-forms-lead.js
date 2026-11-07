@@ -281,6 +281,54 @@ function createFluentLeadIngressPayload({
   };
 }
 
+const MYRIAD_QUOTE_REQUEST_FORM_ID = '4';
+const MYRIAD_QUOTE_REQUEST_FIELD_MAP = Object.freeze({
+  contact_name: 'name',
+  contact_phone: 'phone',
+  contact_email: 'email',
+  suburb_area: 'suburb',
+  service_category: 'service_required',
+  urgency: 'dropdown',
+  issue_summary: 'message',
+  preferred_contact_method: 'preferred_contact_method',
+  notes: 'property_note'
+});
+
+function createMyriadQuoteRequestPayload(input = {}) {
+  if (str(input.form_id) !== MYRIAD_QUOTE_REQUEST_FORM_ID) {
+    const error = new Error('The Myriad Green quote request profile only accepts Fluent form 4');
+    error.code = 'FLUENT_FORM_PROFILE_MISMATCH';
+    throw error;
+  }
+  if (!input.fields || typeof input.fields !== 'object' || Array.isArray(input.fields)) {
+    const error = new Error('fields object is required');
+    error.code = 'FLUENT_FIELDS_REQUIRED';
+    throw error;
+  }
+  const name = exactField(input.fields, 'name');
+  const fullName = typeof name === 'string' ? name : (
+    ['first_name', 'middle_name', 'last_name']
+      .map(key => exactField(name || {}, key))
+      .filter(value => typeof value === 'string' && value.trim())
+      .map(value => value.trim())
+      .join(' ')
+  );
+  const propertyType = exactField(input.fields, 'property_type');
+  return createFluentLeadIngressPayload({
+    ...input,
+    form_name: 'Contact Us / Quote Request',
+    fields: {
+      ...input.fields,
+      name: fullName,
+      property_note: typeof propertyType === 'string' && propertyType.trim()
+        ? 'Property type: ' + propertyType.trim()
+        : ''
+    },
+    fieldMap: MYRIAD_QUOTE_REQUEST_FIELD_MAP,
+    metadataMap: {}
+  });
+}
+
 module.exports = {
   CANONICAL_LEAD_FIELDS,
   SOURCE_METADATA_FIELDS,
@@ -291,5 +339,6 @@ module.exports = {
   normalizeUploadRefs,
   validateEvidenceRef,
   stableSourceEventId,
-  createFluentLeadIngressPayload
+  createFluentLeadIngressPayload,
+  createMyriadQuoteRequestPayload
 };
