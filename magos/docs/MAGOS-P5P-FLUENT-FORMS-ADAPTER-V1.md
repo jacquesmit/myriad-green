@@ -4,7 +4,7 @@
 
 Code/control implementation only.
 
-The adapter is **not connected to production WordPress or Fluent Forms**. The live Fluent Forms admin/export route and exact production field keys remain TO_CONFIRM. Existing Gmail-based website lead handling remains active until direct-provider parity is proven.
+The adapter is **not connected to production WordPress or Fluent Forms**. Form 4 and its field keys are verified below. The live evidence URL and delivery hook remain TO_CONFIRM. Gmail is the observed notification source until direct-provider parity is proven.
 
 ## Why this exists
 
@@ -24,7 +24,7 @@ The Gmail route has worked for leads such as Francois, Anita, Nomsa and Zanele, 
 - truncated email bodies can force REVIEW_REQUIRED,
 - weekly Fluent summaries are aggregate evidence only and cannot identify an individual lead.
 
-P5P therefore defines the direct provider adapter **without pretending that the live field keys are known yet**.
+The direct provider adapter preserves the immutable provider entry ID and uses an explicit field map.
 
 ## Boundary
 
@@ -70,7 +70,7 @@ P5P accepts a fieldMap of:
 
     MAGOS canonical lead field -> exact Fluent provider field key
 
-Example only:
+Example of the generic adapter contract:
 
     {
       "contact_name": "customer_name",
@@ -137,15 +137,13 @@ The source-specific parity test must prove that real upload references survive f
 
 Before production connection we still need the live provider facts:
 
-- exact Fluent form ID for Contact Us / Quote Request,
-- exact production Fluent field keys,
-- exact provider entry ID exposed to the hook/export,
+- the provider entry ID as delivered by the production hook/export,
 - exact authenticated provider evidence/admin URL or equivalent retained evidence reference,
 - exact upload reference shape,
 - whether page/UTM values are already collected,
 - server-side hook location and secret storage mechanism.
 
-Until those are read from the live WordPress/Fluent configuration, P5P remains a disabled adapter contract.
+The production adapter remains off until these conditions are verified.
 
 ## Migration rule
 
@@ -163,3 +161,24 @@ After P4 is live:
 8. only then retire the overlapping Gmail website-lead writer.
 
 The Gmail path may remain as evidence/notification after writer retirement, but it must not become a duplicate business writer.
+
+## Live form profile
+
+The WordPress form definition and stored submission schemas were inspected on
+2026-11-07. `Contact Us / Quote Request` is form 4 and has stable provider entry
+IDs. Its `name` field is a compound object. The
+`createMyriadQuoteRequestPayload` helper maps this profile to the existing lead
+ingress contract. It refuses other forms, including form 5, which is the separate
+quote acceptance and electronic signature form.
+
+The profile maps `name`, `phone`, `email`, `suburb`, `service_required`,
+`dropdown` (urgency), `message` and `preferred_contact_method`. It preserves
+`property_type` in the lead notes. Keep the contact consent answer in the source
+evidence. This answer does not establish consent for public use of job media.
+
+`image-upload` exists in the form definition. It was absent in the inspected
+submission schemas, so an actual upload reference and retrieval still need a
+parity fixture. The trusted source can pass verified upload references through
+`sourceMetadata.upload_refs`. The production hook, authenticated evidence link,
+allowlisted ingress credential, delivery retry and Gmail-versus-provider parity
+still require a hosted acceptance test before direct ingestion is enabled.
