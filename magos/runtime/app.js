@@ -12,6 +12,11 @@ const {
   parseAllowedLeadSources,
   createLeadEventFromIngress
 } = require('../adapters/lead-ingress');
+const {
+  supplierEmailSource,
+  parseAllowedSupplierEmailSources,
+  createSupplierEmailEventFromIngress
+} = require('../adapters/supplier-email-ingress');
 
 function constantTimeEqual(left, right) {
   const a = Buffer.from(String(left || ''));
@@ -49,6 +54,8 @@ function createRuntimeApp({
   signedAcceptanceVerifier = async () => ({verified:false,reason_code:'SIGNED_ACCEPTANCE_NOT_VERIFIED'}),
   leadIngressSources =
     process.env.MAGOS_LEAD_INGRESS_SOURCES || '',
+  supplierEmailIngressToken = process.env.MAGOS_SUPPLIER_EMAIL_INGRESS_TOKEN,
+  supplierEmailIngressSources = process.env.MAGOS_SUPPLIER_EMAIL_INGRESS_SOURCES || '',
   writerFactory = () => new TransactionWriter(),
   procurementLookupFactory = () => new (require('../adapters/exact-lookup-service').ExactLookupService)(),
   procurementAuthorityVerifier = async () => ({ verified: false, reason_code: 'APPROVAL_AUTHORITY_NOT_VERIFIED' }),
@@ -65,6 +72,7 @@ function createRuntimeApp({
   let eventProcessor;
   let eventDispatcher;
   const allowedLeadSources = parseAllowedLeadSources(leadIngressSources);
+  const allowedSupplierEmailSources = parseAllowedSupplierEmailSources(supplierEmailIngressSources);
 
   const getWriter = () => {
     if (!writer) writer = writerFactory();
@@ -232,6 +240,53 @@ function createRuntimeApp({
       const result=await assessJobActivation({stores:getWriter().stores,quoteId:req.params.quoteId,evidenceVerifier:signedAcceptanceVerifier});
       return res.status(result.state==='BLOCKED'?202:200).json(result);
     }catch(error){return res.status(503).json({error:'JOB_ACTIVATION_ASSESSMENT_UNAVAILABLE',detail:error.message});}
+  });
+
+  app.post('/v1/ingress/supplier-email', async (req, res) => {
+    if (!supplierEmailIngressToken || !allowedSupplierEmailSources.size ||
+        constantTimeEqual(supplierEmailIngressToken, token) ||
+        constantTimeEqual(supplierEmailIngressToken, leadIngressToken) ||
+        constantTimeEqual(supplierEmailIngressToken, supplierApprovalToken) ||
+        constantTimeEqual(supplierEmailIngressToken, procurementApprovalToken) ||
+        constantTimeEqual(supplierEmailIngressToken, jobCreationToken)) {
+      return res.status(503).json({ error: 'MAGOS_SUPPLIER_EMAIL_INGRESS_NOT_CONFIGURED' });
+    }
+    if (!constantTimeEqual(req.get('x-magos-ingress-token'), supplierEmailIngressToken)) {
+      return res.status(401).json({ error: 'UNAUTHORIZED' });
+    }
+
+    const source = supplierEmailSource(req.body?.source);
+    if (!allowedSupplierEmailSources.has(source)) {
+      return res.status(403).json({ error: 'SUPPLIER_EMAIL_INGRESS_SOURCE_NOT_ALLOWED' });
+    }
+
+    let envelope;
+    try {
+      envelope = createSupplierEmailEventFromIngress(req.body, { source });
+    } catch (error) {
+      return res.status(400).json({
+        error: error.code || 'SUPPLIER_EMAIL_INGRESS_INVALID_PAYLOAD'
+      });
+    }
+
+    try {
+      const { state } = await getEventDispatcher().run(envelope);
+      const status = {
+        COMMITTED: 200,
+        DUPLICATE: 200,
+        IGNORED: 200,
+        REVIEW_REQUIRED: 202,
+        REJECTED: 400,
+        EXECUTING: 409,
+        RETRY_REQUIRED: 409
+      }[state] || 500;
+      return res.status(status).json({ state, event_id: envelope.event_id });
+    } catch {
+      return res.status(500).json({
+        error: 'SUPPLIER_EMAIL_INGRESS_FAILURE',
+        event_id: envelope.event_id
+      });
+    }
   });
 
   app.post('/v1/probes/google-sheets', requireRuntimeAuth, async (req, res) => {

@@ -843,3 +843,82 @@ test('dedicated supplier approval route requires separate credential and preserv
     assert.equal(seen.payload.supplier_approval_change.to_state, 'APPROVED');
   });
 });
+
+test('supplier-mail ingress is opt-in and rejects reused runtime credentials', async () => {
+  for (const supplierEmailIngressToken of [
+    '', 'runtime-token', 'lead-token', 'supplier-approval-token',
+    'procurement-token', 'job-token'
+  ]) {
+    const app = createRuntimeApp({
+      token: 'runtime-token',
+      leadIngressToken: 'lead-token',
+      supplierApprovalToken: 'supplier-approval-token',
+      procurementApprovalToken: 'procurement-token',
+      jobCreationToken: 'job-token',
+      supplierEmailIngressToken,
+      supplierEmailIngressSources: 'GMAIL'
+    });
+    await withServer(app, async base => {
+      const result = await request(base, '/v1/ingress/supplier-email', {
+        method: 'POST', ingressToken: supplierEmailIngressToken, body: {}
+      });
+      assert.equal(result.status, 503);
+    });
+  }
+});
+
+test('supplier-mail ingress scopes the caller to one event family and preserves replay identity', async () => {
+  const envelopes = [];
+  const app = createRuntimeApp({
+    token: 'runtime-token',
+    leadIngressToken: 'lead-token',
+    supplierEmailIngressToken: 'supplier-token',
+    supplierEmailIngressSources: ' gmail,INVALID_PROVIDER ',
+    eventDispatcherFactory: () => ({
+      run: async envelope => {
+        envelopes.push(envelope);
+        return { state: 'REVIEW_REQUIRED', internal_detail: 'must not reach the source' };
+      }
+    })
+  });
+  const path = '/v1/ingress/supplier-email';
+  const body = {
+    source: 'gmail',
+    source_event_id: 'msg-123',
+    evidence_ref: 'https://mail.google.com/mail/#all/msg-123',
+    event_type: 'PAYMENT_OBSERVED',
+    email: {
+      sender_email: 'Quotes@example.test', source_thread_id: 'thread-987',
+      supplier_id: 'CALLER-INVENTED-ID', attachment_filenames: ['quote.pdf']
+    }
+  };
+  await withServer(app, async base => {
+    const send = (payload = body, ingressToken = 'supplier-token', target = path) =>
+      request(base, target, {method: 'POST', ingressToken, body: payload});
+    assert.equal((await send(body, 'runtime-token')).status, 401);
+    assert.equal((await send(body, 'lead-token')).status, 401);
+    assert.equal((await send(body, 'supplier-token', '/v1/transactions')).status, 401);
+    assert.equal((await send({...body, source: 'OUTLOOK'})).status, 403);
+    assert.equal((await send({...body, source: 'INVALID_PROVIDER'})).status, 403);
+    assert.equal((await send({...body, evidence_ref: ''})).status, 400);
+    assert.equal((await send({...body, source_event_id: {thread: 'not a message ID'}})).status, 400);
+    assert.equal((await send({...body, guards: {malware: 'CLEAR'}})).status, 400);
+    assert.equal(envelopes.length, 0);
+
+    const first = await send();
+    const replay = await send();
+    assert.equal(first.status, 202);
+    assert.deepEqual(first.payload, {state: 'REVIEW_REQUIRED', event_id: envelopes[0].event_id});
+    assert.deepEqual(replay.payload, first.payload);
+    const [event, repeated] = envelopes;
+    assert.equal(event.idempotency_key, repeated.idempotency_key);
+    assert.equal(event.source_event_id, 'msg-123');
+    assert.equal(event.event_type, 'SUPPLIER_EMAIL_RECEIVED');
+    assert.deepEqual(event.entity_hints, {});
+    assert.equal(event.payload.supplier_email.sender_email, 'quotes@example.test');
+    assert.equal(event.payload.supplier_email.source_thread_id, 'thread-987');
+    assert.deepEqual(event.payload.supplier_email.attachment_refs, []);
+    assert.equal(event.payload.supplier_email.attachment_accessibility, 'UNKNOWN');
+    assert.ok(Object.values(event.guards).every(value => value === 'UNKNOWN'));
+  });
+});
