@@ -46,6 +46,7 @@ function isPlausiblePlan(plan) {
 
 function createRuntimeApp({
   token = process.env.MAGOS_RUNTIME_TOKEN,
+  snapshotReadToken = process.env.MAGOS_SNAPSHOT_READ_TOKEN,
   leadIngressToken = process.env.MAGOS_LEAD_INGRESS_TOKEN,
   supplierApprovalToken = process.env.MAGOS_SUPPLIER_APPROVAL_TOKEN,
   procurementApprovalToken = process.env.MAGOS_PROCUREMENT_APPROVAL_TOKEN,
@@ -202,8 +203,20 @@ function createRuntimeApp({
     }
   });
 
+  const snapshotTokenIsScoped = Boolean(snapshotReadToken) &&
+    ![token, leadIngressToken, supplierEmailIngressToken, supplierApprovalToken,
+      procurementApprovalToken, jobCreationToken].some(secret => constantTimeEqual(secret, snapshotReadToken));
+
+  function requireSnapshotAuth(req, res, next) {
+    if (token && snapshotTokenIsScoped && constantTimeEqual(extractBearerToken(req), snapshotReadToken)) {
+      return next();
+    }
+    return requireRuntimeAuth(req, res, next);
+  }
+
   // Unified operator view: reads only the existing MGOS authoritative sheets.
-  app.get('/v1/operator/snapshot', requireRuntimeAuth, async (req,res)=>{
+  app.get('/v1/operator/snapshot', requireSnapshotAuth, async (req,res)=>{
+    res.set('Cache-Control', 'private, no-store');
     try {
       const { loadOperatorSnapshot }=require('../processor/operator-snapshot');
       const w=getWriter();

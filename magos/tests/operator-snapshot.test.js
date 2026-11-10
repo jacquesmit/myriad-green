@@ -88,3 +88,52 @@ test('active jobs KPI excludes unconverted prospects and completed jobs',()=>{
  assert.equal(result.counts.active_jobs,1);
  assert.equal(result.records.jobs[0].job_id,'JOB-1');
 });
+
+test('website snapshot credential cannot reach governed or other operator routes', async () => {
+ const app = createRuntimeApp({
+  token: 'runtime-secret',
+  snapshotReadToken: 'site-read-secret',
+  writerFactory: () => ({ stores }),
+ });
+ const server = http.createServer(app);
+ await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+ try {
+  const base = 'http://127.0.0.1:' + server.address().port;
+  const headers = { authorization: 'Bearer site-read-secret' };
+  const snapshot = await fetch(base + '/v1/operator/snapshot', { headers });
+  assert.equal(snapshot.status, 200);
+  assert.equal(snapshot.headers.get('cache-control'), 'private, no-store');
+  assert.equal((await snapshot.json()).side_effects, false);
+  const protectedRoutes = [
+   ['POST', '/v1/transactions'],
+   ['POST', '/v1/events/run'],
+   ['POST', '/v1/probes/google-sheets'],
+   ['GET', '/v1/operator/job-readiness/Q-1'],
+  ];
+  for (const [method, path] of protectedRoutes) {
+   assert.equal((await fetch(base + path, { method, headers })).status, 401);
+  }
+ } finally {
+  await new Promise(resolve => server.close(resolve));
+ }
+});
+
+test('website snapshot rejects a credential reused by an ingress adapter', async () => {
+ const app = createRuntimeApp({
+  token: 'runtime-secret',
+  snapshotReadToken: 'reused-secret',
+  supplierEmailIngressToken: 'reused-secret',
+  writerFactory: () => ({ stores }),
+ });
+ const server = http.createServer(app);
+ await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+ try {
+  const base = 'http://127.0.0.1:' + server.address().port;
+  const response = await fetch(base + '/v1/operator/snapshot', {
+   headers: { authorization: 'Bearer reused-secret' },
+  });
+  assert.equal(response.status, 401);
+ } finally {
+  await new Promise(resolve => server.close(resolve));
+ }
+});
