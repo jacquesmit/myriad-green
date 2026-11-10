@@ -1,6 +1,7 @@
 'use strict';
 
 const crypto = require('crypto');
+const path = require('node:path');
 const express = require('express');
 const { TransactionWriter } = require('../writer/transaction-writer');
 const { EventProcessor } = require('../processor/event-processor');
@@ -46,6 +47,7 @@ function isPlausiblePlan(plan) {
 
 function createRuntimeApp({
   token = process.env.MAGOS_RUNTIME_TOKEN,
+  operatorReadToken = process.env.MAGOS_OPERATOR_READ_TOKEN,
   leadIngressToken = process.env.MAGOS_LEAD_INGRESS_TOKEN,
   supplierApprovalToken = process.env.MAGOS_SUPPLIER_APPROVAL_TOKEN,
   procurementApprovalToken = process.env.MAGOS_PROCUREMENT_APPROVAL_TOKEN,
@@ -97,9 +99,12 @@ function createRuntimeApp({
   app.get('/operator', (req, res) => {
     const { operatorPage } = require('./operator-page');
     res.set('Cache-Control','no-store');
-    res.set('Content-Security-Policy',"default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'");
+    res.set('Content-Security-Policy',"default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'");
     res.type('html').status(200).send(operatorPage());
   });
+
+  app.get('/operator.css', (req, res) => res.sendFile(path.join(__dirname, 'operator.css')));
+  app.get('/operator.js', (req, res) => res.sendFile(path.join(__dirname, 'operator.js')));
 
   app.get('/healthz', (req, res) => {
     res.status(200).json({
@@ -150,6 +155,35 @@ function createRuntimeApp({
     return next();
   }
 
+
+  const hasOperatorToken = Boolean(operatorReadToken) &&
+    ![token, leadIngressToken, supplierEmailIngressToken, supplierApprovalToken,
+      procurementApprovalToken, jobCreationToken, process.env.MAGOS_SNAPSHOT_READ_TOKEN]
+      .some(secret => constantTimeEqual(secret, operatorReadToken));
+
+  function requireOperatorRead(req, res, next) {
+    res.set('Cache-Control', 'private, no-store');
+    if (!hasOperatorToken) return res.status(503).json({ error: 'OPERATOR_ACCESS_NOT_CONFIGURED' });
+    if (!constantTimeEqual(req.get('X-MAGOS-Operator-Token'), operatorReadToken)) {
+      return res.status(401).json({ error: 'UNAUTHORIZED' });
+    }
+    return next();
+  }
+
+  function requireOperatorInspection(req, res, next) {
+    return req.get('X-MAGOS-Operator-Token') === undefined
+      ? requireRuntimeAuth(req, res, next)
+      : requireOperatorRead(req, res, next);
+  }
+
+  app.get('/v1/operator/dashboard', requireOperatorRead, async (req, res) => {
+    try {
+      const { loadOperatorDashboard } = require('../processor/operator-dashboard');
+      return res.json(await loadOperatorDashboard(getWriter().stores));
+    } catch {
+      return res.status(503).json({ error: 'OPERATOR_DASHBOARD_UNAVAILABLE' });
+    }
+  });
 
   app.post('/v1/ingress/leads', requireLeadIngressAuth, async (req, res) => {
     try {
@@ -215,7 +249,7 @@ function createRuntimeApp({
   });
 
   // Inspect a real quote before attempting any governed job-creation mutation.
-  app.get('/v1/operator/job-readiness/:quoteId', requireRuntimeAuth, async(req,res)=>{
+  app.get('/v1/operator/job-readiness/:quoteId', requireOperatorInspection, async(req,res)=>{
     try{
       const {inspectJobRelease}=require('../processor/job-release-inspection');
       const result=await inspectJobRelease({stores:getWriter().stores,quoteId:req.params.quoteId});
@@ -226,7 +260,7 @@ function createRuntimeApp({
   });
 
   // Read-only canonical financial evidence, not authorization to release a job.
-  app.get('/v1/operator/deposit-evidence/:opportunityId', requireRuntimeAuth, async(req,res)=>{
+  app.get('/v1/operator/deposit-evidence/:opportunityId', requireOperatorInspection, async(req,res)=>{
     try {
       const {inspectDepositEvidence}=require('../processor/deposit-evidence-inspection');
       const report=await inspectDepositEvidence({stores:getWriter().stores,opportunityId:req.params.opportunityId});
@@ -234,7 +268,7 @@ function createRuntimeApp({
     }catch(error){return res.status(503).json({error:'DEPOSIT_EVIDENCE_UNAVAILABLE',detail:error.message});}
   });
 
-  app.get('/v1/operator/job-activation/:quoteId', requireRuntimeAuth, async(req,res)=>{
+  app.get('/v1/operator/job-activation/:quoteId', requireOperatorInspection, async(req,res)=>{
     try{
       const {assessJobActivation}=require('../processor/job-activation-assessment');
       const result=await assessJobActivation({stores:getWriter().stores,quoteId:req.params.quoteId,evidenceVerifier:signedAcceptanceVerifier});
