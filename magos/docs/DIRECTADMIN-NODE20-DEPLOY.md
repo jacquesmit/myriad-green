@@ -1,14 +1,10 @@
-# MAGOS P4 — DirectAdmin / Node.js 20 Deployment
+# MAGOS P4 — DirectAdmin / Node.js 20 Deployment (historical)
 
-## Status
-
-Prepared for the HOSTAFRICA server migration confirmed on 24 September 2026.
-
-The old cPanel/Passenger blocker was:
-
-    /usr/local/bin/ea-passenger-runtime_nodejs-is-not-installed
-
-HOSTAFRICA has moved the domain to a server that supports Node.js 20. This runbook supersedes the old cPanel-specific deployment instructions for the production runtime.
+This guide records the September 2026 DirectAdmin migration plan. The production
+runtime at `runtime.myriadgreen.co.za` was verified on cPanel/CloudLinux on
+10 November 2026. Use the [current cPanel runbook](CPANEL-PASSENGER-DEPLOY.md)
+for that runtime. Apply the historical steps below only to a host independently
+confirmed to run DirectAdmin.
 
 ## HOSTAFRICA reference
 
@@ -26,11 +22,8 @@ HOSTAFRICA's DirectAdmin Node.js guide requires:
 - Start Application,
 - log review if startup fails.
 
-Do not reuse the old server path blindly. The prior path:
-
-    /home/myriaauq/repositories/myriad-green/magos
-
-belonged to the previous server and is not authoritative on the new DirectAdmin host.
+Verify the application root on any DirectAdmin host before using these steps.
+The production cPanel application root is recorded in the current runbook.
 
 ## Recommended deployed layout
 

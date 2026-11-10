@@ -2,6 +2,12 @@
 
 This subtree is the in-house MAGOS execution layer. It is deliberately separated from the Myriad Green website application even though it currently lives in the same repository.
 
+## Production runtime
+
+Start with the [verified cPanel runbook](docs/CPANEL-PASSENGER-DEPLOY.md) for
+the host, deployed release, Node.js activation command, credential handling,
+and live acceptance status.
+
 ## Implemented capabilities
 
 ### MAGOS Transaction Writer V1
