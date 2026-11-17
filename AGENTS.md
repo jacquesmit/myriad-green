@@ -149,3 +149,16 @@ Optimize the **existing highest-traffic and highest-intent service journeys firs
 ## 12. Scope guardrail for this document
 
 The owner requested **only this GitHub Markdown rule**. Creating or updating this document must **not** alter WordPress, Elementor, CSS/JS/HTML in production, plugins, themes, settings, prices, content, forms, automations or deployments. Other changes require a separate authorized task.
+
+
+## Approved animation resource — useAnimations (2026)
+
+**Resource:** https://useanimations.com/ . **Status:** Approved for evaluation and selective future use; not installed or validated on production by this documentation update.
+
+- Consider useAnimations animated icons for meaningful user feedback, not automatic decoration. Review individual asset licensing, package versions, compatibility, security, payload size, and the actual integration method before shipping.
+- Potential service-site uses: mobile navigation, WhatsApp/contact CTA feedback, FAQ disclosure, form submission state and Amelia booking progress. Preserve existing click-to-chat/call and booking behavior.
+- Prefer lightweight, locally controlled SVG/Lottie assets and interaction-triggered playback where suitable. Use a WordPress-compatible loading strategy; **do not install React or another full framework just for animated icons**.
+- All essential controls must remain usable without animation and with JavaScript disabled wherever practical. Honor `prefers-reduced-motion`, keyboard/focus interactions, accessible names and touch behavior.
+- Avoid continuous animation, layout shifts, blocking input, duplicated animation runtimes or unnecessary global bundles. Scope animations to the owning component and load only needed assets.
+- Acceptance gate: verify mobile/tablet/desktop behavior, accessibility and reduced-motion fallback, browser compatibility, network/JS payload, and regression-free conversions. Document actual measurements and evidence, not assumed benefits.
+- This entry is **rules/documentation only**; it does not authorize WordPress/Elementor edits, deployment, plugin installation, or changes to live code. Maintain the existing release/approval gates.
