@@ -216,3 +216,20 @@ Three independently merged/tested development changes now exist on GitHub `main`
 **Test evidence:** MAGOS Runtime P2 and MAGOS Document Extract both completed with `success` for PR #53 head `89ab8094e4494dc505982d5ec1ca221f9a87a695` and PR #54 head `38e489afd3bcbad778fa3d5672c19b527d4e51ec`. No production purchase, stock or bank record was written.
 
 **Implementation truth:** source MERGED/CI-TESTED PASS. Independently reviewed supplier invoice and real stock release providers PARTIAL/PENDING; customer transaction acceptance test UNKNOWN; HOSTAFRICA deployed worker SHA NOT VERIFIED. The enhanced runtime must itself be deployed before the stronger build proof can be collected; a GitHub merge is not production acceptance.
+
+
+## 21 November 2026 — Supplier job queue independent-authority repair (release candidate)
+
+**Current source:** PR candidate `codex/magos-supplier-queue-authority-20261121`. The earlier #52 supplier queue was coded and exercised against blocked evidence, but its runtime route omitted `supplierCostReviewAuthority` and `supplierStockSplitAuthority`, so a real independently approved supplier allocation could never receive a positive decision through the job queue. The queue also re-read Goods Received and Stock Ledger for every allocation instead of keeping a consistent read-only view.
+
+**Implemented in this candidate:**
+- Job-queue processor now accepts and propagates *server-owned* independent reviewer and stock-split authority callbacks, never browser assertions.
+- Authenticated operator route passes the existing configured authority functions.
+- Canonical Supplier `Cost_Allocations`, `Goods_Received` and `Stock_Ledger` are read once for the full job inspection; unavailable dependent source fails closed.
+- Queue state `INDEPENDENTLY_VERIFIED` is attainable only when exact supplier source, GRN, issue and independent callbacks all pass. No source or no configured authority is never represented as approved.
+- Added positive and adverse regression tests covering matching invoices/cost cents/part quantities, missing authority and unavailable source.
+- **Audit semantics:** read-only queue; never pays suppliers, creates orders, adjusts stock or marks final margin.
+
+**Acceptance gates:** code staged in branch; GitHub CI and merge must be captured before marking CODE PASS. HOSTAFRICA worker commit still unverified, production inspector unavailable until verified deployment. WordPress quote-signing bridge remains not deployed; none of the missing source approvals may be treated as cleared.
+
+**Highest next execution:** run exact-head CI, merge only on PASS; then inspect/repair documented live supplier allocation reversal/evidence contradictions through independently reviewed transactions, not silently writing a valid-looking status.

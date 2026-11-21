@@ -73,3 +73,51 @@ test('queue operator route is authenticated and does not run any writer',async()
   assert.equal(writes,0);
  }finally{await new Promise(ok=>server.close(ok));}
 });
+
+test('fully evidenced job allocation passes when reviewer and stock authority are actually connected',async()=>{
+ const link='https://drive.google.com/file/d/INVRECEIPT20261121/view';
+ const a={...allocation,allocated_qty:'2',supplier_document_id:'INVOICE-441',
+   evidence_link:link,evidence_drive_file_id:'INVRECEIPT20261121',
+   supersedes_allocation_id:'',reversal_of_allocation_id:''};
+ const sourceLine={...line,supplier_quote_id:'INVOICE-441',
+   supplier_quote_number:'INVOICE-441',evidence_link:link};
+ const grn={grn_line_id:'GRNL-441',supplier_invoice_number:'INVOICE-441',
+   received_part_id:'VALVE-1',condition_status:'GOOD',
+   discrepancy_status:'NONE',source_document:link,quantity_received:'2',
+   quantity_damaged:'0',quantity_missing:'0',actual_unit_cost_inc_vat:'99.50'};
+ const movement={movement_id:'MOVE-441',destination_job_id:jobId,
+   part_id:'VALVE-1',source_grn_line_id:'GRNL-441',
+   evidence_link:link,movement_type:'ISSUE_TO_JOB',quantity_change:'-2'};
+ const reads={Cost_Allocations:0,Goods_Received:0,Stock_Ledger:0};
+ const source={crm:{findByKey:async()=>({object:job})},supplier:{
+   readObjects:async sheet=>{
+    reads[sheet]=(reads[sheet]||0)+1;
+    return {'Cost_Allocations':[a],'Goods_Received':[grn],'Stock_Ledger':[movement]}[sheet];
+   },
+   findByKey:async()=>({object:sourceLine})
+ }};
+ const reviewed=async()=>({verified:true,allocation_id:a.allocation_id,
+   reviewer_id:'REVIEWER-INDEPENDENT',source_document_checked:true,
+   receipt_type:'SUPPLIER_INVOICE',document_id:'INVOICE-441',reviewed_amount_cents:19900});
+ const stock=async()=>({verified:true,allocation_id:a.allocation_id,
+   job_id:jobId,part_id:'VALVE-1',allocated_quantity:2,stock_split_verified:true});
+ const validated=await inspectJobSupplierCostQueue({
+   stores:source,jobId,reviewAuthority:reviewed,stockAuthority:stock});
+ assert.equal(validated.state,'INDEPENDENTLY_VERIFIED');
+ assert.equal(validated.counts.ready,1);
+ assert.equal(validated.counts.review,0);
+ assert.deepEqual(reads,{Cost_Allocations:1,Goods_Received:1,Stock_Ledger:1});
+ const failClosed=await inspectJobSupplierCostQueue({stores:source,jobId});
+ assert.equal(failClosed.state,'REVIEW_REQUIRED');
+ assert.ok(failClosed.items[0].blockers.includes('INDEPENDENT_REVIEW_AUTHORITY_UNAVAILABLE'));
+});
+test('failed supplier dependent ledger read blocks complete job queue instead of treating missing source as empty',async()=>{
+ const s=stores();
+ s.supplier.readObjects=async sheet=>{
+  if(sheet==='Goods_Received')throw Error('GOOGLE_SOURCE_NOT_READY');
+  return [allocation];
+ };
+ const result=await inspectJobSupplierCostQueue({stores:s,jobId});
+ assert.equal(result.state,'REVIEW_REQUIRED');
+ assert.equal(result.blockers[0],'SUPPLIER_GRN_OR_STOCK_QUEUE_SOURCE_UNAVAILABLE');
+});

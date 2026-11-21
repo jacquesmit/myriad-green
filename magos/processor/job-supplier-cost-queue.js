@@ -2,7 +2,7 @@
 const {inspectSupplierAllocation}=require('./supplier-cost-evidence');
 const val=x=>String(x??'').trim();
 
-async function inspectJobSupplierCostQueue({stores,jobId}={}){
+async function inspectJobSupplierCostQueue({stores,jobId,reviewAuthority,stockAuthority}={}){
  const fail=reason=>({schema_version:'MAGOS_JOB_SUPPLIER_COST_QUEUE_V1',
   state:'REVIEW_REQUIRED',job_id:val(jobId),blockers:[reason],
   items:[],counts:{total:0,ready:0,review:0},writes:[],side_effects:false});
@@ -21,10 +21,25 @@ async function inspectJobSupplierCostQueue({stores,jobId}={}){
  const relevant=allocations.filter(a=>val(a.job_id)===jobId ||
    (val(a.opportunity_id)===opportunityId && !val(a.job_id)));
  if(relevant.length>200)return fail('SUPPLIER_ALLOCATION_QUEUE_TOO_LARGE_TO_VERIFY');
+ // Take one bounded, consistent source snapshot for all allocation checks.
+ // Fail the whole queue on missing dependent ledgers: do not silently report
+ // source validation as completed when GRN or stock data is unavailable.
+ let receipts,movements;
+ try {
+   [receipts,movements]=await Promise.all([
+     stores.supplier.readObjects('Goods_Received',{maxRows:null}),
+     stores.supplier.readObjects('Stock_Ledger',{maxRows:null})
+   ]);
+ }catch{return fail('SUPPLIER_GRN_OR_STOCK_QUEUE_SOURCE_UNAVAILABLE');}
+ if(!Array.isArray(receipts)||!Array.isArray(movements))
+   return fail('SUPPLIER_GRN_OR_STOCK_QUEUE_SOURCE_UNAVAILABLE');
  const source={...stores,supplier:{
-   ...stores.supplier,
-   readObjects:async name=>name==='Cost_Allocations'?
-     allocations:stores.supplier.readObjects(name,{maxRows:null}),
+   readObjects:async name=>{
+     if(name==='Cost_Allocations')return allocations;
+     if(name==='Goods_Received')return receipts;
+     if(name==='Stock_Ledger')return movements;
+     return stores.supplier.readObjects(name,{maxRows:null});
+   },
    findByKey:(...args)=>stores.supplier.findByKey(...args)
  }};
  const items=[];
@@ -33,16 +48,17 @@ async function inspectJobSupplierCostQueue({stores,jobId}={}){
   if(!key){items.push({allocation_id:'',state:'REVIEW_REQUIRED',
     blockers:['ALLOCATION_ID_MISSING']});continue;}
   const r=await inspectSupplierAllocation({
-   stores:source,jobId,opportunityId,sourceEventId:key
+   stores:source,jobId,opportunityId,sourceEventId:key,
+   reviewAuthority,stockAuthority
   });
-  items.push({allocation_id:key,state:r.verified?'SOURCE_VERIFIED':'REVIEW_REQUIRED',
+  items.push({allocation_id:key,state:r.verified?'INDEPENDENTLY_VERIFIED':'REVIEW_REQUIRED',
    blockers:r.blockers||[],reconciliation_status:val(a.reconciliation_status)});
  }
  items.sort((a,b)=>a.allocation_id.localeCompare(b.allocation_id));
- const ready=items.filter(a=>a.state==='SOURCE_VERIFIED').length;
+ const ready=items.filter(a=>a.state==='INDEPENDENTLY_VERIFIED').length;
  return {schema_version:'MAGOS_JOB_SUPPLIER_COST_QUEUE_V1',
   job_id:jobId,opportunity_id:opportunityId,
-  state:!items.length?'NO_SUPPLIER_ALLOCATIONS':items.some(x=>x.state==='REVIEW_REQUIRED')?'REVIEW_REQUIRED':'SOURCE_INSPECTION_COMPLETE',
+  state:!items.length?'NO_SUPPLIER_ALLOCATIONS':items.some(x=>x.state==='REVIEW_REQUIRED')?'REVIEW_REQUIRED':'INDEPENDENTLY_VERIFIED',
   counts:{total:items.length,ready,review:items.length-ready},
   items,stock_or_invoice_auto_approval:false,
   writes:[],side_effects:false};
