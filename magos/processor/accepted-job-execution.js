@@ -1,5 +1,6 @@
 'use strict';
 const {planAcceptedJob}=require('./accepted-quote-job-plan');
+const {buildJobPaymentPreconditions}=require('./job-payment-commit-preconditions');
 const text=v=>String(v??'').trim();
 /** Separate operator authentication from durable business authorization.
  * Server-side verifier must source acceptance and clearance from authoritative evidence.
@@ -12,6 +13,13 @@ async function executeAcceptedJob({writer,quoteId,jobId,sourceEventId,authorityV
  !text(att.acceptance_evidence)||att.payment_clearance!=='CLEARED')return {state:'REVIEW_REQUIRED',reason_code:att?.reason_code||'JOB_AUTHORITY_NOT_VERIFIED'};
  const result=await planAcceptedJob({stores:writer.stores,quoteId,jobId,sourceEventId,acceptanceEvidence:att.acceptance_evidence,paymentClearance:att.payment_clearance});
  if(result.state!=='READY_FOR_GOVERNED_JOB_CREATION')return result;
+ if(att.opportunity_id!==result.readiness.opportunity_id)
+  return {state:'REVIEW_REQUIRED',reason_code:'ATTESTED_OPPORTUNITY_MISMATCH'};
+ const finance=await buildJobPaymentPreconditions({stores:writer.stores,
+  opportunityId:result.readiness.opportunity_id,authority:att});
+ if(finance.state!=='FINANCIAL_PRECONDITIONS_READY')
+  return {state:'REVIEW_REQUIRED',reason_code:finance.reason_code};
+ result.plan.preconditions.push(...finance.preconditions);
  if(dryRun)return {state:'DRY_RUN',job_id:jobId,readiness:result.readiness,plan:result.plan};
  const committed=await writer.execute(result.plan);
  if(committed?.state!=='COMMITTED' && committed?.state!=='DUPLICATE_NO_OP')

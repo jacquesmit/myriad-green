@@ -315,3 +315,12 @@ Three independently merged/tested development changes now exist on GitHub `main`
 **Truthmode:** CODE MERGED and CI VERIFIED = PASS; independent bank/provider callback **NOT CONFIGURED**; HOSTAFRICA deployed worker SHA **NOT VERIFIED**; reviewed WordPress signing bridge **NOT DEPLOYED/NOT VERIFIED**. No live payment, quotation, customer, job, supplier, stock or website records were mutated. This hardened gate may intentionally leave new job creation BLOCKED until trusted bank verification is integrated. Do not mark the entire MAGOS operating system production complete from this evidence.
 
 **Next high-leverage action:** bind real credentialed beneficiary bank/provider credit confirmation to the callback, deploy the approved exact runtime SHA with rollback on HOSTAFRICA, and execute controlled positive/negative signed-quote → cleared-bank-credit → job P3 acceptance tests with readback/idempotent replay. The WP bridge remains independently blocked pending controlled installation and published-page acceptance.
+
+
+## 21 November 2026 — Job-create precommit financial CAS (candidate)
+
+**Why:** after PR #61, the bank settlement attestation passed before P3 job-create. Only quote/CRM preconditions were bound to the subsequent transaction. A bank event subsequently reversed, or allocation status altered, could leave the job approved against stale evidence.
+
+**Changes:** added `job-payment-commit-preconditions.js`, which reuses the canonical deposit inspector and live registered `Payment Control`, `Payment_Allocations`, `Payment_Events` headers, ensures exact bank-attested unique IDs and cents, and prepares compare-and-match preconditions for all financial rows in the job-create P3 plan. The protected job executor requires authority opportunity identity and will fail without consistent evidence. The trusted bank verifier returns canonical opportunity ID. Regression cases cover valid dry-run, missing financial confirmation, mismatched opportunity, altered/revoked deposit and payment-event clearance at transaction time. Both current-state and historic MD files are included with the code candidate.
+
+**Release classification:** CODE PENDING CI; merge PENDING; HOSTAFRICA SHA, real independent bank callback, reviewed WordPress client-signature plugin, deposit-bank integration and live P3 acceptance remain NOT VERIFIED. P3 row preconditions are not whole-sheet serializability, and no actual bank, quote or job row was mutated.
