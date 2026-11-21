@@ -52,6 +52,7 @@ function isPlausiblePlan(plan) {
 function createRuntimeApp({
   token = process.env.MAGOS_RUNTIME_TOKEN,
   operatorReadToken = process.env.MAGOS_OPERATOR_READ_TOKEN,
+  signedAcceptanceVerifier = async () => ({verified:false,reason_code:'SIGNED_ACCEPTANCE_NOT_VERIFIED'}),
   leadIngressToken = process.env.MAGOS_LEAD_INGRESS_TOKEN,
   leadIngressSources =
     process.env.MAGOS_LEAD_INGRESS_SOURCES || '',
@@ -283,6 +284,42 @@ function createRuntimeApp({
       return res.status(200).json(await systemCoverageReader.read());
     } catch {
       return res.status(503).json({error:'MAGOS_SYSTEM_COVERAGE_UNAVAILABLE'});
+    }
+  });
+
+  function requireOperatorInspection(req,res,next) {
+    return req.get('X-MAGOS-Operator-Token')===undefined ?
+      requireRuntimeAuth(req,res,next) : requireOperatorRead(req,res,next);
+  }
+  // Reuse the canonical commercial/CRM sources. These inspections NEVER write.
+  app.get('/v1/operator/job-readiness/:quoteId',requireOperatorInspection,async(req,res)=>{
+    try {
+      const {inspectJobRelease}=require('../processor/job-release-inspection');
+      const result=await inspectJobRelease({stores:getWriter().stores,quoteId:req.params.quoteId});
+      return res.status(result.state==='READY_FOR_EVIDENCE_REVIEW'?200:202).json(result);
+    }catch {
+      return res.status(503).json({error:'JOB_READINESS_UNAVAILABLE'});
+    }
+  });
+  app.get('/v1/operator/deposit-evidence/:opportunityId',requireOperatorInspection,async(req,res)=>{
+    try {
+      const {inspectDepositEvidence}=require('../processor/deposit-evidence-inspection');
+      const result=await inspectDepositEvidence({stores:getWriter().stores,opportunityId:req.params.opportunityId});
+      return res.status(result.state==='CLEARED_ALLOCATION_EVIDENCED'?200:202).json(result);
+    }catch {
+      return res.status(503).json({error:'DEPOSIT_EVIDENCE_UNAVAILABLE'});
+    }
+  });
+  app.get('/v1/operator/job-activation/:quoteId',requireOperatorInspection,async(req,res)=>{
+    try {
+      const {assessJobActivation}=require('../processor/job-activation-assessment');
+      const result=await assessJobActivation({
+        stores:getWriter().stores,quoteId:req.params.quoteId,
+        evidenceVerifier:signedAcceptanceVerifier
+      });
+      return res.status(result.state==='READY_FOR_GOVERNED_AUTHORIZATION'?200:202).json(result);
+    }catch {
+      return res.status(503).json({error:'JOB_ACTIVATION_ASSESSMENT_UNAVAILABLE'});
     }
   });
 
