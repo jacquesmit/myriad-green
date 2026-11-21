@@ -288,6 +288,16 @@ function createRuntimeApp({
     }
   });
 
+  // Backwards-compatible read-only snapshot from prior MAGOS runtime.
+  app.get('/v1/operator/snapshot', requireRuntimeAuth, async(req,res)=>{
+    try {
+      const {loadOperatorSnapshot}=require('../processor/operator-snapshot');
+      return res.status(200).json(await loadOperatorSnapshot({stores:getWriter().stores}));
+    } catch {
+      return res.status(503).json({error:'OPERATOR_SNAPSHOT_UNAVAILABLE'});
+    }
+  });
+
   app.post('/v1/probes/google-sheets', requireRuntimeAuth, async (req, res) => {
     try {
       const runtimeWriter = getWriter();
