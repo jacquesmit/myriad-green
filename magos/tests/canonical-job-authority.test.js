@@ -20,6 +20,8 @@ test('release authority requires matching signed event plus canonical cleared al
  const verify=createCanonicalJobAuthorityVerifier({stores,acceptanceVerifier:signature,bankClearanceVerifier:bank});
  const result=await verify({quoteId:'Q1',jobId:'JOB-1',sourceEventId:'E1'});
  assert.equal(result.verified,true);assert.equal(result.payment_control_id,'P1');
+ assert.equal(result.bank_confirmed_amount_cents,40000);
+ assert.equal(result.bank_deposit_required_cents,40000);
 });
 test('different source event never authorizes release',async()=>{
  const verify=createCanonicalJobAuthorityVerifier({stores,acceptanceVerifier:signature});
