@@ -38,3 +38,15 @@ test('form reception cannot issue jobs, bookings or payment clearance',()=>{
   assert.doesNotMatch(source,/\$wpdb->update\(\s*['"]jobs/i);
   assert.match(source,/No status on this page can release materials or schedule work/);
 });
+
+test('only exact CLIENT_ACCEPTANCE purpose can create real client receipt',()=>{
+ const submission=source.slice(source.indexOf('static function submitted('),source.indexOf('static function review_page('));
+ assert.match(submission,/\(\$decoded\['purpose'\]\?\?''\)!=='CLIENT_ACCEPTANCE'/);
+ assert.doesNotMatch(submission,/\(\$decoded\['purpose'\]\?\?''\)==='OWNER_TEST'/);
+});
+test('manual signed receipt evidence is a specific Google Drive file for approval and verify',()=>{
+ const approval=source.slice(source.indexOf('static function approve('),source.indexOf('static function init('));
+ assert.match(approval,/\/file\/d\//);
+ assert.match(approval,/Signed receipt must be evidenced by a specific Google Drive file/);
+ assert.match(approval,/wp_parse_url\(\$r\['evidence_ref'\],PHP_URL_PATH\)/);
+});

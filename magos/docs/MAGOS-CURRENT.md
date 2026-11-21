@@ -133,3 +133,11 @@ For each real MAGOS code change:
 
 - [PR #63](https://github.com/jacquesmit/myriad-green/pull/63) merged to `main` at `1acc9f8ec104c860a1a46fbe5968bed2311cfe0d` after exact-head MAGOS Runtime P2 #195 PASS, Document Extract #240 PASS, Evolving Status Gate #11 PASS (tested head `879b28ba693d8c6e6ce91a0c4e3f620f80a9a4f3`). The P3 creation decision now compares *external bank-confirmed cents*, required-deposit cents, and recorded Payment_Allocations/Payment_Events amounts. CODE/CI PASS; actual bank verifier still NOT CONFIGURED.
 - WPVibe live read-only recheck 2026-11-21: the signed-client page `9481` remains `draft` and `/mgos/v1` has **no `quote-acceptance/verify-v2` route**. The deployed legacy plugin 0.3.2 continues to be OWNER_TEST-only. Reviewed client signing is therefore **not production-operational**, despite CI archive creation.
+
+
+## WordPress reviewed client signature strict purpose and evidence — candidate
+
+- **Source improvement:** reviewed companion `mgos-reviewed-client-signature.php` now accepts only HMAC-validated `purpose=CLIENT_ACCEPTANCE` tokens. Previously, it excluded `OWNER_TEST` but did not explicitly reject missing or unknown token purposes. The existing legacy token verifier still checks expiry, HMAC and document identity.
+- Admin approval and private `verify-v2` now require a **specific Google Drive file** in `/file/d/<id>/...`, not a generic Drive homepage or folder link; the receipt SHA-256 and independent review gates remain enforced.
+- Automated source-contract tests now verify token-purpose exclusion and Drive file specificity; reproducible ZIP packaging must re-run in PHP lint/Bridge CI. **CODE candidate; CI/merge pending.**
+- **No production install:** authenticated WPVibe still reports page 9481 `draft` and no live `verify-v2` route as of 2026-11-21. A packaged plugin is not an active customer acceptance workflow. Actual FluentForm submission, consent and reviewed-signature acceptance are still NOT VERIFIED.
