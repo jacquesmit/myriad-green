@@ -120,3 +120,37 @@ Required private environment names: `MAGOS_EXPECTED_GIT_SHA`, `MAGOS_DEPLOY_COMM
 
 If any test fails, STOP and preserve the existing hosted deployment. Capture the failure code and Git status/readback, then repair only the failed dependency. Do not blindly pull `main`, overwrite server modifications, rotate credentials, kill unrelated `lsnode` workers or claim a production PASS.
 
+
+
+## 21 November 2026 — Controlled cPanel release command (new candidate)
+
+The existing [`hostafrica-release.sh`](../scripts/hostafrica-release.sh) is a server-side operator tool, **not a cloud deploy button**. Run it in the authenticated HOSTAFRICA cPanel Terminal only. The ordinary `inspect` mode is read-only: it reports tracked checkout SHA, current branch, remote private GitHub `origin/main` SHA, account name, Node activation path and worker presence. It refuses uncommitted tracked files and fails if the private repo cannot be reached. It will catch an expired Git token without printing the token or credentials.
+
+**Inspect from the verified cPanel checkout, after the approved script has become available locally:**
+
+```bash
+cd /home/myriaauq/repositories/myriad-green || exit 1
+bash magos/scripts/hostafrica-release.sh inspect
+```
+
+If the server has not yet fetched this script, the existing safe native read-only checks still work: `git status --short --branch --untracked-files=no`, `git rev-parse HEAD`, and `GIT_TERMINAL_PROMPT=0 git ls-remote origin refs/heads/main`. Never expose remote credentials in ticket output. Do not pull newer source solely to run an inspection while the host checkout is dirty.
+
+**Before the live deployment command:** obtain an independently reviewed exact 40-character `main` release SHA; confirm GitHub CI for the release; capture the host rollback SHA and backup; confirm no unrelated tracked edits; configure private `MAGOS_DEPLOY_COMMIT_SHA` in cPanel Node environment to the exact target before starting the new worker; make the distinct runtime/operator tokens available privately to the Terminal process; verify existing Node dependencies. Do not paste secrets into email, GitHub, or support tickets.
+
+**Explicit deployment (operator-approved; NOT executed in this conversation):**
+
+```bash
+cd /home/myriaauq/repositories/myriad-green || exit 1
+export MAGOS_RELEASE_SHA='REPLACE_WITH_APPROVED_40_CHARACTER_GITHUB_MAIN_SHA'
+export MAGOS_APPROVE_LIVE_DEPLOY=YES
+export MAGOS_HOST_BACKUP_CONFIRMED=YES
+# MAGOS_DEPLOY_COMMIT_SHA, MAGOS_RUNTIME_TOKEN and MAGOS_OPERATOR_READ_TOKEN
+# must already be present in your PRIVATE cPanel runtime/Terminal environment.
+bash magos/scripts/hostafrica-release.sh deploy
+```
+
+The script verifies the remote commit equals the pinned approved target, refuses dirty tracked files, refuses missing cPanel declaration/token/backup flags, stores rollback SHA under `~/.magos-release-evidence/` with restricted permissions, fetches the exact target, switches to that commit, checks `app.js` syntax, recycles only the HOSTAFRICA-approved `myriaauq` MAGOS `lsnode` worker and runs the **authenticated** `runtime/release-preflight.js`. No WooCommerce, WordPress or finance source mutation occurs. The script does not alter cPanel environment variables or install dependencies; absent prerequisites are blockers.
+
+**Important recovery limitation:** If any post-checkout step fails, the script stops and prints the previous rollback SHA. It does **not** automatically perform rollback because the private cPanel `MAGOS_DEPLOY_COMMIT_SHA` must be restored to the rollback commit before recycling the old worker. Use the last verified host SHA, existing environment configuration and HOSTAFRICA-approved targeted recycle with hosting support. Avoid unverified blind restarts or destructive git resets. A successful read-only release preflight is not business transaction acceptance.
+
+**HOSTAFRICA mail evidence:** support ticket #3622207 confirms the targeted recycle on 11–12 November; ticket closed 16 November automatically. Support was contacted again 21 November requesting read-only checkout, private Git access and worker evidence. GitHub notification of 3 November says the old `MAGOS cPanel Git Push` fine-grained token expired; whether fetch is still possible is **UNKNOWN** until the `inspect` command is executed on the server.
