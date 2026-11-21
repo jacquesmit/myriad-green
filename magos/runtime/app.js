@@ -60,6 +60,7 @@ function createRuntimeApp({
   writerFactory = () => new TransactionWriter(),
   eventProcessorFactory = () => new EventProcessor(),
   liveAgentAuthorityFactory = () => new LiveAgentAuthority(),
+  systemCoverageReaderFactory = () => new (require('../processor/system-coverage').SystemCoverageReader)(),
   eventDispatcherFactory = ({ writer }) =>
     new GovernedProcessorRegistry({ writer }),
   version = process.env.MAGOS_RUNTIME_VERSION || 'P2'
@@ -72,6 +73,7 @@ function createRuntimeApp({
   let eventProcessor;
   let eventDispatcher;
   let liveAgentAuthority;
+  let systemCoverageReader;
   let workflowRunner;
   const allowedLeadSources = parseAllowedLeadSources(leadIngressSources);
   const allowedSupplierEmailSources = parseAllowedSupplierEmailSources(supplierEmailIngressSources);
@@ -275,6 +277,15 @@ function createRuntimeApp({
     }
     return next();
   }
+  app.get('/v1/operator/coverage',requireOperatorRead,async(req,res)=>{
+    try {
+      if(!systemCoverageReader)systemCoverageReader=systemCoverageReaderFactory();
+      return res.status(200).json(await systemCoverageReader.read());
+    } catch {
+      return res.status(503).json({error:'MAGOS_SYSTEM_COVERAGE_UNAVAILABLE'});
+    }
+  });
+
   app.get('/v1/operator/dashboard',requireOperatorRead,async(req,res)=>{
     try {
       const {loadOperatorDashboard}=require('../processor/operator-dashboard');
