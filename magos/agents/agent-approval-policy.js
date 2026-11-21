@@ -1,8 +1,8 @@
 'use strict';
 
-// Preparation-only approval gate for integration with existing MAGOS audit/authority.
-// A caller must supply receipts read independently from the canonical approval source.
-// No AI payload may become the authoritative approval. NO execution occurs here.
+// Preparation-only approval gate: trusted storage adapters are injected by
+// MAGOS server code, not constructed from an AI/client payload.
+// This gate NEVER grants execution or writes to business authority.
 const { timingSafeEqual } = require('node:crypto');
 
 function same(a,b) {
@@ -10,14 +10,36 @@ function same(a,b) {
   const y=Buffer.from(String(b??''));
   return x.length>0 && x.length===y.length && timingSafeEqual(x,y);
 }
-function verifyAgentApproval(plan, { receipt, liveAuthority, now = new Date() } = {}) {
+
+async function verifyAgentApproval(plan,{ loadReceipt, loadAuthority, now = new Date() }={}) {
   const blockers=[];
   if (!plan || plan.schema_version!=='MAGOS_AGENT_PLAN_V2' || plan.state==='BLOCKED') {
     blockers.push('INVALID_OR_BLOCKED_PLAN');
   }
-  if (!receipt || typeof receipt !== 'object' || receipt.origin!=='CANONICAL_APPROVAL_STORE') {
-    blockers.push('CANONICAL_APPROVAL_MISSING');
+  if (typeof loadReceipt !== 'function' || typeof loadAuthority !== 'function') {
+    return Object.freeze({
+      schema_version:'MAGOS_AGENT_APPROVAL_CHECK_V1',
+      plan_idempotency_key:plan?.idempotency_key||'',
+      status:'BLOCKED',blockers:['TRUSTED_READERS_NOT_CONFIGURED'],
+      execution_authorized:false,next_boundary:'GOVERNED_EVENT_RUNNER'
+    });
   }
+  let receipt,liveAuthority;
+  try {
+    // Both values are retrieved from server-owned trusted readers. A user
+    // object containing "approved":true is never read by this function.
+    [receipt,liveAuthority]=await Promise.all([
+      loadReceipt(plan?.idempotency_key),loadAuthority({
+        job_type_id:plan?.job_type_id,
+        tenant_id:plan?.tenant_id,
+        jurisdiction_id:plan?.jurisdiction_id,
+        branch_id:plan?.branch_id
+      })
+    ]);
+  } catch {
+    blockers.push('TRUSTED_AUTHORITY_READ_FAILURE');
+  }
+  if (!receipt || typeof receipt !== 'object') blockers.push('CANONICAL_APPROVAL_MISSING');
   if (!liveAuthority || typeof liveAuthority!=='object' || liveAuthority.verified!==true) {
     blockers.push('LIVE_AUTHORITY_NOT_VERIFIED');
   }
@@ -43,9 +65,7 @@ function verifyAgentApproval(plan, { receipt, liveAuthority, now = new Date() } 
       !Number.isFinite(current)||approvedAt>current||
       expiresAt<=current||expiresAt<=approvedAt) blockers.push('APPROVAL_EXPIRED_OR_INVALID');
   if (receipt?.used===true || receipt?.replayed===true) blockers.push('APPROVAL_REPLAY');
-  if (!receipt?.approval_receipt_validated_by_trusted_adapter) {
-    blockers.push('APPROVAL_PROVENANCE_NOT_VERIFIED');
-  }
+  if (receipt?.revoked===true) blockers.push('APPROVAL_REVOKED');
   return Object.freeze({
     schema_version:'MAGOS_AGENT_APPROVAL_CHECK_V1',
     plan_idempotency_key:plan?.idempotency_key||'',
