@@ -315,6 +315,11 @@
         }),'secondary');
       supplierAudit.append(supplierCheck,supplierResult);
       costArea.append(supplierAudit);
+      const queueOutput=element('p');
+      queueOutput.setAttribute('role','status');
+      const queueCheck=button('Review all supplier allocations for this job',
+        ()=>inspectSupplierCostQueue(item.details.job_id,queueOutput,queueCheck),'secondary');
+      costArea.append(queueCheck,queueOutput);
       target.append(costArea);
     }
     if(department==='finance' && item.details?.['Invoice ID']) {
@@ -391,6 +396,29 @@
       redirect: 'error',
       signal,
     });
+  }
+
+  async function inspectSupplierCostQueue(jobId,output,button){
+    if(!jobId){output.textContent='Canonical job ID missing.';return;}
+    button.disabled=true;
+    output.textContent='Checking every linked supplier allocation and its evidence…';
+    const abort=new AbortController(),deadline=setTimeout(()=>abort.abort(),20000);
+    try{
+      const response=await read('/v1/operator/job-supplier-cost-queue/'+encodeURIComponent(jobId),abort.signal);
+      const result=await response.json();
+      if(result.schema_version!=='MAGOS_JOB_SUPPLIER_COST_QUEUE_V1')
+        throw Error('QUEUE_UNAVAILABLE');
+      output.textContent=[
+        (result.counts?.total||0)+' supplier allocations',
+        (result.counts?.review||0)+' require evidence review',
+        ...((result.items||[]).slice(0,20).map(item=>
+          item.allocation_id+': '+(item.blockers||[]).join(', '))),
+        (result.items||[]).length>20?'Additional exceptions not shown; inspect source register':'',
+        'No supplier invoices or job costs changed'
+      ].filter(Boolean).join(' · ');
+    }catch{
+      output.textContent='Allocation queue unavailable; review canonical supplier source.';
+    }finally{clearTimeout(deadline);button.disabled=false;}
   }
 
   async function inspectSupplierCostAllocation({jobId,opportunityId,allocationId,output,button}){
