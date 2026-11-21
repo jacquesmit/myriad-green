@@ -109,3 +109,23 @@ This entry is a **development checkpoint**, not a live deployment statement. Pri
 - DEPLOYED = host confirmed exact running SHA.
 - PRODUCTION PASS = validated source records, business state, replay and independent QA.
 - COMPLETE = whole-business end-state gate met.
+
+
+## 21 November 2026 — Business-action integration and canonical closeout build
+
+### Committed implementation after whole-system Command Centre
+- Integrated existing `accepted-job-execution`, `accepted-quote-job-plan`, `canonical-job-authority`, `job-commit-readback`, `quote-to-job-readiness`, and `scoped-action-gate` from the recovery branch, preserving original tests.
+- Integrated existing `supplier-approval-processor`, `live-supplier-procurement`, `procurement-draft-transaction`, `procurement-issue-approval`, `supplier-procurement-readiness` and their unit/integration tests.
+- Added separate bearer-style governance credentials and routes: `POST /v1/governance/create-job`, `/supplier-approval`, `/procurement-draft`, `/procurement-approve`. Their enabling secrets and trusted authority verifier(s) must be deliberately configured; missing independent approval returns REVIEW_REQUIRED. Procurement draft creates only a DRAFT and does not send a PO or authorize payment.
+- Explicit generic-route denial prevents bypass through `/v1/transactions` or `/v1/events/run` for the sensitive operations.
+- Added live `GET /v1/operator/job-closeout/:jobId` and a job detail UI action using *existing* `Variations`, `Project Direct Costs`, `Project Cost & Margin`, and `Job Execution` Commercial workbook tabs. Requires actual evidence and blocks stale/duplicate/approval-pending data. Does **not** mark job PAID, CLOSED or FINAL PROFIT automatically.
+- Independent supplier approval attestation now required in addition to an API token; source event, status change, supplier identity and evidence must match a server-owned verifier result.
+
+### Source-level discovery that corrects earlier planning
+The Commercial workbook **already contains a `Variations` register, `Project Direct Costs`, `Project Cost & Margin`, `Labour Rates`, `Quote_Lines` and `Invoice_Lines`**. The Control Hub's CAP-010/CAP-012 wording that suggests creating an entirely new variation/cost store is historically incomplete. Reuse and normalize existing records first. Variation authority in Data_Ownership_Matrix is not yet independently proven, so a new automatic variation mutation is NOT enabled. Do not create an incompatible parallel register.
+
+### Current strict truth state
+Code changes are on PR #41, not confirmed deployed to HOSTAFRICA. Tests passing on preceding commits are not evidence of the newest exact SHA. Sensitive endpoints default to disabled or review without configured private tokens/trusted authority. No live customer funds, orders, jobs, supplier approvals or quote statuses were changed in this development continuation.
+
+### Highest-value next execution
+Run current-HEAD CI; capture deployed SHA; review release candidate against current `main`, legacy recovery and host worktree; configure private secrets and real authority verifier(s); then controlled quote-to-job and PO draft golden acceptance with record-by-record readback and duplicate replay. Following that, make actual-cost capture and variation approval authoritative in the existing Commercial workbook with policy, writer schema and independent business evidence.
