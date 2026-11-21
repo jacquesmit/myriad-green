@@ -259,6 +259,21 @@
       output.setAttribute('role', 'status');
       const check = button('Inspect job readiness', () => inspectQuote(item.id, output, check), 'secondary');
       target.append(check, output);
+      // This credential is separate from read access and is erased after use.
+      // User action cannot bypass server-owned signature verification.
+      const authLabel=element('label','Quote acceptance authorization token');
+      const authInput=element('input');
+      authInput.type='password';
+      authInput.autocomplete='off';
+      authInput.setAttribute('aria-label','Quote acceptance authorization token');
+      authLabel.append(authInput);
+      const acceptOutput=element('p');
+      acceptOutput.setAttribute('role','status');
+      const preview=button('Preview reviewed signature acceptance',
+        ()=>reviewQuoteAcceptance(item.id,authInput,acceptOutput,preview,true),'secondary');
+      const commit=button('Accept independently reviewed quote',
+        ()=>reviewQuoteAcceptance(item.id,authInput,acceptOutput,commit,false),'secondary');
+      target.append(authLabel,preview,commit,acceptOutput);
     }
     target.scrollIntoView({ block: 'nearest' });
   }
@@ -423,6 +438,45 @@
     }finally{
       clearTimeout(deadline);
       if(inspection===active)button.disabled=false;
+    }
+  }
+
+  async function reviewQuoteAcceptance(id,input,output,button,dryRun){
+    const credentialForAction=input.value.trim();
+    if(!credentialForAction){
+      output.textContent='Separate quote-acceptance credential required.';
+      return;
+    }
+    if(!dryRun && !window.confirm(
+      'Accept this exact reviewed quotation? This changes the Commercial quote status. It will NOT create a job, clear payment or order materials.'
+    )){
+      input.value='';
+      return;
+    }
+    button.disabled=true;
+    output.textContent=dryRun?'Reviewing signed acceptance and canonical quote…':
+      'Verifying signed receipt and committing canonical quote acceptance…';
+    const active=new AbortController(),deadline=setTimeout(()=>active.abort(),20000);
+    try{
+      const response=await fetch('/v1/governance/accept-reviewed-quote',{
+        method:'POST',cache:'no-store',redirect:'error',signal:active.signal,
+        headers:{'content-type':'application/json','x-magos-acceptance-token':credentialForAction},
+        body:JSON.stringify({quoteId:id,dryRun})
+      });
+      const result=await response.json();
+      output.textContent=[
+        result.state?.replaceAll('_',' ')||result.error||'REQUEST_FAILED',
+        result.reason_code?.replaceAll('_',' '),
+        result.quote_version&&'Quote version '+result.quote_version,
+        result.readback_verified===true&&'Canonical quote read-back verified',
+        result.state==='COMMITTED'&&'No job or payment changes performed'
+      ].filter(Boolean).join(' · ');
+    }catch{
+      output.textContent='Acceptance operation unavailable. Check canonical audit and do not retry blindly.';
+    }finally{
+      clearTimeout(deadline);
+      input.value='';
+      button.disabled=false;
     }
   }
 
