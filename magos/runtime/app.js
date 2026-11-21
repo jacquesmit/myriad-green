@@ -397,6 +397,16 @@ function createRuntimeApp({
     }
   });
 
+  app.get('/v1/operator/job-supplier-cost-queue/:jobId',requireOperatorInspection,async(req,res)=>{
+    try{
+      const {inspectJobSupplierCostQueue}=require('../processor/job-supplier-cost-queue');
+      const result=await inspectJobSupplierCostQueue({
+        stores:getWriter().stores,jobId:req.params.jobId
+      });
+      return res.status(result.state==='REVIEW_REQUIRED'?202:200).json(result);
+    }catch{return res.status(503).json({error:'SUPPLIER_COST_QUEUE_UNAVAILABLE'});}
+  });
+
   // Existing supplier Cost_Allocations evidence, no writes or approval bypass.
   app.get('/v1/operator/supplier-cost-allocation/:allocationId',requireOperatorInspection,async(req,res)=>{
     const jobId=String(req.query.jobId||''),opportunityId=String(req.query.opportunityId||'');
