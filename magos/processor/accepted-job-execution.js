@@ -11,12 +11,14 @@ async function executeAcceptedJob({writer,quoteId,jobId,sourceEventId,authorityV
  const att=await authorityVerifier({quoteId,jobId,sourceEventId});
  if(att?.verified!==true||att.quote_id!==quoteId||att.job_id!==jobId||att.source_event_id!==sourceEventId||
  !text(att.acceptance_evidence)||att.payment_clearance!=='CLEARED')return {state:'REVIEW_REQUIRED',reason_code:att?.reason_code||'JOB_AUTHORITY_NOT_VERIFIED'};
- const finance=await buildJobPaymentPreconditions({stores:writer.stores,
-  opportunityId:att.opportunity_id||'',authority:att});
- if(finance.state!=='FINANCIAL_PRECONDITIONS_READY')
-  return {state:'REVIEW_REQUIRED',reason_code:finance.reason_code};
  const result=await planAcceptedJob({stores:writer.stores,quoteId,jobId,sourceEventId,acceptanceEvidence:att.acceptance_evidence,paymentClearance:att.payment_clearance});
  if(result.state!=='READY_FOR_GOVERNED_JOB_CREATION')return result;
+ if(att.opportunity_id!==result.readiness.opportunity_id)
+  return {state:'REVIEW_REQUIRED',reason_code:'ATTESTED_OPPORTUNITY_MISMATCH'};
+ const finance=await buildJobPaymentPreconditions({stores:writer.stores,
+  opportunityId:result.readiness.opportunity_id,authority:att});
+ if(finance.state!=='FINANCIAL_PRECONDITIONS_READY')
+  return {state:'REVIEW_REQUIRED',reason_code:finance.reason_code};
  result.plan.preconditions.push(...finance.preconditions);
  if(dryRun)return {state:'DRY_RUN',job_id:jobId,readiness:result.readiness,plan:result.plan};
  const committed=await writer.execute(result.plan);
