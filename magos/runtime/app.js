@@ -273,7 +273,7 @@ function createRuntimeApp({
 
   // Separate view-only credential: must never equal any writer/ingress token.
   const hasOperatorToken=Boolean(operatorReadToken) &&
-    ![token,leadIngressToken,supplierEmailIngressToken].some(
+    ![token,leadIngressToken,supplierEmailIngressToken,supplierApprovalToken,jobCreationToken,procurementApprovalToken].some(
       credential=>constantTimeEqual(credential,operatorReadToken)
     );
   function requireOperatorRead(req,res,next) {
@@ -436,7 +436,7 @@ function createRuntimeApp({
 
   // Supplier-approval authority is never inferred from caller-controlled event metadata.
   app.post('/v1/governance/supplier-approval', async (req, res) => {
-    if (!supplierApprovalToken || supplierApprovalToken === token || supplierApprovalToken === leadIngressToken) {
+    if (!supplierApprovalToken || [token,leadIngressToken,supplierEmailIngressToken,jobCreationToken,procurementApprovalToken,operatorReadToken].some(value=>constantTimeEqual(value,supplierApprovalToken))) {
       return res.status(503).json({ error: 'SUPPLIER_APPROVAL_AUTH_NOT_CONFIGURED' });
     }
     if (!constantTimeEqual(req.get('x-magos-supplier-approval-token') || '', supplierApprovalToken)) {
@@ -478,7 +478,7 @@ function createRuntimeApp({
 
   // Governed job creation never accepts caller-controlled acceptance/payment flags.
   app.post('/v1/governance/create-job', async (req,res)=>{
-    if(!jobCreationToken || [token,leadIngressToken,supplierApprovalToken,procurementApprovalToken].includes(jobCreationToken))return res.status(503).json({error:'JOB_CREATION_AUTH_NOT_CONFIGURED'});
+    if(!jobCreationToken || [token,leadIngressToken,supplierEmailIngressToken,supplierApprovalToken,procurementApprovalToken,operatorReadToken].some(value=>constantTimeEqual(value,jobCreationToken)))return res.status(503).json({error:'JOB_CREATION_AUTH_NOT_CONFIGURED'});
     if(!constantTimeEqual(req.get('x-magos-job-token')||'',jobCreationToken))return res.status(401).json({error:'UNAUTHORIZED'});
     const b=req.body||{};
     if(!['quoteId','jobId','sourceEventId'].every(k=>typeof b[k]==='string'&&b[k].trim()))return res.status(400).json({error:'JOB_IDENTIFIERS_REQUIRED'});
@@ -524,7 +524,7 @@ function createRuntimeApp({
   // Procurement approval is scoped to an internal PO state transition.
   // It never dispatches a supplier order or authorizes a payment.
   app.post('/v1/governance/procurement-approve', async (req, res) => {
-    if (!procurementApprovalToken || [token, leadIngressToken, supplierApprovalToken].includes(procurementApprovalToken)) {
+    if (!procurementApprovalToken || [token,leadIngressToken,supplierEmailIngressToken,supplierApprovalToken,jobCreationToken,operatorReadToken].some(value=>constantTimeEqual(value,procurementApprovalToken))) {
       return res.status(503).json({ error: 'PROCUREMENT_APPROVAL_AUTH_NOT_CONFIGURED' });
     }
     if (!constantTimeEqual(req.get('x-magos-procurement-token') || '', procurementApprovalToken)) {
