@@ -3,7 +3,11 @@ const test=require('node:test'),assert=require('node:assert/strict');
 const {createCanonicalJobAuthorityVerifier}=require('../processor/canonical-job-authority');
 const stores={commercial:{
  findByKey:async()=>({object:{quote_id:'Q1',opportunity_id:'O1','Quote Status':'ACCEPTED'}}),
- readObjects:async sheet=>sheet==='Payment Control'?[{'Control ID':'P1','Opportunity ID':'O1','Deposit Required (R)':'400'}]:[{control_id:'P1',allocation_id:'A1',allocation_type:'DEPOSIT',allocation_state:'CLEARED',amount:'400',evidence_link:'drive://bank'}]
+ readObjects:async sheet=>({
+ 'Payment Control':[{'Control ID':'P1','Opportunity ID':'O1','Deposit Required (R)':'400'}],
+ 'Payment_Allocations':[{control_id:'P1',allocation_id:'A1',payment_event_id:'E1',allocation_type:'DEPOSIT',allocation_state:'CLEARED',amount:'400',evidence_link:'https://drive.google.com/file/d/BANKTESTEVIDENCE001/view'}],
+ 'Payment_Events':[{payment_event_id:'E1',control_id:'P1',opportunity_id:'O1',event_type:'PAYMENT_CLEARED',clearance_state:'CLEARED',amount:'400',evidence_link:'https://drive.google.com/file/d/BANKTESTEVIDENCE001/view',idempotency_key:'BANK-E1',source_system:'BANK_CREDIT_REVIEWED'}]
+ })[sheet]||[]
 }};
 const signature=async({quote_id,opportunity_id})=>({verified:true,quote_id,opportunity_id,evidence_ref:'drive://signed',signer_identity:'Verified signer',signed_at:'2026-10-11',source_event_id:'E1'});
 test('release authority requires matching signed event plus canonical cleared allocation',async()=>{
