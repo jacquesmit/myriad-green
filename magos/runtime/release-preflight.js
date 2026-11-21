@@ -41,7 +41,7 @@ async function releasePreflight({expectedSha,baseUrl,runtimeToken,operatorToken,
    const headers=header==='authorization'?{authorization:'Bearer '+token}:
     {'X-MAGOS-Operator-Token':token};
    const response=await request(base+endpoint,{
-    method,headers,signal:AbortSignal.timeout(12000),
+    method,headers,redirect:'error',signal:AbortSignal.timeout(12000),
     ...(method==='POST'?{body:'{}'}:{})
    });
    const data=await response.json();
@@ -55,7 +55,10 @@ async function releasePreflight({expectedSha,baseUrl,runtimeToken,operatorToken,
  const build=await read('PROCESS_BUILD','/v1/runtime/build');
  add('RUNNING_WORKER_SHA',build.response?.status===200 &&
   build.data?.schema_version==='MAGOS_RUNTIME_BUILD_V1' &&
-  build.data?.commit_sha===expectedSha.toLowerCase(),
+  build.data?.commit_sha===expectedSha.toLowerCase() &&
+  build.data?.checkout_sha_at_process_start===expectedSha.toLowerCase() &&
+  build.data?.tracked_worktree_clean_at_start===true &&
+  build.data?.status==='GIT_CHECKOUT_AND_DEPLOY_DECLARATION_MATCH',
   'RUNNING_WORKER_SHA_NOT_VERIFIED');
  const source=await read('AUDIT_SOURCE','/v1/probes/google-sheets',{method:'POST'});
  add('AUDIT_SOURCE',source.response?.status===200&&
