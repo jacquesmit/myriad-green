@@ -69,7 +69,7 @@ source "$activate" || fatal 'NODE20_ACTIVATION_FAILED'
 command -v node >/dev/null || fatal 'NODE_EXECUTABLE_MISSING'
 command -v npm >/dev/null || fatal 'NPM_EXECUTABLE_MISSING'
 [[ -d "$app/node_modules" ]] || fatal 'MAGOS_DEPENDENCIES_MISSING_STOP_BEFORE_CHECKOUT'
-node -e "require('$app/node_modules/express');require('$app/node_modules/dotenv')" >/dev/null ||
+(cd "$app" && node -e "require('express');require('dotenv')") >/dev/null ||
   fatal 'EXISTING_MAGOS_DEPENDENCIES_INVALID'
 # The controlled rollback SHA is written OUTSIDE the Git worktree, without
 # embedding any runtime credentials in an audit artifact.
