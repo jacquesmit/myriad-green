@@ -16,6 +16,7 @@ on:
       - 'magos/tests/live-agent-authority.test.js'
       - 'magos/tests/agent-review-queue.test.js'
       - 'magos/tests/workflow-runner.test.js'
+      - 'magos/tests/system-coverage.test.js'
       - 'magos/tests/operator-*.test.js'
       - 'magos/tests/runtime-http.test.js'
       - 'magos/tests/supplier-email-intake.test.js'
@@ -38,6 +39,7 @@ on:
       - 'magos/tests/live-agent-authority.test.js'
       - 'magos/tests/agent-review-queue.test.js'
       - 'magos/tests/workflow-runner.test.js'
+      - 'magos/tests/system-coverage.test.js'
       - 'magos/tests/operator-*.test.js'
       - 'magos/tests/runtime-http.test.js'
       - 'magos/tests/supplier-email-intake.test.js'
@@ -77,7 +79,7 @@ jobs:
           done
           curl --fail http://127.0.0.1:18081/healthz
           curl --fail http://127.0.0.1:18081/readyz
-      - run: node --test tests/runtime-http.test.js tests/transaction-writer.test.js tests/fluent-forms-adapter.test.js tests/supplier-email-intake.test.js tests/processor-registry.test.js tests/agent-router.test.js tests/agent-owner-resolver.test.js tests/agent-approval-policy.test.js tests/live-agent-authority.test.js tests/agent-review-queue.test.js tests/workflow-runner.test.js tests/operator-snapshot.test.js tests/operator-dashboard.test.js tests/operator-page.test.js
+      - run: node --test tests/runtime-http.test.js tests/transaction-writer.test.js tests/fluent-forms-adapter.test.js tests/supplier-email-intake.test.js tests/processor-registry.test.js tests/agent-router.test.js tests/agent-owner-resolver.test.js tests/agent-approval-policy.test.js tests/live-agent-authority.test.js tests/agent-review-queue.test.js tests/workflow-runner.test.js tests/operator-snapshot.test.js tests/operator-dashboard.test.js tests/operator-page.test.js tests/system-coverage.test.js
 
   container-smoke:
     runs-on: ubuntu-latest
