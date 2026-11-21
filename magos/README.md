@@ -8,7 +8,24 @@ Start with the [verified cPanel runbook](docs/CPANEL-PASSENGER-DEPLOY.md) for
 the host, deployed release, Node.js activation command, credential handling,
 and live acceptance status.
 
-## Registered AG/JT agent orchestration (proposal layer)
+## Executable workflows (current development path)
+
+**Use [MAGOS Executable Workflows V1](docs/MAGOS-EXECUTABLE-WORKFLOWS-V1.md)
+as the build-first software contract.** The old AG-001..AG-038 identities
+are legacy governance cross-references, not active autonomous workers.
+
+`GET /v1/workflows` lists six actionable workflow types with plain-English
+names. `POST /v1/workflows/run` accepts `workflow_id` and a valid canonical
+EventEnvelope V1 and executes through the *existing* governed event dispatcher.
+Both routes require the established MAGOS runtime bearer token.
+
+The processor and P3 writer—not the name or Markdown of a workflow—decide
+whether to write, reject, retry or open review. An authenticated workflow
+submission can be blocked by guard, identity, evidence, approval, authority
+or state gates. Nothing in this feature grants independent agent tools or
+creates another ledger.
+
+## Historical AG/JT registry (compatibility/proposal only)
 
 Read [MAGOS Agent Orchestration V2](docs/MAGOS-AGENT-ORCHESTRATION-V1.md)
 before using the new agents code. The canonical Google Drive Agent Job Allocation
