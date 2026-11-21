@@ -27,13 +27,14 @@ class LiveAgentAuthority {
     try {
       const response=await this.sheets.spreadsheets.values.batchGet({
         spreadsheetId:this.spreadsheetId,
-        ranges:["'Allocation Matrix'!A1:K100","'Agent Registry'!A1:I100"]
+        ranges:["'Allocation Matrix'!A1:K100","'Agent Registry'!A1:I100","'Job Types'!A1:I100"]
       });
-      const [matrix,registry]=(response?.data?.valueRanges||[]).map(x=>x.values||[]);
+      const [matrix,registry,jobTypes]=(response?.data?.valueRanges||[]).map(x=>x.values||[]);
       const validMatrix=matrix?.[0]?.[0]==='Job_Type_ID' &&
         matrix?.[0]?.[1]==='Primary_Agent_ID';
       const validRegistry=registry?.[0]?.[0]==='Agent_ID';
-      if(!validMatrix||!validRegistry) {
+      const validJobTypes=jobTypes?.[0]?.[0]==='Job_Type_ID' && jobTypes?.[0]?.[6]==='Primary_Agent_ID';
+      if(!validMatrix||!validRegistry||!validJobTypes) {
         return {verified:false,reason:'CANONICAL_SCHEMA_MISMATCH',job_type_id};
       }
       const matches=matrix.slice(1).filter(r=>normalized(r[0])===job_type_id);
@@ -43,6 +44,10 @@ class LiveAgentAuthority {
       const [row]=matches;
       const owner_agent_id=normalized(row[1]);
       const agents=registry.slice(1).filter(r=>normalized(r[0])===owner_agent_id);
+      const typeMatches=jobTypes.slice(1).filter(r=>normalized(r[0])===job_type_id);
+      if(typeMatches.length!==1 || normalized(typeMatches[0][6])!==owner_agent_id) {
+        return {verified:false,reason:'JOB_TYPE_OWNER_CONFLICT',job_type_id};
+      }
       if(agents.length!==1) {
         return {verified:false,reason:'AGENT_MISSING_OR_DUPLICATED',job_type_id};
       }
