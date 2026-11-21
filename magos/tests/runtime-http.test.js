@@ -936,3 +936,48 @@ test('AG-001 authority probe fails closed when Drive read unavailable',async()=>
     assert.equal(r.payload.reason,'CANONICAL_READ_FAILED');
   });
 });
+
+
+test('named workflow API is authenticated and dispatches via existing governed runner', async()=>{
+  let calls=0;
+  const app=createRuntimeApp({
+    token:'workflow-secret',
+    writerFactory:()=>({audit:{}}),
+    eventDispatcherFactory:()=>({run:async envelope=>{
+      calls++;return {state:'REVIEW_REQUIRED',event_id:envelope.event_id};
+    }})
+  });
+  await withServer(app,async base=>{
+    const listed=await request(base,'/v1/workflows',{token:'workflow-secret'});
+    assert.equal(listed.status,200);
+    assert.ok(listed.payload.workflows.some(x=>x.id==='lead-intake'));
+    const denied=await request(base,'/v1/workflows/run',{
+      method:'POST',body:{workflow_id:'lead-intake',envelope:sampleEvent()}
+    });
+    assert.equal(denied.status,401);
+    assert.equal(calls,0);
+    const {createEventEnvelope}=require('../processor/event-envelope');
+    const env=createEventEnvelope({
+      source:'TEST',source_event_id:'SRC-WORKFLOW-1',
+      event_type:'LEAD_SUBMITTED',
+      guards:{spam:'CLEAR',phishing:'CLEAR',explicit_content:'CLEAR',
+        malware:'CLEAR',irrelevant:'CLEAR'},
+      evidence:[{type:'TEST',ref:'test://workflow/1'}],payload:{}
+    });
+    const result=await request(base,'/v1/workflows/run',{
+      method:'POST',token:'workflow-secret',
+      body:{workflow_id:'lead-intake',envelope:env}
+    });
+    assert.equal(result.status,202);
+    assert.equal(result.payload.workflow_name,'Lead Intake');
+    assert.equal(result.payload.state,'REVIEW_REQUIRED');
+    assert.equal(calls,1);
+    const wrong=await request(base,'/v1/workflows/run',{
+      method:'POST',token:'workflow-secret',
+      body:{workflow_id:'payment-evidence',envelope:env}
+    });
+    assert.equal(wrong.status,422);
+    assert.equal(wrong.payload.error,'WORKFLOW_EVENT_TYPE_MISMATCH');
+    assert.equal(calls,1);
+  });
+});
