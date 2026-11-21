@@ -22,8 +22,12 @@ const trusted=async({quote_id,opportunity_id})=>({
 });
 function fixture(){
  let state={...quote},calls=0,lastPlan;
+ let currentLines=[{quote_line_id:'QLN-Q-1',quote_id:quote.quote_id,
+   quote_version:'V3',line_status:'CURRENT'}];
  const commercial={findByKey:async(sheet,key,id)=>sheet==='Quotes'&&id===state.quote_id?
-   {object:{...state}}:null};
+   {object:{...state}}:sheet==='Quote_Lines'&&key==='quote_line_id'?
+   (currentLines.find(r=>r.quote_line_id===id)?{object:{...currentLines.find(r=>r.quote_line_id===id)}}:null):null,
+   readObjects:async(sheet)=>sheet==='Quote_Lines'?currentLines.map(r=>({...r})):[]};
  const writer={stores:{commercial},execute:async plan=>{
   calls++;lastPlan=plan;
   if(plan.writes[0].expect['Quote Status']!==state['Quote Status'])
@@ -31,7 +35,8 @@ function fixture(){
   state={...state,...plan.writes[0].changes};
   return {state:'COMMITTED'};
  }};
- return {writer,calls:()=>calls,plan:()=>lastPlan,state:()=>state};
+ return {writer,calls:()=>calls,plan:()=>lastPlan,state:()=>state,
+  changeLines:rows=>{currentLines=rows;}};
 }
 test('independently reviewed signature changes only the canonical quote status',async()=>{
  const f=fixture();
@@ -42,6 +47,9 @@ test('independently reviewed signature changes only the canonical quote status',
  assert.equal(f.state()['Quote Status'],'ACCEPTED');
  const p=f.plan();
  assert.equal(p.writes.length,1);
+ assert.equal(p.preconditions.length,2);
+ assert.equal(p.preconditions[1].sheet,'Quote_Lines');
+ assert.equal(p.preconditions[1].expect.quote_version,'V3');
  assert.equal(p.writes[0].operation,'PATCH_IF_MATCH');
  assert.equal(p.writes[0].entity_type,'Quote');
  assert.equal(p.writes[0].sheet,'Quotes');
@@ -123,4 +131,39 @@ test('generic transaction API cannot bypass quote acceptance',async()=>{
   assert.equal(response.status,403);
   assert.equal(f.calls(),0);
  }finally{await new Promise(done=>server.close(done));}
+});
+
+test('signature accepted for old version must fail if current quote lines were amended',async()=>{
+ const f=fixture();
+ f.changeLines([{quote_line_id:'QLN-Q-1',quote_id:quote.quote_id,
+   quote_version:'V4',line_status:'CURRENT'}]);
+ const result=await acceptReviewedQuote({writer:f.writer,quoteId:quote.quote_id,
+   authorityVerifier:trusted});
+ assert.equal(result.state,'REVIEW_REQUIRED');
+ assert.equal(result.reason_code,'SIGNED_QUOTE_CURRENT_VERSION_CHANGED_OR_AMBIGUOUS');
+ assert.equal(f.calls(),0);
+});
+test('an ambiguous or duplicate CURRENT quote line ID prevents acceptance',async()=>{
+ const f=fixture();
+ f.changeLines([{quote_line_id:'QLN-Q-1',quote_id:quote.quote_id,
+   quote_version:'V3',line_status:'CURRENT'},
+  {quote_line_id:'QLN-Q-1',quote_id:quote.quote_id,quote_version:'V3',line_status:'CURRENT'}]);
+ const result=await acceptReviewedQuote({writer:f.writer,quoteId:quote.quote_id,
+   authorityVerifier:trusted});
+ assert.equal(result.reason_code,'SIGNED_QUOTE_CURRENT_VERSION_CHANGED_OR_AMBIGUOUS');
+ assert.equal(f.calls(),0);
+});
+test('post-commit quote revision is not misreported as verified readback',async()=>{
+ const f=fixture();
+ const execute=f.writer.execute;
+ f.writer.execute=async plan=>{
+   const result=await execute(plan);
+   f.changeLines([{quote_line_id:'QLN-Q-1',quote_id:quote.quote_id,
+     quote_version:'V4',line_status:'CURRENT'}]);
+   return result;
+ };
+ const result=await acceptReviewedQuote({writer:f.writer,quoteId:quote.quote_id,
+   authorityVerifier:trusted});
+ assert.equal(result.state,'COMMIT_READBACK_UNVERIFIED');
+ assert.equal(result.reason_code,'CURRENT_VERSION_CHANGED_DURING_ACCEPTANCE');
 });
