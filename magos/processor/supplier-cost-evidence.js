@@ -82,6 +82,16 @@ async function inspectSupplierAllocation({
      block('ALLOCATION_PART_ID_CONFLICT');
   }
  }
+ // A physical supplier invoice and its linked GRN/stock movement must
+ // corroborate the allocation, even when spreadsheet labels say VERIFIED.
+ let receiptIntegrity;
+ try{
+   receiptIntegrity=await require('./supplier-receipt-stock-controls')
+     .inspectSupplierReceiptStock({stores,allocation:a,sourceLine:line});
+ }catch{block('SUPPLIER_RECEIPT_STOCK_INSPECTION_FAILED');}
+ if(receiptIntegrity?.verified!==true)
+   for(const reason of receiptIntegrity?.blockers||['SUPPLIER_RECEIPT_STOCK_CORROBORATION_UNAVAILABLE'])
+     block(reason);
  let reviewer=null,stock=null;
  if(typeof reviewAuthority!=='function')block('INDEPENDENT_REVIEW_AUTHORITY_UNAVAILABLE');
  else{
