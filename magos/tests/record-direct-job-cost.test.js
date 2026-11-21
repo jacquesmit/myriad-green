@@ -132,3 +132,28 @@ test('generic transaction route cannot bypass direct-cost governance',async()=>{
   assert.equal(writes,0);
  }finally{await new Promise(done=>server.close(done));}
 });
+
+test('a receipt referencing an existing provisional cost must upgrade that row, not append another',async()=>{
+ const f=fixture();
+ const r=await recordVerifiedDirectCost({
+   writer:f.writer,jobId,sourceEventId:eventId,
+   evidenceVerifier:async()=>({...att,provisional_cost_id:'DP-0123456789ABCDEFABCDEF'})
+ });
+ assert.equal(r.reason_code,'USE_IN_PLACE_PROVISIONAL_COST_VERIFICATION');
+ assert.equal(f.calls(),0);
+});
+test('exact provisional expense source already exists: no double-counted verified expense',async()=>{
+ const f=fixture();
+ const {provisionalId}=require('../processor/provisional-job-cost');
+ const original=f.writer.stores.commercial.findByKey;
+ f.writer.stores.commercial.findByKey=async(sheet,key,id)=>{
+   if(sheet==='Project Direct Costs'&&id===provisionalId(jobId,eventId))
+     return {object:{direct_cost_id:id,job_id:jobId,financial_treatment:'PROVISIONAL_DIRECT_COST'}};
+   return original(sheet,key,id);
+ };
+ const r=await recordVerifiedDirectCost({
+   writer:f.writer,jobId,sourceEventId:eventId,evidenceVerifier:verification
+ });
+ assert.equal(r.reason_code,'PROVISIONAL_COST_ALREADY_EXISTS_FOR_SOURCE_EVENT');
+ assert.equal(f.calls(),0);
+});
