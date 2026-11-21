@@ -720,5 +720,191 @@
       "domain": "Compliance",
       "priority": "STAGED"
     }
+  ],
+  "job_types": [
+    {
+      "job_type_id": "JT-001",
+      "primary_agent_id": "AG-002"
+    },
+    {
+      "job_type_id": "JT-002",
+      "primary_agent_id": "AG-003"
+    },
+    {
+      "job_type_id": "JT-003",
+      "primary_agent_id": "AG-004"
+    },
+    {
+      "job_type_id": "JT-004",
+      "primary_agent_id": "AG-005"
+    },
+    {
+      "job_type_id": "JT-005",
+      "primary_agent_id": "AG-011"
+    },
+    {
+      "job_type_id": "JT-006",
+      "primary_agent_id": "AG-003"
+    },
+    {
+      "job_type_id": "JT-007",
+      "primary_agent_id": "AG-010"
+    },
+    {
+      "job_type_id": "JT-008",
+      "primary_agent_id": "AG-007"
+    },
+    {
+      "job_type_id": "JT-009",
+      "primary_agent_id": "AG-006"
+    },
+    {
+      "job_type_id": "JT-010",
+      "primary_agent_id": "AG-006"
+    },
+    {
+      "job_type_id": "JT-011",
+      "primary_agent_id": "AG-008"
+    },
+    {
+      "job_type_id": "JT-012",
+      "primary_agent_id": "AG-007"
+    },
+    {
+      "job_type_id": "JT-013",
+      "primary_agent_id": "AG-009"
+    },
+    {
+      "job_type_id": "JT-014",
+      "primary_agent_id": "AG-005"
+    },
+    {
+      "job_type_id": "JT-015",
+      "primary_agent_id": "AG-009"
+    },
+    {
+      "job_type_id": "JT-016",
+      "primary_agent_id": "AG-010"
+    },
+    {
+      "job_type_id": "JT-017",
+      "primary_agent_id": "AG-010"
+    },
+    {
+      "job_type_id": "JT-018",
+      "primary_agent_id": "AG-027"
+    },
+    {
+      "job_type_id": "JT-019",
+      "primary_agent_id": "AG-031"
+    },
+    {
+      "job_type_id": "JT-020",
+      "primary_agent_id": "AG-010"
+    },
+    {
+      "job_type_id": "JT-101",
+      "primary_agent_id": "AG-018"
+    },
+    {
+      "job_type_id": "JT-102",
+      "primary_agent_id": "AG-017"
+    },
+    {
+      "job_type_id": "JT-103",
+      "primary_agent_id": "AG-016"
+    },
+    {
+      "job_type_id": "JT-104",
+      "primary_agent_id": "AG-019"
+    },
+    {
+      "job_type_id": "JT-105",
+      "primary_agent_id": "AG-020"
+    },
+    {
+      "job_type_id": "JT-106",
+      "primary_agent_id": "AG-021"
+    },
+    {
+      "job_type_id": "JT-107",
+      "primary_agent_id": "AG-022"
+    },
+    {
+      "job_type_id": "JT-108",
+      "primary_agent_id": "AG-023"
+    },
+    {
+      "job_type_id": "JT-109",
+      "primary_agent_id": "AG-024"
+    },
+    {
+      "job_type_id": "JT-110",
+      "primary_agent_id": "AG-028"
+    },
+    {
+      "job_type_id": "JT-111",
+      "primary_agent_id": "AG-027"
+    },
+    {
+      "job_type_id": "JT-112",
+      "primary_agent_id": "AG-025"
+    },
+    {
+      "job_type_id": "JT-113",
+      "primary_agent_id": "AG-026"
+    },
+    {
+      "job_type_id": "JT-201",
+      "primary_agent_id": "AG-012"
+    },
+    {
+      "job_type_id": "JT-202",
+      "primary_agent_id": "AG-012"
+    },
+    {
+      "job_type_id": "JT-203",
+      "primary_agent_id": "AG-014"
+    },
+    {
+      "job_type_id": "JT-204",
+      "primary_agent_id": "AG-030"
+    },
+    {
+      "job_type_id": "JT-205",
+      "primary_agent_id": "AG-013"
+    },
+    {
+      "job_type_id": "JT-206",
+      "primary_agent_id": "AG-030"
+    },
+    {
+      "job_type_id": "JT-207",
+      "primary_agent_id": "AG-032"
+    },
+    {
+      "job_type_id": "JT-208",
+      "primary_agent_id": "AG-033"
+    },
+    {
+      "job_type_id": "JT-209",
+      "primary_agent_id": "AG-034"
+    },
+    {
+      "job_type_id": "JT-210",
+      "primary_agent_id": "AG-035"
+    },
+    {
+      "job_type_id": "JT-211",
+      "primary_agent_id": "AG-036"
+    },
+    {
+      "job_type_id": "JT-212",
+      "primary_agent_id": "AG-037"
+    },
+    {
+      "job_type_id": "JT-213",
+      "primary_agent_id": "AG-038"
+    }
   ]
 }
