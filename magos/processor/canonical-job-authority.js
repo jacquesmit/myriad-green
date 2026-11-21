@@ -45,7 +45,7 @@ function createCanonicalJobAuthorityVerifier({stores,acceptanceVerifier,bankClea
    bank.confirmed_amount_cents!==Math.round(deposit.cleared_deposit_total*100)||
    !exactEventSet)
    return {verified:false,reason_code:'INDEPENDENT_BANK_SETTLEMENT_AND_ALLOCATIONS_NOT_VERIFIED'};
-  return {verified:true,quote_id:quoteId,job_id:jobId,source_event_id:sourceEventId,
+  return {verified:true,quote_id:quoteId,job_id:jobId,opportunity_id:signed.opportunity_id,source_event_id:sourceEventId,
    acceptance_evidence:signed.evidence_ref,payment_clearance:'CLEARED',
    bank_clearance_confirmation_id:bank.confirmation_id,
    bank_confirmation_source:bank.source_authority,
