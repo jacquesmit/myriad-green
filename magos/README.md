@@ -8,6 +8,27 @@ Start with the [verified cPanel runbook](docs/CPANEL-PASSENGER-DEPLOY.md) for
 the host, deployed release, Node.js activation command, credential handling,
 and live acceptance status.
 
+## Registered AG/JT agent orchestration (proposal layer)
+
+Read [MAGOS Agent Orchestration V2](docs/MAGOS-AGENT-ORCHESTRATION-V1.md)
+before using the new agents code. The canonical Google Drive Agent Job Allocation
+Matrix, not Git, is the primary authority for 38 registered AG roles and 46
+JT job types. A dated, non-authoritative snapshot lives at
+`rules/agent-allocation.snapshot.v1.json`.
+
+The runtime exposes `POST /v1/agents/plan` behind its existing bearer token.
+This endpoint is **planning only**. It uses exact JT ID, tenant, jurisdiction,
+branch, record identity and evidence to propose an owner or return BLOCKED.
+It never grants execution authority. The live Drive comparison, trusted approval
+checks and existing Sync_Exceptions review adapter are code-level components;
+they are **not** enabled autonomous workers.
+
+Do not infer approval, source-of-truth freshness, durable task execution or
+production release from successful routing/CI tests. Existing P5 governed event
+runner and P3 Transaction Writer remain the only sanctioned execution path.
+Legacy source integrations continue until end-to-end read-back, replay and
+recovery tests pass.
+
 ## Implemented capabilities
 
 ### MAGOS Transaction Writer V1
