@@ -263,7 +263,7 @@ function createRuntimeApp({
   // Read-only canonical Drive authority check. Never authorizes writes.
   app.post('/v1/agents/authority', requireRuntimeAuth, async (req, res) => {
     const job_type_id = String(req.body?.job_type_id || '').trim();
-    if (!/^JT-\\d{3}$/.test(job_type_id)) {
+    if (!/^JT-\d{3}$/.test(job_type_id)) {
       return res.status(400).json({ error:'INVALID_JOB_TYPE' });
     }
     const result = await getLiveAgentAuthority().inspect(job_type_id);
