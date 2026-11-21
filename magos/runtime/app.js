@@ -1,6 +1,7 @@
 'use strict';
 
 const crypto = require('crypto');
+const path = require('node:path');
 const express = require('express');
 const { TransactionWriter } = require('../writer/transaction-writer');
 const { planAgentTask } = require('../agents/agent-router');
@@ -50,6 +51,7 @@ function isPlausiblePlan(plan) {
 
 function createRuntimeApp({
   token = process.env.MAGOS_RUNTIME_TOKEN,
+  operatorReadToken = process.env.MAGOS_OPERATOR_READ_TOKEN,
   leadIngressToken = process.env.MAGOS_LEAD_INGRESS_TOKEN,
   leadIngressSources =
     process.env.MAGOS_LEAD_INGRESS_SOURCES || '',
@@ -104,6 +106,16 @@ function createRuntimeApp({
     }
     return eventDispatcher;
   };
+
+  // Read-only Command Centre from the existing MAGOS recovery lineage.
+  app.get('/operator', (req,res)=>{
+    const {operatorPage}=require('./operator-page');
+    res.set('Cache-Control','no-store');
+    res.set('Content-Security-Policy',"default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'");
+    return res.type('html').status(200).send(operatorPage());
+  });
+  app.get('/operator.css',(req,res)=>res.sendFile(path.join(__dirname,'operator.css')));
+  app.get('/operator.js',(req,res)=>res.sendFile(path.join(__dirname,'operator.js')));
 
   app.get('/healthz', (req, res) => {
     res.status(200).json({
@@ -247,6 +259,32 @@ function createRuntimeApp({
         error: 'SUPPLIER_EMAIL_INGRESS_FAILURE',
         event_id: envelope.event_id
       });
+    }
+  });
+
+  // Separate view-only credential: must never equal any writer/ingress token.
+  const hasOperatorToken=Boolean(operatorReadToken) &&
+    ![token,leadIngressToken,supplierEmailIngressToken].some(
+      credential=>constantTimeEqual(credential,operatorReadToken)
+    );
+  function requireOperatorRead(req,res,next) {
+    res.set('Cache-Control','private, no-store');
+    if(!hasOperatorToken) return res.status(503).json({error:'OPERATOR_ACCESS_NOT_CONFIGURED'});
+    if(!constantTimeEqual(req.get('X-MAGOS-Operator-Token'),operatorReadToken)) {
+      return res.status(401).json({error:'UNAUTHORIZED'});
+    }
+    return next();
+  }
+  app.get('/v1/operator/dashboard',requireOperatorRead,async(req,res)=>{
+    try {
+      const {loadOperatorDashboard}=require('../processor/operator-dashboard');
+      const stores=getWriter().stores;
+      if(!stores?.crm || !stores?.commercial || !stores?.supplier || !stores?.audit) {
+        return res.status(503).json({error:'OPERATOR_SOURCES_UNAVAILABLE'});
+      }
+      return res.status(200).json(await loadOperatorDashboard(stores));
+    }catch{
+      return res.status(503).json({error:'OPERATOR_DASHBOARD_UNAVAILABLE'});
     }
   });
 
