@@ -2,7 +2,7 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const {makeWordPressAcceptanceVerifier}=require('../processor/wordpress-acceptance-verifier');
-const quote={quote_id:'Q-1',opportunity_id:'OPP-1','Quote Status':'ACCEPTED',
+const quote={quote_id:'Q-1',opportunity_id:'OPP-1','Quote Status':'ACCEPTED','Workflow Stage':'SENT',
  'Drive Link':'https://drive.google.com/file/d/issued-1/view'};
 const lines=[{quote_id:'Q-1',quote_version:'V2',line_status:'CURRENT'}];
 const sha='a'.repeat(64);
