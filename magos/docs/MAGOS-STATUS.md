@@ -284,3 +284,14 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - **Exact PR head:** `071f7588426afc850b51f2d9862476acaf09fa53`. MAGOS WordPress Signature Bridge workflow #5 PASS (PHP lint, static signature controls, deterministic ZIP checks and ZIP upload), MAGOS Evolving Status Gate workflow #5 PASS, MAGOS Document Extract workflow #224 PASS.
 - **Build outputs:** installable `magos-reviewed-client-signature.zip` and `magos-reviewed-client-signature.zip.sha256` via GitHub workflow artifact; no token, customer signature, WordPress database export or runtime secrets packed.
 - **Truth:** code and CI artifacts PASS; live WordPress installation, reviewed endpoint, published client-signing page and signed quotation golden transaction NOT VERIFIED/NOT COMPLETE. HOSTAFRICA running Node SHA still NOT VERIFIED. No real customer acceptance, payment or booking was altered.
+
+
+## 21 November 2026 — Exact deposit payment-event reconciliation before new job release (candidate)
+
+**Source audit:** existing Commercial `Payment Control`, `Payment_Allocations`, `Payment_Events` headers independently inspected. The prior inspector summed `Payment_Allocations` marked `CLEARED` with any non-empty evidence reference, without verifying the backing payment event or uniqueness of allocation/event IDs. This could double count or accept stale proof.
+
+**Implementation:** require exact deposit `payment_event_id` matching an unambiguous `Payment_Events` row with same opportunity, control, amount in cents, clearance state, cleared event type, Drive evidence, source authority and idempotency key. Reject duplicate allocation IDs, re-used bank events, invalid linked invoice/deposit identities, source read failures and malformed amounts. Zero-deposit records require separate approved release logic instead of fabricated bank clearance. Canonical job authority continues to source financial evidence from this inspector; no HTTP caller assertion is sufficient.
+
+**Financial control limitation:** matched internal bank-event rows do not independently prove funds have reached the beneficiary bank. `independent_bank_confirmation:false` is explicit, and no job, bank, quote or supplier record has been mutated by this PR.
+
+**Acceptance:** branch candidate `codex/magos-deposit-event-reconciliation-20261121`, exact-head Runtime P2, Evolving Status Gate, Document Extract suites and merge pending. HOSTAFRICA running worker, real payment provider/bank evidence and live job-release readback still UNVERIFIED.
