@@ -26,7 +26,8 @@ const verifier=async a=>({verified:true,quote_id:a.quoteId,job_id:a.jobId,
  opportunity_id:'O1',source_event_id:a.sourceEventId,
  acceptance_evidence:'drive://signed/1',payment_clearance:'CLEARED',
  payment_control_id:'CTRL-1',allocation_ids:['ALLOC-1'],payment_event_ids:['PAYEVT-1'],
- bank_clearance_confirmation_id:'PROVIDER-CONF-1',bank_confirmation_source:'BANK'});
+ bank_clearance_confirmation_id:'PROVIDER-CONF-1',bank_confirmation_source:'BANK',
+ bank_confirmed_amount_cents:10000,bank_deposit_required_cents:10000});
 test('job executor compiles and calls P3 only with server-attested facts',async()=>{
  const f=fixture();const r=await executeAcceptedJob({...args,writer:f.writer,authorityVerifier:verifier});
  assert.equal(r.state,'COMMITTED');assert.equal(f.count(),1);
@@ -115,4 +116,33 @@ test('P3 writer sees changed bank event and rejects commit through compare-and-s
  const r=await executeAcceptedJob({...args,writer:f.writer,authorityVerifier:verifier});
  assert.equal(r.state,'RETRY_REQUIRED');
  assert.equal(f.count(),0);
+});
+
+test('post-attestation deposit amount increase with same event IDs is refused',async()=>{
+ const f=fixture();
+ f.records.Payment_Allocations[0].amount='150';
+ f.records.Payment_Events[0].amount='150';
+ const r=await executeAcceptedJob({...args,writer:f.writer,authorityVerifier:verifier});
+ assert.equal(r.state,'REVIEW_REQUIRED');
+ assert.equal(r.reason_code,'BANK_CONFIRMED_AMOUNT_OR_DEPOSIT_REQUIREMENT_CHANGED');
+ assert.equal(f.count(),0);
+});
+test('post-attestation deposit requirement change with identical payment events is refused',async()=>{
+ const f=fixture();
+ f.records['Payment Control'][0]['Deposit Required (R)']='90';
+ const r=await executeAcceptedJob({...args,writer:f.writer,authorityVerifier:verifier});
+ assert.equal(r.state,'REVIEW_REQUIRED');
+ assert.equal(r.reason_code,'BANK_CONFIRMED_AMOUNT_OR_DEPOSIT_REQUIREMENT_CHANGED');
+ assert.equal(f.count(),0);
+});
+test('bank-confirmed amount cannot be omitted or falsely replaced by an owner boolean',async()=>{
+ for(const changed of [{bank_confirmed_amount_cents:undefined},{bank_confirmed_amount_cents:9999},
+ {bank_deposit_required_cents:undefined},{bank_deposit_required_cents:0}]){
+  const f=fixture();
+  const r=await executeAcceptedJob({...args,writer:f.writer,authorityVerifier:async a=>({
+   ...await verifier(a),...changed
+  })});
+  assert.equal(r.state,'REVIEW_REQUIRED');
+  assert.equal(f.count(),0);
+ }
 });

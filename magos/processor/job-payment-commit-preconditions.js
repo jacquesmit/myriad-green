@@ -18,8 +18,12 @@ async function buildJobPaymentPreconditions({stores,opportunityId,authority}={})
   !val(authority.bank_clearance_confirmation_id)||
   !['BANK','PAYMENT_PROVIDER'].includes(authority.bank_confirmation_source)||
   !val(authority.payment_control_id)||
-  !equalIds(authority.allocation_ids,authority.allocation_ids)||
-  !equalIds(authority.payment_event_ids,authority.payment_event_ids))
+  !Number.isSafeInteger(authority.bank_confirmed_amount_cents)||
+  authority.bank_confirmed_amount_cents<=0||
+  !Number.isSafeInteger(authority.bank_deposit_required_cents)||
+  authority.bank_deposit_required_cents<=0||
+  !unique(authority.allocation_ids)||
+  !unique(authority.payment_event_ids))
   return fail('INDEPENDENT_BANK_AUTHORITY_BINDING_INCOMPLETE');
  const recorded=await inspectDepositEvidence({stores,opportunityId});
  if(recorded.state!=='CLEARED_ALLOCATION_EVIDENCED')
@@ -28,6 +32,9 @@ async function buildJobPaymentPreconditions({stores,opportunityId,authority}={})
    !equalIds(recorded.allocation_ids,authority.allocation_ids)||
    !equalIds(recorded.payment_event_ids,authority.payment_event_ids))
   return fail('ATTESTED_BANK_EVENT_SET_CHANGED');
+ if(Math.round(recorded.cleared_deposit_total*100)!==authority.bank_confirmed_amount_cents||
+    Math.round(recorded.deposit_required*100)!==authority.bank_deposit_required_cents)
+  return fail('BANK_CONFIRMED_AMOUNT_OR_DEPOSIT_REQUIREMENT_CHANGED');
  let controls,allocations,events;
  try{
   [controls,allocations,events]=await Promise.all([
@@ -81,7 +88,9 @@ async function buildJobPaymentPreconditions({stores,opportunityId,authority}={})
      evidence_link:e.evidence_link,idempotency_key:e.idempotency_key,
      source_system:e.source_system}});
  }
- if(sum<required||sum!==Math.round(recorded.cleared_deposit_total*100))
+ if(sum<required||sum!==authority.bank_confirmed_amount_cents||
+    required!==authority.bank_deposit_required_cents||
+    sum!==Math.round(recorded.cleared_deposit_total*100))
   return fail('PAYMENT_TOTAL_CHANGED_BEFORE_COMMIT');
  return {state:'FINANCIAL_PRECONDITIONS_READY',preconditions:conditions,
   payment_control_id:recorded.control_id,allocation_count:recorded.allocation_ids.length,
