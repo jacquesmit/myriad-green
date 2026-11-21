@@ -277,3 +277,10 @@ Three independently merged/tested development changes now exist on GitHub `main`
 **Engineering:** new `magos/scripts/package-reviewed-signature-plugin.sh` packages the existing, unchanged reviewed-signature PHP source into a single WordPress-installable folder ZIP and SHA-256 manifest. The existing `MAGOS WordPress Signature Bridge` GitHub CI now validates plugin PHP syntax and source contract, runs archive integrity/determinism tests and publishes the artifact to the run. No FTP credentials, signature data, host configuration or database contents are shipped.
 
 **Acceptance:** GitHub CI/merge pending for candidate. The artifact is not installed automatically and WordPress `verify-v2` remains absent on the live site; page 9481 remains draft. Staging test, authenticated admin review, controlled installation, signed receipt and exact commercial quote/readback still required. Do not mark signing production-complete.
+
+## 21 November 2026 — Merged PR #58, verified WordPress plugin ZIP packaging
+
+- **GitHub merge:** [PR #58](https://github.com/jacquesmit/myriad-green/pull/58), commit `b4af09d03975938ab0c63ee1b850a555b3528a25`.
+- **Exact PR head:** `071f7588426afc850b51f2d9862476acaf09fa53`. MAGOS WordPress Signature Bridge workflow #5 PASS (PHP lint, static signature controls, deterministic ZIP checks and ZIP upload), MAGOS Evolving Status Gate workflow #5 PASS, MAGOS Document Extract workflow #224 PASS.
+- **Build outputs:** installable `magos-reviewed-client-signature.zip` and `magos-reviewed-client-signature.zip.sha256` via GitHub workflow artifact; no token, customer signature, WordPress database export or runtime secrets packed.
+- **Truth:** code and CI artifacts PASS; live WordPress installation, reviewed endpoint, published client-signing page and signed quotation golden transaction NOT VERIFIED/NOT COMPLETE. HOSTAFRICA running Node SHA still NOT VERIFIED. No real customer acceptance, payment or booking was altered.
