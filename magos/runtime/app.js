@@ -316,6 +316,16 @@ function createRuntimeApp({
       return res.status(503).json({error:'DEPOSIT_EVIDENCE_UNAVAILABLE'});
     }
   });
+  app.get('/v1/operator/job-closeout/:jobId',requireOperatorInspection,async(req,res)=>{
+    try {
+      const {inspectJobCloseout}=require('../processor/job-closeout-readiness');
+      const result=await inspectJobCloseout({stores:getWriter().stores,jobId:req.params.jobId});
+      return res.status(result.state==='READY_FOR_INDEPENDENT_FINANCIAL_CLOSE_REVIEW'?200:202).json(result);
+    }catch {
+      return res.status(503).json({error:'JOB_CLOSEOUT_EVIDENCE_UNAVAILABLE'});
+    }
+  });
+
   app.get('/v1/operator/job-activation/:quoteId',requireOperatorInspection,async(req,res)=>{
     try {
       const {assessJobActivation}=require('../processor/job-activation-assessment');
