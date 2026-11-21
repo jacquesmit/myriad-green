@@ -165,5 +165,22 @@ test('post-commit quote revision is not misreported as verified readback',async(
  const result=await acceptReviewedQuote({writer:f.writer,quoteId:quote.quote_id,
    authorityVerifier:trusted});
  assert.equal(result.state,'COMMIT_READBACK_UNVERIFIED');
- assert.equal(result.reason_code,'CURRENT_VERSION_CHANGED_DURING_ACCEPTANCE');
+ assert.equal(result.reason_code,'CURRENT_VERSION_OR_LINE_SET_CHANGED_DURING_ACCEPTANCE');
+});
+
+test('adding a CURRENT line under the same version cannot be reported as validated acceptance',async()=>{
+ const f=fixture();
+ const execute=f.writer.execute;
+ f.writer.execute=async plan=>{
+   const result=await execute(plan);
+   f.changeLines([
+    {quote_line_id:'QLN-Q-1',quote_id:quote.quote_id,quote_version:'V3',line_status:'CURRENT'},
+    {quote_line_id:'QLN-Q-2',quote_id:quote.quote_id,quote_version:'V3',line_status:'CURRENT'}
+   ]);
+   return result;
+ };
+ const result=await acceptReviewedQuote({writer:f.writer,quoteId:quote.quote_id,
+  authorityVerifier:trusted});
+ assert.equal(result.state,'COMMIT_READBACK_UNVERIFIED');
+ assert.equal(result.reason_code,'CURRENT_VERSION_OR_LINE_SET_CHANGED_DURING_ACCEPTANCE');
 });
