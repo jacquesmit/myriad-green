@@ -50,6 +50,11 @@
       "allowAutoWrite": true,
       "allowCreateWithoutExistingMatch": false,
       "minimumConfidence": 1
+    },
+    "SUPPLIER_APPROVAL_CHANGED": {
+      "allowAutoWrite": true,
+      "allowCreateWithoutExistingMatch": false,
+      "minimumConfidence": 1
     }
   }
 }
