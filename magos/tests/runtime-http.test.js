@@ -890,3 +890,49 @@ test('AG-001 planner is authenticated and cannot call writer', async () => {
     assert.equal(writes,0);
   });
 });
+
+
+test('AG-001 live authority probe requires runtime bearer and returns source verdict',async()=>{
+  let calls=0;
+  const app=createRuntimeApp({
+    token:'agent-secret',
+    liveAgentAuthorityFactory:()=>({inspect:async job_type_id=>{
+      calls++;
+      return {job_type_id,verified:true,owner_agent_id:'AG-003',
+        snapshot_matches_current:true,permissions_verified:false};
+    }})
+  });
+  await withServer(app,async base=>{
+    const task={job_type_id:'JT-002'};
+    const denied=await request(base,'/v1/agents/authority',{method:'POST',body:task});
+    assert.equal(denied.status,401);
+    assert.equal(calls,0);
+    const invalid=await request(base,'/v1/agents/authority',{
+      method:'POST',token:'agent-secret',body:{job_type_id:'MAGIC'}
+    });
+    assert.equal(invalid.status,400);
+    assert.equal(calls,0);
+    const accepted=await request(base,'/v1/agents/authority',{
+      method:'POST',token:'agent-secret',body:task
+    });
+    assert.equal(accepted.status,200);
+    assert.equal(accepted.payload.owner_agent_id,'AG-003');
+    assert.equal(accepted.payload.permissions_verified,false);
+    assert.equal(calls,1);
+  });
+});
+test('AG-001 authority probe fails closed when Drive read unavailable',async()=>{
+  const app=createRuntimeApp({
+    token:'agent-secret',
+    liveAgentAuthorityFactory:()=>({inspect:async()=>({
+      verified:false,reason:'CANONICAL_READ_FAILED'
+    })})
+  });
+  await withServer(app,async base=>{
+    const r=await request(base,'/v1/agents/authority',{
+      method:'POST',token:'agent-secret',body:{job_type_id:'JT-002'}
+    });
+    assert.equal(r.status,503);
+    assert.equal(r.payload.reason,'CANONICAL_READ_FAILED');
+  });
+});
