@@ -188,3 +188,20 @@ From HOSTAFRICA cPanel: capture the actual working-tree and worker build SHA, ve
 **Truthmode:** CODED/CI-TESTED/INTEGRATED IN GIT = PASS. WordPress companion plugin deployed = NO. Signing page published = NO. HOSTAFRICA runtime deployed at current SHA = UNKNOWN. Customer acceptance positive end-to-end tested = NO. Entire MAGOS business operating system complete = NO. No WordPress production publishing, plugin installation, customer payments, quote status changes or job writes occurred.
 
 **Release blocker and specific acceptance path:** Authorized server deployment access is required to install the verified companion WordPress plugin, stage and publish the quote signing page after browser acceptance, set matching secret config privately, reconcile the HOSTAFRICA Git/lsnode version, run `node runtime/release-preflight.js` and execute a controlled quote/signature/cleared-deposit/job golden transaction with source read-back. The required cPanel/SSH/worker access was not available through the WordPress-scoped WPVibe connector. Preserve live trading until these checks pass.
+
+
+## 21 November 2026 — Canonical supplier allocation cost verification and operator queue
+
+Three independently merged/tested development changes now exist on GitHub `main`:
+
+| PR | Merge SHA | Delivered | CI result |
+| --- | --- | --- | --- |
+| [#50](https://github.com/jacquesmit/myriad-green/pull/50) | `e317c937e8ef1dbc7fc37252039df8967dfc05c5` | Supplier `Cost_Allocations` / `Supplier_Source_Lines` evidence reader; exact job/part/invoice/cents, reverse/supersession, allocation and external reviewer/stock checks; protected API and P3 verifier integration | MAGOS Runtime P2 and Document Extract PASS |
+| [#51](https://github.com/jacquesmit/myriad-green/pull/51) | `cacd17dc719239c12056d095649e9bbd84a5446f` | Operator job-detail form for inspecting a specific supplier allocation and showing actual blocker reasons | MAGOS Runtime P2 and Document Extract PASS |
+| [#52](https://github.com/jacquesmit/myriad-green/pull/52) | `032f52828c0af36e53c0cf3d27ffe92961b1da07` | Read-only job-level supplier allocation exception queue, including allocations matching opportunity but lacking job linkage, and protected operator action | MAGOS Runtime P2 and Document Extract PASS |
+
+**Verified source finding:** existing Supplier `Cost_Allocations` contains a record with `FULLY_RECONCILED` status but an invalid placeholder `evidence_link` and self-referencing `reversal_of_allocation_id` / `supersedes_allocation_id`. The new verifier rejects this record; it does **not** silently count this as an evidenced expense.
+
+**Source truth levels:** CODED/TESTED/MAIN = PASS for these modules. Real independent invoice-review authority and physical stock-split authority must be wired to their verified providers before positive production expense verification. A spreadsheet label alone is not a supplier invoice or goods receipt. HOSTAFRICA runtime deployment SHA and end-to-end production transactions remain UNVERIFIED. No supplier invoice, job cost, stock ledger or payment record was modified by these commits.
+
+**Next high-leverage execution:** ground and implement independent supplier invoice-review and stock-split attestations from exact canonical source documents and approved physical allocation events. Then run a controlled single job receipt test through P3 write/readback. Preserve WooCommerce/WordPress customer production unchanged until separately accepted.
