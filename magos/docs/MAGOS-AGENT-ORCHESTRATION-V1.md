@@ -40,8 +40,8 @@ The Git snapshot `magos/rules/agent-allocation.snapshot.v1.json` preserves 38 ag
 | Gate | What must pass | State |
 | --- | --- | --- |
 | G1 | GitHub CI tests for agent plan and current runtime | PENDING |
-| G2 | Canonical agent assignment version and live source-of-truth freshness check (not snapshot-only) | PENDING |
-| G3 | Durable task audit, atomic claim, independent approval receipt and exact scope check against existing MAGOS-owned ledger | PENDING |
+| G2 | Canonical agent assignment read and source-of-truth freshness | PARTIAL: live Drive reader code, no hosted credentialed readback or permission authority |
+| G3 | Durable task audit, atomic claim, independent approval receipt and exact scope | PARTIAL: Sync_Exceptions review handoff, readback and trusted-reader approval policy coded; atomic claim, durable execution record and live verified approval pending |
 | G4 | Approved action executes only through EventEnvelope -> GovernedProcessorRegistry -> Transaction Writer and authoritative read-back | PENDING |
 | G5 | Bounded retry, timeout, dead-letter, replay, opt-out and kill-switch exercises | PENDING |
 | G6 | Host SHA and deployed route verified via authenticated probes | PENDING |
@@ -53,3 +53,8 @@ Prefer REUSE > WRAP > EXTEND > MIGRATE LATER; do not build a second task ledger 
 
 ## Git/Drive reconciliation discipline
 Before any merge or production deployment: compare Git `main`, agent branch, deployed HOSTAFRICA checkout and Drive canonical workbook revision. Preserve historical .md files as history; supersede with dated evidence, never silently rewrite prior decisions. Record exact source/commit/test/runtime proof and outstanding blockers.
+
+## 2026-11-21 implementation note
+Drive AG role files reviewed for AG-001 through AG-031 where accessible; AG-004 native Doc fetch returned NOT_FOUND despite registry reference. The agent allocation workbook, governance, authority, state, source-of-truth and evolution directive were checked directly. Candidate AG-032..038 registration-only roles remain staged, not active.
+
+Read-only source comparison is a safety check, not policy authorization. Approvals must be loaded from a trusted server-owned canonical reader, not supplied by the calling AI or HTTP body. A recorded review is not a durable execution claim: existing Sheets exception append is not a proven atomic multiworker lock. No worker may execute tasks until this distinction is resolved and concurrency tests pass.
