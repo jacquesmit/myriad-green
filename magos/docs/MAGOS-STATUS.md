@@ -295,3 +295,12 @@ Three independently merged/tested development changes now exist on GitHub `main`
 **Financial control limitation:** matched internal bank-event rows do not independently prove funds have reached the beneficiary bank. `independent_bank_confirmation:false` is explicit, and no job, bank, quote or supplier record has been mutated by this PR.
 
 **Acceptance:** branch candidate `codex/magos-deposit-event-reconciliation-20261121`, exact-head Runtime P2, Evolving Status Gate, Document Extract suites and merge pending. HOSTAFRICA running worker, real payment provider/bank evidence and live job-release readback still UNVERIFIED.
+
+
+## 21 November 2026 — External bank/provider settlement mandatory for governed job creation (candidate)
+
+**Verified finding and correction:** PR #60 added exact internal Payment_Events reconciliation, but `canonical-job-authority.js` could still return `verified:true` for a job using only rows marked CLEARED in MAGOS. That is internal bookkeeping, not independent beneficiary-bank credit. To preserve "Unknown is not Yes," the protected job creation authority now takes an additional *server-owned* `bankClearanceVerifier` callback. It must be configured independently of operator/runtime tokens and must bind the exact control/opportunity/job, event IDs, cents, source BANK or PAYMENT_PROVIDER, cleared settlement and unique confirmation. Otherwise the quote-to-job transaction is REVIEW_REQUIRED; payment proof is never treated as cleared money.
+
+**Implementation scope:** canonical-job-authority.js, runtime/app.js, unit and negative tests. Existing business records are read-only. No client, payment, purchase order or live WP production action was issued. Direct `jobAuthorityVerifier` test injection is not a live settlement provider.
+
+**Current status:** code/test/MD candidate; CI + PR merge PENDING. HOSTAFRICA SHA, bank-provider callback, reviewed WordPress signature plugin, signed quote acceptance and actual P3 job replay remain NOT VERIFIED. Next source of truth remains [MAGOS-CURRENT.md](MAGOS-CURRENT.md); preserve this append-only history.
