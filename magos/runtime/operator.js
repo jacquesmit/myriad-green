@@ -305,8 +305,8 @@
       if(!result.schema_version)throw Error('SCHEDULING_UNAVAILABLE');
       output.textContent=[
         result.state.replaceAll('_',' '),
-        ...result.blockers||[],
-        ...result.review_reasons||[],
+        ...(result.blockers||[]),
+        ...(result.review_reasons||[]),
         'Calendar availability still requires provider verification'
       ].join(' · ');
     }catch{
