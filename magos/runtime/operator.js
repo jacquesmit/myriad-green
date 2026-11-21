@@ -297,6 +297,24 @@
           verificationOutput,commitVerification,false),'secondary');
       verification.append(previewVerification,commitVerification,verificationOutput);
       costArea.append(verification);
+      const supplierAudit=element('section');
+      supplierAudit.append(element('h3','Inspect supplier allocation evidence'));
+      const allocationLabel=element('label','Supplier Cost_Allocations ID');
+      const allocationInput=element('input');
+      allocationInput.type='text';allocationInput.autocomplete='off';
+      allocationInput.setAttribute('aria-label','Supplier Cost_Allocations ID');
+      allocationLabel.append(allocationInput);supplierAudit.append(allocationLabel);
+      const supplierResult=element('p');
+      supplierResult.setAttribute('role','status');
+      const supplierCheck=button('Check supplier receipt and allocation',
+        ()=>inspectSupplierCostAllocation({
+          jobId:item.details.job_id,
+          opportunityId:item.details.opportunity_id,
+          allocationId:allocationInput.value.trim(),
+          output:supplierResult,button:supplierCheck
+        }),'secondary');
+      supplierAudit.append(supplierCheck,supplierResult);
+      costArea.append(supplierAudit);
       target.append(costArea);
     }
     if(department==='finance' && item.details?.['Invoice ID']) {
@@ -373,6 +391,31 @@
       redirect: 'error',
       signal,
     });
+  }
+
+  async function inspectSupplierCostAllocation({jobId,opportunityId,allocationId,output,button}){
+    if(!allocationId||!opportunityId||!jobId){
+      output.textContent='An exact job, opportunity and supplier allocation ID are required.';
+      return;
+    }
+    button.disabled=true;
+    output.textContent='Reading supplier allocation, invoice and reconciliation evidence…';
+    const abort=new AbortController(),deadline=setTimeout(()=>abort.abort(),15000);
+    try{
+      const query=new URLSearchParams({jobId,opportunityId});
+      const response=await read('/v1/operator/supplier-cost-allocation/'+
+        encodeURIComponent(allocationId)+'?'+query.toString(),abort.signal);
+      const result=await response.json();
+      if(!Array.isArray(result.blockers)&&result.verified!==true)
+        throw Error('SUPPLIER_INSPECTION_UNAVAILABLE');
+      output.textContent=[
+        result.verified===true?'Source evidence verified':'Source evidence requires review',
+        ...(result.blockers||[]),
+        result.verified===true?'Invoice and stock review passed':'No financial cost released'
+      ].join(' · ');
+    }catch{
+      output.textContent='Supplier inspection unavailable; check canonical Cost_Allocations.';
+    }finally{clearTimeout(deadline);button.disabled=false;}
   }
 
   async function verifyPendingCost(jobId,inputs,output,button,dryRun){

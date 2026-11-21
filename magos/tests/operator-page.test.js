@@ -39,3 +39,12 @@ test('operator browser provides department and record navigation without third-p
  assert.match(source,/\/v1\/operator\/dashboard/);
  assert.doesNotMatch(source,/localStorage|sessionStorage/);
 });
+
+test('operator exposes read-only supplier cost inspection and shows source blockers',()=>{
+ const source=fs.readFileSync(require.resolve('../runtime/operator.js'),'utf8');
+ assert.match(source,/Check supplier receipt and allocation/);
+ assert.match(source,/\/v1\/operator\/supplier-cost-allocation\//);
+ assert.match(source,/result\.blockers/);
+ assert.match(source,/No financial cost released/);
+ assert.doesNotMatch(source,/\/v1\/transactions[\s\S]*SUPPLIER_COST_AUTO_APPROVE/);
+});
