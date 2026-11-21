@@ -3,12 +3,13 @@
 (() => {
   const $ = id => document.getElementById(id);
   const groups = [
-    ['Command centre', [['overview', 'Overview'], ['exceptions', 'Exceptions']]],
+    ['Command centre', [['overview', 'Overview'], ['system', 'Whole MAGOS build'], ['exceptions', 'Exceptions']]],
     ['Clients and delivery', [['leads', 'Lead intake'], ['clients', 'Clients / CRM'], ['quotes', 'Quotes & acceptance'], ['jobs', 'Active jobs'], ['dispatch', 'Dispatch & bookings'], ['evidence', 'Work proof']]],
     ['Commercial', [['finance', 'Finance & payments'], ['procurement', 'Procurement'], ['suppliers', 'Suppliers'], ['registers', 'Other registers']]],
   ];
   const labels = Object.fromEntries(groups.flatMap(([, entries]) => entries));
   const descriptions = {
+    system: 'All MAGOS capabilities, live readiness and completion gates from the existing Control Hub.',
     leads: 'Inbound work and the next routing decision.',
     clients: 'Client and prospect records, with acquisition source and follow-up.',
     quotes: 'Pending quotes and accepted quotes waiting for a linked job.',
@@ -38,6 +39,8 @@
   let queuePage = 0;
   let credential = '';
   let data;
+  let coverage;
+  let coverageRequest;
   let request;
   let inspection;
 
@@ -88,6 +91,7 @@
     $('search').value = recordId || '';
     hideDetail();
     renderView();
+    if (key === 'system' && !coverage && credential) loadCoverage();
     if (recordId) {
       const record = data?.departments[key]?.records?.find(item => item.id === recordId);
       if (record) showDetail(record);
@@ -139,7 +143,7 @@
 
   function renderRecords() {
     const rows = $('rows');
-    const state = data?.departments[department];
+    const state = department === 'system' ? coverage : data?.departments[department];
     const query = $('search').value.trim().toLowerCase();
     const matches = (state?.records || []).filter(item =>
       [item.id, item.title, item.status, item.next_action, ...Object.values(item.details)].some(value =>
@@ -173,7 +177,7 @@
     $('directory').hidden = department !== 'registers';
     $('records').hidden = department === 'registers';
     const source = $('source');
-    const url = link(data?.departments[department]?.source?.url);
+    const url = link(department === 'system' ? coverage?.source?.url : data?.departments[department]?.source?.url);
     source.hidden = !url;
     if (url) source.href = url;
     else source.removeAttribute('href');
@@ -230,6 +234,42 @@
     target.scrollIntoView({ block: 'nearest' });
   }
 
+  async function loadCoverage() {
+    coverageRequest?.abort();
+    const active = new AbortController();
+    coverageRequest = active;
+    try {
+      const response = await read('/v1/operator/coverage',active.signal);
+      if(!response.ok) throw new Error('COVERAGE_SOURCE_UNAVAILABLE');
+      const result = await response.json();
+      if(coverageRequest !== active || !credential) return;
+      if(result.schema_version !== 'MAGOS_SYSTEM_COVERAGE_V1' ||
+         !Array.isArray(result.capabilities) || result.side_effects !== false) {
+        throw new Error('INVALID_COVERAGE_RESPONSE');
+      }
+      coverage={
+        state:'LIVE',
+        records:result.capabilities.map(cap=>({
+          id:cap.id,title:cap.name,status:cap.state,
+          next_action:cap.next_action,
+          details:{
+            implementation:cap.implementation,
+            priority:cap.priority,
+            completion_gate:cap.completion_gate,
+            missing_validation:cap.missing_validation,
+            primary_gap:cap.primary_gap
+          }
+        })),
+        source:{url:'https://docs.google.com/spreadsheets/d/1lxFrUEGeEojkxbpQiVfj1AxuB5C1ayaTzAT8rkaTObo/edit'}
+      };
+    }catch {
+      if(coverageRequest!==active || !credential)return;
+      coverage={state:'UNAVAILABLE',records:[]};
+    } finally {
+      if(coverageRequest===active && department==='system')renderView();
+    }
+  }
+
   function read(path, signal) {
     return fetch(path, {
       headers: { 'X-MAGOS-Operator-Token': credential },
@@ -275,6 +315,9 @@
   function lock(message = 'Dashboard locked. Enter your access token to load operations.') {
     request?.abort();
     request = undefined;
+    coverageRequest?.abort();
+    coverageRequest = undefined;
+    coverage = undefined;
     credential = '';
     data = undefined;
     $('credential').value = '';
