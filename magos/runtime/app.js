@@ -665,6 +665,36 @@ function createRuntimeApp({
     }catch{return res.status(503).json({error:'PROVISIONAL_COST_CAPTURE_UNAVAILABLE'});}
   });
 
+  // Verify an existing provisional row IN PLACE. Never duplicate an expense.
+  app.post('/v1/governance/verify-provisional-cost',async(req,res)=>{
+    const credentials=[token,operatorReadToken,leadIngressToken,
+      supplierEmailIngressToken,supplierApprovalToken,jobCreationToken,
+      procurementApprovalToken,quoteSigningToken,quoteAcceptanceToken,
+      provisionalCostToken];
+    if(!directCostToken||credentials.some(t=>constantTimeEqual(t,directCostToken)))
+      return res.status(503).json({error:'DIRECT_COST_VERIFICATION_AUTH_NOT_CONFIGURED'});
+    if(!constantTimeEqual(req.get('x-magos-direct-cost-token'),directCostToken))
+      return res.status(401).json({error:'UNAUTHORIZED'});
+    const b=req.body||{};
+    if(!['jobId','sourceEventId','provisionalCostId'].every(
+      key=>typeof b[key]==='string'&&b[key].trim()))
+      return res.status(400).json({error:'PROVISIONAL_VERIFICATION_FIELDS_REQUIRED'});
+    try{
+      const {verifyProvisionalCost}=require('../processor/verify-provisional-cost');
+      const result=await verifyProvisionalCost({
+        writer:getWriter(),jobId:b.jobId,
+        provisionalCostId:b.provisionalCostId,sourceEventId:b.sourceEventId,
+        evidenceVerifier:directCostEvidenceVerifier,dryRun:b.dryRun===true
+      });
+      return res.status(
+        ['COMMITTED','DUPLICATE_NO_OP','DRY_RUN'].includes(result.state)?200:
+        result.state==='REVIEW_REQUIRED'?202:409
+      ).json(result);
+    }catch{
+      return res.status(503).json({error:'PROVISIONAL_VERIFICATION_UNAVAILABLE'});
+    }
+  });
+
   // Receipt-backed actual job cost capture. Writer still enforces independent
   // Data_Ownership_Matrix and Writer_Schema_Registry authority before any write.
   app.post('/v1/governance/direct-job-cost',async(req,res)=>{
@@ -839,7 +869,7 @@ function createRuntimeApp({
   });
 
   app.post('/v1/transactions', requireRuntimeAuth, async (req, res) => {
-    if (['SUPPLIER_APPROVAL_CHANGED','JOB_CREATE_FROM_ACCEPTED_SCOPE','PROCUREMENT_ISSUE_APPROVED','REVIEWED_QUOTE_ACCEPTANCE_CONFIRMED','VERIFIED_DIRECT_JOB_COST_CAPTURED','OWNER_PROVISIONAL_DIRECT_COST_DECLARED'].includes(req.body?.event_type) ||
+    if (['SUPPLIER_APPROVAL_CHANGED','JOB_CREATE_FROM_ACCEPTED_SCOPE','PROCUREMENT_ISSUE_APPROVED','REVIEWED_QUOTE_ACCEPTANCE_CONFIRMED','VERIFIED_DIRECT_JOB_COST_CAPTURED','OWNER_PROVISIONAL_DIRECT_COST_DECLARED','PROVISIONAL_COST_VERIFIED_IN_PLACE'].includes(req.body?.event_type) ||
         req.body?.writes?.some(w => (w.store === 'commercial' && w.sheet === 'Project Direct Costs') ||
           (w.store === 'commercial' && w.sheet === 'Quotes' && ('Quote Status' in (w.changes||{}) || w.state_field === 'Quote Status')) ||
           (w.store === 'supplier' && ['Suppliers','Purchase_Orders'].includes(w.sheet)) ||
