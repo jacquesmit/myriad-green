@@ -74,3 +74,28 @@ test('job and invoice identity conflicts fail closed',async()=>{
  const invoiceWrong=await inspect({Invoices:[{...invoice,job_id:'JOB-OTHER'}]});
  assert.ok(invoiceWrong.blockers.includes('FINANCE:INVOICE_JOB_ID_MISMATCH'));
 });
+
+test('HTTP lifecycle closure is protected and cannot invoke any writer',async()=>{
+ const http=require('node:http');
+ const {createRuntimeApp}=require('../runtime/app');
+ let writes=0;
+ const app=createRuntimeApp({
+  token:'runtime-token',operatorReadToken:'operator-token',
+  writerFactory:()=>({
+   stores:stores(),
+   execute:async()=>{writes++;throw Error('CLOSEOUT_IS_READ_ONLY');}
+  })
+ });
+ const server=http.createServer(app);
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+ try {
+  const url='http://127.0.0.1:'+server.address().port+'/v1/operator/operational-closure/JOB-T';
+  assert.equal((await fetch(url)).status,401);
+  const response=await fetch(url,{headers:{'X-MAGOS-Operator-Token':'operator-token'}});
+  assert.equal(response.status,200);
+  const body=await response.json();
+  assert.equal(body.state,'READY_FOR_OWNER_CLOSURE_REVIEW');
+  assert.equal(body.operational_close_authorized,false);
+  assert.equal(writes,0);
+ }finally{await new Promise(resolve=>server.close(resolve));}
+});
