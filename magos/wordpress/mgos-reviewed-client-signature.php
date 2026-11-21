@@ -52,7 +52,9 @@ final class MAGOS_Reviewed_Client_Receipt {
         $token = $data['mgos_quote_token']??null;
         if (!is_string($token)) return;
         $decoded = MGOS_Quote_Acceptance::parse_token($token);
-        if (!$decoded || ($decoded['purpose']??'')==='OWNER_TEST') return;
+        // Only signed CLIENT_ACCEPTANCE tokens may create customer receipts.
+        // No missing, OWNER_TEST or future/unknown-purpose token is accepted.
+        if (!$decoded || ($decoded['purpose']??'')!=='CLIENT_ACCEPTANCE') return;
         foreach (['quote_id','opportunity_id','version','issued_pdf_ref'] as $field) {
             if (!isset($decoded[$field]) || !is_string($decoded[$field]) || trim($decoded[$field])==='') return;
         }
@@ -145,7 +147,9 @@ final class MAGOS_Reviewed_Client_Receipt {
         $evidence=esc_url_raw(wp_unslash($_POST['evidence_ref']??''));
         $url=wp_parse_url($evidence);
         if (!$url || ($url['scheme']??'')!=='https' ||
-            ($url['host']??'')!=='drive.google.com') wp_die('Signed receipt must be evidenced in Google Drive');
+            ($url['host']??'')!=='drive.google.com' ||
+            !preg_match('~^/file/d/[a-zA-Z0-9_-]+(?:/|$)~', (string)($url['path']??'')))
+            wp_die('Signed receipt must be evidenced by a specific Google Drive file');
         global $wpdb;
         $table=self::table();
         $row=$wpdb->get_row($wpdb->prepare("SELECT * FROM $table WHERE id=%d",$id),ARRAY_A);
@@ -182,7 +186,9 @@ final class MAGOS_Reviewed_Client_Receipt {
         if (!intval($r['reviewer_id']) || !intval($r['consent_verified']) ||
             !hash_equals((string)$r['signature_sha256'],hash('sha256',$r['signature_png'])) ||
             !wp_http_validate_url($r['evidence_ref']) ||
-            wp_parse_url($r['evidence_ref'],PHP_URL_HOST)!=='drive.google.com') {
+            wp_parse_url($r['evidence_ref'],PHP_URL_HOST)!=='drive.google.com' ||
+            !preg_match('~^/file/d/[a-zA-Z0-9_-]+(?:/|$)~',
+              (string)wp_parse_url($r['evidence_ref'],PHP_URL_PATH))) {
             return new WP_REST_Response(['verified'=>false,'reason_code'=>'RECEIPT_INTEGRITY_OR_REVIEW_FAILED'],200);
         }
         $body=[
