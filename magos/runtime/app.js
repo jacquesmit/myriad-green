@@ -54,6 +54,7 @@ function createRuntimeApp({
   operatorReadToken = process.env.MAGOS_OPERATOR_READ_TOKEN,
   signedAcceptanceVerifier = async () => ({verified:false,reason_code:'SIGNED_ACCEPTANCE_NOT_VERIFIED'}),
   supplierApprovalToken = process.env.MAGOS_SUPPLIER_APPROVAL_TOKEN,
+  supplierApprovalAuthorityVerifier = async () => ({verified:false,reason_code:'SUPPLIER_APPROVAL_AUTHORITY_NOT_VERIFIED'}),
   jobCreationToken = process.env.MAGOS_JOB_CREATION_TOKEN,
   jobAuthorityVerifier = null,
   procurementApprovalToken = process.env.MAGOS_PROCUREMENT_APPROVAL_TOKEN,
@@ -455,11 +456,32 @@ function createRuntimeApp({
           !change.guards || !['spam','phishing','explicit_content','malware','irrelevant'].every(k => change.guards[k] === 'CLEAR' || change.guards[k] === 'BLOCK' || change.guards[k] === 'UNKNOWN')) {
         return res.status(400).json({ error: 'INVALID_SUPPLIER_APPROVAL_REQUEST' });
       }
+      const attestation = await supplierApprovalAuthorityVerifier({
+        supplier_id:change.supplier_id,
+        from_state:change.from_state,
+        to_state:change.to_state,
+        source_event_id:change.source_event_id,
+        evidence_ref:change.evidence_ref,
+        claimed_actor_id:change.actor_id
+      });
+      if(attestation?.verified!==true ||
+         attestation.supplier_id!==change.supplier_id ||
+         attestation.from_state!==change.from_state ||
+         attestation.to_state!==change.to_state ||
+         attestation.source_event_id!==change.source_event_id ||
+         attestation.evidence_ref!==change.evidence_ref ||
+         !attestation.authorized_actor_id) {
+        return res.status(202).json({
+          state:'REVIEW_REQUIRED',
+          reason_code:attestation?.reason_code||'SUPPLIER_APPROVAL_AUTHORITY_NOT_VERIFIED',
+          writes:[]
+        });
+      }
       const envelope = createEventEnvelope({
         source: 'MGOS_GOVERNANCE',
         source_event_id: change.source_event_id,
         event_type: 'SUPPLIER_APPROVAL_CHANGED',
-        actor: { id: change.actor_id },
+        actor: { id: attestation.authorized_actor_id },
         entity_hints: { supplier_id: change.supplier_id },
         guards: change.guards,
         evidence: [{ type: 'DOCUMENT', ref: change.evidence_ref }],
