@@ -57,18 +57,22 @@ async function inspectJobCloseout({stores,jobId}={}){
  const contract=money(margin?.contract_value_inc_vat);
  if(contract===null)blockers.push('CONTRACT_REVENUE_NOT_VERIFIED');
  const costs=costRows.filter(r=>val(r.job_id)===jobId && upper(r.financial_treatment)!=='NON_JOB_COST');
- const ids=new Set();let evidencedCosts=0;
+ const ids=new Set();let evidencedCosts=0,pendingCosts=0;
  if(!costs.length)blockers.push('ACTUAL_COST_LINES_MISSING');
  for(const row of costs){
   const id=val(row.direct_cost_id),amount=money(row.amount);
   if(!id||ids.has(id)){blockers.push('DUPLICATE_OR_MISSING_DIRECT_COST_ID');continue;}
   ids.add(id);
   if(amount===null){blockers.push('DIRECT_COST_INVALID:'+id);continue;}
-  if(!val(row.evidence_link)||!evidenced.has(upper(row.evidence_status)))
-   blockers.push('DIRECT_COST_EVIDENCE_UNVERIFIED:'+id);
-  if(upper(row.allocation_status)!=='ALLOCATED_TO_JOB')
-   blockers.push('DIRECT_COST_ALLOCATION_UNVERIFIED:'+id);
-  evidencedCosts+=amount;
+  const evidenceVerified=Boolean(val(row.evidence_link))&&
+   evidenced.has(upper(row.evidence_status));
+  const allocated=upper(row.allocation_status)==='ALLOCATED_TO_JOB';
+  const finalTreatment=upper(row.financial_treatment)!=='PROVISIONAL_DIRECT_COST';
+  if(!evidenceVerified)blockers.push('DIRECT_COST_EVIDENCE_UNVERIFIED:'+id);
+  if(!allocated)blockers.push('DIRECT_COST_ALLOCATION_UNVERIFIED:'+id);
+  if(!finalTreatment)blockers.push('PROVISIONAL_DIRECT_COST_NOT_FINAL:'+id);
+  if(evidenceVerified&&allocated&&finalTreatment)evidencedCosts+=amount;
+  else pendingCosts+=amount;
  }
  if(!['FINAL','RECONCILED','FINAL_RECONCILED'].includes(upper(margin?.final_cost_status)))
   blockers.push('FINAL_JOB_COST_RECONCILIATION_MISSING');
@@ -86,6 +90,7 @@ async function inspectJobCloseout({stores,jobId}={}){
   variation_count:variations.length,
   direct_cost_line_count:costs.length,
   evidenced_cost_sum_zar:Number(evidencedCosts.toFixed(2)),
+  provisional_unverified_cost_sum_zar:Number(pendingCosts.toFixed(2)),
   contract_value_zar:contract,
   provisional_contribution_before_unverified_costs_zar:contribution,
   final_profit_verified:false,

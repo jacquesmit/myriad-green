@@ -246,6 +246,35 @@
       const closureCheck=button('Inspect complete job closure',
         ()=>inspectOperationalClosure(item.details.job_id,closureOutput,closureCheck),'secondary');
       target.append(closureCheck,closureOutput);
+      const costArea=element('section');
+      costArea.append(element('h3','Record provisional job expense'));
+      const costInputs={};
+      function costField(name,labelText,type='text'){
+        const label=element('label',labelText);
+        const input=element('input');
+        input.type=type;input.autocomplete='off';input.setAttribute('aria-label',labelText);
+        label.append(input);costArea.append(label);costInputs[name]=input;
+      }
+      costField('sourceEventId','Unique receipt or expense reference');
+      costField('description','Expense description');
+      costField('amountZar','Amount in rand, e.g. 249.50');
+      const categoryLabel=element('label','Direct cost category');
+      const categorySelect=element('select');
+      for(const option of ['MATERIALS','LABOUR','TRAVEL','TOOL_HIRE','SUBCONTRACTOR','DISPOSAL','OTHER_DIRECT']){
+        const o=element('option',option.replaceAll('_',' '));
+        o.value=option;categorySelect.append(o);
+      }
+      categoryLabel.append(categorySelect);costArea.append(categoryLabel);
+      costInputs.category=categorySelect;
+      costField('approvalToken','Provisional expense authorization token','password');
+      const costOutput=element('p');
+      costOutput.setAttribute('role','status');
+      const costPreview=button('Preview provisional expense',
+        ()=>submitProvisionalCost(item.details.job_id,costInputs,costOutput,costPreview,true),'secondary');
+      const costCommit=button('Record pending expense',
+        ()=>submitProvisionalCost(item.details.job_id,costInputs,costOutput,costCommit,false),'secondary');
+      costArea.append(costPreview,costCommit,costOutput);
+      target.append(costArea);
     }
     if(department==='finance' && item.details?.['Invoice ID']) {
       const receivableOutput=element('p');
@@ -321,6 +350,53 @@
       redirect: 'error',
       signal,
     });
+  }
+
+  async function submitProvisionalCost(jobId,inputs,output,button,dryRun){
+    const data={
+      jobId,sourceEventId:inputs.sourceEventId.value.trim(),
+      description:inputs.description.value.trim(),
+      amountZar:inputs.amountZar.value.trim(),
+      category:inputs.category.value,dryRun
+    };
+    const privateToken=inputs.approvalToken.value.trim();
+    if(!privateToken || !data.sourceEventId || !data.description || !data.amountZar){
+      output.textContent='Enter the expense reference, description, amount and separate authorization token.';
+      return;
+    }
+    if(!dryRun&&!window.confirm(
+      'Record a provisional expense for this job? The value will remain unverified until receipt and allocation reconciliation.'
+    )){
+      inputs.approvalToken.value='';return;
+    }
+    button.disabled=true;
+    output.textContent=dryRun?'Preparing expense preview…':'Recording the provisional expense…';
+    const abort=new AbortController(),deadline=setTimeout(()=>abort.abort(),20000);
+    try{
+      const response=await fetch('/v1/governance/provisional-job-cost',{
+        method:'POST',cache:'no-store',redirect:'error',signal:abort.signal,
+        headers:{'content-type':'application/json','x-magos-provisional-cost-token':privateToken},
+        body:JSON.stringify(data)
+      });
+      const result=await response.json();
+      output.textContent=[
+        result.state?.replaceAll('_',' ')||result.error||'UNAVAILABLE',
+        result.reason_code?.replaceAll('_',' '),
+        result.direct_cost_id,
+        result.amount_zar!==undefined?'R '+result.amount_zar.toFixed(2):'',
+        result.readback_verified&&'Written and independently read back',
+        'Not verified profit'
+      ].filter(Boolean).join(' · ');
+      if(response.ok&&!dryRun&&['COMMITTED','DUPLICATE_NO_OP'].includes(result.state)){
+        inputs.amountZar.value='';inputs.description.value='';
+      }
+    }catch{
+      output.textContent='Expense write/readback failed. Verify expense reference in Commercial before retry.';
+    }finally{
+      clearTimeout(deadline);
+      inputs.approvalToken.value='';
+      button.disabled=false;
+    }
   }
 
   async function inspectOperationalClosure(jobId,output,button){

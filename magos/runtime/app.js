@@ -60,6 +60,7 @@ function createRuntimeApp({
   quoteSigningToken = process.env.MAGOS_QUOTE_SIGNING_TOKEN,
   quoteAcceptanceToken = process.env.MAGOS_QUOTE_ACCEPTANCE_TOKEN,
   directCostToken = process.env.MAGOS_DIRECT_COST_TOKEN,
+  provisionalCostToken = process.env.MAGOS_PROVISIONAL_COST_TOKEN,
   directCostEvidenceVerifier = async () => ({verified:false,reason_code:'DIRECT_COST_EVIDENCE_NOT_CONNECTED'}),
   quoteSigningSecret = process.env.MAGOS_WP_ACCEPTANCE_LINK_SECRET,
   signingPageReadiness = () => require('../processor/signed-quote-link').inspectSigningPage(),
@@ -637,6 +638,33 @@ function createRuntimeApp({
     }
   });
 
+  // Provisional owner cost entry is deliberately separate from verified costs.
+  app.post('/v1/governance/provisional-job-cost',async(req,res)=>{
+    const reserved=[token,operatorReadToken,leadIngressToken,
+      supplierEmailIngressToken,supplierApprovalToken,jobCreationToken,
+      procurementApprovalToken,quoteSigningToken,quoteAcceptanceToken,directCostToken];
+    if(!provisionalCostToken||reserved.some(t=>constantTimeEqual(t,provisionalCostToken)))
+      return res.status(503).json({error:'PROVISIONAL_COST_AUTH_NOT_CONFIGURED'});
+    if(!constantTimeEqual(req.get('x-magos-provisional-cost-token'),provisionalCostToken))
+      return res.status(401).json({error:'UNAUTHORIZED'});
+    const b=req.body||{};
+    if(!['jobId','sourceEventId','category','description','amountZar'].every(
+      k=>typeof b[k]==='string'&&b[k].trim()))
+      return res.status(400).json({error:'PROVISIONAL_COST_FIELDS_REQUIRED'});
+    try{
+      const {captureProvisionalJobCost}=require('../processor/provisional-job-cost');
+      const result=await captureProvisionalJobCost({
+        writer:getWriter(),jobId:b.jobId,sourceEventId:b.sourceEventId,
+        category:b.category,description:b.description,amountZar:b.amountZar,
+        ownerAttestation:async({job_id,source_event_id})=>({
+          verified:true,job_id,source_event_id,authorized_owner_id:'MAGOS_OWNER_OPERATIONS'
+        }),dryRun:b.dryRun===true
+      });
+      return res.status(['COMMITTED','DUPLICATE_NO_OP','DRY_RUN'].includes(result.state)?200:
+        result.state==='REVIEW_REQUIRED'?202:409).json(result);
+    }catch{return res.status(503).json({error:'PROVISIONAL_COST_CAPTURE_UNAVAILABLE'});}
+  });
+
   // Receipt-backed actual job cost capture. Writer still enforces independent
   // Data_Ownership_Matrix and Writer_Schema_Registry authority before any write.
   app.post('/v1/governance/direct-job-cost',async(req,res)=>{
@@ -811,7 +839,7 @@ function createRuntimeApp({
   });
 
   app.post('/v1/transactions', requireRuntimeAuth, async (req, res) => {
-    if (['SUPPLIER_APPROVAL_CHANGED','JOB_CREATE_FROM_ACCEPTED_SCOPE','PROCUREMENT_ISSUE_APPROVED','REVIEWED_QUOTE_ACCEPTANCE_CONFIRMED','VERIFIED_DIRECT_JOB_COST_CAPTURED'].includes(req.body?.event_type) ||
+    if (['SUPPLIER_APPROVAL_CHANGED','JOB_CREATE_FROM_ACCEPTED_SCOPE','PROCUREMENT_ISSUE_APPROVED','REVIEWED_QUOTE_ACCEPTANCE_CONFIRMED','VERIFIED_DIRECT_JOB_COST_CAPTURED','OWNER_PROVISIONAL_DIRECT_COST_DECLARED'].includes(req.body?.event_type) ||
         req.body?.writes?.some(w => (w.store === 'commercial' && w.sheet === 'Project Direct Costs') ||
           (w.store === 'commercial' && w.sheet === 'Quotes' && ('Quote Status' in (w.changes||{}) || w.state_field === 'Quote Status')) ||
           (w.store === 'supplier' && ['Suppliers','Purchase_Orders'].includes(w.sheet)) ||
