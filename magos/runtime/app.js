@@ -340,6 +340,22 @@ function createRuntimeApp({
     }
   });
   // Never send reviews or renewals based on a calculated draft candidate.
+  app.get('/v1/operator/operational-closure/:jobId',requireOperatorInspection,async(req,res)=>{
+    try {
+      const {inspectOperationalClosure}=require('../processor/operational-closure');
+      const parts=new Intl.DateTimeFormat('en-GB',{
+        timeZone:'Africa/Johannesburg',year:'numeric',month:'2-digit',day:'2-digit'
+      }).formatToParts(new Date());
+      const get=type=>parts.find(part=>part.type===type)?.value;
+      const asOf=get('year')+'-'+get('month')+'-'+get('day');
+      const result=await inspectOperationalClosure({stores:getWriter().stores,
+        jobId:req.params.jobId,asOf});
+      return res.status(result.state==='READY_FOR_OWNER_CLOSURE_REVIEW'?200:202).json(result);
+    }catch{
+      return res.status(503).json({error:'OPERATIONAL_CLOSURE_SOURCE_UNAVAILABLE'});
+    }
+  });
+
   app.get('/v1/operator/aftercare/:jobId',requireOperatorInspection,async(req,res)=>{
     try {
       const {inspectJobAftercare}=require('../processor/aftercare-readiness');
