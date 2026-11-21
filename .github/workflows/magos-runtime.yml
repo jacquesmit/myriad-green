@@ -23,6 +23,8 @@ on:
       - 'magos/tests/finance-aftercare-http.test.js'
       - 'magos/tests/operational-closure.test.js'
       - 'magos/tests/release-preflight.test.js'
+      - 'magos/tests/hostafrica-release.test.js'
+      - 'magos/scripts/hostafrica-release.sh'
       - 'magos/tests/wordpress-acceptance-verifier.test.js'
       - 'magos/tests/accept-reviewed-quote.test.js'
       - 'magos/tests/record-direct-job-cost.test.js'
@@ -75,6 +77,8 @@ on:
       - 'magos/tests/finance-aftercare-http.test.js'
       - 'magos/tests/operational-closure.test.js'
       - 'magos/tests/release-preflight.test.js'
+      - 'magos/tests/hostafrica-release.test.js'
+      - 'magos/scripts/hostafrica-release.sh'
       - 'magos/tests/wordpress-acceptance-verifier.test.js'
       - 'magos/tests/accept-reviewed-quote.test.js'
       - 'magos/tests/record-direct-job-cost.test.js'
@@ -124,6 +128,8 @@ jobs:
           cache-dependency-path: magos/package.json
       - run: npm install --no-audit --no-fund
       - run: node --check app.js
+      - name: HostAfrica controlled release regression tests
+        run: node --test tests/hostafrica-release.test.js
       - name: Hosted app.js entrypoint smoke
         run: |
           export PORT=18081
