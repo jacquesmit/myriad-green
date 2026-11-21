@@ -853,3 +853,131 @@ test('supplier-mail ingress scopes the caller to one event family and preserves 
     assert.ok(Object.values(event.guards).every(value => value === 'UNKNOWN'));
   });
 });
+
+
+test('AG-001 planner is authenticated and cannot call writer', async () => {
+  let writes=0;
+  const app=createRuntimeApp({
+    token:'agent-test-secret',
+    writerFactory:()=>({execute:async()=>{writes++;return {state:'COMMITTED'};}})
+  });
+  const task={
+    job_type_id:'JT-002',tenant_id:'MYRIAD_GREEN',jurisdiction_id:'ZA',country_id:'ZA',region_id:'GP',correlation_id:'CORR-TEST',
+    branch_id:'PRETORIA',canonical_record_id:'CRM-TEST-1',
+    source:'GMAIL',source_event_id:'MSG-TEST-1',evidence_refs:['test:gmail:msg-1']
+  };
+  await withServer(app,async base=>{
+    const denied=await request(base,'/v1/agents/plan',{method:'POST',body:task});
+    assert.equal(denied.status,401);
+    const accepted=await request(base,'/v1/agents/plan',{
+      method:'POST',token:'agent-test-secret',body:task
+    });
+    assert.equal(accepted.status,200);
+    assert.equal(accepted.payload.agent_id,'AG-003');
+    assert.equal(accepted.payload.execution_authorized,false);
+    const mutation=await request(base,'/v1/agents/plan',{
+      method:'POST',token:'agent-test-secret',
+      body:{...task,effect:'ISSUE_QUOTE',guards_verified:true,
+        source_freshness_verified:true,approved:true}
+    });
+    assert.equal(mutation.status,200);
+    assert.equal(mutation.payload.state,'AWAITING_APPROVAL');
+    assert.equal(mutation.payload.execution_authorized,false);
+    const unknown=await request(base,'/v1/agents/plan',{
+      method:'POST',token:'agent-test-secret',body:{...task,job_type_id:'JT-999'}
+    });
+    assert.equal(unknown.status,422);
+    assert.equal(writes,0);
+  });
+});
+
+
+test('AG-001 live authority probe requires runtime bearer and returns source verdict',async()=>{
+  let calls=0;
+  const app=createRuntimeApp({
+    token:'agent-secret',
+    liveAgentAuthorityFactory:()=>({inspect:async job_type_id=>{
+      calls++;
+      return {job_type_id,verified:true,owner_agent_id:'AG-003',
+        snapshot_matches_current:true,permissions_verified:false};
+    }})
+  });
+  await withServer(app,async base=>{
+    const task={job_type_id:'JT-002'};
+    const denied=await request(base,'/v1/agents/authority',{method:'POST',body:task});
+    assert.equal(denied.status,401);
+    assert.equal(calls,0);
+    const invalid=await request(base,'/v1/agents/authority',{
+      method:'POST',token:'agent-secret',body:{job_type_id:'MAGIC'}
+    });
+    assert.equal(invalid.status,400);
+    assert.equal(calls,0);
+    const accepted=await request(base,'/v1/agents/authority',{
+      method:'POST',token:'agent-secret',body:task
+    });
+    assert.equal(accepted.status,200);
+    assert.equal(accepted.payload.owner_agent_id,'AG-003');
+    assert.equal(accepted.payload.permissions_verified,false);
+    assert.equal(calls,1);
+  });
+});
+test('AG-001 authority probe fails closed when Drive read unavailable',async()=>{
+  const app=createRuntimeApp({
+    token:'agent-secret',
+    liveAgentAuthorityFactory:()=>({inspect:async()=>({
+      verified:false,reason:'CANONICAL_READ_FAILED'
+    })})
+  });
+  await withServer(app,async base=>{
+    const r=await request(base,'/v1/agents/authority',{
+      method:'POST',token:'agent-secret',body:{job_type_id:'JT-002'}
+    });
+    assert.equal(r.status,503);
+    assert.equal(r.payload.reason,'CANONICAL_READ_FAILED');
+  });
+});
+
+
+test('named workflow API is authenticated and dispatches via existing governed runner', async()=>{
+  let calls=0;
+  const app=createRuntimeApp({
+    token:'workflow-secret',
+    writerFactory:()=>({audit:{}}),
+    eventDispatcherFactory:()=>({run:async envelope=>{
+      calls++;return {state:'REVIEW_REQUIRED',event_id:envelope.event_id};
+    }})
+  });
+  await withServer(app,async base=>{
+    const listed=await request(base,'/v1/workflows',{token:'workflow-secret'});
+    assert.equal(listed.status,200);
+    assert.ok(listed.payload.workflows.some(x=>x.id==='lead-intake'));
+    const denied=await request(base,'/v1/workflows/run',{
+      method:'POST',body:{workflow_id:'lead-intake',envelope:sampleEvent()}
+    });
+    assert.equal(denied.status,401);
+    assert.equal(calls,0);
+    const {createEventEnvelope}=require('../processor/event-envelope');
+    const env=createEventEnvelope({
+      source:'TEST',source_event_id:'SRC-WORKFLOW-1',
+      event_type:'LEAD_SUBMITTED',
+      guards:{spam:'CLEAR',phishing:'CLEAR',explicit_content:'CLEAR',
+        malware:'CLEAR',irrelevant:'CLEAR'},
+      evidence:[{type:'TEST',ref:'test://workflow/1'}],payload:{}
+    });
+    const result=await request(base,'/v1/workflows/run',{
+      method:'POST',token:'workflow-secret',
+      body:{workflow_id:'lead-intake',envelope:env}
+    });
+    assert.equal(result.status,202);
+    assert.equal(result.payload.workflow_name,'Lead Intake');
+    assert.equal(result.payload.state,'REVIEW_REQUIRED');
+    assert.equal(calls,1);
+    const wrong=await request(base,'/v1/workflows/run',{
+      method:'POST',token:'workflow-secret',
+      body:{workflow_id:'payment-evidence',envelope:env}
+    });
+    assert.equal(wrong.status,422);
+    assert.equal(wrong.payload.error,'WORKFLOW_EVENT_TYPE_MISMATCH');
+    assert.equal(calls,1);
+  });
+});

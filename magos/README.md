@@ -8,6 +8,44 @@ Start with the [verified cPanel runbook](docs/CPANEL-PASSENGER-DEPLOY.md) for
 the host, deployed release, Node.js activation command, credential handling,
 and live acceptance status.
 
+## Executable workflows (current development path)
+
+**Use [MAGOS Executable Workflows V1](docs/MAGOS-EXECUTABLE-WORKFLOWS-V1.md)
+as the build-first software contract.** The old AG-001..AG-038 identities
+are legacy governance cross-references, not active autonomous workers.
+
+`GET /v1/workflows` lists six actionable workflow types with plain-English
+names. `POST /v1/workflows/run` accepts `workflow_id` and a valid canonical
+EventEnvelope V1 and executes through the *existing* governed event dispatcher.
+Both routes require the established MAGOS runtime bearer token.
+
+The processor and P3 writer—not the name or Markdown of a workflow—decide
+whether to write, reject, retry or open review. An authenticated workflow
+submission can be blocked by guard, identity, evidence, approval, authority
+or state gates. Nothing in this feature grants independent agent tools or
+creates another ledger.
+
+## Historical AG/JT registry (compatibility/proposal only)
+
+Read [MAGOS Agent Orchestration V2](docs/MAGOS-AGENT-ORCHESTRATION-V1.md)
+before using the new agents code. The canonical Google Drive Agent Job Allocation
+Matrix, not Git, is the primary authority for 38 registered AG roles and 46
+JT job types. A dated, non-authoritative snapshot lives at
+`rules/agent-allocation.snapshot.v1.json`.
+
+The runtime exposes `POST /v1/agents/plan` behind its existing bearer token.
+This endpoint is **planning only**. It uses exact JT ID, tenant, jurisdiction,
+branch, record identity and evidence to propose an owner or return BLOCKED.
+It never grants execution authority. The live Drive comparison, trusted approval
+checks and existing Sync_Exceptions review adapter are code-level components;
+they are **not** enabled autonomous workers.
+
+Do not infer approval, source-of-truth freshness, durable task execution or
+production release from successful routing/CI tests. Existing P5 governed event
+runner and P3 Transaction Writer remain the only sanctioned execution path.
+Legacy source integrations continue until end-to-end read-back, replay and
+recovery tests pass.
+
 ## Implemented capabilities
 
 ### MAGOS Transaction Writer V1
