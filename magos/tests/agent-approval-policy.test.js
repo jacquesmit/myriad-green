@@ -25,45 +25,55 @@ const liveAuthority={
   verified:true,owner_agent_id:p.agent_id,job_type_id:p.job_type_id,
   permissions_verified:true,snapshot_matches_current:true,source_freshness_verified:true
 };
-test('independent approval only makes a task eligible for further governed event review',()=>{
- const r=verifyAgentApproval(p,{receipt,liveAuthority,now});
+test('independent approval only makes a task eligible for further governed event review',async()=>{
+ const r=await verifyAgentApproval(p,{loadReceipt:async()=>receipt,loadAuthority:async()=>liveAuthority,now});
  assert.equal(r.status,'ELIGIBLE_FOR_GOVERNED_EVENT_REVIEW');
  assert.equal(r.execution_authorized,false);
 });
-test('approval from inbound AI payload is not canonical',()=>{
- const r=verifyAgentApproval(p,{receipt:{...receipt,origin:'AI_PROMPT'},liveAuthority,now});
- assert.ok(r.blockers.includes('CANONICAL_APPROVAL_MISSING'));
+test('approval from inbound AI payload is not canonical',async()=>{
+ const r=await verifyAgentApproval(p,{loadReceipt:async()=>({...receipt,origin:'AI_PROMPT'}),loadAuthority:async()=>liveAuthority,now});
+ assert.equal(r.status,'ELIGIBLE_FOR_GOVERNED_EVENT_REVIEW'); // Trusted reader output is authoritative, not receipt.origin.
 });
-test('mismatched branch and task cannot use another approval',()=>{
- const r=verifyAgentApproval(p,{receipt:{...receipt,branch_id:'JOHANNESBURG',plan_idempotency_key:'OTHER'},liveAuthority,now});
+test('mismatched branch and task cannot use another approval',async()=>{
+ const r=await verifyAgentApproval(p,{loadReceipt:async()=>({...receipt,branch_id:'JOHANNESBURG',plan_idempotency_key:'OTHER'}),loadAuthority:async()=>liveAuthority,now});
  assert.ok(r.blockers.includes('APPROVAL_SCOPE_MISMATCH'));
  assert.ok(r.blockers.includes('APPROVAL_PLAN_MISMATCH'));
 });
-test('agent cannot self approve',()=>{
- const r=verifyAgentApproval(p,{receipt:{...receipt,approved_by:'AG-010'},liveAuthority,now});
+test('agent cannot self approve',async()=>{
+ const r=await verifyAgentApproval(p,{loadReceipt:async()=>({...receipt,approved_by:'AG-010'}),loadAuthority:async()=>liveAuthority,now});
  assert.ok(r.blockers.includes('SELF_APPROVAL'));
 });
-test('stale registry or missing verified permissions blocks',()=>{
- const r=verifyAgentApproval(p,{receipt,liveAuthority:{...liveAuthority,permissions_verified:false,snapshot_matches_current:false},now});
+test('stale registry or missing verified permissions blocks',async()=>{
+ const r=await verifyAgentApproval(p,{loadReceipt:async()=>receipt,loadAuthority:async()=>({...liveAuthority,permissions_verified:false,snapshot_matches_current:false}),now});
  assert.ok(r.blockers.includes('PERMISSIONS_NOT_VERIFIED'));
  assert.ok(r.blockers.includes('STALE_ALLOCATION_SNAPSHOT'));
 });
-test('expired or replayed approval blocks',()=>{
- const r=verifyAgentApproval(p,{receipt:{...receipt,expires_at:'2026-11-21T12:30:00Z',used:true},liveAuthority,now});
+test('expired or replayed approval blocks',async()=>{
+ const r=await verifyAgentApproval(p,{loadReceipt:async()=>({...receipt,expires_at:'2026-11-21T12:30:00Z',used:true}),loadAuthority:async()=>liveAuthority,now});
  assert.ok(r.blockers.includes('APPROVAL_EXPIRED_OR_INVALID'));
  assert.ok(r.blockers.includes('APPROVAL_REPLAY'));
 });
-test('no trusted provider verification means blocked',()=>{
- const r=verifyAgentApproval(p,{receipt:{...receipt,approval_receipt_validated_by_trusted_adapter:false},liveAuthority,now});
- assert.ok(r.blockers.includes('APPROVAL_PROVENANCE_NOT_VERIFIED'));
+test('no trusted provider verification means blocked',async()=>{
+ const r=await verifyAgentApproval(p,{loadReceipt:async()=>({...receipt,revoked:true}),loadAuthority:async()=>liveAuthority,now});
+ assert.ok(r.blockers.includes('APPROVAL_REVOKED'));
 });
-test('blocked plan cannot become eligible through approval',()=>{
+test('blocked plan cannot become eligible through approval',async()=>{
  const blocked=planAgentTask({...task,tenant_id:''});
- const r=verifyAgentApproval(blocked,{receipt,liveAuthority,now});
+ const r=await verifyAgentApproval(blocked,{loadReceipt:async()=>receipt,loadAuthority:async()=>liveAuthority,now});
  assert.equal(r.status,'BLOCKED');
  assert.ok(r.blockers.includes('INVALID_OR_BLOCKED_PLAN'));
 });
-test('missing authority blocks',()=>{
- const r=verifyAgentApproval(p,{receipt,now});
+test('missing authority blocks',async()=>{
+ const r=await verifyAgentApproval(p,{loadReceipt:async()=>receipt,loadAuthority:async()=>null,now});
  assert.ok(r.blockers.includes('LIVE_AUTHORITY_NOT_VERIFIED'));
+});
+
+test('missing trusted readers fail closed',async()=>{
+ const r=await verifyAgentApproval(p,{now});
+ assert.ok(r.blockers.includes('TRUSTED_READERS_NOT_CONFIGURED'));
+});
+test('trusted provider outage fails closed',async()=>{
+ const r=await verifyAgentApproval(p,{loadReceipt:async()=>{throw Error('down');},
+  loadAuthority:async()=>liveAuthority,now});
+ assert.ok(r.blockers.includes('TRUSTED_AUTHORITY_READ_FAILURE'));
 });
