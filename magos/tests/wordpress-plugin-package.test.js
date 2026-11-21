@@ -10,7 +10,7 @@ const root=path.resolve(__dirname,'..');
 const slug='magos-reviewed-client-signature';
 const zip=path.join(root,'dist',slug+'.zip');
 const sha=zip+'.sha256';
-const php=path.join(root,'wordpress',slug+'.php');
+const php=path.join(root,'wordpress','mgos-reviewed-client-signature.php');
 
 test('release is an installable single-plugin ZIP containing the exact source file',()=>{
  assert.ok(fs.statSync(zip).size>1000);
