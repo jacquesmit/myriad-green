@@ -5,6 +5,7 @@ const express = require('express');
 const { TransactionWriter } = require('../writer/transaction-writer');
 const { planAgentTask } = require('../agents/agent-router');
 const { LiveAgentAuthority } = require('../agents/live-agent-authority');
+const { WorkflowRunner, WorkflowInputError } = require('../workflows/runner');
 const { EventProcessor } = require('../processor/event-processor');
 const {
   GovernedProcessorRegistry,
@@ -68,6 +69,7 @@ function createRuntimeApp({
   let eventProcessor;
   let eventDispatcher;
   let liveAgentAuthority;
+  let workflowRunner;
   const allowedLeadSources = parseAllowedLeadSources(leadIngressSources);
   const allowedSupplierEmailSources = parseAllowedSupplierEmailSources(supplierEmailIngressSources);
 
@@ -79,6 +81,13 @@ function createRuntimeApp({
   const getLiveAgentAuthority = () => {
     if (!liveAgentAuthority) liveAgentAuthority = liveAgentAuthorityFactory();
     return liveAgentAuthority;
+  };
+
+  const getWorkflowRunner = () => {
+    if (!workflowRunner) workflowRunner = new WorkflowRunner({
+      dispatcher:getEventDispatcher()
+    });
+    return workflowRunner;
   };
 
   const getEventProcessor = () => {
@@ -281,6 +290,33 @@ function createRuntimeApp({
         error: 'INVALID_AGENT_TASK',
         detail: error.message
       });
+    }
+  });
+
+  // The executable workflow API uses the existing governed event runner.
+  // No AG registry, parallel writer, or independent authority database.
+  app.get('/v1/workflows', requireRuntimeAuth, (req,res) => {
+    return res.status(200).json({
+      schema_version:'MAGOS_WORKFLOW_CATALOG_V1',
+      workflows:getWorkflowRunner().list(),
+      runtime:'GOVERNED_EVENT_RUNNER'
+    });
+  });
+
+  app.post('/v1/workflows/run', requireRuntimeAuth, async (req,res) => {
+    try {
+      const outcome=await getWorkflowRunner().run(req.body);
+      const status={
+        COMMITTED:200,DUPLICATE:200,DUPLICATE_NO_OP:200,IGNORED:200,
+        REVIEW_REQUIRED:202,REJECTED:400,EXECUTING:409,
+        RETRY_REQUIRED:409,FAILED:500
+      }[outcome.state] || 500;
+      return res.status(status).json(outcome);
+    } catch(error) {
+      if(error instanceof WorkflowInputError) {
+        return res.status(422).json({error:error.code});
+      }
+      return res.status(503).json({error:'GOVERNED_WORKFLOW_UNAVAILABLE'});
     }
   });
 
