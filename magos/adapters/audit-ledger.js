@@ -283,15 +283,21 @@ class AuditLedger {
     return true;
   }
 
-  async readObjects(sheetName, { maxRows = 1000 } = {}) {
+  async readObjects(sheetName, { maxRows = 1000, requiredHeaders = [], valueRenderOption } = {}) {
     const { headers } = await this.getHeaders(sheetName);
+    for (const header of requiredHeaders) {
+      if (headers.filter(value => value === header).length !== 1) {
+        throw new Error('Unexpected register schema: ' + sheetName + ' / ' + header);
+      }
+    }
     if (!headers.length) return [];
     const endColumn = columnLetter(headers.length - 1);
     const response = await this.withSheetsRetry(
       'readObjects:' + sheetName,
       () => this.sheets.spreadsheets.values.get({
         spreadsheetId: this.spreadsheetId,
-        range: this.quoteSheetName(sheetName) + '!A2:' + endColumn + Math.max(2, maxRows + 1)
+        range: this.quoteSheetName(sheetName) + '!A2:' + endColumn + (maxRows === null ? '' : Math.max(2, maxRows + 1)),
+        ...(valueRenderOption ? { valueRenderOption } : {})
       })
     );
     return (response.data.values || []).map((row, index) => {
