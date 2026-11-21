@@ -413,7 +413,9 @@ function createRuntimeApp({
     try{
       const {inspectJobSupplierCostQueue}=require('../processor/job-supplier-cost-queue');
       const result=await inspectJobSupplierCostQueue({
-        stores:getWriter().stores,jobId:req.params.jobId
+        stores:getWriter().stores,jobId:req.params.jobId,
+        reviewAuthority:supplierCostReviewAuthority,
+        stockAuthority:supplierStockSplitAuthority
       });
       return res.status(result.state==='REVIEW_REQUIRED'?202:200).json(result);
     }catch{return res.status(503).json({error:'SUPPLIER_COST_QUEUE_UNAVAILABLE'});}
