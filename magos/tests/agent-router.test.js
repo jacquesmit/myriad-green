@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const {planAgentTask,CATALOG}=require('../agents/agent-router');
 const base={
   job_type_id:'JT-002',tenant_id:'MYRIAD_GREEN',
-  jurisdiction_id:'ZA',branch_id:'PRETORIA',
+  jurisdiction_id:'ZA',country_id:'ZA',region_id:'GP',correlation_id:'CORR-TEST',branch_id:'PRETORIA',
   canonical_record_id:'CRM-TEST-001',
   source:'GMAIL',source_event_id:'msg-test-001',evidence_refs:['test:gmail:msg-test-001']
 };
