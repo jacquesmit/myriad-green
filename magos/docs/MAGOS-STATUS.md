@@ -253,3 +253,12 @@ Three independently merged/tested development changes now exist on GitHub `main`
 **HOSTAFRICA runtime:** read-only public `https://runtime.myriadgreen.co.za/healthz` and `/readyz` checks were inaccessible through the available web tool. This **does not prove an outage** and it does not prove release readiness. Worker SHA, environment configuration and P3 live transaction tests remain **UNKNOWN/TO_CONFIRM**.
 
 **Source-of-truth status:** code and Git CI PASS for PR #55/#56; production execution not validated. Continue to reconcile `MAGOS-CURRENT.md` and `MAGOS-STATUS.md` in every subsequent MAGOS implementation PR. The next high-leverage real release gate remains a verified HOSTAFRICA deployed SHA plus WordPress customer signature plugin/page and controlled source-backed quote-to-job transaction, without customer financial writes until authorities are proven.
+
+
+## 21 November 2026 — Reviewed signature vs live quote-line version: race hardening (candidate)
+
+**Concrete source fault:** pre-existing `accept-reviewed-quote.js` applied the signed acceptance to `Quotes` with quote-state/PDF preconditions only. Its independent WordPress verifier checked `Quote_Lines` separately; a subsequent current-line revision could invalidate the signed version without changing the `Quotes` row and might be reported as accepted. Existing Commercial headers were previously inspected: `Quote_Lines` includes `quote_line_id`, `quote_id`, `quote_version`, `line_status`.
+
+**Implementation:** read current quote lines after signature verification, verify exactly one current version equals the signed receipt, require unique quote-line IDs, add writer preconditions to each current line, and repeat version + line-ID-set readback after the P3 quote-state mutation. Record `COMMIT_READBACK_UNVERIFIED` on post-write mismatch. The general runtime token still cannot bypass protected quote-acceptance governance; payment clearing, job creation and procurement remain separate.
+
+**Truth state:** candidate branch only, GitHub test and merge pending. No WordPress, hosting, quote, job or payment source records modified. This is not a fully atomic row-set lock against concurrent new rows: an immutable issued-document version authority is still required for production-level signed-consent guarantee. Keep whole-system production gate OPEN until validated.
