@@ -357,3 +357,10 @@ Three independently merged/tested development changes now exist on GitHub `main`
 **Implementation:** require exact signed purpose `CLIENT_ACCEPTANCE` before storing a pending client signature receipt; insist on file-specific `https://drive.google.com/file/d/<id>` evidence during human approval and private `verify-v2` response. Added static source regressions; PHP lint, package SHA and all relevant GitHub CI pending. No client signing data, live WordPress plugins/pages or customer transactions were modified.
 
 **Release state:** branch candidate `codex/magos-client-signature-purpose-isolation-20261121`, CI/merge pending. Real production WordPress install, published signing page and server-side source receipt verification remain not done.
+
+
+## 21 November 2026 — PR #64 merged with reviewed WordPress plugin release artifact
+
+- GitHub [PR #64](https://github.com/jacquesmit/myriad-green/pull/64) merged at `f515b707c7d357d3928d17e5d721b83cc22f04e5`; exact PR head `0d8400c704e6a6ec7885692875c42a24b518a9cb`. WP Signature Bridge #7 PASS, Document Extract #244 PASS, Evolving Status Gate #12 PASS. No runtime tests were required for the PHP-only changes.
+- Published GitHub Actions `magos-reviewed-client-signature-plugin` artifact ID `14725111232` (outer artifact SHA-256 `731dcf3e9b7456ddf94b8a81cdbb29703b774e5e390e1cd547f9ecdae3797eee`). Contains compiled PHP plugin archive and its SHA-256; archive expires 2026-12-21. The client submission now requires exact `CLIENT_ACCEPTANCE` purpose, and approval/verify-v2 require a file-specific Drive evidence link.
+- WordPress 0.3.2 OWNER_TEST plugin remains live unchanged; client signing post ID 9481 is still a draft, no verify-v2 endpoint. No production plugin activation or customer-signature data write occurred. Full accepted-quote -> independently confirmed deposit -> P3 job launch remains NOT VERIFIED. Production release cannot be certified from this CI artifact.
