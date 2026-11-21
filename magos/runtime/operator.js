@@ -225,6 +225,13 @@
       list.append(element('dt', name), valueCell);
     }
     target.append(list);
+    if (department === 'jobs' && item.details?.job_id) {
+      const output = element('p');
+      output.setAttribute('role','status');
+      const check = button('Inspect actual costs & closeout',
+        () => inspectJobCloseout(item.details.job_id,output,check),'secondary');
+      target.append(check,output);
+    }
     if (department === 'quotes') {
       const output = element('p');
       output.setAttribute('role', 'status');
@@ -277,6 +284,33 @@
       redirect: 'error',
       signal,
     });
+  }
+
+  async function inspectJobCloseout(jobId,output,button) {
+    const active=new AbortController();
+    inspection?.abort();
+    inspection=active;
+    button.disabled=true;
+    output.textContent='Checking variations, work proof and actual costs…';
+    const deadline=setTimeout(()=>active.abort(),15000);
+    try{
+      const response=await read('/v1/operator/job-closeout/'+encodeURIComponent(jobId),active.signal);
+      const result=await response.json();
+      if(inspection!==active)return;
+      if(!result.schema_version)throw Error('CLOSEOUT_UNAVAILABLE');
+      output.textContent=[
+        result.state.replaceAll('_',' '),
+        result.blockers?.length?result.blockers.length+' unresolved controls':'No immediate closeout blockers',
+        result.contract_value_zar===null?'Revenue unverified':'Contract '+zar.format(result.contract_value_zar),
+        'Known direct costs '+zar.format(result.evidenced_cost_sum_zar||0),
+        'Final profit not independently verified'
+      ].join(' · ');
+    }catch{
+      if(inspection===active)output.textContent='Closeout evidence unavailable; inspect the canonical registers.';
+    }finally{
+      clearTimeout(deadline);
+      if(inspection===active)button.disabled=false;
+    }
   }
 
   async function inspectQuote(id, output, button) {
