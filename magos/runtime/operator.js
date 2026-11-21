@@ -231,6 +231,11 @@
       const check = button('Inspect actual costs & closeout',
         () => inspectJobCloseout(item.details.job_id,output,check),'secondary');
       target.append(check,output);
+      const scheduleOutput=element('p');
+      scheduleOutput.setAttribute('role','status');
+      const scheduleCheck=button('Inspect schedule readiness',
+        ()=>inspectScheduling(item.details.job_id,scheduleOutput,scheduleCheck),'secondary');
+      target.append(scheduleCheck,scheduleOutput);
     }
     if (department === 'quotes') {
       const output = element('p');
@@ -284,6 +289,32 @@
       redirect: 'error',
       signal,
     });
+  }
+
+  async function inspectScheduling(jobId,output,button) {
+    const active=new AbortController();
+    inspection?.abort();
+    inspection=active;
+    button.disabled=true;
+    output.textContent='Checking funds, procurement, material, crew and provider booking…';
+    const deadline=setTimeout(()=>active.abort(),15000);
+    try{
+      const response=await read('/v1/operator/scheduling-readiness/'+encodeURIComponent(jobId),active.signal);
+      const result=await response.json();
+      if(inspection!==active)return;
+      if(!result.schema_version)throw Error('SCHEDULING_UNAVAILABLE');
+      output.textContent=[
+        result.state.replaceAll('_',' '),
+        ...result.blockers||[],
+        ...result.review_reasons||[],
+        'Calendar availability still requires provider verification'
+      ].join(' · ');
+    }catch{
+      if(inspection===active)output.textContent='Scheduling evidence unavailable. Review source bookings.';
+    }finally{
+      clearTimeout(deadline);
+      if(inspection===active)button.disabled=false;
+    }
   }
 
   async function inspectJobCloseout(jobId,output,button) {
