@@ -479,6 +479,38 @@ function createRuntimeApp({
     }catch(error){return res.status(500).json({error:'GOVERNED_JOB_CREATION_FAILED',detail:error.message});}
   });
 
+  // Create a DRAFT purchase order from exact live supplier quote evidence.
+  // No supplier dispatch, procurement release or payment authority occurs.
+  app.post('/v1/governance/procurement-draft', async(req,res)=>{
+    if(!procurementApprovalToken || [token,leadIngressToken,supplierApprovalToken,jobCreationToken].some(
+      value=>constantTimeEqual(value,procurementApprovalToken)
+    )) return res.status(503).json({error:'PROCUREMENT_DRAFT_AUTH_NOT_CONFIGURED'});
+    if(!constantTimeEqual(req.get('x-magos-procurement-token'),procurementApprovalToken)) {
+      return res.status(401).json({error:'UNAUTHORIZED'});
+    }
+    const b=req.body||{};
+    if(!['supplierId','supplierQuoteId','poId','sourceEventId','evidenceRef'].every(
+      key=>typeof b[key]==='string' && b[key].trim()
+    ) || ![b.projectId,b.quoteId,b.jobId].some(value=>typeof value==='string'&&value.trim())) {
+      return res.status(400).json({error:'PROCUREMENT_DRAFT_INPUT_REQUIRED'});
+    }
+    try {
+      const {prepareProcurementDraft}=require('../processor/procurement-draft-transaction');
+      const result=await prepareProcurementDraft({
+        lookupService:procurementLookupFactory(),writer:getWriter(),
+        supplierId:b.supplierId,supplierQuoteId:b.supplierQuoteId,
+        poId:b.poId,sourceEventId:b.sourceEventId,evidenceRef:b.evidenceRef,
+        projectId:b.projectId,quoteId:b.quoteId,jobId:b.jobId,
+        dryRun:b.dryRun===true
+      });
+      return res.status(['COMMITTED','DUPLICATE_NO_OP','DRY_RUN'].includes(result.state)?200:
+        ['REVIEW_REQUIRED','BLOCKED'].includes(result.state)?202:409)
+        .json({...result,external_order_sent:false,payment_authorized:false});
+    }catch {
+      return res.status(503).json({error:'PROCUREMENT_DRAFT_UNAVAILABLE'});
+    }
+  });
+
   // Procurement approval is scoped to an internal PO state transition.
   // It never dispatches a supplier order or authorizes a payment.
   app.post('/v1/governance/procurement-approve', async (req, res) => {
