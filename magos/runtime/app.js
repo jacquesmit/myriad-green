@@ -6,6 +6,7 @@ const { TransactionWriter } = require('../writer/transaction-writer');
 const { planAgentTask } = require('../agents/agent-router');
 const { LiveAgentAuthority } = require('../agents/live-agent-authority');
 const { WorkflowRunner, WorkflowInputError } = require('../workflows/runner');
+const { listWorkflows } = require('../workflows/catalog');
 const { EventProcessor } = require('../processor/event-processor');
 const {
   GovernedProcessorRegistry,
@@ -298,7 +299,7 @@ function createRuntimeApp({
   app.get('/v1/workflows', requireRuntimeAuth, (req,res) => {
     return res.status(200).json({
       schema_version:'MAGOS_WORKFLOW_CATALOG_V1',
-      workflows:getWorkflowRunner().list(),
+      workflows:listWorkflows(),
       runtime:'GOVERNED_EVENT_RUNNER'
     });
   });
