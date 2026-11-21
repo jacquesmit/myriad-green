@@ -42,7 +42,7 @@ async function inspectJobSupplierCostQueue({stores,jobId}={}){
  const ready=items.filter(a=>a.state==='SOURCE_VERIFIED').length;
  return {schema_version:'MAGOS_JOB_SUPPLIER_COST_QUEUE_V1',
   job_id:jobId,opportunity_id:opportunityId,
-  state:items.some(x=>x.state==='REVIEW_REQUIRED')?'REVIEW_REQUIRED':'SOURCE_INSPECTION_COMPLETE',
+  state:!items.length?'NO_SUPPLIER_ALLOCATIONS':items.some(x=>x.state==='REVIEW_REQUIRED')?'REVIEW_REQUIRED':'SOURCE_INSPECTION_COMPLETE',
   counts:{total:items.length,ready,review:items.length-ready},
   items,stock_or_invoice_auto_approval:false,
   writes:[],side_effects:false};
