@@ -2,9 +2,9 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const {LiveAgentAuthority}=require('../agents/live-agent-authority');
-function reader(rows,agents){
+function reader(rows,agents,jobTypes=[['Job_Type_ID','','','','','','Primary_Agent_ID'],['JT-002','','','','','','AG-003']]){
  return new LiveAgentAuthority({sheets:{spreadsheets:{values:{
-  batchGet:async()=>({data:{valueRanges:[{values:rows},{values:agents}]}})
+  batchGet:async()=>({data:{valueRanges:[{values:rows},{values:agents},{values:jobTypes}]}})
  }}}});
 }
 const header=['Job_Type_ID','Primary_Agent_ID','Support_Agent_IDs',
@@ -28,7 +28,7 @@ test('missing or duplicate ownership is denied',async()=>{
 });
 test('changed owner produces nonmatching snapshot',async()=>{
  const changed=[header,['JT-002','AG-004','AG-002,AG-011','','','','','','CONDITIONAL','','']];
- const x=await reader(changed,[['Agent_ID'],['AG-004']]).inspect('JT-002');
+ const x=await reader(changed,[['Agent_ID'],['AG-004']], [['Job_Type_ID','','','','','','Primary_Agent_ID'],['JT-002','','','','','','AG-004']]).inspect('JT-002');
  assert.equal(x.verified,true);
  assert.equal(x.snapshot_matches_current,false);
 });
@@ -46,4 +46,10 @@ test('invalid schema and provider outage fail closed',async()=>{
 });
 test('no free-text job types',async()=>{
  assert.equal((await reader(good,registry).inspect('do something')).reason,'INVALID_JOB_TYPE');
+});
+
+test('conflicting Job Types tab owner is rejected',async()=>{
+ const wrong=[['Job_Type_ID','','','','','','Primary_Agent_ID'],['JT-002','','','','','','AG-010']];
+ const result=await reader(good,registry,wrong).inspect('JT-002');
+ assert.equal(result.reason,'JOB_TYPE_OWNER_CONFLICT');
 });
