@@ -262,3 +262,11 @@ Three independently merged/tested development changes now exist on GitHub `main`
 **Implementation:** read current quote lines after signature verification, verify exactly one current version equals the signed receipt, require unique quote-line IDs, add writer preconditions to each current line, and repeat version + line-ID-set readback after the P3 quote-state mutation. Record `COMMIT_READBACK_UNVERIFIED` on post-write mismatch. The general runtime token still cannot bypass protected quote-acceptance governance; payment clearing, job creation and procurement remain separate.
 
 **Truth state:** candidate branch only, GitHub test and merge pending. No WordPress, hosting, quote, job or payment source records modified. This is not a fully atomic row-set lock against concurrent new rows: an immutable issued-document version authority is still required for production-level signed-consent guarantee. Keep whole-system production gate OPEN until validated.
+
+
+## 21 November 2026 — PR #57 merge and tested quote-line version integrity
+
+- **MERGED:** [#57](https://github.com/jacquesmit/myriad-green/pull/57) at `4b63ac60493a986a277114ed6bfb7230517ba728`.
+- **Exact-head CI:** `275d69226ff582c9f670088fcfa08fbc98032af9`: MAGOS Runtime P2 #185 PASS, MAGOS Document Extract #218 PASS, MAGOS Evolving Status Gate #2 PASS.
+- **What changed:** after independent reviewed WordPress signature verification, checked canonical current quote-line version and unique line IDs; added per-line P3 optimistic preconditions and readback of version and current-line set. Stale signatures, duplicates and post-write line revisions cannot be presented as verified success.
+- **Production evidence:** no HOSTAFRICA live deploy or WordPress companion installation; source-level Google Sheets row-set insertion cannot be proven atomic. No quote, deposit or job ledger changes were made. Customer signing remains FAIL/NOT LIVE.
