@@ -341,3 +341,10 @@ Three independently merged/tested development changes now exist on GitHub `main`
 **Implementation:** preserve integer bank-confirmed cents and required-deposit cents in canonical server-side authority; the job payment CAS builder now rejects missing or changed external cents and verifies source totals and deposit requirement against both bank attestations. The self-comparison validation of event ID arrays was replaced with explicit uniqueness checks. Tests cover valid sources, changed payment-event and allocation amounts together, changed required deposit and missing/mismatched bank amounts. No generated bank credentials or evidence.
 
 **Release truth:** code and corresponding current/historical MD committed on branch; exact-head CI and merge PENDING. Real bank provider callback, reviewed signed quote plugin, HOSTAFRICA release SHA and live end-to-end transaction acceptance remain blocked/unverified. Source rows unchanged.
+
+
+## 21 November 2026 — PR #63 merged; WordPress production signing source rechecked
+
+- [PR #63](https://github.com/jacquesmit/myriad-green/pull/63) GitHub merged SHA `1acc9f8ec104c860a1a46fbe5968bed2311cfe0d`; exact CI head `879b28ba693d8c6e6ce91a0c4e3f620f80a9a4f3`; Runtime P2 #195 PASS, Document Extract #240 PASS, Evolving Status Gate #11 PASS. Exact independent bank cents now survive through P3 precommit checks and reject internal event/allocations amount changes with unchanged payment identifiers.
+- Read-only authenticated WPVibe confirmed client page post `9481` is still `draft`; `mgos/v1` exposes legacy `verify` and owner-test only, not `verify-v2`. Legacy deployed source `mgos-quote-acceptance` v0.3.2 explicitly returns on non-owner-test Fluent submissions. No client signature or production deployment was performed. No permissions or plugin state were changed.
+- Whole MAGOS is NOT production-certified; bank/provider callback, reviewed WP plugin installation, HOSTAFRICA running SHA, client signature end-to-end and golden transaction remain open.
