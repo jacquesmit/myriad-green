@@ -76,7 +76,7 @@ test('queue operator route is authenticated and does not run any writer',async()
 
 test('fully evidenced job allocation passes when reviewer and stock authority are actually connected',async()=>{
  const link='https://drive.google.com/file/d/INVRECEIPT20261121/view';
- const a={...allocation,supplier_document_id:'INVOICE-441',
+ const a={...allocation,allocated_qty:'2',supplier_document_id:'INVOICE-441',
    evidence_link:link,evidence_drive_file_id:'INVRECEIPT20261121',
    supersedes_allocation_id:'',reversal_of_allocation_id:''};
  const sourceLine={...line,supplier_quote_id:'INVOICE-441',
