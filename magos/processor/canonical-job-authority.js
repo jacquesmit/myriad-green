@@ -49,6 +49,8 @@ function createCanonicalJobAuthorityVerifier({stores,acceptanceVerifier,bankClea
    acceptance_evidence:signed.evidence_ref,payment_clearance:'CLEARED',
    bank_clearance_confirmation_id:bank.confirmation_id,
    bank_confirmation_source:bank.source_authority,
+   bank_confirmed_amount_cents:bank.confirmed_amount_cents,
+   bank_deposit_required_cents:Math.round(deposit.deposit_required*100),
    payment_control_id:deposit.control_id,allocation_ids:deposit.allocation_ids,
    payment_event_ids:deposit.payment_event_ids};
  };
