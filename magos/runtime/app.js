@@ -70,6 +70,8 @@ function createRuntimeApp({
   quoteSigningSecret = process.env.MAGOS_WP_ACCEPTANCE_LINK_SECRET,
   signingPageReadiness = () => require('../processor/signed-quote-link').inspectSigningPage(),
   jobAuthorityVerifier = null,
+  // Trusted server-side bank/provider settlement confirmation, never HTTP input.
+  bankClearanceVerifier = null,
   procurementApprovalToken = process.env.MAGOS_PROCUREMENT_APPROVAL_TOKEN,
   procurementLookupFactory = () => new (require('../adapters/exact-lookup-service').ExactLookupService)(),
   procurementAuthorityVerifier = async () => ({verified:false,reason_code:'APPROVAL_AUTHORITY_NOT_VERIFIED'}),
@@ -781,7 +783,7 @@ function createRuntimeApp({
     if(!['quoteId','jobId','sourceEventId'].every(k=>typeof b[k]==='string'&&b[k].trim()))return res.status(400).json({error:'JOB_IDENTIFIERS_REQUIRED'});
     try {
       const {executeAcceptedJob}=require('../processor/accepted-job-execution');
-      const result=await executeAcceptedJob({writer:getWriter(),quoteId:b.quoteId,jobId:b.jobId,sourceEventId:b.sourceEventId,authorityVerifier:jobAuthorityVerifier || require('../processor/canonical-job-authority').createCanonicalJobAuthorityVerifier({stores:getWriter().stores,acceptanceVerifier:getSignedAcceptanceVerifier()}),dryRun:b.dryRun===true});
+      const result=await executeAcceptedJob({writer:getWriter(),quoteId:b.quoteId,jobId:b.jobId,sourceEventId:b.sourceEventId,authorityVerifier:jobAuthorityVerifier || require('../processor/canonical-job-authority').createCanonicalJobAuthorityVerifier({stores:getWriter().stores,acceptanceVerifier:getSignedAcceptanceVerifier(),bankClearanceVerifier}),dryRun:b.dryRun===true});
       return res.status(['COMMITTED','DUPLICATE_NO_OP','DRY_RUN'].includes(result.state)?200:result.state==='REVIEW_REQUIRED'||result.state==='BLOCKED'?202:409).json(result);
     }catch(error){return res.status(500).json({error:'GOVERNED_JOB_CREATION_FAILED',detail:error.message});}
   });
