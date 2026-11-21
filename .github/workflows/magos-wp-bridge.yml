@@ -23,3 +23,16 @@ jobs:
           php -l magos/wordpress/mgos-reviewed-client-signature.php
       - name: Client signature controls
         run: node --test magos/tests/wordpress-bridge-source.test.js
+      - name: Build reproducible WordPress install artifact
+        run: bash magos/scripts/package-reviewed-signature-plugin.sh
+      - name: Verify packaged plugin structure and fingerprint
+        run: node --test magos/tests/wordpress-plugin-package.test.js
+      - name: Publish reviewed PHP plugin ZIP and checksum for controlled install
+        uses: actions/upload-artifact@v4
+        with:
+          name: magos-reviewed-client-signature-plugin
+          path: |
+            magos/dist/magos-reviewed-client-signature.zip
+            magos/dist/magos-reviewed-client-signature.zip.sha256
+          if-no-files-found: error
+          retention-days: 30

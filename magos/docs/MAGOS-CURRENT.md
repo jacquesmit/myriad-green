@@ -70,3 +70,9 @@ For each real MAGOS code change:
 
 - [PR #57](https://github.com/jacquesmit/myriad-green/pull/57) merged to `main` at `4b63ac60493a986a277114ed6bfb7230517ba728`; MAGOS Runtime P2, Document Extract and Evolving Status Gate **all PASS** on PR head `275d69226ff582c9f670088fcfa08fbc98032af9`.
 - New acceptance checks bind each currently issued `Quote_Lines` record to P3 preconditions and check the version/line set again after the write. No WordPress deployment or live signed transaction was performed. **Source-level race narrowing is not proof of atomic version isolation.**
+
+## WordPress reviewed-signature release packaging — candidate
+
+- Added `magos/scripts/package-reviewed-signature-plugin.sh` to package only `magos/wordpress/mgos-reviewed-client-signature.php` under the installable WordPress plugin slug, with a reproducible ZIP and SHA-256 checksum.
+- The `MAGOS WordPress Signature Bridge` CI builds, tests and uploads the plugin ZIP plus checksum as a **release artifact**, not a live site installation. Any installation must verify checksum, use approved WordPress admin/hosting access, test on staging, confirm `verify-v2` source and signing-page safety, and retain rollback.
+- **Code/CI status: PR candidate.** Live site still has no reviewed companion route and signing page 9481 is draft. Do not claim customer signing enabled or accept customer deposits solely because a ZIP exists.

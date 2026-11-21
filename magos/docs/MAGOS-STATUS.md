@@ -270,3 +270,10 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - **Exact-head CI:** `275d69226ff582c9f670088fcfa08fbc98032af9`: MAGOS Runtime P2 #185 PASS, MAGOS Document Extract #218 PASS, MAGOS Evolving Status Gate #2 PASS.
 - **What changed:** after independent reviewed WordPress signature verification, checked canonical current quote-line version and unique line IDs; added per-line P3 optimistic preconditions and readback of version and current-line set. Stale signatures, duplicates and post-write line revisions cannot be presented as verified success.
 - **Production evidence:** no HOSTAFRICA live deploy or WordPress companion installation; source-level Google Sheets row-set insertion cannot be proven atomic. No quote, deposit or job ledger changes were made. Customer signing remains FAIL/NOT LIVE.
+
+
+## 21 November 2026 — Reproducible reviewed client signature WordPress artifact (candidate)
+
+**Engineering:** new `magos/scripts/package-reviewed-signature-plugin.sh` packages the existing, unchanged reviewed-signature PHP source into a single WordPress-installable folder ZIP and SHA-256 manifest. The existing `MAGOS WordPress Signature Bridge` GitHub CI now validates plugin PHP syntax and source contract, runs archive integrity/determinism tests and publishes the artifact to the run. No FTP credentials, signature data, host configuration or database contents are shipped.
+
+**Acceptance:** GitHub CI/merge pending for candidate. The artifact is not installed automatically and WordPress `verify-v2` remains absent on the live site; page 9481 remains draft. Staging test, authenticated admin review, controlled installation, signed receipt and exact commercial quote/readback still required. Do not mark signing production-complete.

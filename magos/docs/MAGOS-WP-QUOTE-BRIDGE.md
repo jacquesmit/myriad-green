@@ -49,3 +49,10 @@ WPVibe `wp post get 9481 --field=post_status` returned **draft** for `Accept & S
 
 ### Scope of WPVibe access
 The connected WPVibe WordPress site supports WordPress CLI emulation, REST and read-only `wp-content` source/log inspection. It **does not** grant SSH, shell, Node process management or write access to existing installed plugin PHP source. Do not equate this with confirming or deploying HOSTAFRICA `runtime.myriadgreen.co.za`. No client page was published, plugin installed or WP customer data changed during inspection.
+
+
+## Reproducible plugin package (source-controlled)
+
+In the approved GitHub `MAGOS WordPress Signature Bridge` workflow, the reviewed PHP companion is linted, source-contract tested, placed into `magos-reviewed-client-signature/magos-reviewed-client-signature.php` and archived as `magos-reviewed-client-signature.zip` with a matching `.zip.sha256` checksum. A second packaging run must produce the same SHA-256. The release archive contains only the audited PHP file; it does not include configuration secrets or WordPress customer data.
+
+**Deploy steps (not performed here):** download the artifact from a green, approved GitHub workflow run; independently verify the SHA-256 checksum; test installation on staging with the current legacy quote-acceptance plugin and Fluent Forms; verify `/mgos/v1/quote-acceptance/verify-v2` requires bearer authorization; test review, signatures, duplicate and expired tokens; publish the client page only after positive/negative acceptance; finally verify the running Node SHA, quote status and controlled job readback. Retain original plugin and rollback before any live deployment. Artifact publication is NOT a production plugin installation.
