@@ -127,3 +127,9 @@ For each real MAGOS code change:
 - **Change:** `canonical-job-authority.js` now includes the bank-verified integer cents and confirmed deposit requirement in its server-owned attestation. `job-payment-commit-preconditions.js` requires safe positive integer bank-confirmed amounts, compares both cents values against canonical source totals, and binds them into the P3 precommit decision. Missing/malformed bank confirmation is `REVIEW_REQUIRED`, never clearance. Existing CAS checks remain.
 - **Tests:** accepted-job-execution regression now covers simultaneous event+allocation increases, changed deposit requirement, missing/incorrect externally confirmed cents, and positive dry-run/commit. Bank verifier positive test checks the returned exact cents.
 - **Evidence level:** branch `codex/magos-bank-amount-commit-binding-20261121` CODE STAGED; CI/PR/merge PENDING. No real bank confirmation or provider credentials connected, HOSTAFRICA SHA still NOT VERIFIED, and no customer or financial source rows edited. Never mark MAGOS production complete on this code fix.
+
+
+### Merged implementation — bank amount integrity #63 and live WP source check
+
+- [PR #63](https://github.com/jacquesmit/myriad-green/pull/63) merged to `main` at `1acc9f8ec104c860a1a46fbe5968bed2311cfe0d` after exact-head MAGOS Runtime P2 #195 PASS, Document Extract #240 PASS, Evolving Status Gate #11 PASS (tested head `879b28ba693d8c6e6ce91a0c4e3f620f80a9a4f3`). The P3 creation decision now compares *external bank-confirmed cents*, required-deposit cents, and recorded Payment_Allocations/Payment_Events amounts. CODE/CI PASS; actual bank verifier still NOT CONFIGURED.
+- WPVibe live read-only recheck 2026-11-21: the signed-client page `9481` remains `draft` and `/mgos/v1` has **no `quote-acceptance/verify-v2` route**. The deployed legacy plugin 0.3.2 continues to be OWNER_TEST-only. Reviewed client signing is therefore **not production-operational**, despite CI archive creation.
