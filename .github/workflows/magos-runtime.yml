@@ -9,11 +9,13 @@ on:
       - 'magos/adapters/**'
       - 'magos/processor/**'
       - 'magos/agents/**'
+      - 'magos/workflows/**'
       - 'magos/tests/agent-router.test.js'
       - 'magos/tests/agent-owner-resolver.test.js'
       - 'magos/tests/agent-approval-policy.test.js'
       - 'magos/tests/live-agent-authority.test.js'
       - 'magos/tests/agent-review-queue.test.js'
+      - 'magos/tests/workflow-runner.test.js'
       - 'magos/tests/runtime-http.test.js'
       - 'magos/tests/supplier-email-intake.test.js'
       - 'magos/package.json'
@@ -28,11 +30,13 @@ on:
       - 'magos/adapters/**'
       - 'magos/processor/**'
       - 'magos/agents/**'
+      - 'magos/workflows/**'
       - 'magos/tests/agent-router.test.js'
       - 'magos/tests/agent-owner-resolver.test.js'
       - 'magos/tests/agent-approval-policy.test.js'
       - 'magos/tests/live-agent-authority.test.js'
       - 'magos/tests/agent-review-queue.test.js'
+      - 'magos/tests/workflow-runner.test.js'
       - 'magos/tests/runtime-http.test.js'
       - 'magos/tests/supplier-email-intake.test.js'
       - 'magos/package.json'
@@ -71,7 +75,7 @@ jobs:
           done
           curl --fail http://127.0.0.1:18081/healthz
           curl --fail http://127.0.0.1:18081/readyz
-      - run: node --test tests/runtime-http.test.js tests/transaction-writer.test.js tests/fluent-forms-adapter.test.js tests/supplier-email-intake.test.js tests/processor-registry.test.js tests/agent-router.test.js tests/agent-owner-resolver.test.js tests/agent-approval-policy.test.js tests/live-agent-authority.test.js tests/agent-review-queue.test.js
+      - run: node --test tests/runtime-http.test.js tests/transaction-writer.test.js tests/fluent-forms-adapter.test.js tests/supplier-email-intake.test.js tests/processor-registry.test.js tests/agent-router.test.js tests/agent-owner-resolver.test.js tests/agent-approval-policy.test.js tests/live-agent-authority.test.js tests/agent-review-queue.test.js tests/workflow-runner.test.js
 
   container-smoke:
     runs-on: ubuntu-latest
