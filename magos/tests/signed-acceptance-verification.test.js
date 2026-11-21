@@ -5,7 +5,11 @@ const {assessJobActivation}=require('../processor/job-activation-assessment');
 const q={quote_id:'Q-1',opportunity_id:'OP-1','Quote Status':'ACCEPTED','Line Control State':'PASS'};
 const stores={crm:{findByKey:async()=>({object:{opportunity_id:'OP-1',job_id:''}})},commercial:{
  findByKey:async()=>({object:q}),
- readObjects:async sheet=>sheet==='Payment Control'?[{'Control ID':'PC-1','Opportunity ID':'OP-1','Deposit Required (R)':'100'}]:[{control_id:'PC-1',allocation_id:'PA-1',allocation_type:'DEPOSIT',allocation_state:'CLEARED',amount:'100',evidence_link:'drive://bank'}]
+ readObjects:async sheet=>({
+  'Payment Control':[{'Control ID':'PC-1','Opportunity ID':'OP-1','Deposit Required (R)':'100'}],
+  'Payment_Allocations':[{control_id:'PC-1',allocation_id:'PA-1',payment_event_id:'EV-1',allocation_type:'DEPOSIT',allocation_state:'CLEARED',amount:'100',evidence_link:'https://drive.google.com/file/d/BANKTESTEVIDENCE001/view'}],
+  'Payment_Events':[{payment_event_id:'EV-1',control_id:'PC-1',opportunity_id:'OP-1',event_type:'PAYMENT_CLEARED',clearance_state:'CLEARED',amount:'100',evidence_link:'https://drive.google.com/file/d/BANKTESTEVIDENCE001/view',idempotency_key:'EV-1-UNIQUE',source_system:'BANK_REVIEWED'}]
+ })[sheet]||[]
 }};
 const verifier=async({quote_id,opportunity_id})=>({verified:true,quote_id,opportunity_id,evidence_ref:'drive://signed/1',signer_identity:'Client A',signed_at:'2026-10-11T10:00:00Z',source_event_id:'SIGN-1'});
 test('provider attestation resolves exact signed acceptance and immutable provenance',async()=>{
