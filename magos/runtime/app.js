@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const express = require('express');
 const { TransactionWriter } = require('../writer/transaction-writer');
 const { planAgentTask } = require('../agents/agent-router');
+const { LiveAgentAuthority } = require('../agents/live-agent-authority');
 const { EventProcessor } = require('../processor/event-processor');
 const {
   GovernedProcessorRegistry,
@@ -54,6 +55,7 @@ function createRuntimeApp({
   supplierEmailIngressSources = process.env.MAGOS_SUPPLIER_EMAIL_INGRESS_SOURCES || '',
   writerFactory = () => new TransactionWriter(),
   eventProcessorFactory = () => new EventProcessor(),
+  liveAgentAuthorityFactory = () => new LiveAgentAuthority(),
   eventDispatcherFactory = ({ writer }) =>
     new GovernedProcessorRegistry({ writer }),
   version = process.env.MAGOS_RUNTIME_VERSION || 'P2'
@@ -65,12 +67,18 @@ function createRuntimeApp({
   let writer;
   let eventProcessor;
   let eventDispatcher;
+  let liveAgentAuthority;
   const allowedLeadSources = parseAllowedLeadSources(leadIngressSources);
   const allowedSupplierEmailSources = parseAllowedSupplierEmailSources(supplierEmailIngressSources);
 
   const getWriter = () => {
     if (!writer) writer = writerFactory();
     return writer;
+  };
+
+  const getLiveAgentAuthority = () => {
+    if (!liveAgentAuthority) liveAgentAuthority = liveAgentAuthorityFactory();
+    return liveAgentAuthority;
   };
 
   const getEventProcessor = () => {
@@ -250,6 +258,16 @@ function createRuntimeApp({
         error: error.message
       });
     }
+  });
+
+  // Read-only canonical Drive authority check. Never authorizes writes.
+  app.post('/v1/agents/authority', requireRuntimeAuth, async (req, res) => {
+    const job_type_id = String(req.body?.job_type_id || '').trim();
+    if (!/^JT-\\d{3}$/.test(job_type_id)) {
+      return res.status(400).json({ error:'INVALID_JOB_TYPE' });
+    }
+    const result = await getLiveAgentAuthority().inspect(job_type_id);
+    return res.status(result.verified ? 200 : 503).json(result);
   });
 
   // Read-only AG-001 proposal endpoint: no worker, store, or external effects.
