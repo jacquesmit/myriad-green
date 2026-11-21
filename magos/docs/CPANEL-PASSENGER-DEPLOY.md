@@ -75,3 +75,22 @@ incident reference is **#9342462**.
 | Hosted runtime deployment | **PASS**. HOSTAFRICA verified the cPanel worker root and startup file. The supplier-email route responded with the expected disabled-route code. |
 | Authenticated Google Sheets and audit-store connectivity | **PASS**, 10 November 2026. The operator's cPanel smoke output showed runtime `P5`, `auth_configured: true`, and both stores `reachable`. |
 | Controlled supplier-email write, read-back and replay | **PENDING**. In a controlled test window, submit one evidence-backed event through the restricted supplier endpoint. Read back one matching `Intake_Queue` row and its audit record, then replay the same provider message ID and verify the row count stays at one. Follow the [supplier-email acceptance cases](MAGOS-P5Q-SUPPLIER-EMAIL-INTAKE-V1.md) before connecting a live mailbox collector. |
+
+
+## Whole MAGOS integration candidate — 21 November 2026 (NOT DEPLOYED)
+
+The operator dashboard, whole-business capability view and workflow endpoints were implemented on the feature branch `codex/magos-agent-orchestration-v1-20261121` and assembled as PR #41. **The hosted checkout is not confirmed to match this PR.** Do not treat historical `P5` /healthz as a commit SHA.
+
+Safe verification sequence after reviewed merge and authorization:
+
+1. Capture current host `git status --short --branch`, full `git rev-parse HEAD`, runtime Node version and existing environment names (never disclose values).
+2. Capture host rollback SHA before deployment. Verify all selected GitHub CI jobs PASS on the exact candidate SHA.
+3. Configure a **new distinct** `MAGOS_OPERATOR_READ_TOKEN` privately; do not reuse `MAGOS_RUNTIME_TOKEN` or any ingress secret. Read-only operator access should not be sufficient to invoke writer endpoints.
+4. Verify `GET /operator` is a shell with zero customer data, `/operator.js` and `/operator.css` load, and `GET /v1/operator/dashboard` and `GET /v1/operator/coverage` return 401 without the proper header. Then authenticate with `X-MAGOS-Operator-Token`.
+5. Verify each whole-business Command Centre department shows a genuine canonical record or explicit UNAVAILABLE, including finance allocations versus proof. `Whole MAGOS build` must reflect original Control Hub FAIL and PARTIAL states. Do not accept an all-PASS screenshot lacking source evidence.
+6. The quotation-readiness and activation buttons must return real read-only inspection output, and MUST NOT change client status, money, booking or procurement. A missing independent signed-acceptance verifier must return review, never automatic clearance.
+7. Only after data and auth parity, run the existing governed EventEnvelope test event and same-idempotency replay under controlled test identities. Record exact writer/evidence receipt and independent read-back in Audit_Tests.
+8. If errors appear, roll back to the captured SHA and recycle only the targeted MAGOS lsnode worker per the previously hosting-verified process. Never kill unrelated workers.
+9. Keep existing source adapters and customer-facing operations in place until parity is independently demonstrated. **Do not promote the browser shell or CI passing to whole MAGOS COMPLETE.**
+
+The operator UI does not itself launch an additional database or payment authority. The existing CRM, Commercial, Supplier, Global Audit and Control Hub registers remain the authoritative business data.
