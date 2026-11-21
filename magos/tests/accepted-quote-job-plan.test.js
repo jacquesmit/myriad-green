@@ -51,3 +51,15 @@ test('CRM job mutation uses the production Writer_Schema_Registry workbook role'
  assert.equal(r.plan.writes[0].workbook_role,'CRM');
  assert.equal(r.plan.writes[0].sheet,'Jobs_Opportunities');
 });
+
+test('live LINE_CONTROL_OK value permits verified quote-to-job planning and is preserved as exact P3 precondition',async()=>{
+ const f=fixture();
+ const original=f.stores.commercial.findByKey;
+ f.stores.commercial.findByKey=async (...args)=>{
+  const item=await original(...args);
+  return item?.object?.quote_id?{object:{...item.object,'Line Control State':'LINE_CONTROL_OK'}}:item;
+ };
+ const r=await planAcceptedJob({...f.args,stores:f.stores});
+ assert.equal(r.state,'READY_FOR_GOVERNED_JOB_CREATION');
+ assert.equal(r.plan.preconditions[0].expect['Line Control State'],'LINE_CONTROL_OK');
+});

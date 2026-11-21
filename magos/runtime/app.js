@@ -58,6 +58,7 @@ function createRuntimeApp({
   supplierApprovalAuthorityVerifier = async () => ({verified:false,reason_code:'SUPPLIER_APPROVAL_AUTHORITY_NOT_VERIFIED'}),
   jobCreationToken = process.env.MAGOS_JOB_CREATION_TOKEN,
   quoteSigningToken = process.env.MAGOS_QUOTE_SIGNING_TOKEN,
+  quoteAcceptanceToken = process.env.MAGOS_QUOTE_ACCEPTANCE_TOKEN,
   quoteSigningSecret = process.env.MAGOS_WP_ACCEPTANCE_LINK_SECRET,
   signingPageReadiness = () => require('../processor/signed-quote-link').inspectSigningPage(),
   jobAuthorityVerifier = null,
@@ -603,6 +604,37 @@ function createRuntimeApp({
     }
   });
 
+  // Independent signed-receipt review may transition an ACTIVE issued quote to
+  // ACCEPTED. It does not create a job, clear money, order parts or book a crew.
+  app.post('/v1/governance/accept-reviewed-quote',async(req,res)=>{
+    const credentials=[token,operatorReadToken,leadIngressToken,
+      supplierEmailIngressToken,supplierApprovalToken,jobCreationToken,
+      procurementApprovalToken,quoteSigningToken];
+    if(!quoteAcceptanceToken ||
+       credentials.some(t=>constantTimeEqual(t,quoteAcceptanceToken))) {
+      return res.status(503).json({error:'QUOTE_ACCEPTANCE_AUTH_NOT_CONFIGURED'});
+    }
+    if(!constantTimeEqual(req.get('x-magos-acceptance-token'),quoteAcceptanceToken))
+      return res.status(401).json({error:'UNAUTHORIZED'});
+    const quoteId=req.body?.quoteId;
+    if(typeof quoteId!=='string'||!quoteId.trim())
+      return res.status(400).json({error:'QUOTE_ID_REQUIRED'});
+    try{
+      const {acceptReviewedQuote}=require('../processor/accept-reviewed-quote');
+      const result=await acceptReviewedQuote({
+        writer:getWriter(),quoteId,
+        authorityVerifier:getSignedAcceptanceVerifier(),
+        dryRun:req.body?.dryRun===true
+      });
+      return res.status(
+        ['COMMITTED','DUPLICATE_NO_OP','DRY_RUN'].includes(result.state)?200:
+        result.state==='REVIEW_REQUIRED'?202:409
+      ).json(result);
+    }catch{
+      return res.status(503).json({error:'REVIEWED_QUOTE_ACCEPTANCE_UNAVAILABLE'});
+    }
+  });
+
   // Governed job creation never accepts caller-controlled acceptance/payment flags.
   app.post('/v1/governance/create-job', async (req,res)=>{
     if(!jobCreationToken || [token,leadIngressToken,supplierEmailIngressToken,supplierApprovalToken,procurementApprovalToken,operatorReadToken].some(value=>constantTimeEqual(value,jobCreationToken)))return res.status(503).json({error:'JOB_CREATION_AUTH_NOT_CONFIGURED'});
@@ -751,8 +783,9 @@ function createRuntimeApp({
   });
 
   app.post('/v1/transactions', requireRuntimeAuth, async (req, res) => {
-    if (['SUPPLIER_APPROVAL_CHANGED','JOB_CREATE_FROM_ACCEPTED_SCOPE','PROCUREMENT_ISSUE_APPROVED'].includes(req.body?.event_type) ||
-        req.body?.writes?.some(w => (w.store === 'supplier' && ['Suppliers','Purchase_Orders'].includes(w.sheet)) ||
+    if (['SUPPLIER_APPROVAL_CHANGED','JOB_CREATE_FROM_ACCEPTED_SCOPE','PROCUREMENT_ISSUE_APPROVED','REVIEWED_QUOTE_ACCEPTANCE_CONFIRMED'].includes(req.body?.event_type) ||
+        req.body?.writes?.some(w => (w.store === 'commercial' && w.sheet === 'Quotes' && ('Quote Status' in (w.changes||{}) || w.state_field === 'Quote Status')) ||
+          (w.store === 'supplier' && ['Suppliers','Purchase_Orders'].includes(w.sheet)) ||
           (w.store === 'crm' && w.sheet === 'Jobs_Opportunities' && (w.changes?.job_id || w.values?.job_id)))) {
       return res.status(403).json({error:'BUSINESS_TRANSITION_REQUIRES_GOVERNANCE_ENDPOINT'});
     }

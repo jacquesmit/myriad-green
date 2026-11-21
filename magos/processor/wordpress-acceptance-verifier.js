@@ -45,8 +45,9 @@ function makeWordPressAcceptanceVerifier({
     }catch{return denied('CANONICAL_QUOTE_READ_UNAVAILABLE');}
     const row=quote?.object;
     if(!row || val(row.opportunity_id)!==opportunityId ||
-      val(row['Quote Status']).toUpperCase()!=='ACCEPTED')
-      return denied('CURRENT_CANONICAL_QUOTE_NOT_ACCEPTED');
+      !['ACTIVE','ACCEPTED'].includes(val(row['Quote Status']).toUpperCase()) ||
+      val(row['Workflow Stage']).toUpperCase()!=='SENT')
+      return denied('CURRENT_CANONICAL_QUOTE_NOT_ISSUED_OR_ACCEPTED');
     const version=sourceVersion(lines,quoteId);
     if(!version)return denied('CURRENT_QUOTE_VERSION_AMBIGUOUS');
     const pdf=val(row['Drive Link']);
