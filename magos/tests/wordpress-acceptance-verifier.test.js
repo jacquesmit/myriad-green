@@ -59,7 +59,7 @@ test('draft quote and ambiguous current line versions fail before contacting WP'
  const first=makeWordPressAcceptanceVerifier({...args,
   stores:stores({...quote,'Quote Status':'DRAFT'}),request});
  const a=await first({quote_id:'Q-1',opportunity_id:'OPP-1'});
- assert.equal(a.reason_code,'CURRENT_CANONICAL_QUOTE_NOT_ACCEPTED');
+ assert.equal(a.reason_code,'CURRENT_CANONICAL_QUOTE_NOT_ISSUED_OR_ACCEPTED');
  const second=makeWordPressAcceptanceVerifier({...args,
   stores:stores(quote,[...lines,{...lines[0],quote_version:'V3'}]),request});
  const b=await second({quote_id:'Q-1',opportunity_id:'OPP-1'});
