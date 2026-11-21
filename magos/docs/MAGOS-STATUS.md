@@ -143,3 +143,27 @@ Run current-HEAD CI; capture deployed SHA; review release candidate against curr
 **Remaining priorities:** run current SHA CI, verify exact host checkout, validate first real controlled job / PO readback, activate approved source authority verifiers, reconcile Commercial variation ownership/schema, implement trusted field actuals and final invoice; then integrate warranty/reviews/service-due with explicit recurrence rules. External provider booking availability and bank clearance must be independently verified, never guessed from CRM snapshots.
 
 No live website, shop, payment, customer or supplier records have been modified by the PR.
+
+
+## 21 November 2026 — Integrated finance, closure and release-preflight evidence
+
+**Source baseline:** the following changes have been merged into GitHub `main`, not asserted as deployed on HOSTAFRICA.
+
+| Merged PR | Git merge SHA | Code delivered | GitHub test evidence |
+| --- | --- | --- | --- |
+| [#42](https://github.com/jacquesmit/myriad-green/pull/42) | `014cf982ccb56b5aacb9d4a54a566b632a56ce66` | Canonical invoice/cleared-allocation reconciliation, installed-part warranty and approved maintenance policy candidates, protected operator inspection APIs and Command Centre actions | MAGOS Runtime P2 and Document Extract passed on exact PR head `65ed5b7` |
+| [#43](https://github.com/jacquesmit/myriad-green/pull/43) | `dd52582652c73891caf9f796b0484f4a15a151fc` | Single read-only operational close assessment joining job execution, variations, actual costs, invoice, recorded cleared allocations and aftercare | MAGOS Runtime P2 and Document Extract passed on exact PR head `f6b6a68` |
+| [#44](https://github.com/jacquesmit/myriad-green/pull/44) | `8724daecf621e13cc5b331965cca2c82c865a9e5` | Authenticated running worker build SHA endpoint, host checkout vs worker SHA preflight, Google source and Control Hub evidence checks, cPanel runbook | MAGOS Runtime P2 and Document Extract passed on exact PR head `aa10125` |
+
+### Actual development statuses
+
+- **CODED/TESTED:** the three PR code paths above. Tests are simulated source-backed/isolated runtime regression tests, NOT live host transaction proofs.
+- **INTEGRATED INTO MAIN:** PASS. GitHub `main` contains the new `receivables-reconciliation`, `aftercare-readiness`, `operational-closure`, and `release-preflight` modules and protected runtime endpoints.
+- **PRODUCTION DEPLOYMENT:** NOT VERIFIED. The public health URL could not be reached through the available tool. No SSH access, deployment restart, host worker SHA or credential-backed live source read was established.
+- **FULL BUSINESS OPERATION:** NOT COMPLETE. Approval sign-off, bank-confirmed clearance, trusted maintenance policy, invoice issuance, live provider replay, procurement/GRN integration, field labor actuals, aftercare dispatch and production go-live gates remain unresolved.
+- **RELEASE INTEGRITY:** new read-only host command `node runtime/release-preflight.js` requires an independently approved GitHub commit SHA and the *running worker's* declaration of that same SHA. Preflight PASS is code/source readiness, not proof all 22 capabilities are complete.
+- **CLIENT RECORD CHANGES:** NONE from these GitHub PRs. No invoice paid status, supplier authorization, aftercare message, job closed state or ecommerce checkout was changed.
+
+### Highest-value next execution
+
+From HOSTAFRICA cPanel: capture the actual working-tree and worker build SHA, verify private `MAGOS_RUNTIME_TOKEN`, separate `MAGOS_OPERATOR_READ_TOKEN`, set accurate `MAGOS_DEPLOY_COMMIT_SHA` only during an approved deployment/recycle and execute the read-only release preflight. Then run one controlled actual lead, quotation acceptance, deposit, job creation, supplier draft and closeout evidence chain with writer/read-back and same-key replay. Do not mark MAGOS COMPLETE until its operational gates have passed from authentic source records.
