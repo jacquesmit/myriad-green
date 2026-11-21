@@ -57,6 +57,9 @@ function createRuntimeApp({
   supplierApprovalToken = process.env.MAGOS_SUPPLIER_APPROVAL_TOKEN,
   supplierApprovalAuthorityVerifier = async () => ({verified:false,reason_code:'SUPPLIER_APPROVAL_AUTHORITY_NOT_VERIFIED'}),
   jobCreationToken = process.env.MAGOS_JOB_CREATION_TOKEN,
+  quoteSigningToken = process.env.MAGOS_QUOTE_SIGNING_TOKEN,
+  quoteSigningSecret = process.env.MAGOS_WP_ACCEPTANCE_LINK_SECRET,
+  signingPageReadiness = () => require('../processor/signed-quote-link').inspectSigningPage(),
   jobAuthorityVerifier = null,
   procurementApprovalToken = process.env.MAGOS_PROCUREMENT_APPROVAL_TOKEN,
   procurementLookupFactory = () => new (require('../adapters/exact-lookup-service').ExactLookupService)(),
@@ -574,6 +577,31 @@ function createRuntimeApp({
     }
   });
 
+
+  // Issue a signed *link only*, never accept a quote or create a job.
+  app.post('/v1/governance/quote-signing-link',async(req,res)=>{
+    const credentials=[token,operatorReadToken,leadIngressToken,
+      supplierEmailIngressToken,supplierApprovalToken,jobCreationToken,procurementApprovalToken];
+    if(!quoteSigningToken || credentials.some(t=>constantTimeEqual(t,quoteSigningToken))) {
+      return res.status(503).json({error:'QUOTE_SIGNING_AUTH_NOT_CONFIGURED'});
+    }
+    if(!constantTimeEqual(req.get('x-magos-signing-token'),quoteSigningToken)) {
+      return res.status(401).json({error:'UNAUTHORIZED'});
+    }
+    const quoteId=req.body?.quoteId;
+    if(typeof quoteId!=='string'||!quoteId.trim())
+      return res.status(400).json({error:'QUOTE_ID_REQUIRED'});
+    try {
+      const {issueSignedQuoteLink}=require('../processor/signed-quote-link');
+      const result=await issueSignedQuoteLink({
+        stores:getWriter().stores,quoteId,secret:quoteSigningSecret,
+        readiness:signingPageReadiness
+      });
+      return res.status(result.state==='READY_TO_SEND'?200:202).json(result);
+    }catch{
+      return res.status(503).json({error:'SIGNING_LINK_SOURCE_UNAVAILABLE'});
+    }
+  });
 
   // Governed job creation never accepts caller-controlled acceptance/payment flags.
   app.post('/v1/governance/create-job', async (req,res)=>{
