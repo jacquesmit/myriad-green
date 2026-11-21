@@ -6,7 +6,11 @@ const opportunity={opportunity_id:'O1',job_id:'',client_crm_id:'C1'};
 function stores(state='CLEARED',accepted=true){
  return {crm:{findByKey:async()=>({object:opportunity})},commercial:{
  findByKey:async()=>({object:{...quote,'Quote Status':accepted?'ACCEPTED':'SENT'}}),
- readObjects:async sheet=>sheet==='Payment Control'?[{'Opportunity ID':'O1','Control ID':'P1','Deposit Required (R)':'100'}]:[{control_id:'P1',allocation_id:'A1',allocation_type:'DEPOSIT',allocation_state:state,evidence_link:'drive://bank',amount:'100'}]
+ readObjects:async sheet=>({
+ 'Payment Control':[{'Opportunity ID':'O1','Control ID':'P1','Deposit Required (R)':'100'}],
+ 'Payment_Allocations':[{control_id:'P1',allocation_id:'A1',payment_event_id:'E1',allocation_type:'DEPOSIT',allocation_state:state,evidence_link:'https://drive.google.com/file/d/BANKTESTEVIDENCE001/view',amount:'100'}],
+ 'Payment_Events':[{payment_event_id:'E1',control_id:'P1',opportunity_id:'O1',event_type:'PAYMENT_CLEARED',clearance_state:'CLEARED',amount:'100',evidence_link:'https://drive.google.com/file/d/BANKTESTEVIDENCE001/view',idempotency_key:'BANK-E1',source_system:'BANK_CREDIT_REVIEWED'}]
+ })[sheet]||[]
  }};
 }
 test('canonical financial evidence does not replace independently verified signed acceptance',async()=>{

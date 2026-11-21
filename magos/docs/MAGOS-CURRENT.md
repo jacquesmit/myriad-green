@@ -82,3 +82,11 @@ For each real MAGOS code change:
 - [PR #58](https://github.com/jacquesmit/myriad-green/pull/58) merged into `main` at `b4af09d03975938ab0c63ee1b850a555b3528a25` after exact-head WordPress Signature Bridge workflow #5 PASS, MAGOS Evolving Status Gate workflow #5 PASS and MAGOS Document Extract #224 PASS (PR head `071f7588426afc850b51f2d9862476acaf09fa53`).
 - CI produced the reproducible `magos-reviewed-client-signature.zip` and `.zip.sha256` as GitHub workflow artifacts; archive content and independent checksum tests PASS.
 - **No live WordPress plugin was installed.** The production client signing page is still a draft based on last confirmed WPVibe inspection. Customer signature end-to-end acceptance remains BLOCKED until controlled install and production validation.
+
+## Deposit-to-job financial authority — current candidate
+
+- **Source correction in progress:** `deposit-evidence-inspection.js` now requires an exact matching row in `Payment_Events` for each cleared `Payment_Allocations` deposit. Both must agree on payment event ID, control, opportunity, cents, cleared state and Drive evidence. Duplicate payment IDs and allocations are rejected.
+- Confirmed live Commercial schema: `Payment Control`, `Payment_Allocations`, `Payment_Events` already hold the authoritative references; no replacement payment database was created.
+- A zero-required deposit is now reported as **`NO_DEPOSIT_REQUIRED_NOT_BANK_CLEARED`** rather than inventing cleared funds, pending a separately approved no-deposit release policy.
+- **Critical truth:** `Payment_Events` is itself an internal historical register. Matching `CLEARED` rows is not independent real-time bank/provider settlement confirmation. The inspector returns `independent_bank_confirmation:false`; production job and procurement authorization still require bank/provider evidence and release acceptance. Never treat spreadsheet status as a verified incoming bank transaction.
+- The change has test fixtures for valid source pairs, missing payment events, duplicate rows/events, mismatch, invalid evidence, zero deposit. **CI and merge pending** until exact-head checks pass.
