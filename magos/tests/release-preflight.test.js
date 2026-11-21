@@ -6,7 +6,7 @@ const sha='0123456789abcdef0123456789abcdef01234567';
 const values={
  '/healthz':{status:'ok'},
  '/readyz':{status:'ready'},
- '/v1/runtime/build':{schema_version:'MAGOS_RUNTIME_BUILD_V1',commit_sha:sha},
+ '/v1/runtime/build':{schema_version:'MAGOS_RUNTIME_BUILD_V1',commit_sha:sha,checkout_sha_at_process_start:sha,tracked_worktree_clean_at_start:true,status:'GIT_CHECKOUT_AND_DEPLOY_DECLARATION_MATCH'},
  '/v1/probes/google-sheets':{google_sheets:'reachable',audit_store:'reachable'},
  '/v1/workflows':{schema_version:'MAGOS_WORKFLOW_CATALOG_V1',workflows:[]},
  '/v1/operator/coverage':{
@@ -53,7 +53,7 @@ test('missing Google Sheets or canonical coverage prevents release readiness',as
  assert.ok(r.checks.some(c=>c.name==='CANONICAL_COVERAGE'&&c.state==='FAIL'));
 });
 test('runtime process build fingerprint is authenticated and rejects unset SHA',async()=>{
- const app=createRuntimeApp({token:'test-runtime',deployedCommitSha:sha});
+ const app=createRuntimeApp({token:'test-runtime',deployedCommitSha:sha,startupGitStateReader:()=>({sha,dirty:false})});
  const server=http.createServer(app);await new Promise(done=>server.listen(0,'127.0.0.1',done));
  try{
   const url='http://127.0.0.1:'+server.address().port+'/v1/runtime/build';
@@ -70,4 +70,31 @@ test('runtime process build fingerprint is authenticated and rejects unset SHA',
    headers:{authorization:'Bearer test-runtime'}});
   assert.equal(response.status,503);
  }finally{await new Promise(done=>server2.close(done));}
+});
+
+test('forged process declaration, dirty checkout and missing Git state fail build attestation',async()=>{
+ for(const startup of [
+   ()=>({sha:'ffffffffffffffffffffffffffffffffffffffff',dirty:false}),
+   ()=>({sha,dirty:true}),
+   ()=>{throw Error('HOST_GIT_UNAVAILABLE');}
+ ]){
+  const app=createRuntimeApp({token:'test-runtime',deployedCommitSha:sha,
+   startupGitStateReader:startup});
+  const server=http.createServer(app);await new Promise(ok=>server.listen(0,'127.0.0.1',ok));
+  try{
+   const r=await fetch('http://127.0.0.1:'+server.address().port+'/v1/runtime/build',
+     {headers:{authorization:'Bearer test-runtime'}});
+   assert.equal(r.status,503);
+   assert.equal((await r.json()).status,'UNVERIFIED');
+  }finally{await new Promise(ok=>server.close(ok));}
+ }
+});
+test('release preflight rejects build response that merely repeats environment SHA',async()=>{
+ const r=await releasePreflight({...args,request:async url=>{
+   const p=new URL(url).pathname;
+   return {status:200,json:async()=>p==='/v1/runtime/build'?
+     {schema_version:'MAGOS_RUNTIME_BUILD_V1',commit_sha:sha}:values[p]};
+ }});
+ assert.equal(r.ready,false);
+ assert.ok(r.checks.some(x=>x.name==='RUNNING_WORKER_SHA'&&x.state==='FAIL'));
 });
