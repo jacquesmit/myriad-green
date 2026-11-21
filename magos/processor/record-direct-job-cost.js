@@ -58,6 +58,17 @@ async function recordVerifiedDirectCost({
  if(att.allocation_status!=='ALLOCATED_TO_JOB'||
    att.stock_split_verified!==true)
    return review('JOB_ALLOCATION_OR_STOCK_SPLIT_NOT_VERIFIED');
+ // If source evidence links to an existing provisional row, the ONLY valid
+ // path is an in-place P3 verification. Never append a second expense.
+ if(val(att.provisional_cost_id))
+   return review('USE_IN_PLACE_PROVISIONAL_COST_VERIFICATION');
+ let pending;
+ try {
+   const {provisionalId}=require('./provisional-job-cost');
+   pending=await writer.stores.commercial.findByKey(
+     'Project Direct Costs','direct_cost_id',provisionalId(jobKey,eventKey));
+ }catch{return review('PENDING_COST_DUPLICATE_CHECK_UNAVAILABLE');}
+ if(pending)return review('PROVISIONAL_COST_ALREADY_EXISTS_FOR_SOURCE_EVENT');
  const costId=deterministicCostId(jobKey,eventKey);
  const date=now();
  if(!(date instanceof Date)||!Number.isFinite(date.getTime()))

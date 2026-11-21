@@ -274,6 +274,29 @@
       const costCommit=button('Record pending expense',
         ()=>submitProvisionalCost(item.details.job_id,costInputs,costOutput,costCommit,false),'secondary');
       costArea.append(costPreview,costCommit,costOutput);
+      const verification=element('section');
+      verification.append(element('h3','Verify an existing pending expense'));
+      const verificationInputs={};
+      for(const [key,title,type] of [
+        ['provisionalCostId','Pending expense ID (DP-...)','text'],
+        ['sourceEventId','Verified supplier/bank receipt event reference','text'],
+        ['verificationToken','Independent direct-cost verification token','password']
+      ]){
+        const label=element('label',title);
+        const field=element('input');
+        field.type=type;field.autocomplete='off';field.setAttribute('aria-label',title);
+        label.append(field);verification.append(label);verificationInputs[key]=field;
+      }
+      const verificationOutput=element('p');
+      verificationOutput.setAttribute('role','status');
+      const previewVerification=button('Preview receipt verification',
+        ()=>verifyPendingCost(item.details.job_id,verificationInputs,
+          verificationOutput,previewVerification,true),'secondary');
+      const commitVerification=button('Verify expense against receipt',
+        ()=>verifyPendingCost(item.details.job_id,verificationInputs,
+          verificationOutput,commitVerification,false),'secondary');
+      verification.append(previewVerification,commitVerification,verificationOutput);
+      costArea.append(verification);
       target.append(costArea);
     }
     if(department==='finance' && item.details?.['Invoice ID']) {
@@ -350,6 +373,49 @@
       redirect: 'error',
       signal,
     });
+  }
+
+  async function verifyPendingCost(jobId,inputs,output,button,dryRun){
+    const privateToken=inputs.verificationToken.value.trim();
+    const body={jobId,sourceEventId:inputs.sourceEventId.value.trim(),
+      provisionalCostId:inputs.provisionalCostId.value.trim(),dryRun};
+    if(!privateToken||!body.sourceEventId||!body.provisionalCostId){
+      output.textContent='Provide pending cost ID, receipt event reference and verification token.';
+      return;
+    }
+    if(!dryRun&&!window.confirm(
+      'Verify this existing expense against an independently reviewed receipt? This updates the existing cost row, not a new expense.'
+    )){
+      inputs.verificationToken.value='';
+      return;
+    }
+    button.disabled=true;
+    output.textContent=dryRun?'Checking independent receipt and allocation…':
+      'Updating verified expense in place…';
+    const abort=new AbortController(),deadline=setTimeout(()=>abort.abort(),20000);
+    try{
+      const response=await fetch('/v1/governance/verify-provisional-cost',{
+        method:'POST',cache:'no-store',redirect:'error',signal:abort.signal,
+        headers:{'content-type':'application/json',
+          'x-magos-direct-cost-token':privateToken},
+        body:JSON.stringify(body)
+      });
+      const result=await response.json();
+      output.textContent=[
+        result.state?.replaceAll('_',' ')||result.error||'UNAVAILABLE',
+        result.reason_code?.replaceAll('_',' '),
+        result.provisional_cost_id,
+        result.readback_verified&&'Existing expense updated and read back',
+        result.additional_cost_rows===0&&'No duplicate expense created',
+        'Job profit still requires final reconciliation'
+      ].filter(Boolean).join(' · ');
+    }catch{
+      output.textContent='Verification unavailable; inspect Commercial cost ID before retrying.';
+    }finally{
+      clearTimeout(deadline);
+      inputs.verificationToken.value='';
+      button.disabled=false;
+    }
   }
 
   async function submitProvisionalCost(jobId,inputs,output,button,dryRun){
