@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const {planAgentTask}=require('../agents/agent-router');
 const {verifyAgentApproval}=require('../agents/agent-approval-policy');
 const task={
-  job_type_id:'JT-007',tenant_id:'MYRIAD_GREEN',jurisdiction_id:'ZA',
+  job_type_id:'JT-007',tenant_id:'MYRIAD_GREEN',jurisdiction_id:'ZA',country_id:'ZA',region_id:'GP',correlation_id:'CORR-TEST',
   branch_id:'PRETORIA',canonical_record_id:'PAY-TEST-1',source:'GMAIL',
   source_event_id:'MSG-TEST-10',evidence_refs:['test:bank:10'],
   effect:'WRITE_BUSINESS_RECORD',guards_verified:true,source_freshness_verified:true
