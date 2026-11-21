@@ -3,6 +3,7 @@
 const crypto = require('crypto');
 const express = require('express');
 const { TransactionWriter } = require('../writer/transaction-writer');
+const { planAgentTask } = require('../agents/agent-router');
 const { EventProcessor } = require('../processor/event-processor');
 const {
   GovernedProcessorRegistry,
@@ -247,6 +248,20 @@ function createRuntimeApp({
         status: 'not_ready',
         google_sheets: 'unreachable',
         error: error.message
+      });
+    }
+  });
+
+  // Read-only AG-001 proposal endpoint: no worker, store, or external effects.
+  // The Drive job allocation snapshot is non-authoritative and never grants writes.
+  app.post('/v1/agents/plan', requireRuntimeAuth, (req, res) => {
+    try {
+      const result = planAgentTask(req.body);
+      return res.status(result.state === 'BLOCKED' ? 422 : 200).json(result);
+    } catch (error) {
+      return res.status(400).json({
+        error: 'INVALID_AGENT_TASK',
+        detail: error.message
       });
     }
   });
