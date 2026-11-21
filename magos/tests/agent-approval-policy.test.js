@@ -14,7 +14,7 @@ const now=new Date('2026-11-21T13:00:00Z');
 const receipt={
   origin:'CANONICAL_APPROVAL_STORE',approval_id:'APP-TEST-10',
   plan_idempotency_key:p.idempotency_key,tenant_id:p.tenant_id,
-  jurisdiction_id:p.jurisdiction_id,branch_id:p.branch_id,
+  jurisdiction_id:p.jurisdiction_id,country_id:p.country_id,region_id:p.region_id,correlation_id:p.correlation_id,branch_id:p.branch_id,
   canonical_record_id:p.canonical_record_id,job_type_id:p.job_type_id,
   status:'APPROVED',approved_by:'OWNER-TEST',implemented_by:'AG-010',
   evidence_ref:'test:approval:10',approved_at:'2026-11-21T12:00:00Z',
