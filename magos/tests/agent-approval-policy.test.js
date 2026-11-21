@@ -30,9 +30,10 @@ test('independent approval only makes a task eligible for further governed event
  assert.equal(r.status,'ELIGIBLE_FOR_GOVERNED_EVENT_REVIEW');
  assert.equal(r.execution_authorized,false);
 });
-test('approval from inbound AI payload is not canonical',async()=>{
- const r=await verifyAgentApproval(p,{loadReceipt:async()=>({...receipt,origin:'AI_PROMPT'}),loadAuthority:async()=>liveAuthority,now});
- assert.equal(r.status,'ELIGIBLE_FOR_GOVERNED_EVENT_REVIEW'); // Trusted reader output is authoritative, not receipt.origin.
+test('inbound AI approval payload cannot substitute for trusted readers',async()=>{
+ const r=await verifyAgentApproval(p,{receipt:{...receipt,origin:'AI_PROMPT'},liveAuthority,now});
+ assert.equal(r.status,'BLOCKED');
+ assert.ok(r.blockers.includes('TRUSTED_READERS_NOT_CONFIGURED'));
 });
 test('mismatched branch and task cannot use another approval',async()=>{
  const r=await verifyAgentApproval(p,{loadReceipt:async()=>({...receipt,branch_id:'JOHANNESBURG',plan_idempotency_key:'OTHER'}),loadAuthority:async()=>liveAuthority,now});
