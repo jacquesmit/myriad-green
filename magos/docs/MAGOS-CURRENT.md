@@ -90,3 +90,10 @@ For each real MAGOS code change:
 - A zero-required deposit is now reported as **`NO_DEPOSIT_REQUIRED_NOT_BANK_CLEARED`** rather than inventing cleared funds, pending a separately approved no-deposit release policy.
 - **Critical truth:** `Payment_Events` is itself an internal historical register. Matching `CLEARED` rows is not independent real-time bank/provider settlement confirmation. The inspector returns `independent_bank_confirmation:false`; production job and procurement authorization still require bank/provider evidence and release acceptance. Never treat spreadsheet status as a verified incoming bank transaction.
 - The change has test fixtures for valid source pairs, missing payment events, duplicate rows/events, mismatch, invalid evidence, zero deposit. **CI and merge pending** until exact-head checks pass.
+
+## Independent bank release authority — current candidate
+
+- **PR #60 merged** at `834514014a431ebb7b3822a7d7ffbf16c01e7f04` after Runtime P2, Document Extract, Evolving Status Gate CI PASS. Canonical `Payment Control`, `Payment_Allocations`, `Payment_Events` consistency checks are now in GitHub `main`. Their `CLEARED` labels are internal observations, **not** independent bank settlement.
+- Next boundary **candidate** `codex/magos-bank-provider-release-authority-20261121`: existing `createCanonicalJobAuthorityVerifier` now requires a distinct *server-side* `bankClearanceVerifier` before it permits creation of a job from an accepted, signed quote.
+- The independent bank/provider authority must confirm the exact control ID, opportunity, job ID, unique cleared event ID set, cleared cents, settlement state and authoritative confirmation ID. A missing verifier blocks job creation; generic runtime/HTTP caller cannot supply approval. Tests include missing, mismatched, duplicated and unavailable authority.
+- **Production gap:** no real bank/provider credentialed verification callback is connected in the HOSTAFRICA worker. This is intentional fail-closed, not permission to manufacture an attestation. Source CI and merge are still pending. The previous working business operations outside new guarded flows remain unchanged.
