@@ -88,7 +88,10 @@ async function inspectSupplierAllocation({
   try{reviewer=await reviewAuthority({allocation:a,sourceLine:line,job_id:job,opportunity_id:opp});}
   catch{block('INDEPENDENT_REVIEW_UNAVAILABLE');}
   if(reviewer?.verified!==true||reviewer?.allocation_id!==key||
-     !val(reviewer?.reviewer_id)||reviewer?.source_document_checked!==true)
+     !val(reviewer?.reviewer_id)||reviewer?.source_document_checked!==true||
+     reviewer?.receipt_type!=='SUPPLIER_INVOICE'||
+     reviewer?.document_id!==val(a.supplier_document_id)||
+     reviewer?.reviewed_amount_cents!==cents)
     block('INDEPENDENT_SOURCE_DOCUMENT_REVIEW_MISSING');
  }
  if(typeof stockAuthority!=='function')block('STOCK_SPLIT_AUTHORITY_UNAVAILABLE');
@@ -96,7 +99,9 @@ async function inspectSupplierAllocation({
   try{stock=await stockAuthority({allocation:a,sourceLine:line,job_id:job,opportunity_id:opp});}
   catch{block('STOCK_SPLIT_RECONCILIATION_UNAVAILABLE');}
   if(stock?.verified!==true||stock?.allocation_id!==key||
-     stock?.job_id!==job||stock?.stock_split_verified!==true)
+     stock?.job_id!==job||stock?.stock_split_verified!==true||
+     stock?.part_id!==val(a.part_id)||
+     Number(stock?.allocated_quantity)!==Number(a.allocated_qty))
     block('STOCK_SPLIT_NOT_INDEPENDENTLY_VERIFIED');
  }
  if(blockers.length)return {verified:false,reason_code:blockers[0],
