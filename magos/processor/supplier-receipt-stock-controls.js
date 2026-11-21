@@ -5,7 +5,6 @@
 const {validDriveUrl,positive}=require('./supplier-cost-evidence');
 const v=x=>String(x??'').trim();
 const qty=x=>{const t=v(x);return /^(?:\d+)(?:\.\d{1,3})?$/.test(t)?Number(t):null;};
-const canonicalPart=x=>v(x.ordered_part_id||x.received_part_id);
 const fileId=url=>{const m=v(url).match(/^https:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)(?:\/|$)/);return m?.[1]||'';};
 async function inspectSupplierReceiptStock({stores,allocation,sourceLine}={}){
  const blockers=[];
@@ -50,15 +49,9 @@ async function inspectSupplierReceiptStock({stores,allocation,sourceLine}={}){
     reject('INSUFFICIENT_UNDAMAGED_RECEIVED_QUANTITY');
   const unitCents=positive(grn.actual_unit_cost_inc_vat);
   if(unitCents===null||!Number.isInteger(n*unitCents)||
-     n*unitCents!==allocatedCents)
+     Math.abs(n*unitCents-allocatedCents)>1)
     reject('GRN_RECEIPT_PRICE_AND_ALLOCATION_MISMATCH');
  }
- const issued=movements.filter(r=>v(r.destination_job_id)===job&&
-    v(r.part_id)===part&&v(r.source_grn_line_id)===v(grn?.grn_line_id)&&
-    validDriveUrl(r.evidence_link)&&
-    ['ISSUE_TO_JOB','JOB_CONSUMPTION','JOB_ISSUE'].includes(v(r.movement_type))&&
-    qty(r.quantity_change)!==null&&qty(r.quantity_change)<0);
- // Negative stock movements are intentionally parsed separately from positive quantities.
  const relevant=movements.filter(r=>v(r.destination_job_id)===job&&
     v(r.part_id)===part&&v(r.source_grn_line_id)===v(grn?.grn_line_id)&&
     validDriveUrl(r.evidence_link)&&
