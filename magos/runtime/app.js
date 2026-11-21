@@ -53,7 +53,7 @@ function createRuntimeApp({
   token = process.env.MAGOS_RUNTIME_TOKEN,
   deployedCommitSha = process.env.MAGOS_DEPLOY_COMMIT_SHA,
   operatorReadToken = process.env.MAGOS_OPERATOR_READ_TOKEN,
-  signedAcceptanceVerifier = async () => ({verified:false,reason_code:'SIGNED_ACCEPTANCE_NOT_VERIFIED'}),
+  signedAcceptanceVerifier = null,
   supplierApprovalToken = process.env.MAGOS_SUPPLIER_APPROVAL_TOKEN,
   supplierApprovalAuthorityVerifier = async () => ({verified:false,reason_code:'SUPPLIER_APPROVAL_AUTHORITY_NOT_VERIFIED'}),
   jobCreationToken = process.env.MAGOS_JOB_CREATION_TOKEN,
@@ -91,6 +91,10 @@ function createRuntimeApp({
     if (!writer) writer = writerFactory();
     return writer;
   };
+
+  const getSignedAcceptanceVerifier = () => signedAcceptanceVerifier ||
+    require('../processor/wordpress-acceptance-verifier')
+      .makeWordPressAcceptanceVerifier({stores:getWriter().stores});
 
   const getLiveAgentAuthority = () => {
     if (!liveAgentAuthority) liveAgentAuthority = liveAgentAuthorityFactory();
@@ -405,7 +409,7 @@ function createRuntimeApp({
       const {assessJobActivation}=require('../processor/job-activation-assessment');
       const result=await assessJobActivation({
         stores:getWriter().stores,quoteId:req.params.quoteId,
-        evidenceVerifier:signedAcceptanceVerifier
+        evidenceVerifier:getSignedAcceptanceVerifier()
       });
       return res.status(result.state==='READY_FOR_GOVERNED_AUTHORIZATION'?200:202).json(result);
     }catch {
@@ -579,7 +583,7 @@ function createRuntimeApp({
     if(!['quoteId','jobId','sourceEventId'].every(k=>typeof b[k]==='string'&&b[k].trim()))return res.status(400).json({error:'JOB_IDENTIFIERS_REQUIRED'});
     try {
       const {executeAcceptedJob}=require('../processor/accepted-job-execution');
-      const result=await executeAcceptedJob({writer:getWriter(),quoteId:b.quoteId,jobId:b.jobId,sourceEventId:b.sourceEventId,authorityVerifier:jobAuthorityVerifier || require('../processor/canonical-job-authority').createCanonicalJobAuthorityVerifier({stores:getWriter().stores,acceptanceVerifier:signedAcceptanceVerifier}),dryRun:b.dryRun===true});
+      const result=await executeAcceptedJob({writer:getWriter(),quoteId:b.quoteId,jobId:b.jobId,sourceEventId:b.sourceEventId,authorityVerifier:jobAuthorityVerifier || require('../processor/canonical-job-authority').createCanonicalJobAuthorityVerifier({stores:getWriter().stores,acceptanceVerifier:getSignedAcceptanceVerifier()}),dryRun:b.dryRun===true});
       return res.status(['COMMITTED','DUPLICATE_NO_OP','DRY_RUN'].includes(result.state)?200:result.state==='REVIEW_REQUIRED'||result.state==='BLOCKED'?202:409).json(result);
     }catch(error){return res.status(500).json({error:'GOVERNED_JOB_CREATION_FAILED',detail:error.message});}
   });
