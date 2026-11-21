@@ -44,7 +44,7 @@ async function verifyAgentApproval(plan,{ loadReceipt, loadAuthority, now = new 
     blockers.push('LIVE_AUTHORITY_NOT_VERIFIED');
   }
   if (!same(receipt?.plan_idempotency_key,plan?.idempotency_key)) blockers.push('APPROVAL_PLAN_MISMATCH');
-  for(const field of ['tenant_id','jurisdiction_id','branch_id','canonical_record_id','job_type_id']) {
+  for(const field of ['tenant_id','jurisdiction_id','country_id','region_id','branch_id','canonical_record_id','job_type_id','correlation_id']) {
     if (!same(receipt?.[field],plan?.[field])) blockers.push('APPROVAL_SCOPE_MISMATCH');
   }
   if (!same(liveAuthority?.owner_agent_id,plan?.agent_id) ||
