@@ -241,6 +241,11 @@
       const careCheck=button('Inspect warranties & aftercare',
         ()=>inspectAftercare(item.details.job_id,careOutput,careCheck),'secondary');
       target.append(careCheck,careOutput);
+      const closureOutput=element('p');
+      closureOutput.setAttribute('role','status');
+      const closureCheck=button('Inspect complete job closure',
+        ()=>inspectOperationalClosure(item.details.job_id,closureOutput,closureCheck),'secondary');
+      target.append(closureCheck,closureOutput);
     }
     if(department==='finance' && item.details?.['Invoice ID']) {
       const receivableOutput=element('p');
@@ -301,6 +306,27 @@
       redirect: 'error',
       signal,
     });
+  }
+
+  async function inspectOperationalClosure(jobId,output,button){
+    const active=new AbortController();
+    inspection?.abort();inspection=active;button.disabled=true;
+    output.textContent='Reconciling complete job, cost, payment and warranty evidence…';
+    const deadline=setTimeout(()=>active.abort(),15000);
+    try {
+      const response=await read('/v1/operator/operational-closure/'+encodeURIComponent(jobId),active.signal);
+      const result=await response.json();
+      if(inspection!==active)return;
+      if(!result.schema_version)throw Error('CLOSURE_SOURCE_UNAVAILABLE');
+      output.textContent=[
+        result.state.replaceAll('_',' '),
+        ...(result.blockers||[]),
+        ...(result.next_actions||[]),
+        'Owner close authorization still required'
+      ].join(' · ');
+    }catch{
+      if(inspection===active)output.textContent='Closeout reconciliation unavailable; review canonical source records.';
+    }finally{clearTimeout(deadline);if(inspection===active)button.disabled=false;}
   }
 
   async function inspectReceivable(invoiceId,output,button){
