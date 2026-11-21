@@ -862,7 +862,7 @@ test('AG-001 planner is authenticated and cannot call writer', async () => {
     writerFactory:()=>({execute:async()=>{writes++;return {state:'COMMITTED'};}})
   });
   const task={
-    job_type_id:'JT-002',tenant_id:'MYRIAD_GREEN',jurisdiction_id:'ZA',
+    job_type_id:'JT-002',tenant_id:'MYRIAD_GREEN',jurisdiction_id:'ZA',country_id:'ZA',region_id:'GP',correlation_id:'CORR-TEST',
     branch_id:'PRETORIA',canonical_record_id:'CRM-TEST-1',
     source:'GMAIL',source_event_id:'MSG-TEST-1',evidence_refs:['test:gmail:msg-1']
   };
