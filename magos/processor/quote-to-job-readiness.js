@@ -13,7 +13,7 @@ function assessQuoteToJob({ quote, job, paymentClearance, acceptanceEvidence } =
   const accepted = upper(quote?.['Quote Status']) === 'ACCEPTED';
   if (!accepted) failures.push('QUOTE_NOT_ACCEPTED');
   if (!value(acceptanceEvidence)) unknown.push('ACCEPTANCE_EVIDENCE_NOT_VERIFIED');
-  if (quote && upper(quote['Line Control State']) !== 'PASS') unknown.push('CANONICAL_QUOTE_LINES_NOT_VERIFIED');
+  if (quote && !['PASS','LINE_CONTROL_OK'].includes(upper(quote['Line Control State']))) unknown.push('CANONICAL_QUOTE_LINES_NOT_VERIFIED');
   // Payment proof or a claimed deposit is never equivalent to cleared funds.
   if (paymentClearance !== 'CLEARED') unknown.push('PAYMENT_CLEARANCE_NOT_VERIFIED');
   if (job && value(job.job_id)) unknown.push('EXISTING_JOB_REQUIRES_RECONCILIATION');
