@@ -76,3 +76,9 @@ For each real MAGOS code change:
 - Added `magos/scripts/package-reviewed-signature-plugin.sh` to package only `magos/wordpress/mgos-reviewed-client-signature.php` under the installable WordPress plugin slug, with a reproducible ZIP and SHA-256 checksum.
 - The `MAGOS WordPress Signature Bridge` CI builds, tests and uploads the plugin ZIP plus checksum as a **release artifact**, not a live site installation. Any installation must verify checksum, use approved WordPress admin/hosting access, test on staging, confirm `verify-v2` source and signing-page safety, and retain rollback.
 - **Code/CI status: PR candidate.** Live site still has no reviewed companion route and signing page 9481 is draft. Do not claim customer signing enabled or accept customer deposits solely because a ZIP exists.
+
+### Merged release packaging — reviewed client signature bridge
+
+- [PR #58](https://github.com/jacquesmit/myriad-green/pull/58) merged into `main` at `b4af09d03975938ab0c63ee1b850a555b3528a25` after exact-head WordPress Signature Bridge workflow #5 PASS, MAGOS Evolving Status Gate workflow #5 PASS and MAGOS Document Extract #224 PASS (PR head `071f7588426afc850b51f2d9862476acaf09fa53`).
+- CI produced the reproducible `magos-reviewed-client-signature.zip` and `.zip.sha256` as GitHub workflow artifacts; archive content and independent checksum tests PASS.
+- **No live WordPress plugin was installed.** The production client signing page is still a draft based on last confirmed WPVibe inspection. Customer signature end-to-end acceptance remains BLOCKED until controlled install and production validation.
