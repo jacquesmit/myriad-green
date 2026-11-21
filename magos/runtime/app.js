@@ -317,6 +317,16 @@ function createRuntimeApp({
       return res.status(503).json({error:'DEPOSIT_EVIDENCE_UNAVAILABLE'});
     }
   });
+  app.get('/v1/operator/scheduling-readiness/:jobId',requireOperatorInspection,async(req,res)=>{
+    try {
+      const {inspectSchedulingReadiness}=require('../processor/scheduling-readiness');
+      const result=await inspectSchedulingReadiness({stores:getWriter().stores,jobId:req.params.jobId});
+      return res.status(result.state==='READY_FOR_PROVIDER_AVAILABILITY_CHECK'?200:202).json(result);
+    }catch {
+      return res.status(503).json({error:'SCHEDULING_READINESS_UNAVAILABLE'});
+    }
+  });
+
   app.get('/v1/operator/job-closeout/:jobId',requireOperatorInspection,async(req,res)=>{
     try {
       const {inspectJobCloseout}=require('../processor/job-closeout-readiness');
