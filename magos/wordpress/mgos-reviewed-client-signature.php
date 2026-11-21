@@ -104,6 +104,8 @@ final class MAGOS_Reviewed_Client_Receipt {
         foreach ((array)$rows as $r) {
             echo '<tr><td>'.esc_html($r['id']).'</td><td>'.esc_html($r['quote_id']).'</td><td>'.esc_html($r['quote_version']).'</td><td>'.esc_html($r['signer']).'</td><td>'.esc_html($r['signed_at']).'</td><td>'.esc_html($r['status']).'</td><td>';
             echo '<a target="_blank" rel="noopener" href="'.esc_url($r['issued_pdf_ref']).'">Issued PDF</a>';
+            $preview=wp_nonce_url(admin_url('admin-post.php?action=magos_show_client_signature&receipt_id='.intval($r['id'])),'magos_show_signature_'.intval($r['id']));
+            echo ' | <a target="_blank" rel="noopener" href="'.esc_url($preview).'">View signed PNG</a>';
             if ($r['status']==='PENDING_REVIEW') {
                 $url=admin_url('admin-post.php');
                 echo '<form action="'.esc_url($url).'" method="post">';
@@ -117,6 +119,24 @@ final class MAGOS_Reviewed_Client_Receipt {
         }
         echo '</tbody></table><p>Approvals require MAGOS to independently verify the current Commercial quote. No status on this page can release materials or schedule work.</p></div>';
     }
+    static function show_signature() {
+        if(!current_user_can('manage_options')) wp_die('Access denied');
+        $id=absint($_GET['receipt_id']??0);
+        check_admin_referer('magos_show_signature_'.$id);
+        global $wpdb;
+        $row=$wpdb->get_row($wpdb->prepare('SELECT signature_png,signature_sha256 FROM '.self::table().' WHERE id=%d',$id),ARRAY_A);
+        if(!$row || !is_string($row['signature_png']) ||
+           !hash_equals((string)$row['signature_sha256'],hash('sha256',$row['signature_png']))) {
+            status_header(404);exit;
+        }
+        nocache_headers();
+        header('Content-Type: image/png');
+        header('Content-Disposition: inline; filename="magos-signature-review.png"');
+        header('X-Content-Type-Options: nosniff');
+        echo $row['signature_png'];
+        exit;
+    }
+
     static function approve() {
         if (!current_user_can('manage_options')) wp_die('Access denied');
         $id=absint($_POST['receipt_id']??0);
@@ -189,6 +209,7 @@ final class MAGOS_Reviewed_Client_Receipt {
                 'manage_options','magos-reviewed-signatures',[__CLASS__,'review_page']);
         });
         add_action('admin_post_magos_approve_client_receipt',[__CLASS__,'approve']);
+        add_action('admin_post_magos_show_client_signature',[__CLASS__,'show_signature']);
         add_action('rest_api_init',function(){
             register_rest_route('mgos/v1','/quote-acceptance/verify-v2',[
                 'methods'=>'GET','callback'=>[__CLASS__,'verify'],
