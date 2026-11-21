@@ -1,0 +1,33 @@
+name: MAGOS Evolving Status Gate
+
+on:
+  pull_request:
+    paths:
+      - 'magos/**'
+      - '.github/workflows/magos-*.yml'
+      - '.github/workflows/magos-*.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  documentation-reconciliation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full history for exact base/head comparison
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set Node environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Test change-gate rules
+        run: node --test magos/tests/status-update-gate.test.js
+      - name: Require current and historical status records for MAGOS code changes
+        if: github.event_name == 'pull_request'
+        env:
+          MAGOS_PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          MAGOS_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node magos/scripts/require-status-update.js
