@@ -1,0 +1,25 @@
+name: MAGOS WordPress Signature Bridge
+on:
+  pull_request:
+    paths:
+      - 'magos/wordpress/**'
+      - 'magos/tests/wordpress-bridge-source.test.js'
+      - '.github/workflows/magos-wp-bridge.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'magos/wordpress/**'
+      - 'magos/tests/wordpress-bridge-source.test.js'
+      - '.github/workflows/magos-wp-bridge.yml'
+
+jobs:
+  php-lint-and-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: PHP syntax verification
+        run: |
+          php --version
+          php -l magos/wordpress/mgos-reviewed-client-signature.php
+      - name: Client signature controls
+        run: node --test magos/tests/wordpress-bridge-source.test.js
