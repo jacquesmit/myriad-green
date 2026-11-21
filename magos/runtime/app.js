@@ -51,6 +51,7 @@ function isPlausiblePlan(plan) {
 
 function createRuntimeApp({
   token = process.env.MAGOS_RUNTIME_TOKEN,
+  deployedCommitSha = process.env.MAGOS_DEPLOY_COMMIT_SHA,
   operatorReadToken = process.env.MAGOS_OPERATOR_READ_TOKEN,
   signedAcceptanceVerifier = async () => ({verified:false,reason_code:'SIGNED_ACCEPTANCE_NOT_VERIFIED'}),
   supplierApprovalToken = process.env.MAGOS_SUPPLIER_APPROVAL_TOKEN,
@@ -132,6 +133,23 @@ function createRuntimeApp({
       service: 'MAGOS Automation Runtime V1',
       status: 'ok',
       version
+    });
+  });
+
+  // Process-start deployment identity, not just the mutable host git checkout.
+  // Set only by the verified deployment service before starting the worker.
+  app.get('/v1/runtime/build', requireRuntimeAuth, (req,res)=>{
+    const sha=String(deployedCommitSha||'').trim();
+    if(!/^[0-9a-f]{40}$/i.test(sha)) {
+      return res.status(503).json({
+        status:'UNVERIFIED',error:'DEPLOYED_COMMIT_SHA_NOT_CONFIGURED'
+      });
+    }
+    return res.status(200).json({
+      schema_version:'MAGOS_RUNTIME_BUILD_V1',
+      commit_sha:sha.toLowerCase(),
+      status:'DECLARED_AT_PROCESS_START',
+      source:'MAGOS_DEPLOY_COMMIT_SHA'
     });
   });
 
