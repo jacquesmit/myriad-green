@@ -25,3 +25,19 @@ Transaction Writer. No parallel CRM, quotes, suppliers, task or audit ledger.
 Do not activate a registered-only agent or claim production-ready before
 AG-013 independent QA, AG-030 approval, hosted commit parity, read-back,
 replay and recovery evidence.
+
+## Executable MAGOS work supersedes speculative agent naming
+
+For **new working runtime functionality** start with
+[Executable Workflows V1](docs/MAGOS-EXECUTABLE-WORKFLOWS-V1.md).
+Name executable capabilities by business outcome, e.g. `lead-intake`,
+`supplier-inbox`, `payment-evidence`. Do not create more AG-numeric roles
+when a workflow/module/function suffices. Historical AG/JT IDs remain
+compatibility/provenance only and are not a prerequisite for a named
+workflow executing through an existing governed processor.
+
+This instruction does **not** waive approval, identity, payment, privacy,
+canonical ownership or production QA gates. A functional workflow must
+pass tests and a live same-key replay/readback acceptance case before
+claiming production PASS. Prefer working code and the exact failing
+runtime test over new charts, documents or generic agent definitions.
