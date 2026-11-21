@@ -13,6 +13,7 @@ const sha=zip+'.sha256';
 const php=path.join(root,'wordpress','mgos-reviewed-client-signature.php');
 
 test('release is an installable single-plugin ZIP containing the exact source file',()=>{
+ execFileSync('bash',[path.join(root,'scripts','package-reviewed-signature-plugin.sh')],{stdio:'ignore'});
  assert.ok(fs.statSync(zip).size>1000);
  const manifest=fs.readFileSync(sha,'utf8').trim();
  assert.match(manifest,new RegExp('^[a-f0-9]{64}\\s{2}'+slug+'\\.zip$'));
@@ -25,6 +26,7 @@ test('release is an installable single-plugin ZIP containing the exact source fi
  assert.match(contents.toString('utf8'),/Plugin Name: MAGOS Reviewed Client Signature Receipt/);
 });
 test('repeated packaging produces identical checksums and never includes credentials',()=>{
+ execFileSync('bash',[path.join(root,'scripts','package-reviewed-signature-plugin.sh')],{stdio:'ignore'});
  const before=fs.readFileSync(sha,'utf8');
  execFileSync('bash',[path.join(root,'scripts','package-reviewed-signature-plugin.sh')],{stdio:'ignore'});
  assert.equal(fs.readFileSync(sha,'utf8'),before);
