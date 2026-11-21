@@ -28,6 +28,7 @@ on:
       - 'magos/tests/record-direct-job-cost.test.js'
       - 'magos/tests/provisional-job-cost.test.js'
       - 'magos/tests/verify-provisional-cost.test.js'
+      - 'magos/tests/supplier-cost-evidence.test.js'
       - 'magos/tests/signed-quote-link.test.js'
       - 'magos/tests/job-closeout-readiness.test.js'
       - 'magos/tests/accepted-*.test.js'
@@ -77,6 +78,7 @@ on:
       - 'magos/tests/record-direct-job-cost.test.js'
       - 'magos/tests/provisional-job-cost.test.js'
       - 'magos/tests/verify-provisional-cost.test.js'
+      - 'magos/tests/supplier-cost-evidence.test.js'
       - 'magos/tests/signed-quote-link.test.js'
       - 'magos/tests/job-closeout-readiness.test.js'
       - 'magos/tests/accepted-*.test.js'
@@ -131,7 +133,7 @@ jobs:
           done
           curl --fail http://127.0.0.1:18081/healthz
           curl --fail http://127.0.0.1:18081/readyz
-      - run: node --test tests/runtime-http.test.js tests/transaction-writer.test.js tests/fluent-forms-adapter.test.js tests/supplier-email-intake.test.js tests/processor-registry.test.js tests/agent-router.test.js tests/agent-owner-resolver.test.js tests/agent-approval-policy.test.js tests/live-agent-authority.test.js tests/agent-review-queue.test.js tests/workflow-runner.test.js tests/operator-snapshot.test.js tests/operator-dashboard.test.js tests/operator-page.test.js tests/system-coverage.test.js tests/job-release-inspection.test.js tests/deposit-evidence-inspection.test.js tests/job-activation-assessment.test.js tests/signed-acceptance-verification.test.js tests/accepted-job-execution.test.js tests/accepted-quote-job-plan.test.js tests/canonical-job-authority.test.js tests/job-commit-readback.test.js tests/live-supplier-procurement.test.js tests/procurement-draft-transaction.test.js tests/procurement-issue-approval.test.js tests/quote-to-job-readiness.test.js tests/scoped-action-gate.test.js tests/supplier-approval-governance.test.js tests/supplier-approval-writer-integration.test.js tests/supplier-procurement-readiness.test.js tests/procurement-p3-integration.test.js tests/procurement-draft-http.test.js tests/job-closeout-readiness.test.js tests/supplier-approval-http-authority.test.js tests/scheduling-readiness.test.js tests/receivables-reconciliation.test.js tests/aftercare-readiness.test.js tests/finance-aftercare-http.test.js tests/operational-closure.test.js tests/release-preflight.test.js tests/wordpress-acceptance-verifier.test.js tests/accept-reviewed-quote.test.js tests/record-direct-job-cost.test.js tests/provisional-job-cost.test.js tests/verify-provisional-cost.test.js tests/signed-quote-link.test.js
+      - run: node --test tests/runtime-http.test.js tests/transaction-writer.test.js tests/fluent-forms-adapter.test.js tests/supplier-email-intake.test.js tests/processor-registry.test.js tests/agent-router.test.js tests/agent-owner-resolver.test.js tests/agent-approval-policy.test.js tests/live-agent-authority.test.js tests/agent-review-queue.test.js tests/workflow-runner.test.js tests/operator-snapshot.test.js tests/operator-dashboard.test.js tests/operator-page.test.js tests/system-coverage.test.js tests/job-release-inspection.test.js tests/deposit-evidence-inspection.test.js tests/job-activation-assessment.test.js tests/signed-acceptance-verification.test.js tests/accepted-job-execution.test.js tests/accepted-quote-job-plan.test.js tests/canonical-job-authority.test.js tests/job-commit-readback.test.js tests/live-supplier-procurement.test.js tests/procurement-draft-transaction.test.js tests/procurement-issue-approval.test.js tests/quote-to-job-readiness.test.js tests/scoped-action-gate.test.js tests/supplier-approval-governance.test.js tests/supplier-approval-writer-integration.test.js tests/supplier-procurement-readiness.test.js tests/procurement-p3-integration.test.js tests/procurement-draft-http.test.js tests/job-closeout-readiness.test.js tests/supplier-approval-http-authority.test.js tests/scheduling-readiness.test.js tests/receivables-reconciliation.test.js tests/aftercare-readiness.test.js tests/finance-aftercare-http.test.js tests/operational-closure.test.js tests/release-preflight.test.js tests/wordpress-acceptance-verifier.test.js tests/accept-reviewed-quote.test.js tests/record-direct-job-cost.test.js tests/provisional-job-cost.test.js tests/verify-provisional-cost.test.js tests/supplier-cost-evidence.test.js tests/signed-quote-link.test.js
 
   container-smoke:
     runs-on: ubuntu-latest

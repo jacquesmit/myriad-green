@@ -61,7 +61,11 @@ function createRuntimeApp({
   quoteAcceptanceToken = process.env.MAGOS_QUOTE_ACCEPTANCE_TOKEN,
   directCostToken = process.env.MAGOS_DIRECT_COST_TOKEN,
   provisionalCostToken = process.env.MAGOS_PROVISIONAL_COST_TOKEN,
-  directCostEvidenceVerifier = async () => ({verified:false,reason_code:'DIRECT_COST_EVIDENCE_NOT_CONNECTED'}),
+  directCostEvidenceVerifier = null,
+  // These trusted callbacks must independently attest supplier invoice review
+  // and actual stock/job split. The built-in source inspection is read-only.
+  supplierCostReviewAuthority = null,
+  supplierStockSplitAuthority = null,
   quoteSigningSecret = process.env.MAGOS_WP_ACCEPTANCE_LINK_SECRET,
   signingPageReadiness = () => require('../processor/signed-quote-link').inspectSigningPage(),
   jobAuthorityVerifier = null,
@@ -98,6 +102,14 @@ function createRuntimeApp({
     if (!writer) writer = writerFactory();
     return writer;
   };
+
+  const getDirectCostEvidenceVerifier = () => directCostEvidenceVerifier ||
+    require('../processor/supplier-cost-evidence')
+      .makeSupplierCostEvidenceVerifier({
+        stores:getWriter().stores,
+        reviewAuthority:supplierCostReviewAuthority,
+        stockAuthority:supplierStockSplitAuthority
+      });
 
   const getSignedAcceptanceVerifier = () => signedAcceptanceVerifier ||
     require('../processor/wordpress-acceptance-verifier')
@@ -383,6 +395,22 @@ function createRuntimeApp({
     }catch{
       return res.status(503).json({error:'OPERATIONAL_CLOSURE_SOURCE_UNAVAILABLE'});
     }
+  });
+
+  // Existing supplier Cost_Allocations evidence, no writes or approval bypass.
+  app.get('/v1/operator/supplier-cost-allocation/:allocationId',requireOperatorInspection,async(req,res)=>{
+    const jobId=String(req.query.jobId||''),opportunityId=String(req.query.opportunityId||'');
+    if(!jobId||!opportunityId)return res.status(400).json({error:'JOB_AND_OPPORTUNITY_REQUIRED'});
+    try{
+      const {inspectSupplierAllocation}=require('../processor/supplier-cost-evidence');
+      const result=await inspectSupplierAllocation({
+        stores:getWriter().stores,jobId,opportunityId,
+        sourceEventId:req.params.allocationId,
+        reviewAuthority:supplierCostReviewAuthority,
+        stockAuthority:supplierStockSplitAuthority
+      });
+      return res.status(result.verified?200:202).json(result);
+    }catch{return res.status(503).json({error:'SUPPLIER_COST_SOURCE_UNAVAILABLE'});}
   });
 
   app.get('/v1/operator/aftercare/:jobId',requireOperatorInspection,async(req,res)=>{
@@ -684,7 +712,7 @@ function createRuntimeApp({
       const result=await verifyProvisionalCost({
         writer:getWriter(),jobId:b.jobId,
         provisionalCostId:b.provisionalCostId,sourceEventId:b.sourceEventId,
-        evidenceVerifier:directCostEvidenceVerifier,dryRun:b.dryRun===true
+        evidenceVerifier:getDirectCostEvidenceVerifier(),dryRun:b.dryRun===true
       });
       return res.status(
         ['COMMITTED','DUPLICATE_NO_OP','DRY_RUN'].includes(result.state)?200:
@@ -712,7 +740,7 @@ function createRuntimeApp({
       const {recordVerifiedDirectCost}=require('../processor/record-direct-job-cost');
       const result=await recordVerifiedDirectCost({
         writer:getWriter(),jobId:b.jobId,sourceEventId:b.sourceEventId,
-        evidenceVerifier:directCostEvidenceVerifier,dryRun:b.dryRun===true
+        evidenceVerifier:getDirectCostEvidenceVerifier(),dryRun:b.dryRun===true
       });
       return res.status(['COMMITTED','DUPLICATE_NO_OP','DRY_RUN'].includes(result.state)?200:
         result.state==='REVIEW_REQUIRED'?202:409).json(result);
