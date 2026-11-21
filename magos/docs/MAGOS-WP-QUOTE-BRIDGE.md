@@ -34,3 +34,18 @@
 - `magos/processor/signed-acceptance-verification.js`
 - `magos/processor/canonical-job-authority.js`
 - `magos/docs/CPANEL-PASSENGER-DEPLOY.md`
+
+
+## Additional verified blocker: signing page is not public
+WPVibe `wp post get 9481 --field=post_status` returned **draft** for `Accept & Sign Quotation` (`/accept-and-sign-quotation/`). The legacy owner-only test uses an administrator preview link. This is NOT a customer-accessible signing route until an approved page publication.
+
+## Controlled client link issuance now coded
+- `POST /v1/governance/quote-signing-link` requires a separate private `X-MAGOS-Signing-Token` credential.
+- Reads canonical Commercial `Quotes` and current `Quote_Lines`. Requires `Quote Status=ACTIVE`, `Workflow Stage=SENT`, `Line Control State=LINE_CONTROL_OK/PASS`, one current quote version, correct Drive-issued PDF and unexpired `Valid Until`.
+- Uses the same **privately configured** `link_secret` that the legacy WordPress signed-token parser uses; does not disclose the secret. Creates compatible URL-safe base64 JSON + HMAC SHA-256 token carrying quote_id, opportunity_id, version, issued_pdf_ref, expiry, nonce and CLIENT_ACCEPTANCE purpose.
+- Token expires after at most seven days, capped by the existing quote's Valid Until date. No email/WhatsApp message is dispatched.
+- Before any link is returned it verifies the public WordPress signing page is actually `publish` and the reviewed `verify-v2` route is registered. The inspected live state currently **fails** these checks, so live issuance is deliberately BLOCKED.
+- The companion WordPress plugin must be installed, acceptance page published and staged negative/positive tests passed before this route is operational for customers.
+
+### Scope of WPVibe access
+The connected WPVibe WordPress site supports WordPress CLI emulation, REST and read-only `wp-content` source/log inspection. It **does not** grant SSH, shell, Node process management or write access to existing installed plugin PHP source. Do not equate this with confirming or deploying HOSTAFRICA `runtime.myriadgreen.co.za`. No client page was published, plugin installed or WP customer data changed during inspection.
