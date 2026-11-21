@@ -51,7 +51,7 @@ function makeWordPressAcceptanceVerifier({
     if(!version)return denied('CURRENT_QUOTE_VERSION_AMBIGUOUS');
     const pdf=val(row['Drive Link']);
     if(!/^https:\/\//.test(pdf))return denied('ISSUED_QUOTE_DOCUMENT_UNVERIFIED');
-    const endpoint=new URL('/wp-json/mgos/v1/quote-acceptance/verify',url.origin);
+    const endpoint=new URL('/wp-json/mgos/v1/quote-acceptance/verify-v2',url.origin);
     endpoint.searchParams.set('quote_id',quoteId);
     endpoint.searchParams.set('opportunity_id',opportunityId);
     let data;
