@@ -4,6 +4,7 @@
 // Only existing EventEnvelope -> governed processor -> Transaction Writer may mutate.
 const crypto = require('node:crypto');
 const allocation = require('../rules/agent-allocation.snapshot.v1.json');
+const { resolveAgentTask } = require('../processor/agent-owner-resolver');
 
 const EFFECTS = Object.freeze(['READ', 'DRAFT', 'WRITE_BUSINESS_RECORD',
   'SEND_EXTERNAL_MESSAGE', 'ISSUE_QUOTE', 'ISSUE_INVOICE', 'RELEASE_PROCUREMENT',
@@ -21,7 +22,7 @@ function planAgentTask(task) {
   if (!task || typeof task !== 'object' || Array.isArray(task)) throw new TypeError('task must be an object');
   const job_type_id=clean(task.job_type_id).toUpperCase();
   const effect=clean(task.effect || 'READ').toUpperCase();
-  const scope = ['tenant_id','jurisdiction_id','branch_id','canonical_record_id','source','source_event_id'];
+  const scope = ['tenant_id','jurisdiction_id','country_id','region_id','branch_id','canonical_record_id','correlation_id','source','source_event_id'];
   if (!EFFECTS.includes(effect)) throw new Error('Unknown effect: '+effect);
   const route=ROUTES.get(job_type_id);
   const evidence_refs=Array.isArray(task.evidence_refs) ? task.evidence_refs : [];
@@ -38,7 +39,20 @@ function planAgentTask(task) {
   if (route?.registered_only) blockers.push('BLOCKED_REGISTRATION_ONLY');
   if (MUTATIONS.has(effect) && task.guards_verified !== true) blockers.push('BLOCKED_AUTHORITY');
   if (MUTATIONS.has(effect) && task.source_freshness_verified !== true) blockers.push('BLOCKED_SOURCE_FRESHNESS');
-  const agent_id=route?.primary_agent_id || null;
+  const catalog = {
+    agents:allocation.agents.map(x=>({Agent_ID:x.agent_id})),
+    jobTypes:allocation.job_types.map(x=>({Job_Type_ID:x.job_type_id,Primary_Agent_ID:x.primary_agent_id})),
+    allocations:allocation.jobs.map(x=>({Job_Type_ID:x.job_type_id,Primary_Agent_ID:x.primary_agent_id,Support_Agent_IDs:x.support_agent_ids.join(',')}))
+  };
+  const ownerCheck=resolveAgentTask({
+    tenant_id:clean(task.tenant_id),country_id:clean(task.country_id),
+    region_id:clean(task.region_id),branch_id:clean(task.branch_id),
+    business_record_id:clean(task.canonical_record_id),
+    job_type_id,correlation_id:clean(task.correlation_id),
+    idempotency_key:'ROUTING_SCOPE_CHECK'
+  },catalog);
+  if(ownerCheck.status!=='REVIEW_REQUIRED') blockers.push('CANONICAL_ROUTING_'+ownerCheck.reason_code);
+  const agent_id=ownerCheck.task?.primary_agent_id || route?.primary_agent_id || null;
   if (route && !CATALOG[agent_id]) blockers.push('BLOCKED_OWNER_CONFLICT');
   if (task.requested_agent_id && task.requested_agent_id !== agent_id) blockers.push('BLOCKED_OWNER_CONFLICT');
   // A user/AI supplied approval flag cannot authorize or bypass the writer.
@@ -55,6 +69,9 @@ function planAgentTask(task) {
     effect,
     tenant_id:clean(task.tenant_id),
     jurisdiction_id:clean(task.jurisdiction_id),
+    country_id:clean(task.country_id),
+    region_id:clean(task.region_id),
+    correlation_id:clean(task.correlation_id),
     branch_id:clean(task.branch_id),
     canonical_record_id:clean(task.canonical_record_id),
     source:clean(task.source),
