@@ -111,3 +111,11 @@ For each real MAGOS code change:
 - **Implementation candidate:** `job-payment-commit-preconditions.js` re-reads canonical `Payment Control`, `Payment_Allocations`, and `Payment_Events` after the signed quote/job plan has been resolved. It requires the independent bank attestation's exact control/opportunity, unique event and allocation IDs, and recorded cents to agree. Existing P3 writer then receives `PATCH/CREATE` preconditions for the exact deposit amount, cleared bank event state and evidence links, before any new job records are written.
 - `accepted-job-execution.js` rejects a different opportunity or missing bank authorization, attaches the finance preconditions to the same P3 plan and does not mutate records on preview. `canonical-job-authority.js` now returns its verified canonical opportunity ID explicitly.
 - **Truth:** CODE staged; CI/merge pending. The P3 writer's compare-and-match checks apply to known rows. Google Sheets does **not** provide atomic isolation over newly inserted/reversed rows; a real bank provider integration and end-to-end hosted idempotency acceptance remain necessary. No live customer or bank values have been changed.
+
+
+### Release evidence — job payment CAS #62
+
+- [PR #62](https://github.com/jacquesmit/myriad-green/pull/62) **MERGED** to GitHub `main` at `5bd261451e69b35c9670d3fe4cfc636f80fd6f48`. Exact tested PR head `5c2b9fbb368d3e734ad3cbadd8cfef0e8eb668e1`.
+- GitHub actions: MAGOS Runtime P2 **#193 PASS**, MAGOS Document Extract **#236 PASS**, MAGOS Evolving Status Gate **#10 PASS**. Source commit now contains `job-payment-commit-preconditions.js` and the protected job executor integration.
+- Existing P3 transaction binds financial source row compare-and-match conditions to the confirmed job, control, cleared payment events, allocation IDs, amounts and Drive evidence; regression tests cover reversed events, mismatched opportunity, missing bank attestation, dry-run and source mismatch.
+- **Production acceptance remains OPEN:** no bank/payment-provider attestation is connected in deployed HOSTAFRICA runtime; deployed SHA, WordPress reviewed-signing bridge and a genuine bank-to-signed-quote-to-job transaction are NOT VERIFIED. Google Sheets row-level CAS does not guarantee sheet-wide serializability. No real client or financial records edited by this implementation.
