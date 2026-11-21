@@ -129,3 +129,17 @@ Code changes are on PR #41, not confirmed deployed to HOSTAFRICA. Tests passing 
 
 ### Highest-value next execution
 Run current-HEAD CI; capture deployed SHA; review release candidate against current `main`, legacy recovery and host worktree; configure private secrets and real authority verifier(s); then controlled quote-to-job and PO draft golden acceptance with record-by-record readback and duplicate replay. Following that, make actual-cost capture and variation approval authoritative in the existing Commercial workbook with policy, writer schema and independent business evidence.
+
+
+## 21 November 2026 — Scheduling and business release gate integration
+
+- `magos/processor/scheduling-readiness.js` now evaluates actual CRM `Jobs_Opportunities` and `Bookings`, Commercial `Job Execution` and `Procurement`, plus independently cleared `Payment Control` / `Payment_Allocations`. Missing crew/site/scope/materials/technical evidence and duplicate active provider bookings fail closed. Returns `READY_FOR_PROVIDER_AVAILABILITY_CHECK`, not an unauthorized Calendar/Amelia booking.
+- Added `GET /v1/operator/scheduling-readiness/:jobId` and the Command Centre job-detail inspection action.
+- `magos/processor/job-closeout-readiness.js` assesses existing `Variations`, `Project Direct Costs`, `Project Cost & Margin` and `Job Execution`. A calculated provisional contribution is not final net profit. No auto close/PAID transition.
+- Supplier approval now requires independent verified source attestation; token possession alone cannot authorize supplier master mutations.
+- Procurement DRAFT endpoint and other governed operations are source-bound and require distinct host credentials. Missing verifier/configuration is a **business release gate**, not a reason to create another parallel MAGOS app.
+- Current legacy Control Hub CAP/GATE statuses must be reconciled against source code and real test evidence. The existence of an authoritative `Variations` tab is now independently observed, but its full writer owner/approval transition remains pending.
+
+**Remaining priorities:** run current SHA CI, verify exact host checkout, validate first real controlled job / PO readback, activate approved source authority verifiers, reconcile Commercial variation ownership/schema, implement trusted field actuals and final invoice; then integrate warranty/reviews/service-due with explicit recurrence rules. External provider booking availability and bank clearance must be independently verified, never guessed from CRM snapshots.
+
+No live website, shop, payment, customer or supplier records have been modified by the PR.
