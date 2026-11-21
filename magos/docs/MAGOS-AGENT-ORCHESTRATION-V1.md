@@ -1,30 +1,55 @@
-# MAGOS Specialist Agent Orchestration V1
+# MAGOS Agent Orchestration — Controlled Evolution V2
 
-Status: CODE IMPLEMENTED ON FEATURE BRANCH; TEST EXECUTION AND DEPLOYMENT NOT YET VERIFIED.
+Status: IMPLEMENTED IN GIT FEATURE BRANCH / CI PENDING / NOT DEPLOYED / NO AUTONOMOUS WRITES.
 
-## Purpose
-Introduce a provider-neutral, deterministic planning boundary for specialist MAGOS agents without duplicating CRM, Finance, Procurement or runtime ownership.
+## Canonical sources and the correction to V1
+The prior V1 six-department prototype was NOT an authoritative role model. It has been replaced with the registered AG-001..AG-038 identities and JT job ownership from **MAGOS Agent Job Allocation Matrix V1** (Drive), as of 2026-11-21.
 
-## Current implementation
-- Six specialist roles: SALES, MARKETING, OPERATIONS, FINANCE, PROCUREMENT, ENGINEERING.
-- A finite allowlist of capabilities per role; unknown capabilities block.
-- Stable SHA-256 idempotency key based on source, source_event_id, capability and effect.
-- Evidence required for every task; identity conflicts block.
-- Read/draft plans are proposals only. All mutations await approval; an approval flag or token carried inside user/AI payload is not trusted.
-- Unknown guards block mutations. Contact opt-out blocks outbound communications.
-- No network, API, database, or email side effects. No production route enabled.
-- The existing governed event runner and Transaction Writer remain the only future execution boundary.
+- [Agent registry and allocation workbook](https://docs.google.com/spreadsheets/d/1FKj-iudwat5bbFIrplgg237-ABPRq3ijQulf-LbSuBs/edit)
+- [Agent constitution](https://docs.google.com/document/d/1t-yVXvMQcb-hO049fdWCqYtr2dm0DQppT5p6TLVvJsY/edit)
+- [Authority and routing contract](https://docs.google.com/document/d/1b3_izPCM7bJZ27h0_Iql3UPetJzM9UjQLGzNDI5s5oM/edit)
+- [Business state-machine draft](https://docs.google.com/document/d/16xBviPdK9M45s0JinWyKnyrRQRNrAPRf2aHhpBE2-gU/edit)
+- [Runtime evolution directive](https://docs.google.com/document/d/1F4oij4hil7telCn9wM5BgPDoGIfzYxIc1jv-700PsM0/edit)
+- [MAGOS Global Audit / Data Ownership](https://docs.google.com/spreadsheets/d/1Y4iP2mVCIph8MrIL51mo-KpzgUkZbWW7ZUIlkH8lOTw/edit)
+- [MGOS Control Hub](https://docs.google.com/spreadsheets/d/1lxFrUEGeEojkxbpQiVfj1AxuB5C1ayaTzAT8rkaTObo/edit)
+- [AG-030 Governance](https://docs.google.com/document/d/1XQ2SewVmLNhLT0rdOOX9QGCwE-o4eCg_3TXspbfBvCQ/edit)
+- [AG-013 independent QA](https://docs.google.com/document/d/1a6gYVB1jgcnUYwuf0ioki5iW5CpV9Xk9VOrNSQy6zrc/edit)
+- [Internal information outbound firewall](https://docs.google.com/document/d/19YN5Zt2rqX7xGAN4iK-saa7Ll80QQ63BTjLbJ1GmaP0/edit)
 
-## Outstanding shortfalls and gates
-1. **P1 — CI and integration:** run agent-router tests in the MAGOS GitHub workflow; review pull request; no deployment before existing host checkout is reconciled.
-2. **P2 — Durable task state:** define canonical Task, Approval and Agent_Run audit records in MAGOS authority/schema; protect against duplicate claims and concurrent agents.
-3. **P3 — Authenticated execution:** implement per-action permissions, real approval identity, timeout, compensating action, rate limits and spend ceilings; validate end-to-end using non-customer test fixtures.
-4. **P4 — First live workflow:** Sales/Intake agent only, replay-safe handoff through existing governed event runner and writer. Compare with legacy intake results before cutover.
-5. **P5 — Expand:** connect other agents only after provenance, read-back, retries, dead-letter recovery, and kill switches are tested.
-6. **P6 — Deployed-runtime acceptance:** prove deployed commit SHA, authenticated health/probes, test writes and exact read-back; record source-specific approval and rollback evidence.
+The Git snapshot `magos/rules/agent-allocation.snapshot.v1.json` preserves 38 agent identities and 46 job-type assignments as a NON-AUTHORITATIVE, read-only code reference. The canonical Drive workbook remains authoritative. A snapshot mismatch must block execution until formally reconciled and tested; the snapshot alone cannot grant permissions or provide live ownership.
 
-## Non-goals / prohibited shortcuts
-- Do not turn this planner into an unsupervised autonomous writer.
-- Do not connect or modify WordPress/ecommerce, supplier pricing, advertisements, finance or customer records as part of this change.
-- Do not mistake tests passing for a deployed production release.
-- Approval and idempotency must be enforced by the execution layer; this planner is not their authority.
+## Implemented code
+- `magos/agents/agent-router.js`: explicit JT owner routing, hierarchical scope requirements (tenant, jurisdiction, branch, canonical record), idempotency key, evidence reference gate, deny-by-default controls, QA routing and approved/registered-only distinctions.
+- `POST /v1/agents/plan`: private bearer-authenticated proposal only. It cannot send mail, call tools or invoke the Transaction Writer. Even an input containing "approved": true is not authoritative.
+- Test cases cover owner resolution, wrong agent, opt-out, unknown/insufficient scope, stale sources, registration-only roles, idempotency scope isolation and HTTP authentication.
+- Existing EventEnvelope V1, GovernedProcessorRegistry, ReviewManager, RetryController, AuditLedger, Transaction Writer and Drive/MGOS business source of truth remain unchanged.
+
+## Immutable safety requirements for production
+1. AG-001 routes, never becomes the domain specialist.
+2. Every operational event has an exact JT ID and exactly one registered primary AG ID.
+3. No unscoped tenant/jurisdiction/branch/record operation.
+4. Missing evidence, unknown guards, stale identity or incomplete approvals result in BLOCKED/REVIEW_REQUIRED; never silently PASS.
+5. AG-013 independent QA; AG-025 cannot validate own website release; AG-010 validates cleared funds; AG-007 owns release decision; AG-030 authorizes high-risk production release.
+6. No purchase, invoice issue, public send, payment clearance or deployed change without independent authenticated approval and provider read-back.
+7. Outbound quote and communication renderer must exclude supplier/internal costs, margins, private notes and unapproved brand identifiers.
+8. AI prompt, `.md` rules or client-provided approval tokens are NOT executable authority.
+9. Legacy Make/Apps Script/ChatGPT intake paths remain until parity and controlled cutover is proven.
+10. Never create a parallel CRM, supplier library, quote register or private agent task database.
+
+## Pending work / completion gates
+| Gate | What must pass | State |
+| --- | --- | --- |
+| G1 | GitHub CI tests for agent plan and current runtime | PENDING |
+| G2 | Canonical agent assignment version and live source-of-truth freshness check (not snapshot-only) | PENDING |
+| G3 | Durable task audit, atomic claim, independent approval receipt and exact scope check against existing MAGOS-owned ledger | PENDING |
+| G4 | Approved action executes only through EventEnvelope -> GovernedProcessorRegistry -> Transaction Writer and authoritative read-back | PENDING |
+| G5 | Bounded retry, timeout, dead-letter, replay, opt-out and kill-switch exercises | PENDING |
+| G6 | Host SHA and deployed route verified via authenticated probes | PENDING |
+| G7 | Lead intake parallel golden test then explicit legacy migration | PENDING |
+| G8 | Independent AG-013 signoff and owner production release | PENDING |
+
+## Implementation sequencing
+Prefer REUSE > WRAP > EXTEND > MIGRATE LATER; do not build a second task ledger or writer. Next integrate AG-001 task proposals with a governed task/event envelope after live schema/ownership confirmation, and validate real write/read-back/duplicate cases under controlled fixtures. Until G1-G8 pass, autonomous agent completion = PARTIAL.
+
+## Git/Drive reconciliation discipline
+Before any merge or production deployment: compare Git `main`, agent branch, deployed HOSTAFRICA checkout and Drive canonical workbook revision. Preserve historical .md files as history; supersede with dated evidence, never silently rewrite prior decisions. Record exact source/commit/test/runtime proof and outstanding blockers.
