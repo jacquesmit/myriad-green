@@ -62,3 +62,23 @@ test('duplicate job identity and completed job are denied',async()=>{
  }),jobId:'JOB-T1'});
  assert.ok(finished.blockers.includes('JOB_NOT_ACTIVE'));
 });
+
+test('schedule readiness endpoint is view-only with separate operator credential',async()=>{
+ const http=require('node:http');
+ const {createRuntimeApp}=require('../runtime/app');
+ const app=createRuntimeApp({
+  token:'runtime-token',operatorReadToken:'view-token',
+  writerFactory:()=>({stores:stores(),execute:async()=>{throw Error('DO_NOT_BOOK')}})
+ });
+ const server=http.createServer(app);
+ await new Promise(ok=>server.listen(0,'127.0.0.1',ok));
+ try{
+  const url='http://127.0.0.1:'+server.address().port+'/v1/operator/scheduling-readiness/JOB-T1';
+  assert.equal((await fetch(url)).status,401);
+  const r=await fetch(url,{headers:{'X-MAGOS-Operator-Token':'view-token'}});
+  assert.equal(r.status,200);
+  const body=await r.json();
+  assert.equal(body.booking_authorized,false);
+  assert.equal(body.state,'READY_FOR_PROVIDER_AVAILABILITY_CHECK');
+ }finally{await new Promise(ok=>server.close(ok));}
+});
