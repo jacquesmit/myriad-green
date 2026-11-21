@@ -141,3 +141,10 @@ For each real MAGOS code change:
 - Admin approval and private `verify-v2` now require a **specific Google Drive file** in `/file/d/<id>/...`, not a generic Drive homepage or folder link; the receipt SHA-256 and independent review gates remain enforced.
 - Automated source-contract tests now verify token-purpose exclusion and Drive file specificity; reproducible ZIP packaging must re-run in PHP lint/Bridge CI. **CODE candidate; CI/merge pending.**
 - **No production install:** authenticated WPVibe still reports page 9481 `draft` and no live `verify-v2` route as of 2026-11-21. A packaged plugin is not an active customer acceptance workflow. Actual FluentForm submission, consent and reviewed-signature acceptance are still NOT VERIFIED.
+
+
+### Release evidence — exact client-purpose WordPress bridge #64
+
+- [PR #64](https://github.com/jacquesmit/myriad-green/pull/64) MERGED at `f515b707c7d357d3928d17e5d721b83cc22f04e5`; exact tested PR head `0d8400c704e6a6ec7885692875c42a24b518a9cb`. WordPress Signature Bridge CI #7 PASS (PHP lint, source contracts, deterministic ZIP and SHA), Document Extract #244 PASS, Evolving Status Gate #12 PASS.
+- Approved CI artifact: `magos-reviewed-client-signature-plugin` (artifact ID `14725111232`, archive digest `sha256:731dcf3e9b7456ddf94b8a81cdbb29703b774e5e390e1cd547f9ecdae3797eee`, expires 2026-12-21). This contains the actual installable plugin ZIP and checksum. A GitHub artifact is **not** an installed plugin and should only be deployed after staging, checksum and rollback review.
+- Live WordPress remains `verify-v2` MISSING and page `9481` DRAFT on the latest 2026-11-21 WPVibe inspection. HOSTAFRICA deployed runtime SHA NOT VERIFIED. Customer signature positive-path, bank provider confirmation and end-to-end job release remain BLOCKED. No customer-facing page or plugin was changed.
