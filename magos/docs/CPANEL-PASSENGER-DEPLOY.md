@@ -94,3 +94,29 @@ Safe verification sequence after reviewed merge and authorization:
 9. Keep existing source adapters and customer-facing operations in place until parity is independently demonstrated. **Do not promote the browser shell or CI passing to whole MAGOS COMPLETE.**
 
 The operator UI does not itself launch an additional database or payment authority. The existing CRM, Commercial, Supplier, Global Audit and Control Hub registers remain the authoritative business data.
+
+
+## Verified-build release preflight (21 November 2026)
+
+Use the full commit SHA of the **approved and CI-tested** GitHub release. Do NOT substitute the current host SHA as the expected value: the comparison must be independently anchored to GitHub.
+
+After an authorized deployment, set `MAGOS_DEPLOY_COMMIT_SHA` to that exact SHA in the private Node application environment **before recycling the MAGOS worker**. The authenticated `GET /v1/runtime/build` endpoint reports the value captured when the worker started. An old worker that has not received the new configuration must fail identity verification. A healthy `/healthz` does not prove the deployed commit.
+
+In cPanel Terminal, using the already verified MAGOS Node environment:
+
+```bash
+(
+  cd /home/myriaauq/repositories/myriad-green/magos || exit 1
+  source "$HOME/nodevenv/repositories/myriad-green/magos/20/bin/activate" || exit 1
+  # Replace with independently approved exact GitHub 40-character release SHA.
+  # Set MAGOS_EXPECTED_GIT_SHA privately for this shell invocation.
+  node runtime/release-preflight.js
+)
+```
+
+Required private environment names: `MAGOS_EXPECTED_GIT_SHA`, `MAGOS_DEPLOY_COMMIT_SHA`, `MAGOS_RUNTIME_URL`, `MAGOS_RUNTIME_TOKEN` and distinct `MAGOS_OPERATOR_READ_TOKEN`. Never paste their actual secret values in a support ticket or repository. The preflight reads host checkout, tracked worktree, `/healthz`, `/readyz`, authenticated runtime build, authenticated Sheets probe, workflow catalogue and the read-only Control Hub coverage. It emits **PASS/FAIL metadata and counts only**, no customer rows or secret values.
+
+**PASS does not mean the business system is complete.** It means host code, process declaration and currently accessible core sources meet this read-only release contract. Independent live golden transactions, bank settlement, production user acceptance and full business capability gates remain additional signoffs. No checkout, restart, deployment, payment, quote or business record is modified by the preflight.
+
+If any test fails, STOP and preserve the existing hosted deployment. Capture the failure code and Git status/readback, then repair only the failed dependency. Do not blindly pull `main`, overwrite server modifications, rotate credentials, kill unrelated `lsnode` workers or claim a production PASS.
+
