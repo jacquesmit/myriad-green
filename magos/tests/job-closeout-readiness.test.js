@@ -71,3 +71,23 @@ test('malformed money and missing data rejected, not treated as zero',()=>{
  assert.equal(money(''),null);
  assert.equal(money('-100'),null);
 });
+
+test('operator job closeout endpoint is separate read-only scope',async()=>{
+ const http=require('node:http');
+ const {createRuntimeApp}=require('../runtime/app');
+ const app=createRuntimeApp({
+  token:'runtime-token',operatorReadToken:'view-token',
+  writerFactory:()=>({stores:stores(),execute:async()=>{throw Error('WRITER_MUST_NOT_RUN')}})
+ });
+ const server=http.createServer(app);
+ await new Promise(ok=>server.listen(0,'127.0.0.1',ok));
+ try{
+  const base='http://127.0.0.1:'+server.address().port+'/v1/operator/job-closeout/JOB-T1';
+  assert.equal((await fetch(base)).status,401);
+  const res=await fetch(base,{headers:{'X-MAGOS-Operator-Token':'view-token'}});
+  assert.equal(res.status,200);
+  const result=await res.json();
+  assert.equal(result.state,'READY_FOR_INDEPENDENT_FINANCIAL_CLOSE_REVIEW');
+  assert.equal(result.side_effects,false);
+ }finally{await new Promise(ok=>server.close(ok));}
+});
