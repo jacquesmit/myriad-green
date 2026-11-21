@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const {planAgentTask}=require('../agents/agent-router');
 const {AgentReviewQueue}=require('../agents/agent-review-queue');
 const p=planAgentTask({
-  job_type_id:'JT-002',tenant_id:'MYRIAD_GREEN',jurisdiction_id:'ZA',
+  job_type_id:'JT-002',tenant_id:'MYRIAD_GREEN',jurisdiction_id:'ZA',country_id:'ZA',region_id:'GP',correlation_id:'CORR-TEST',
   branch_id:'PRETORIA',canonical_record_id:'CRM-TEST-1',source:'GMAIL',
   source_event_id:'MSG-TEST-1',evidence_refs:['test:gmail:1'],
   effect:'WRITE_BUSINESS_RECORD'
@@ -43,7 +43,7 @@ test('routes approval-required task into existing Sync_Exceptions review and rea
 });
 test('does not enqueue ordinary read-only proposals',async()=>{
  const read=planAgentTask({
-  job_type_id:'JT-002',tenant_id:'MYRIAD_GREEN',jurisdiction_id:'ZA',
+  job_type_id:'JT-002',tenant_id:'MYRIAD_GREEN',jurisdiction_id:'ZA',country_id:'ZA',region_id:'GP',correlation_id:'CORR-TEST',
   branch_id:'PRETORIA',canonical_record_id:'CRM-TEST-1',source:'GMAIL',
   source_event_id:'MSG-TEST-1',evidence_refs:['test:gmail:1']
  });
