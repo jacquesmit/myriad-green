@@ -91,3 +91,28 @@ test('snapshot includes all finance read/write CAS expectations without modifyin
  assert.equal(JSON.stringify(f.records),before);
  assert.equal(r.plan.preconditions.filter(p=>p.store==='commercial'&&p.sheet.startsWith('Payment')).length,3);
 });
+
+test('bank attestation for a different opportunity cannot produce a job P3 write',async()=>{
+ const f=fixture();
+ const r=await executeAcceptedJob({...args,writer:f.writer,authorityVerifier:async a=>({
+  ...await verifier(a),opportunity_id:'O-OTHER'
+ })});
+ assert.equal(r.state,'REVIEW_REQUIRED');
+ assert.equal(r.reason_code,'ATTESTED_OPPORTUNITY_MISMATCH');
+ assert.equal(f.count(),0);
+});
+test('P3 writer sees changed bank event and rejects commit through compare-and-swap',async()=>{
+ const f=fixture();
+ const original=f.writer.execute;
+ f.writer.execute=async plan=>{
+   f.records.Payment_Events[0].clearance_state='REVERSED';
+   const status=plan.preconditions.find(p=>p.sheet==='Payment_Events');
+   assert.equal(status.expect.clearance_state,'CLEARED');
+   if(f.records.Payment_Events[0].clearance_state!==status.expect.clearance_state)
+      return {state:'RETRY_REQUIRED',reason_code:'PRECONDITION_MISMATCH'};
+   return original(plan);
+ };
+ const r=await executeAcceptedJob({...args,writer:f.writer,authorityVerifier:verifier});
+ assert.equal(r.state,'RETRY_REQUIRED');
+ assert.equal(f.count(),0);
+});
