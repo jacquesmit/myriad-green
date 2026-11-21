@@ -205,3 +205,14 @@ Three independently merged/tested development changes now exist on GitHub `main`
 **Source truth levels:** CODED/TESTED/MAIN = PASS for these modules. Real independent invoice-review authority and physical stock-split authority must be wired to their verified providers before positive production expense verification. A spreadsheet label alone is not a supplier invoice or goods receipt. HOSTAFRICA runtime deployment SHA and end-to-end production transactions remain UNVERIFIED. No supplier invoice, job cost, stock ledger or payment record was modified by these commits.
 
 **Next high-leverage execution:** ground and implement independent supplier invoice-review and stock-split attestations from exact canonical source documents and approved physical allocation events. Then run a controlled single job receipt test through P3 write/readback. Preserve WooCommerce/WordPress customer production unchanged until separately accepted.
+
+
+## 21 November 2026 — Supplier receipt/stock corroboration and running-worker SHA attestation
+
+**Merged and GitHub CI PASS:**
+- [PR #53](https://github.com/jacquesmit/myriad-green/pull/53) merge `093dd7a196eb8af05ac116f6b01b4a792b1f8a7c`: real Supplier `Goods_Received` + `Stock_Ledger` reconciliation is required alongside `Cost_Allocations`, supplier invoice identity, canonical part, matching Drive source ID, undamaged quantity, amount and exact negative stock issue to the job. Quotation-only, ambiguous GRN, unlinked inventory and contradictory allocation evidence fail closed. Existing independent invoice/physical stock approval remains required; no fake supplier authority is created.
+- [PR #54](https://github.com/jacquesmit/myriad-green/pull/54) merge `667e382c815351143c42fbbfe97edcfad26a45cc`: runtime `/v1/runtime/build` now captures Git SHA and tracked-worktree state *at worker startup* independently from `MAGOS_DEPLOY_COMMIT_SHA`. Only matching clean checkout and declaration produce a verified fingerprint; build/readiness preflight rejects the old env-only declaration and disallows HTTP redirects on credential-bearing requests.
+
+**Test evidence:** MAGOS Runtime P2 and MAGOS Document Extract both completed with `success` for PR #53 head `89ab8094e4494dc505982d5ec1ca221f9a87a695` and PR #54 head `38e489afd3bcbad778fa3d5672c19b527d4e51ec`. No production purchase, stock or bank record was written.
+
+**Implementation truth:** source MERGED/CI-TESTED PASS. Independently reviewed supplier invoice and real stock release providers PARTIAL/PENDING; customer transaction acceptance test UNKNOWN; HOSTAFRICA deployed worker SHA NOT VERIFIED. The enhanced runtime must itself be deployed before the stronger build proof can be collected; a GitHub merge is not production acceptance.
