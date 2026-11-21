@@ -236,6 +236,18 @@
       const scheduleCheck=button('Inspect schedule readiness',
         ()=>inspectScheduling(item.details.job_id,scheduleOutput,scheduleCheck),'secondary');
       target.append(scheduleCheck,scheduleOutput);
+      const careOutput=element('p');
+      careOutput.setAttribute('role','status');
+      const careCheck=button('Inspect warranties & aftercare',
+        ()=>inspectAftercare(item.details.job_id,careOutput,careCheck),'secondary');
+      target.append(careCheck,careOutput);
+    }
+    if(department==='finance' && item.details?.['Invoice ID']) {
+      const receivableOutput=element('p');
+      receivableOutput.setAttribute('role','status');
+      const receivableCheck=button('Reconcile invoice & payments',
+        ()=>inspectReceivable(item.details['Invoice ID'],receivableOutput,receivableCheck),'secondary');
+      target.append(receivableCheck,receivableOutput);
     }
     if (department === 'quotes') {
       const output = element('p');
@@ -289,6 +301,50 @@
       redirect: 'error',
       signal,
     });
+  }
+
+  async function inspectReceivable(invoiceId,output,button){
+    const active=new AbortController();
+    inspection?.abort();inspection=active;button.disabled=true;
+    output.textContent='Reconciling invoice lines and cleared allocations…';
+    const deadline=setTimeout(()=>active.abort(),15000);
+    try{
+      const response=await read('/v1/operator/receivables/'+encodeURIComponent(invoiceId),active.signal);
+      const result=await response.json();
+      if(inspection!==active)return;
+      if(!result.schema_version)throw Error('RECEIVABLE_UNAVAILABLE');
+      output.textContent=[
+        result.state.replaceAll('_',' '),
+        result.recorded_balance_zar===null?'Balance unverified':
+          'Recorded balance '+zar.format(result.recorded_balance_zar),
+        ...(result.issues||[]),...(result.notes||[]),
+        'Bank verification not established by this read'
+      ].join(' · ');
+    }catch{
+      if(inspection===active)output.textContent='Invoice reconciliation unavailable; check Commercial register.';
+    }finally{clearTimeout(deadline);if(inspection===active)button.disabled=false;}
+  }
+
+  async function inspectAftercare(jobId,output,button){
+    const active=new AbortController();
+    inspection?.abort();inspection=active;button.disabled=true;
+    output.textContent='Checking installed assets, warranties and service policy…';
+    const deadline=setTimeout(()=>active.abort(),15000);
+    try{
+      const response=await read('/v1/operator/aftercare/'+encodeURIComponent(jobId),active.signal);
+      const result=await response.json();
+      if(inspection!==active)return;
+      if(!result.schema_version)throw Error('AFTERCARE_UNAVAILABLE');
+      output.textContent=[
+        result.state.replaceAll('_',' '),
+        (result.asset_count||0)+' verified installed-part records',
+        (result.service_due_candidates||[]).length+' policy-backed service candidates',
+        ...(result.issues||[]),
+        'No client outreach authorized'
+      ].join(' · ');
+    }catch{
+      if(inspection===active)output.textContent='Aftercare evidence unavailable; check Installed Parts.';
+    }finally{clearTimeout(deadline);if(inspection===active)button.disabled=false;}
   }
 
   async function inspectScheduling(jobId,output,button) {

@@ -327,6 +327,35 @@ function createRuntimeApp({
     }
   });
 
+  // Finance is a source-derived reconciliation; it is not bank attestation.
+  app.get('/v1/operator/receivables/:invoiceId',requireOperatorInspection,async(req,res)=>{
+    try {
+      const {inspectInvoiceReceivable}=require('../processor/receivables-reconciliation');
+      const result=await inspectInvoiceReceivable({
+        stores:getWriter().stores,invoiceId:req.params.invoiceId
+      });
+      return res.status(result.state==='REVIEW_REQUIRED'?202:200).json(result);
+    }catch {
+      return res.status(503).json({error:'RECEIVABLES_SOURCE_UNAVAILABLE'});
+    }
+  });
+  // Never send reviews or renewals based on a calculated draft candidate.
+  app.get('/v1/operator/aftercare/:jobId',requireOperatorInspection,async(req,res)=>{
+    try {
+      const {inspectJobAftercare}=require('../processor/aftercare-readiness');
+      const asOf=new Intl.DateTimeFormat('en-CA',{
+        timeZone:'Africa/Johannesburg',year:'numeric',month:'2-digit',day:'2-digit'
+      }).format(new Date());
+      const result=await inspectJobAftercare({
+        stores:getWriter().stores,jobId:req.params.jobId,asOf,
+        maintenancePolicy:[]
+      });
+      return res.status(result.state==='REVIEW_REQUIRED'?202:200).json(result);
+    }catch {
+      return res.status(503).json({error:'AFTERCARE_SOURCE_UNAVAILABLE'});
+    }
+  });
+
   app.get('/v1/operator/job-closeout/:jobId',requireOperatorInspection,async(req,res)=>{
     try {
       const {inspectJobCloseout}=require('../processor/job-closeout-readiness');

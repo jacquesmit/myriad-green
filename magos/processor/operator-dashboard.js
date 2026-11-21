@@ -85,6 +85,7 @@ function projectFinance(controls, allocations) {
         'Opportunity ID': txt(control['Opportunity ID']),
         'Job ID': txt(control.job_id),
         'Quote': txt(control['Quote No.']),
+        'Invoice ID': txt(control.invoice_id),
         'Deposit required (ZAR)': required,
         'Cleared deposit (ZAR)': expected?.deposit_received ?? null,
         'Total cleared receipts (ZAR)': expected?.total_received ?? null,
