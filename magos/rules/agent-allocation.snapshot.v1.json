@@ -1,0 +1,724 @@
+{
+  "version": "MAGOS_AGENT_ALLOCATION_SNAPSHOT_V1",
+  "source_url": "https://docs.google.com/spreadsheets/d/1FKj-iudwat5bbFIrplgg237-ABPRq3ijQulf-LbSuBs/edit",
+  "source_tabs": [
+    "Agent Registry",
+    "Allocation Matrix"
+  ],
+  "snapshot_date": "2026-11-21",
+  "authoritative": false,
+  "production_dispatch_enabled": false,
+  "jobs": [
+    {
+      "job_type_id": "JT-001",
+      "primary_agent_id": "AG-002",
+      "support_agent_ids": [
+        "AG-003"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-002",
+      "primary_agent_id": "AG-003",
+      "support_agent_ids": [
+        "AG-002",
+        "AG-011"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-003",
+      "primary_agent_id": "AG-004",
+      "support_agent_ids": [
+        "AG-003",
+        "AG-002"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-004",
+      "primary_agent_id": "AG-005",
+      "support_agent_ids": [
+        "AG-004",
+        "AG-010"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-005",
+      "primary_agent_id": "AG-011",
+      "support_agent_ids": [
+        "AG-005",
+        "AG-003"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-006",
+      "primary_agent_id": "AG-003",
+      "support_agent_ids": [
+        "AG-002",
+        "AG-007"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-007",
+      "primary_agent_id": "AG-010",
+      "support_agent_ids": [
+        "AG-002"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-008",
+      "primary_agent_id": "AG-007",
+      "support_agent_ids": [
+        "AG-006",
+        "AG-010"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-009",
+      "primary_agent_id": "AG-006",
+      "support_agent_ids": [
+        "AG-029",
+        "AG-005"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-010",
+      "primary_agent_id": "AG-006",
+      "support_agent_ids": [
+        "AG-007",
+        "AG-029"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-011",
+      "primary_agent_id": "AG-008",
+      "support_agent_ids": [
+        "AG-007",
+        "AG-011"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-012",
+      "primary_agent_id": "AG-007",
+      "support_agent_ids": [
+        "AG-006",
+        "AG-008",
+        "AG-010",
+        "AG-013"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-013",
+      "primary_agent_id": "AG-009",
+      "support_agent_ids": [
+        "AG-007",
+        "AG-002"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-014",
+      "primary_agent_id": "AG-005",
+      "support_agent_ids": [
+        "AG-009",
+        "AG-011",
+        "AG-010"
+      ],
+      "human_approval": "YES",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-015",
+      "primary_agent_id": "AG-009",
+      "support_agent_ids": [
+        "AG-013",
+        "AG-011"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-016",
+      "primary_agent_id": "AG-010",
+      "support_agent_ids": [
+        "AG-005",
+        "AG-013"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-017",
+      "primary_agent_id": "AG-010",
+      "support_agent_ids": [
+        "AG-002",
+        "AG-003"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-018",
+      "primary_agent_id": "AG-027",
+      "support_agent_ids": [
+        "AG-011",
+        "AG-003"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-019",
+      "primary_agent_id": "AG-031",
+      "support_agent_ids": [
+        "AG-003",
+        "AG-009",
+        "AG-013"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-020",
+      "primary_agent_id": "AG-010",
+      "support_agent_ids": [
+        "AG-006",
+        "AG-009"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-101",
+      "primary_agent_id": "AG-018",
+      "support_agent_ids": [
+        "AG-025",
+        "AG-026",
+        "AG-020",
+        "AG-021"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-102",
+      "primary_agent_id": "AG-017",
+      "support_agent_ids": [
+        "AG-025",
+        "AG-026",
+        "AG-022"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-103",
+      "primary_agent_id": "AG-016",
+      "support_agent_ids": [
+        "AG-020",
+        "AG-021",
+        "AG-022",
+        "AG-025",
+        "AG-026"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-104",
+      "primary_agent_id": "AG-019",
+      "support_agent_ids": [
+        "AG-020",
+        "AG-021",
+        "AG-022",
+        "AG-025",
+        "AG-026"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-105",
+      "primary_agent_id": "AG-020",
+      "support_agent_ids": [
+        "AG-021",
+        "AG-027",
+        "AG-026"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-106",
+      "primary_agent_id": "AG-021",
+      "support_agent_ids": [
+        "AG-020",
+        "AG-025",
+        "AG-026"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-107",
+      "primary_agent_id": "AG-022",
+      "support_agent_ids": [
+        "AG-015",
+        "AG-025",
+        "AG-026"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-108",
+      "primary_agent_id": "AG-023",
+      "support_agent_ids": [
+        "AG-029",
+        "AG-020",
+        "AG-022",
+        "AG-025",
+        "AG-026"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-109",
+      "primary_agent_id": "AG-024",
+      "support_agent_ids": [
+        "AG-029",
+        "AG-005",
+        "AG-012",
+        "AG-023",
+        "AG-026"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-110",
+      "primary_agent_id": "AG-028",
+      "support_agent_ids": [
+        "AG-002",
+        "AG-020"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-111",
+      "primary_agent_id": "AG-027",
+      "support_agent_ids": [
+        "AG-002",
+        "AG-020",
+        "AG-011"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-112",
+      "primary_agent_id": "AG-025",
+      "support_agent_ids": [
+        "AG-015",
+        "AG-026"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-113",
+      "primary_agent_id": "AG-026",
+      "support_agent_ids": [
+        "AG-013"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-201",
+      "primary_agent_id": "AG-012",
+      "support_agent_ids": [
+        "AG-013",
+        "AG-030"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-202",
+      "primary_agent_id": "AG-012",
+      "support_agent_ids": [
+        "AG-002",
+        "AG-013"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-203",
+      "primary_agent_id": "AG-014",
+      "support_agent_ids": [
+        "AG-001",
+        "AG-013"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-204",
+      "primary_agent_id": "AG-030",
+      "support_agent_ids": [
+        "AG-012",
+        "AG-013"
+      ],
+      "human_approval": "YES",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-205",
+      "primary_agent_id": "AG-013",
+      "support_agent_ids": [
+        "AG-001",
+        "AG-014"
+      ],
+      "human_approval": "CONDITIONAL",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-206",
+      "primary_agent_id": "AG-030",
+      "support_agent_ids": [
+        "AG-001",
+        "AG-013",
+        "AG-012"
+      ],
+      "human_approval": "YES",
+      "registered_only": false
+    },
+    {
+      "job_type_id": "JT-207",
+      "primary_agent_id": "AG-032",
+      "support_agent_ids": [
+        "AG-001",
+        "AG-037"
+      ],
+      "human_approval": "YES",
+      "registered_only": true
+    },
+    {
+      "job_type_id": "JT-208",
+      "primary_agent_id": "AG-033",
+      "support_agent_ids": [
+        "AG-010",
+        "AG-013"
+      ],
+      "human_approval": "YES",
+      "registered_only": true
+    },
+    {
+      "job_type_id": "JT-209",
+      "primary_agent_id": "AG-034",
+      "support_agent_ids": [
+        "AG-001",
+        "AG-010"
+      ],
+      "human_approval": "YES",
+      "registered_only": true
+    },
+    {
+      "job_type_id": "JT-210",
+      "primary_agent_id": "AG-035",
+      "support_agent_ids": [
+        "AG-009",
+        "AG-013"
+      ],
+      "human_approval": "YES",
+      "registered_only": true
+    },
+    {
+      "job_type_id": "JT-211",
+      "primary_agent_id": "AG-036",
+      "support_agent_ids": [
+        "AG-009",
+        "AG-013"
+      ],
+      "human_approval": "YES",
+      "registered_only": true
+    },
+    {
+      "job_type_id": "JT-212",
+      "primary_agent_id": "AG-037",
+      "support_agent_ids": [
+        "AG-010",
+        "AG-013"
+      ],
+      "human_approval": "YES",
+      "registered_only": true
+    },
+    {
+      "job_type_id": "JT-213",
+      "primary_agent_id": "AG-038",
+      "support_agent_ids": [
+        "AG-030",
+        "AG-013"
+      ],
+      "human_approval": "YES",
+      "registered_only": true
+    }
+  ],
+  "agents": [
+    {
+      "agent_id": "AG-001",
+      "name": "MAGOS Control Tower",
+      "domain": "Governance & Orchestration",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-002",
+      "name": "Intake & Evidence Agent",
+      "domain": "Intake & Evidence",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-003",
+      "name": "CRM & Lead Agent",
+      "domain": "Sales & CRM",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-004",
+      "name": "Site Assessment Agent",
+      "domain": "Sales & Field Assessment",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-005",
+      "name": "Quote & Pricing Agent",
+      "domain": "Commercial",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-006",
+      "name": "Procurement Agent",
+      "domain": "Procurement",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-007",
+      "name": "Job Release Agent",
+      "domain": "Operations Control",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-008",
+      "name": "Scheduling & Booking Agent",
+      "domain": "Operations",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-009",
+      "name": "Field Operations Agent",
+      "domain": "Field Operations",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-010",
+      "name": "Finance & Margin Agent",
+      "domain": "Finance",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-011",
+      "name": "Communications Agent",
+      "domain": "Communications",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-012",
+      "name": "MAGOS Runtime & Integrations Agent",
+      "domain": "Automation Runtime",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-013",
+      "name": "QA & Audit Agent",
+      "domain": "QA & Audit",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-014",
+      "name": "Knowledge & Documentation Agent",
+      "domain": "Knowledge",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-015",
+      "name": "Website Control Agent",
+      "domain": "Website Governance",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-016",
+      "name": "Homepage Agent",
+      "domain": "Website",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-017",
+      "name": "Header & Navigation Agent",
+      "domain": "Website",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-018",
+      "name": "Footer Agent",
+      "domain": "Website",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-019",
+      "name": "Service Page Agent",
+      "domain": "Website",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-020",
+      "name": "SEO / AEO / GEO Agent",
+      "domain": "Website Search",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-021",
+      "name": "Internal Linking Agent",
+      "domain": "Website Search",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-022",
+      "name": "Website CRO Agent",
+      "domain": "Website Conversion",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-023",
+      "name": "Commerce Shop Agent",
+      "domain": "Commerce",
+      "priority": "BUILD NOW"
+    },
+    {
+      "agent_id": "AG-024",
+      "name": "System Calculator / Configurator Agent",
+      "domain": "Commerce",
+      "priority": "BUILD NOW"
+    },
+    {
+      "agent_id": "AG-025",
+      "name": "WordPress / Elementor Implementation Agent",
+      "domain": "Website Implementation",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-026",
+      "name": "Website QA / Regression Agent",
+      "domain": "Website QA",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-027",
+      "name": "GBP / Local Presence Agent",
+      "domain": "Local Marketing",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-028",
+      "name": "Media Agent",
+      "domain": "Website & Marketing Assets",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-029",
+      "name": "Product Data Agent",
+      "domain": "Commerce Data",
+      "priority": "BUILD NOW"
+    },
+    {
+      "agent_id": "AG-030",
+      "name": "Governance, Security & Recovery Agent",
+      "domain": "Governance",
+      "priority": "CORE"
+    },
+    {
+      "agent_id": "AG-031",
+      "name": "Warranty & Aftercare Agent",
+      "domain": "Customer Lifecycle",
+      "priority": "NEXT"
+    },
+    {
+      "agent_id": "AG-032",
+      "name": "Corporate Strategy & Performance Agent",
+      "domain": "Executive",
+      "priority": "STAGED"
+    },
+    {
+      "agent_id": "AG-033",
+      "name": "Accounting & Tax Control Agent",
+      "domain": "Finance",
+      "priority": "STAGED"
+    },
+    {
+      "agent_id": "AG-034",
+      "name": "People & Payroll Control Agent",
+      "domain": "People",
+      "priority": "STAGED"
+    },
+    {
+      "agent_id": "AG-035",
+      "name": "Fleet & Asset Lifecycle Agent",
+      "domain": "Assets",
+      "priority": "STAGED"
+    },
+    {
+      "agent_id": "AG-036",
+      "name": "Health, Safety & Field Quality Agent",
+      "domain": "Safety",
+      "priority": "STAGED"
+    },
+    {
+      "agent_id": "AG-037",
+      "name": "Management Intelligence Agent",
+      "domain": "Intelligence",
+      "priority": "STAGED"
+    },
+    {
+      "agent_id": "AG-038",
+      "name": "Legal & Compliance Control Agent",
+      "domain": "Compliance",
+      "priority": "STAGED"
+    }
+  ]
+}
