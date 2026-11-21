@@ -19,7 +19,7 @@ The prior V1 six-department prototype was NOT an authoritative role model. It ha
 The Git snapshot `magos/rules/agent-allocation.snapshot.v1.json` preserves 38 agent identities and 46 job-type assignments as a NON-AUTHORITATIVE, read-only code reference. The canonical Drive workbook remains authoritative. A snapshot mismatch must block execution until formally reconciled and tested; the snapshot alone cannot grant permissions or provide live ownership.
 
 ## Implemented code
-- `magos/agents/agent-router.js`: explicit JT owner routing, hierarchical scope requirements (tenant, jurisdiction, branch, canonical record), idempotency key, evidence reference gate, deny-by-default controls, QA routing and approved/registered-only distinctions.
+- `magos/agents/agent-router.js`: explicit JT owner routing, hierarchical scope requirements (tenant, jurisdiction, country, region, branch, canonical record and correlation), idempotency key, evidence reference gate, deny-by-default controls, QA routing and approved/registered-only distinctions.
 - `POST /v1/agents/plan`: private bearer-authenticated proposal only. It cannot send mail, call tools or invoke the Transaction Writer. Even an input containing "approved": true is not authoritative.
 - Test cases cover owner resolution, wrong agent, opt-out, unknown/insufficient scope, stale sources, registration-only roles, idempotency scope isolation and HTTP authentication.
 - Existing EventEnvelope V1, GovernedProcessorRegistry, ReviewManager, RetryController, AuditLedger, Transaction Writer and Drive/MGOS business source of truth remain unchanged.
@@ -58,3 +58,10 @@ Before any merge or production deployment: compare Git `main`, agent branch, dep
 Drive AG role files reviewed for AG-001 through AG-031 where accessible; AG-004 native Doc fetch returned NOT_FOUND despite registry reference. The agent allocation workbook, governance, authority, state, source-of-truth and evolution directive were checked directly. Candidate AG-032..038 registration-only roles remain staged, not active.
 
 Read-only source comparison is a safety check, not policy authorization. Approvals must be loaded from a trusted server-owned canonical reader, not supplied by the calling AI or HTTP body. A recorded review is not a durable execution claim: existing Sheets exception append is not a proven atomic multiworker lock. No worker may execute tasks until this distinction is resolved and concurrency tests pass.
+
+## Branch collision/reconciliation finding — 21 November 2026
+The read-first audit discovered two significant prior MAGOS development lines outside main:
+- `magos/agent-routing-v1` (existing resolver, read-only guard, candidate AG-032..038 roles). The prior owner resolver and original tests are REUSED in the new feature branch; the pure staging-only read-only guard remains as historical code pending a controlled manifest/audit-sink integration. Do not create another corporate agent manifesto or independently activate these roles.
+- `codex/magos-release-0-recovery-20261116` includes substantial unmerged operator dashboard, scope action gates, commercial acceptance, procurement and tests; `codex/magos-status-reconciliation-20261119` proposes the current `MAGOS-STATUS.md`. Do not blindly merge or overwrite either: preserve source main's newer commits, reconcile lineages and host SHA, then make a separate reviewed integration plan.
+
+This agent PR is a narrow integration against main. It does not claim reconciliation/merge of the 120-commit recovery lineage or active host deployment. The highest-leverage next release gate remains fresh HOSTAFRICA cPanel SHA and a controlled authorization/readback/concurrency test, with legacy integrations left active until parity.
