@@ -52,6 +52,7 @@ function isPlausiblePlan(plan) {
 function createRuntimeApp({
   token = process.env.MAGOS_RUNTIME_TOKEN,
   deployedCommitSha = process.env.MAGOS_DEPLOY_COMMIT_SHA,
+  startupGitStateReader = () => require('./release-preflight').localCheckout(),
   operatorReadToken = process.env.MAGOS_OPERATOR_READ_TOKEN,
   signedAcceptanceVerifier = null,
   supplierApprovalToken = process.env.MAGOS_SUPPLIER_APPROVAL_TOKEN,
@@ -85,6 +86,11 @@ function createRuntimeApp({
     new GovernedProcessorRegistry({ writer }),
   version = process.env.MAGOS_RUNTIME_VERSION || 'P2'
 } = {}) {
+  // Capture immutable source identity while the worker starts, not after a
+  // mutable Git checkout or deployment environment variable changes.
+  let startupGitState=null;
+  try{startupGitState=startupGitStateReader();}
+  catch{startupGitState=null;}
   const app = express();
   app.disable('x-powered-by');
   app.use(express.json({ limit: '256kb' }));
@@ -162,17 +168,23 @@ function createRuntimeApp({
   // Process-start deployment identity, not just the mutable host git checkout.
   // Set only by the verified deployment service before starting the worker.
   app.get('/v1/runtime/build', requireRuntimeAuth, (req,res)=>{
-    const sha=String(deployedCommitSha||'').trim();
-    if(!/^[0-9a-f]{40}$/i.test(sha)) {
+    const sha=String(deployedCommitSha||'').trim().toLowerCase();
+    const checked=String(startupGitState?.sha||'').trim().toLowerCase();
+    if(!/^[a-f0-9]{40}$/.test(sha)||!/^[a-f0-9]{40}$/.test(checked)||
+       startupGitState?.dirty!==false||sha!==checked) {
       return res.status(503).json({
-        status:'UNVERIFIED',error:'DEPLOYED_COMMIT_SHA_NOT_CONFIGURED'
+        schema_version:'MAGOS_RUNTIME_BUILD_V1',
+        status:'UNVERIFIED',
+        error:'RUNNING_GIT_CHECKOUT_OR_DEPLOY_DECLARATION_NOT_ATTESTED'
       });
     }
     return res.status(200).json({
       schema_version:'MAGOS_RUNTIME_BUILD_V1',
-      commit_sha:sha.toLowerCase(),
-      status:'DECLARED_AT_PROCESS_START',
-      source:'MAGOS_DEPLOY_COMMIT_SHA'
+      commit_sha:sha,
+      checkout_sha_at_process_start:checked,
+      tracked_worktree_clean_at_start:true,
+      status:'GIT_CHECKOUT_AND_DEPLOY_DECLARATION_MATCH',
+      source:'STARTUP_GIT_CHECKOUT_PLUS_MAGOS_DEPLOY_COMMIT_SHA'
     });
   });
 
