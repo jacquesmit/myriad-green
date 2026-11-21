@@ -9,12 +9,13 @@ const exec={'Job ID':'JOB-T1',opportunity_id:'OPP-T1','Site Address':'Test prope
  'Crew / Owner':'Crew A','Materials Ready':'NOT_REQUIRED', 'Job Status':'READY'};
 const control={'Control ID':'PAY-T1','Opportunity ID':'OPP-T1','Deposit Required (R)':'250'};
 const allocation={control_id:'PAY-T1',allocation_id:'ALLOC-T1',allocation_type:'DEPOSIT',
- allocation_state:'CLEARED',amount:'250',evidence_link:'test:bank'};
-function stores({j=[job],e=[exec],r=[],b=[],payments=[control],allocations=[allocation]}={}){
+ allocation_state:'CLEARED',payment_event_id:'BANK-T1',amount:'250',evidence_link:'https://drive.google.com/file/d/BANKTESTEVIDENCE001/view'};
+const paymentEvent={payment_event_id:'BANK-T1',control_id:'PAY-T1',opportunity_id:'OPP-T1',event_type:'PAYMENT_CLEARED',clearance_state:'CLEARED',amount:'250',evidence_link:allocation.evidence_link,source_system:'BANK_REVIEWED',idempotency_key:'BANK-T1-UNIQUE'};
+function stores({j=[job],e=[exec],r=[],b=[],payments=[control],allocations=[allocation],events=[paymentEvent]}={}){
  return {crm:{readObjects:async name=>name==='Jobs_Opportunities'?j:name==='Bookings'?b:[]},
  commercial:{readObjects:async name=>({
   'Job Execution':e,Procurement:r,'Payment Control':payments,
-  'Payment_Allocations':allocations
+  'Payment_Allocations':allocations,'Payment_Events':events
  })[name]}};
 }
 test('ready job may proceed only to actual provider availability check',async()=>{
