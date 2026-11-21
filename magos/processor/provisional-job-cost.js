@@ -24,7 +24,7 @@ async function captureProvisionalJobCost({
    eventKey.length>192||!categories.has(costCategory)||!desc||
    desc.length>320||cents===null)return review('PROVISIONAL_COST_INPUT_INVALID');
  if(!writer?.stores?.crm?.findByKey||!writer.stores.commercial?.findByKey||
-    typeof writer.execute!=='function)return review('CANONICAL_P3_WRITER_REQUIRED');
+    typeof writer.execute!=='function')return review('CANONICAL_P3_WRITER_REQUIRED');
  let job,exec;
  try{
   [job,exec]=await Promise.all([
