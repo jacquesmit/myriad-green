@@ -101,9 +101,15 @@ async function acceptReviewedQuote({writer,quoteId,authorityVerifier,dryRun=fals
       writer.stores.commercial.readObjects('Quote_Lines',{maxRows:null})
     ]);
   }catch{return {state:'COMMIT_READBACK_UNVERIFIED',quote_id:id,transaction:result};}
-  if(sourceVersion(postLines,id)!==value(signed.quote_version))
+  const postCurrent=Array.isArray(postLines)?postLines.filter(row=>
+    value(row.quote_id)===id&&upper(row.line_status)==='CURRENT'):[];
+  const priorLineIds=current.map(row=>value(row.quote_line_id)).sort();
+  const postLineIds=postCurrent.map(row=>value(row.quote_line_id)).sort();
+  if(sourceVersion(postLines,id)!==value(signed.quote_version)||
+    priorLineIds.length!==postLineIds.length||
+    priorLineIds.some((lineId,index)=>lineId!==postLineIds[index]))
     return {state:'COMMIT_READBACK_UNVERIFIED',quote_id:id,
-      reason_code:'CURRENT_VERSION_CHANGED_DURING_ACCEPTANCE',transaction:result};
+      reason_code:'CURRENT_VERSION_OR_LINE_SET_CHANGED_DURING_ACCEPTANCE',transaction:result};
   if(!readback||value(readback.object?.quote_id)!==id||
     upper(readback.object['Quote Status'])!=='ACCEPTED'||
     value(readback.object.opportunity_id)!==opp||
