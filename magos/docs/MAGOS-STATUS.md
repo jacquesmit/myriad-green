@@ -167,3 +167,24 @@ No live website, shop, payment, customer or supplier records have been modified 
 ### Highest-value next execution
 
 From HOSTAFRICA cPanel: capture the actual working-tree and worker build SHA, verify private `MAGOS_RUNTIME_TOKEN`, separate `MAGOS_OPERATOR_READ_TOKEN`, set accurate `MAGOS_DEPLOY_COMMIT_SHA` only during an approved deployment/recycle and execute the read-only release preflight. Then run one controlled actual lead, quotation acceptance, deposit, job creation, supplier draft and closeout evidence chain with writer/read-back and same-key replay. Do not mark MAGOS COMPLETE until its operational gates have passed from authentic source records.
+
+
+## 21 November 2026 — WPVibe live WordPress inspection and signing integration merge
+
+**Live authenticated WordPress evidence (WPVibe, read-only):**
+- `https://myriadgreen.co.za` connected as WordPress administrator; active theme Rey Child, WPVibe 1.20.3, PHP 8.5.13, WordPress 7.1.5 (tool-reported values).
+- Active `Myriad Green Quote Acceptance Bridge` 0.3.2: code explicitly returns for customer submissions and `GET /mgos/v1/quote-acceptance/verify` always returns `verified:false`. Only owner-test signatures can presently be recorded.
+- `Accept & Sign Quotation` WordPress page ID **9481** has `post_status=draft`, so it cannot be used as a published client signing destination.
+- WordPress `mgos/v1` REST namespace exposes the older owner-test and verify routes but not the reviewed `verify-v2` endpoint.
+- Active MAGOS Systems Calculator 3.0.0 runs as a shortcode and has no default MAGOS financial write authority.
+- WPVibe authenticates WordPress only. Its WP-CLI is a PHP emulator; it does **not** inspect/deploy the independent HOSTAFRICA Node worker or Git worktree.
+
+**Source integration:** GitHub PR [#45](https://github.com/jacquesmit/myriad-green/pull/45) was merged into `main` at commit `fe970930c15bbf6eb8989179d5fab8ded97d08ef`. It adds:
+1. `magos/wordpress/mgos-reviewed-client-signature.php`: **undeployed candidate** companion for signed client receipts, private reviewer signature inspection, explicit approval evidence and authenticated `verify-v2`.
+2. `magos/processor/wordpress-acceptance-verifier.js`: HTTPS-pinned source verification matched against Commercial `Quotes`, exact `Quote_Lines` active version, issued PDF and immutable signing receipt. Existing quote-to-job governed release remains protected by independently cleared funds and server-side authority.
+3. `magos/processor/signed-quote-link.js` and isolated `POST /v1/governance/quote-signing-link`: creates HMAC signed client URLs only for active, issued, non-expired, exact-version quotes **after** confirming that the WordPress signing page is public and the reviewed WordPress verification route exists. Under the actual live WordPress conditions above, it correctly fails closed without emitting a link.
+4. New PHP lint, static review-contract tests, Node verifier/link tests and runtime integration; the corresponding GitHub MAGOS Runtime, Document Extract and WordPress Signature Bridge workflows all returned **success** on PR head `15cfde5828fb2919139dbaee6b202a30b5c49ab9`.
+
+**Truthmode:** CODED/CI-TESTED/INTEGRATED IN GIT = PASS. WordPress companion plugin deployed = NO. Signing page published = NO. HOSTAFRICA runtime deployed at current SHA = UNKNOWN. Customer acceptance positive end-to-end tested = NO. Entire MAGOS business operating system complete = NO. No WordPress production publishing, plugin installation, customer payments, quote status changes or job writes occurred.
+
+**Release blocker and specific acceptance path:** Authorized server deployment access is required to install the verified companion WordPress plugin, stage and publish the quote signing page after browser acceptance, set matching secret config privately, reconcile the HOSTAFRICA Git/lsnode version, run `node runtime/release-preflight.js` and execute a controlled quote/signature/cleared-deposit/job golden transaction with source read-back. The required cPanel/SSH/worker access was not available through the WordPress-scoped WPVibe connector. Preserve live trading until these checks pass.
