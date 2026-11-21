@@ -1,73 +1,74 @@
 'use strict';
 
-// Pure planning layer: no network requests, writes, or tool invocation.
-// Authoritative mutations must still pass the MAGOS governed event runner/writer.
+// MAGOS AG-001 routing proposal boundary. A local snapshot is NOT live authority.
+// Only existing EventEnvelope -> governed processor -> Transaction Writer may mutate.
 const crypto = require('node:crypto');
+const allocation = require('../rules/agent-allocation.snapshot.v1.json');
 
-const CATALOG = Object.freeze({
-  SALES: { capabilities: ['LEAD_TRIAGE', 'FOLLOW_UP_DRAFT', 'QUOTE_REQUEST_REVIEW'] },
-  MARKETING: { capabilities: ['SEO_AUDIT', 'REVIEW_REPLY_DRAFT', 'CAMPAIGN_ANALYSIS'] },
-  OPERATIONS: { capabilities: ['JOB_TRIAGE', 'SCHEDULE_REVIEW', 'WORK_PROOF_REVIEW'] },
-  FINANCE: { capabilities: ['PAYMENT_RECONCILIATION_REVIEW', 'INVOICE_DRAFT', 'QUOTE_COST_REVIEW'] },
-  PROCUREMENT: { capabilities: ['SUPPLIER_PRICE_REVIEW', 'PURCHASE_REQUEST_REVIEW', 'PRODUCT_DATA_REVIEW'] },
-  ENGINEERING: { capabilities: ['DEPLOYMENT_AUDIT', 'TEST_REPORT', 'CHANGE_PROPOSAL'] }
-});
-
-const HIGH_RISK = new Set([
-  'SEND_EXTERNAL_MESSAGE', 'CHARGE_PAYMENT', 'RELEASE_PROCUREMENT',
-  'CHANGE_PRICE', 'ISSUE_QUOTE', 'ISSUE_INVOICE',
-  'DEPLOY_PRODUCTION', 'DELETE_RECORD', 'BOOK_JOB', 'WRITE_BUSINESS_RECORD'
-]);
-const VALID_EFFECTS = new Set(['READ', 'DRAFT', 'WRITE', ...HIGH_RISK]);
+const EFFECTS = Object.freeze(['READ', 'DRAFT', 'WRITE_BUSINESS_RECORD',
+  'SEND_EXTERNAL_MESSAGE', 'ISSUE_QUOTE', 'ISSUE_INVOICE', 'RELEASE_PROCUREMENT',
+  'BOOK_JOB', 'CHANGE_PRICE', 'DEPLOY_PRODUCTION', 'DELETE_RECORD', 'CHARGE_PAYMENT']);
+const MUTATIONS = new Set(EFFECTS.filter(x => x !== 'READ' && x !== 'DRAFT'));
+const HIGH_RISK = new Set(EFFECTS.filter(x => x !== 'READ' && x !== 'DRAFT'));
 const VALID_STATES = new Set(['PROPOSED', 'AWAITING_APPROVAL', 'BLOCKED']);
+const CATALOG = Object.freeze(Object.fromEntries(allocation.agents.map(x =>
+  [x.agent_id, Object.freeze({name:x.name,domain:x.domain,priority:x.priority})])));
+const ROUTES = new Map(allocation.jobs.map(x => [x.job_type_id,x]));
+
+function clean(value) { return typeof value === 'string' ? value.trim() : ''; }
 
 function planAgentTask(task) {
-  if (!task || typeof task !== 'object' || Array.isArray(task)) {
-    throw new TypeError('task must be an object');
-  }
-  const capability = String(task.capability || '').trim().toUpperCase();
-  const effect = String(task.effect || 'READ').trim().toUpperCase();
-  const source = String(task.source || '').trim();
-  const sourceEventId = String(task.source_event_id || '').trim();
-  const evidence = Array.isArray(task.evidence_refs) ? task.evidence_refs : [];
-  if (!capability || !source || !sourceEventId) {
-    throw new Error('capability, source and source_event_id are required');
-  }
-  if (!VALID_EFFECTS.has(effect)) throw new Error('Unknown effect: ' + effect);
-  if (!evidence.every(v => typeof v === 'string' && v.trim())) {
+  if (!task || typeof task !== 'object' || Array.isArray(task)) throw new TypeError('task must be an object');
+  const job_type_id=clean(task.job_type_id).toUpperCase();
+  const effect=clean(task.effect || 'READ').toUpperCase();
+  const scope = ['tenant_id','jurisdiction_id','branch_id','canonical_record_id','source','source_event_id'];
+  if (!EFFECTS.includes(effect)) throw new Error('Unknown effect: '+effect);
+  const route=ROUTES.get(job_type_id);
+  const evidence_refs=Array.isArray(task.evidence_refs) ? task.evidence_refs : [];
+  if (!evidence_refs.every(x=>typeof x==='string' && x.trim().length>0)) {
     throw new Error('evidence_refs must be nonempty strings');
   }
-  const owners = Object.entries(CATALOG).filter(([, descriptor]) =>
-    descriptor.capabilities.includes(capability)).map(([name]) => name);
-  const idempotency_key = 'agent:v1:' + crypto.createHash('sha256')
-    .update(JSON.stringify([source, sourceEventId, capability, effect]))
-    .digest('hex');
-  const problems = [];
-  if (owners.length !== 1) problems.push('UNKNOWN_OR_AMBIGUOUS_CAPABILITY');
-  if (evidence.length === 0) problems.push('EVIDENCE_REQUIRED');
-  if (task.identity_conflict === true) problems.push('IDENTITY_CONFLICT');
-  if (task.consent === false && effect === 'SEND_EXTERNAL_MESSAGE') problems.push('CONTACT_OPT_OUT');
-  if (task.guards_verified !== true && effect !== 'READ' && effect !== 'DRAFT') {
-    problems.push('GUARDS_NOT_VERIFIED');
-  }
-  const needsApproval = effect !== 'READ' && effect !== 'DRAFT';
-  // No supplied approval token is accepted here; a separate authenticated
-  // approval and governance layer must validate it during execution.
+  const blockers=[];
+  if (!route) blockers.push('BLOCKED_UNREGISTERED_JOB_TYPE');
+  if (scope.some(k=>!clean(task[k]))) blockers.push('BLOCKED_SCOPE_OR_IDENTITY');
+  if (!evidence_refs.length) blockers.push('BLOCKED_EVIDENCE');
+  if (task.identity_conflict===true) blockers.push('BLOCKED_IDENTITY_CONFLICT');
+  if (task.guard_state === 'UNKNOWN' || task.guard_state === 'TO_CONFIRM' || task.guard_state === 'BLOCKED') blockers.push('BLOCKED_UNVERIFIED_GUARD');
+  if (effect === 'SEND_EXTERNAL_MESSAGE' && task.contact_opt_out !== false) blockers.push('BLOCKED_CONTACT_CONSENT');
+  if (route?.registered_only) blockers.push('BLOCKED_REGISTRATION_ONLY');
+  if (MUTATIONS.has(effect) && task.guards_verified !== true) blockers.push('BLOCKED_AUTHORITY');
+  if (MUTATIONS.has(effect) && task.source_freshness_verified !== true) blockers.push('BLOCKED_SOURCE_FRESHNESS');
+  const agent_id=route?.primary_agent_id || null;
+  if (route && !CATALOG[agent_id]) blockers.push('BLOCKED_OWNER_CONFLICT');
+  if (task.requested_agent_id && task.requested_agent_id !== agent_id) blockers.push('BLOCKED_OWNER_CONFLICT');
+  // A user/AI supplied approval flag cannot authorize or bypass the writer.
+  const payload=scope.map(k=>clean(task[k]));
+  const idempotency_key='agent:v2:'+crypto.createHash('sha256').update(
+    JSON.stringify([job_type_id,effect,...payload])
+  ).digest('hex');
+  const approval_required=MUTATIONS.has(effect) || route?.human_approval === 'YES';
   return Object.freeze({
-    schema_version: 'MAGOS_AGENT_PLAN_V1',
-    idempotency_key,
-    agent: owners.length === 1 ? owners[0] : null,
-    capability,
+    schema_version:'MAGOS_AGENT_PLAN_V2',
+    job_type_id,
+    agent_id,
+    supporting_agent_ids:route?.support_agent_ids || [],
     effect,
-    source,
-    source_event_id: sourceEventId,
-    evidence_refs: [...evidence],
-    state: problems.length ? 'BLOCKED' : needsApproval ? 'AWAITING_APPROVAL' : 'PROPOSED',
-    execution_authorized: false,
-    approval_required: needsApproval,
-    blockers: problems,
-    next_boundary: 'GOVERNED_EVENT_RUNNER',
+    tenant_id:clean(task.tenant_id),
+    jurisdiction_id:clean(task.jurisdiction_id),
+    branch_id:clean(task.branch_id),
+    canonical_record_id:clean(task.canonical_record_id),
+    source:clean(task.source),
+    source_event_id:clean(task.source_event_id),
+    evidence_refs:[...evidence_refs],
+    idempotency_key,
+    state:blockers.length?'BLOCKED':approval_required?'AWAITING_APPROVAL':'PROPOSED',
+    blockers:[...new Set(blockers)],
+    approval_required,
+    execution_authorized:false,
+    next_boundary:'GOVERNED_EVENT_RUNNER',
+    authority:'PROPOSAL_ONLY_SNAPSHOT_NOT_LIVE',
+    qa_agent_id:job_type_id.startsWith('JT-1')?'AG-026':'AG-013'
   });
 }
 
-module.exports = { CATALOG, HIGH_RISK, VALID_STATES, planAgentTask };
+module.exports={CATALOG, HIGH_RISK, VALID_STATES, planAgentTask};
