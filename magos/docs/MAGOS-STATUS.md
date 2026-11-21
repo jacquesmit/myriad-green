@@ -233,3 +233,12 @@ Three independently merged/tested development changes now exist on GitHub `main`
 **Acceptance gates:** code staged in branch; GitHub CI and merge must be captured before marking CODE PASS. HOSTAFRICA worker commit still unverified, production inspector unavailable until verified deployment. WordPress quote-signing bridge remains not deployed; none of the missing source approvals may be treated as cleared.
 
 **Highest next execution:** run exact-head CI, merge only on PASS; then inspect/repair documented live supplier allocation reversal/evidence contradictions through independently reviewed transactions, not silently writing a valid-looking status.
+
+
+## 21 November 2026 — Supplier queue source-state fix and automatic Markdown evolution gate
+
+**Merged code change:** [PR #55](https://github.com/jacquesmit/myriad-green/pull/55), Git merge SHA `365dd70b64b169baac4e292812d393484191fa7b`. This repaired `job-supplier-cost-queue.js` to pass the server-side independent invoice reviewer and stock-split authority callbacks, use a consistent source snapshot for Supplier Cost_Allocations, Goods_Received and Stock_Ledger, and return positively verified only when all independent evidence gates pass. A missing supplier ledger fails closed. Runtime P2 and Document Extract CI both passed on the reviewed PR head `7082ab38dd72976347257acc6e5d4c111dd74083`. No live cost, inventory, supplier, customer or bank row was written.
+
+**New change in this PR candidate:** `magos/docs/MAGOS-CURRENT.md` created as the short authoritative source-of-truth index, retaining this append-only historical file and linked deployment/quote bridge runbooks. The new `magos/scripts/require-status-update.js` rejects code, tests, scripts or MAGOS workflow changes unless BOTH MAGOS-CURRENT.md and MAGOS-STATUS.md are changed in the same PR. The new `.github/workflows/magos-status-gate.yml` runs that gate using exact PR base/head SHAs and unit tests with full checkout history.
+
+**Current truth:** gate code authored, workflow CI and branch policy enforcement TO_VALIDATE on exact PR head; host deployment, WordPress signature plugin, cleared funds release and end-to-end business acceptance remain NOT VERIFIED. Do not mark the entire system complete. Each future MAGOS code release must file current+historical Markdown along with its implementation and test evidence.
