@@ -853,3 +853,40 @@ test('supplier-mail ingress scopes the caller to one event family and preserves 
     assert.ok(Object.values(event.guards).every(value => value === 'UNKNOWN'));
   });
 });
+
+
+test('AG-001 planner is authenticated and cannot call writer', async () => {
+  let writes=0;
+  const app=createRuntimeApp({
+    token:'agent-test-secret',
+    writerFactory:()=>({execute:async()=>{writes++;return {state:'COMMITTED'};}})
+  });
+  const task={
+    job_type_id:'JT-002',tenant_id:'MYRIAD_GREEN',jurisdiction_id:'ZA',
+    branch_id:'PRETORIA',canonical_record_id:'CRM-TEST-1',
+    source:'GMAIL',source_event_id:'MSG-TEST-1',evidence_refs:['test:gmail:msg-1']
+  };
+  await withServer(app,async base=>{
+    const denied=await request(base,'/v1/agents/plan',{method:'POST',body:task});
+    assert.equal(denied.status,401);
+    const accepted=await request(base,'/v1/agents/plan',{
+      method:'POST',token:'agent-test-secret',body:task
+    });
+    assert.equal(accepted.status,200);
+    assert.equal(accepted.payload.agent_id,'AG-003');
+    assert.equal(accepted.payload.execution_authorized,false);
+    const mutation=await request(base,'/v1/agents/plan',{
+      method:'POST',token:'agent-test-secret',
+      body:{...task,effect:'ISSUE_QUOTE',guards_verified:true,
+        source_freshness_verified:true,approved:true}
+    });
+    assert.equal(mutation.status,200);
+    assert.equal(mutation.payload.state,'AWAITING_APPROVAL');
+    assert.equal(mutation.payload.execution_authorized,false);
+    const unknown=await request(base,'/v1/agents/plan',{
+      method:'POST',token:'agent-test-secret',body:{...task,job_type_id:'JT-999'}
+    });
+    assert.equal(unknown.status,422);
+    assert.equal(writes,0);
+  });
+});
