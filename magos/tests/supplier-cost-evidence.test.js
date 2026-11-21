@@ -27,9 +27,23 @@ const stock=async()=>({
  verified:true,allocation_id:id,job_id:job,part_id:'PART-123',
  allocated_quantity:2,stock_split_verified:true
 });
-function stores(rows=[allocation],source=line){
+const grn={
+ grn_line_id:'GRNL-123',supplier_invoice_number:'INVOICE-123',
+ received_part_id:'PART-123',quantity_received:'2',quantity_damaged:'0',
+ quantity_missing:'0',actual_unit_cost_inc_vat:'129.99',
+ condition_status:'GOOD',discrepancy_status:'NONE',
+ source_document:allocation.evidence_link
+};
+const issue={
+ movement_id:'MOVE-123',destination_job_id:job,part_id:'PART-123',
+ source_grn_line_id:'GRNL-123',movement_type:'ISSUE_TO_JOB',
+ quantity_change:'-2',evidence_link:allocation.evidence_link
+};
+function stores(rows=[allocation],source=line,{grns=[grn],movements=[issue]}={}){
  return {supplier:{
-  readObjects:async name=>name==='Cost_Allocations'?rows:[],
+  readObjects:async name=>({
+    'Cost_Allocations':rows,'Goods_Received':grns,'Stock_Ledger':movements
+  })[name]||[],
   findByKey:async(name,key,value)=>name==='Supplier_Source_Lines'&&
      source?.source_line_id===value?{object:source}:null
  }};
@@ -114,4 +128,28 @@ test('operator supplier allocation inspection never writes and requires operator
   assert.equal((await result.json()).verified,true);
   assert.equal(writes,0);
  }finally{await new Promise(ok=>server.close(ok));}
+});
+
+test('even verified supplier labels cannot approve without matching physical receipt and stock issue',async()=>{
+ const noGrn=await inspectSupplierAllocation({...args,stores:stores([allocation],line,{grns:[]})});
+ assert.equal(noGrn.verified,false);
+ assert.ok(noGrn.blockers.includes('UNIQUE_MATCHING_SUPPLIER_INVOICE_GRN_REQUIRED'));
+ const noIssue=await inspectSupplierAllocation({...args,stores:stores([allocation],line,{movements:[]})});
+ assert.equal(noIssue.verified,false);
+ assert.ok(noIssue.blockers.includes('EXACT_JOB_STOCK_ISSUE_NOT_RECONCILED'));
+ const otherPart=await inspectSupplierAllocation({...args,stores:stores([allocation],line,{
+   movements:[{...issue,part_id:'PART-OTHER'}]
+ })});
+ assert.equal(otherPart.verified,false);
+});
+test('supplier quote is not treated as an invoice and duplicate GRN lines are not guessed',async()=>{
+ const q=await inspectSupplierAllocation({...args,stores:stores([
+  {...allocation,supplier_document_id:'SQT-QUOTE-123'}
+ ],{...line,supplier_quote_id:'SQT-QUOTE-123'})});
+ assert.equal(q.verified,false);
+ assert.ok(q.blockers.includes('ACTUAL_SUPPLIER_INVOICE_NUMBER_NOT_VERIFIED'));
+ const duplicate=await inspectSupplierAllocation({...args,stores:stores([allocation],line,{
+  grns:[grn,grn]
+ })});
+ assert.ok(duplicate.blockers.includes('UNIQUE_MATCHING_SUPPLIER_INVOICE_GRN_REQUIRED'));
 });
