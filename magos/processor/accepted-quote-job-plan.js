@@ -24,7 +24,7 @@ async function planAcceptedJob({stores,quoteId,jobId,sourceEventId,acceptanceEvi
  const plan=createJobFromAcceptedScope({
    idempotency_key:'MAGOS_JOB_CREATE_V1|'+sourceEventId+'|'+quoteId,
    source_event_id:sourceEventId,evidence_link:acceptanceEvidence,
-   quote_preconditions:[{store:'commercial',sheet:'Quotes',key:{header:'quote_id',value:quoteId},expect:{'Quote Status':'ACCEPTED','Line Control State':'PASS',opportunity_id:quote.opportunity_id}},{store:'crm',sheet:'Jobs_Opportunities',key:{header:'opportunity_id',value:quote.opportunity_id},expect:{job_id:''}}],
+   quote_preconditions:[{store:'commercial',sheet:'Quotes',key:{header:'quote_id',value:quoteId},expect:{'Quote Status':'ACCEPTED','Line Control State':quote['Line Control State'],opportunity_id:quote.opportunity_id}},{store:'crm',sheet:'Jobs_Opportunities',key:{header:'opportunity_id',value:quote.opportunity_id},expect:{job_id:''}}],
    job_target:{store:'crm',workbook_role:'CRM',sheet:'Jobs_Opportunities',key:{header:'opportunity_id',value:quote.opportunity_id},authority:'AUTHORITATIVE',entity_type:'Job'},
    job_changes:{job_id:jobId,job_status:'JOB_CREATED'},
    execution_target:{store:'commercial',workbook_role:'COMMERCIAL',sheet:'Job Execution',key:{header:'Execution ID',value:executionId},link_id:'LNK-009'},
