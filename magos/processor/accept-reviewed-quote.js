@@ -3,6 +3,7 @@
 const {patchIfMatch,composeTransactionPlan}=require('../writer/operations');
 const value=x=>String(x??'').trim();
 const upper=x=>value(x).toUpperCase();
+const {sourceVersion}=require('./wordpress-acceptance-verifier');
 
 /**
  * Finalize the canonical quote only after the WordPress signature receipt
@@ -12,7 +13,9 @@ const upper=x=>value(x).toUpperCase();
 async function acceptReviewedQuote({writer,quoteId,authorityVerifier,dryRun=false}={}){
   const review=(reason_code)=>({state:'REVIEW_REQUIRED',reason_code,quote_id:quoteId,
     writes:[],side_effects:false});
-  if(!writer?.stores?.commercial?.findByKey||typeof writer.execute!=='function')
+  if(!writer?.stores?.commercial?.findByKey||
+     typeof writer.stores.commercial.readObjects!=='function'||
+     typeof writer.execute!=='function')
     return review('P3_WRITER_AND_COMMERCIAL_READER_REQUIRED');
   const id=value(quoteId);
   if(!id)return review('QUOTE_ID_REQUIRED');
@@ -43,6 +46,24 @@ async function acceptReviewedQuote({writer,quoteId,authorityVerifier,dryRun=fals
     return review(signed?.reason_code||'TRUSTED_SIGNED_RECEIPT_INCOMPLETE');
   if(!/^https:\/\/drive\.google\.com\//.test(value(signed.evidence_ref)))
     return review('SIGNED_RECEIPT_EVIDENCE_NOT_IN_DRIVE');
+  // Re-read the canonical CURRENT quote lines after the external signature
+  // check. Bind each CURRENT row as a writer precondition to prevent a stale
+  // or changed version being approved through an unchanged Quotes header.
+  let lines;
+  try{lines=await writer.stores.commercial.readObjects('Quote_Lines',{maxRows:null});}
+  catch{return review('CURRENT_QUOTE_LINE_SOURCE_UNAVAILABLE');}
+  const current=Array.isArray(lines)?lines.filter(row=>
+    value(row.quote_id)===id&&upper(row.line_status)==='CURRENT'):[];
+  if(!current.length||sourceVersion(lines,id)!==value(signed.quote_version)||
+    current.some(row=>!value(row.quote_line_id))||
+    new Set(current.map(row=>value(row.quote_line_id))).size!==current.length)
+    return review('SIGNED_QUOTE_CURRENT_VERSION_CHANGED_OR_AMBIGUOUS');
+  const linePreconditions=current.map(row=>({
+    store:'commercial',sheet:'Quote_Lines',
+    key:{header:'quote_line_id',value:value(row.quote_line_id)},
+    expect:{quote_id:id,quote_version:value(signed.quote_version),line_status:'CURRENT'}
+  }));
+
   const plan=composeTransactionPlan({
     idempotency_key:'MAGOS_REVIEWED_QUOTE_ACCEPT_V1|'+signed.source_event_id+'|'+id+'|'+signed.quote_version,
     event_type:'REVIEWED_QUOTE_ACCEPTANCE_CONFIRMED',
@@ -53,7 +74,7 @@ async function acceptReviewedQuote({writer,quoteId,authorityVerifier,dryRun=fals
       expect:{'Quote Status':'ACTIVE','Workflow Stage':'SENT',
         'Line Control State':quote['Line Control State'],
         opportunity_id:opp,'Drive Link':pdf}
-    }],
+    },...linePreconditions],
     writes:[patchIfMatch({
       store:'commercial',workbook_role:'COMMERCIAL',sheet:'Quotes',
       key:{header:'quote_id',value:id},
@@ -73,7 +94,16 @@ async function acceptReviewedQuote({writer,quoteId,authorityVerifier,dryRun=fals
   if(result?.state!=='COMMITTED'&&result?.state!=='DUPLICATE_NO_OP')
     return {state:result?.state||'REVIEW_REQUIRED',reason_code:'P3_NOT_COMMITTED',quote_id:id,
       transaction:result};
-  const readback=await writer.stores.commercial.findByKey('Quotes','quote_id',id);
+  let readback,postLines;
+  try{
+    [readback,postLines]=await Promise.all([
+      writer.stores.commercial.findByKey('Quotes','quote_id',id),
+      writer.stores.commercial.readObjects('Quote_Lines',{maxRows:null})
+    ]);
+  }catch{return {state:'COMMIT_READBACK_UNVERIFIED',quote_id:id,transaction:result};}
+  if(sourceVersion(postLines,id)!==value(signed.quote_version))
+    return {state:'COMMIT_READBACK_UNVERIFIED',quote_id:id,
+      reason_code:'CURRENT_VERSION_CHANGED_DURING_ACCEPTANCE',transaction:result};
   if(!readback||value(readback.object?.quote_id)!==id||
     upper(readback.object['Quote Status'])!=='ACCEPTED'||
     value(readback.object.opportunity_id)!==opp||
