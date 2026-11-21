@@ -8,6 +8,8 @@ on:
       - 'magos/writer/**'
       - 'magos/adapters/**'
       - 'magos/processor/**'
+      - 'magos/agents/**'
+      - 'magos/tests/agent-router.test.js'
       - 'magos/tests/runtime-http.test.js'
       - 'magos/tests/supplier-email-intake.test.js'
       - 'magos/package.json'
@@ -21,6 +23,8 @@ on:
       - 'magos/writer/**'
       - 'magos/adapters/**'
       - 'magos/processor/**'
+      - 'magos/agents/**'
+      - 'magos/tests/agent-router.test.js'
       - 'magos/tests/runtime-http.test.js'
       - 'magos/tests/supplier-email-intake.test.js'
       - 'magos/package.json'
@@ -59,7 +63,7 @@ jobs:
           done
           curl --fail http://127.0.0.1:18081/healthz
           curl --fail http://127.0.0.1:18081/readyz
-      - run: node --test tests/runtime-http.test.js tests/transaction-writer.test.js tests/fluent-forms-adapter.test.js tests/supplier-email-intake.test.js tests/processor-registry.test.js
+      - run: node --test tests/runtime-http.test.js tests/transaction-writer.test.js tests/fluent-forms-adapter.test.js tests/supplier-email-intake.test.js tests/processor-registry.test.js tests/agent-router.test.js
 
   container-smoke:
     runs-on: ubuntu-latest
