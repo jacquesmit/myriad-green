@@ -14,7 +14,7 @@
 | MAGOS Node runtime and Command Centre | YES | PASS in GitHub CI | NOT VERIFIED at current SHA | PARTIAL |
 | Canonical CRM/lead intake, quotations, job lifecycle and workflow routing | CODE EXISTS | TESTED paths | Golden end-to-end NOT VERIFIED | PARTIAL |
 | Governed P3 writer and audit/ownership controls | YES | TESTED paths | Live new-action readback NOT VERIFIED | PARTIAL |
-| WordPress reviewed quote signing / acceptance | GitHub candidate + verifier | Node/PHP CI tested | Live WPVibe checked 2026-11-21: companion `verify-v2` route MISSING, page 9481 DRAFT | FAIL for production |
+| WordPress reviewed quote signing / acceptance | GitHub candidate + verifier; quote-line version race preconditions staged for review | Node/PHP CI tested; newest race regression CI PENDING | Live WPVibe checked 2026-11-21: companion `verify-v2` route MISSING, page 9481 DRAFT | FAIL for production |
 | Procurement and supplier approval | Governed stages, read-only and protected write paths | TESTED paths | Independent approval/provider acceptance incomplete | PARTIAL |
 | Supplier `Cost_Allocations`, invoice/GRN/stock checks and expense controls | Code merged, [#50–#55](https://github.com/jacquesmit/myriad-green/pulls?q=is%3Apr+is%3Amerged) | PASS on reviewed commits | Exact independent invoice/stock authority and live write unverified | PARTIAL |
 | Receivables, completion, costs, field evidence and aftercare inspection | Code exists, protected inspections | TESTED paths | Final closeout and bank/provider acceptance incomplete | PARTIAL |
@@ -57,3 +57,11 @@ For each real MAGOS code change:
 - **Live WordPress recheck (2026-11-21):** page ID `9481` remains `draft`; namespace `mgos/v1` has legacy `verify` and owner-test link only, NOT `quote-acceptance/verify-v2`. Customer signing flow is **NOT LIVE**.
 - **Live HOSTAFRICA check:** `/healthz` and `/readyz` could not be accessed from the read-only public tool. This is **NOT VERIFIED**, not an assertion that the server is down.
 - **Merge enforcement:** the gate exists and executed successfully in CI; GitHub required-check branch protection was **not** independently inspected. Never claim changes are non-bypassable before repository settings validate that.
+
+## Quote acceptance version-integrity control — latest candidate
+
+- Candidate branch `codex/magos-quote-version-race-guard-20261121` modifies canonical `acceptReviewedQuote` only; the WordPress public signing page and finance/booking sources remain unchanged.
+- WordPress signing receipt must match the **current exact quote version** in existing Commercial `Quote_Lines` after the independent verification call. Duplicate or missing `quote_line_id` blocks authorization.
+- P3 transaction receives per-current-line quote version/status preconditions in addition to the `Quotes` state precondition. Post-write readback checks the same current line ID set and version; mismatched revision becomes `COMMIT_READBACK_UNVERIFIED`, **not** successful business acceptance.
+- **Important limitation:** Google Sheets does not provide atomic row-set isolation for new line inserts concurrent with an in-progress P3 transaction. These checks narrow the stale-signature window; strict production guarantees still require an immutable issued-quote snapshot / version-control gate and authenticated live replay test. Not complete.
+- Test scenarios: valid acceptance, changed version, duplicate line IDs, altered version post-write and inserted current line on the same version. CI and merge status pending.
