@@ -5,7 +5,7 @@
   const groups = [
     ['Command centre', [['overview', 'Overview'], ['system', 'Whole MAGOS build'], ['exceptions', 'Exceptions']]],
     ['Clients and delivery', [['leads', 'Inbound enquiries'], ['clients', 'Inbound CRM'], ['prospects', 'Scraper / outbound prospects'], ['provenance', 'Provenance review'], ['conversions', 'Lead-to-job conversion'], ['quotes', 'Quotes & acceptance'], ['jobs', 'Active jobs'], ['dispatch', 'Dispatch & bookings'], ['evidence', 'Work proof'], ['variations', 'Scope variations']]],
-    ['Commercial', [['finance', 'Finance & payments'], ['procurement', 'Procurement'], ['suppliers', 'Suppliers'], ['registers', 'Other registers']]],
+    ['Commercial', [['finance', 'Finance & payments'], ['labour', 'Labour cost review'], ['procurement', 'Procurement'], ['suppliers', 'Suppliers'], ['registers', 'Other registers']]],
   ];
   const labels = Object.fromEntries(groups.flatMap(([, entries]) => entries));
   const descriptions = {
@@ -21,6 +21,7 @@
     evidence: 'Before and after evidence, variations and completion sign-off.',
     variations: 'Simpro/Fergus benchmark: changed scope, client consent, pricing, invoicing and retrospective exceptions.',
     finance: 'Cleared allocations drive receipt totals and contract balances. Payment proof is shown separately.',
+    labour: 'Aspire/LMN benchmark: approved rate inputs versus provisional crew-day calculations. Actual timesheets not independently verified.',
     procurement: 'Purchasing lines awaiting approval or technical review.',
     suppliers: 'Supplier approval, trading status and payment terms.',
     exceptions: 'Open issues and recorded follow-up actions.',
@@ -38,10 +39,11 @@
     ['variations_review', 'Variations to resolve', 'variations'],
     ['active_jobs', 'Active jobs', 'jobs'],
     ['contracts_with_balance', 'Contracts with balance', 'finance'],
+    ['labour_cost_review', 'Labour to reconcile', 'labour'],
     ['procurement_review', 'Purchasing review', 'procurement'],
     ['open_exceptions', 'Open exceptions', 'exceptions'],
   ];
-  const actionRank = ['EXCEPTION', 'VARIATION_REVIEW', 'QUOTE_EXPIRED_REVIEW', 'ACCEPTED_QUOTE_REVIEW', 'PROCUREMENT_REVIEW', 'QUOTE_FOLLOWUP', 'JOB_ACTION'];
+  const actionRank = ['EXCEPTION', 'VARIATION_REVIEW', 'LABOUR_COST_REVIEW', 'QUOTE_EXPIRED_REVIEW', 'ACCEPTED_QUOTE_REVIEW', 'PROCUREMENT_REVIEW', 'QUOTE_FOLLOWUP', 'JOB_ACTION'];
   const dateFormat = new Intl.DateTimeFormat('en-ZA', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Africa/Johannesburg' });
   const zar = new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' });
   const pageSize = 25;
