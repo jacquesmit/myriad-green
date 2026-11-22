@@ -509,3 +509,11 @@ Three independently merged/tested development changes now exist on GitHub `main`
 
 - Inbound-to-sale correlation PR #81 merged `e87ea7588138b35faa87c5feb1cd1aac3503fcc0` after exact head `27b6417b9da295399450c352903a5b326d4fa713` passed Runtime P2 #225, Document Extract #286, Evolving Status Gate #33. Original acquisition and later customer enquiry now tracked as separate concepts in the canonical read-only conversion spine; duplicate event IDs and conflicting client/opportunity links fail closed.
 - Full MAGOS production release NOT COMPLETE: live runtime commit/read credential verification, signed client quote acceptance, independent bank settlement and true invoice/cost/profit attribution across one job still require authenticated end-to-end acceptance. CI PASS is code evidence only, not production certification.
+
+
+## 22 November 2026 — Progress deadlines, frontend rollout and production truth control candidate
+
+- Read-only Control Hub `Business_Capability_Map`: 22 canonical capabilities, PASS 0, PARTIAL 18, FAIL 4 (variation, profit actuals, recurring business, labour capacity). Existing code changes must not silently overwrite this source status.
+- Added 4 **proposed, conditional** delivery milestones for UI pilot 25 Nov, lead-to-job pilot 4 Dec, field/finance pilot 18 Dec and whole-business release acceptance candidate 15 Jan 2027. These are planning assumptions; dates have not been user-approved or proven by live evidence. Code derives recorded PASS counts/blockers from authoritative coverage and marks missed targets when overdue.
+- Real operator frontend system view now includes a milestone table, gate counts, next action and missed-target notice, all read-only with the current operator credential. No new project ledger. Full source PASS alone no longer equates to production acceptance; distinct `capability_gates_passed` and fail-closed `production_complete=false` / `production_acceptance=NOT_VERIFIED` enforced.
+- Tests staged for proposed target logic, clock, overdue, missing capabilities, UI rendering, 22-PASS safety check. Production dashboard/authenticated live read and real client-to-paid-job still unverified. Branch `codex/magos-front-end-rollout-tracker-20261122`, CI/merge pending. No live business records, passwords or hosting changes.
