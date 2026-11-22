@@ -390,3 +390,10 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - Created branch `codex/magos-whole-system-acceptance-20261122` with new read-only acceptance evaluator, negative/positive unit regressions, and CI trigger/step. Covers 16 release boundaries; all missing gates FAIL. No provider credentials or real production evidence are presumed.
 - **Fact / assumption separation:** the evaluator can check evidence structure, not the authenticity of GitHub links, bank data, customer signatures, installed WordPress plugin or running HOSTAFRICA process. Even a report with all gate documents must receive independent human/source verification. This is CODE STAGED, CI NOT YET VERIFIED, not a business-system completion event.
 - Repo visibility discrepancy: the connected GitHub metadata reports `visibility: public` for `jacquesmit/myriad-green`; prior text called it private. Do not assume private-token isolation by repository visibility; review before live deploy.
+
+
+### 22 November 2026 — #66 integrated; HOSTAFRICA escalation corrected
+
+- Whole-system acceptance evaluator PR #66 merged, commit `9fc577b5b23ec696bf7aa9fdba13d98084a65dc9`. Exact source head passed MAGOS Runtime P2 workflow #199, Document Extract #252 and Evolving Status Gate #14. The 16 checks are evidence metadata gates, not live validation; independent confirmation is required before any production claim.
+- HOSTAFRICA closed-ticket reply was rejected (21 November; original #3622207). New, standalone request sent to `support@hostafrica.com` on 22 November seeking a new ticket and read-only cPanel/Git/worker evidence. Await provider acceptance and response. **No host deployment occurred.**
+- Remaining blockers: no confirmed running SHA, reviewed WordPress signature plugin install or published signing page, verified bank/provider settlement API, controlled end-to-end lifecycle release, ecommerce payment/fulfilment and audited backups/restore. MAGOS remains PARTIAL; not complete.
