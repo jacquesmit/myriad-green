@@ -411,3 +411,36 @@ test('address/property text is retained as context but never creates a Client_Si
   assert.equal(opportunity.site_address, '123 Test Street, Pretoria East');
   assert.equal(opportunity.property_id, '');
 });
+
+test('scraper-sourced lead cannot create CRM or opportunity through inbound P3 planner',async()=>{
+ const inboundWriter=createLeadProcessor({lookupService:baseLookup()});
+ for(const source of ['SCRAPER','OUTBOUND_SCRAPER','GOOGLE_PLACES']){
+  const env=event({source_type:'LEAD',lead_direction:'INBOUND'},
+   {source,source_event_id:'SCRAPER-1-'+source});
+  const decision=await inboundWriter.decide(env);
+  assert.equal(decision.decision,'REVIEW_REQUIRED');
+  assert.equal(decision.reason_code,'OUTBOUND_PROSPECT_REQUIRES_OUTREACH_PIPELINE');
+  assert.equal(decision.transaction_plan,undefined);
+ }
+});
+test('outbound direction or origin mismatch fails closed even for website submission',async()=>{
+ const processor=createLeadProcessor({lookupService:baseLookup()});
+ for(const provenance of [
+  {lead_direction:'OUTBOUND'},
+  {record_origin:'SCRAPER',lead_direction:'INBOUND'},
+  {acquisition_source:'OUTBOUND_PROSPECTING'},
+  {source_type:'OUTBOUND_PROSPECTING'}
+ ]){
+  const decision=await processor.decide(event(provenance));
+  assert.equal(decision.decision,'REVIEW_REQUIRED');
+  assert.equal(decision.transaction_plan,undefined);
+ }
+});
+test('genuine website customer keeps inbound attribution and original event identity',async()=>{
+ const decision=await createLeadProcessor({lookupService:baseLookup()}).decide(event());
+ assert.equal(decision.decision,'AUTO_WRITE');
+ const client=decision.transaction_plan.writes.find(w=>w.sheet==='CRM_Master').values;
+ assert.equal(client.lead_direction,'INBOUND');
+ assert.equal(client.acquisition_source,'WEBSITE');
+ assert.equal(client.record_origin,'WEBSITE');
+});

@@ -58,3 +58,13 @@ test('Command Centre offers one integrated lifecycle inspection for each linked 
  assert.match(source,/Bank settlement and actual completion require independent verification/);
  assert.doesNotMatch(source,/localStorage|sessionStorage/);
 });
+
+test('operator presents separate scraper, inbound CRM and provenance review navigation',()=>{
+ const source=fs.readFileSync(require.resolve('../runtime/operator.js'),'utf8');
+ assert.match(source,/Scraper \/ outbound prospects/);
+ assert.match(source,/Inbound CRM/);
+ assert.match(source,/Provenance review/);
+ assert.match(source,/outbound_prospects/);
+ assert.match(source,/provenance_review/);
+ assert.doesNotMatch(source,/localStorage|sessionStorage/);
+});

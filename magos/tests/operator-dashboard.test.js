@@ -109,3 +109,56 @@ test('dashboard Sheets reads reject duplicate headers and can include rows past 
   ledger.getHeaders = async () => ({ headers: ['record_id', 'record_id'] });
   await assert.rejects(ledger.readObjects('Queue', { maxRows: null, requiredHeaders: ['record_id'] }), /Unexpected register schema/);
 });
+
+test('CRM separates scraper prospects, inbound enquiries, converted origin and unknown records',async()=>{
+ const original=makeStores();
+ const examples=[
+  {crm_id:'CRM-SCRAPED',company:'Scraped firm',lead_direction:'OUTBOUND',
+   record_origin:'SCRAPER',acquisition_source:'OUTBOUND_PROSPECTING'},
+  {crm_id:'CRM-INBOUND',company:'Customer enquiry',lead_direction:'INBOUND',
+   record_origin:'WHATSAPP_CLIENT_REQUEST',acquisition_source:'INBOUND_WHATSAPP'},
+  {crm_id:'CRM-UNKNOWN',company:'Imported quote',lead_direction:'UNKNOWN',
+   record_origin:'DRIVE_IMPORT',acquisition_source:'UNKNOWN'},
+  {crm_id:'CRM-CONVERTED',company:'Converted prospect',lead_direction:'OUTBOUND',
+   record_origin:'SCRAPER',acquisition_source:'OUTBOUND_PROSPECTING',
+   job_id:'JOB-VERIFIED',source_evidence:'https://drive.google.com/file/d/PROOF/view'},
+  {crm_id:'CRM-LEGACY',company:'Legacy scraper prospect',source_query:'property managers Pretoria',
+   google_maps_link:'https://maps.google.com/?cid=123'},
+  {crm_id:'CRM-CONFLICT',company:'Contradictory source',lead_direction:'INBOUND',
+   record_origin:'SCRAPER',acquisition_source:'OUTBOUND_PROSPECTING'}
+ ];
+ const stores={...original,crm:{readObjects:async(name,options)=>
+   name==='CRM_Master'?examples:original.crm.readObjects(name,options)}};
+ const result=await loadOperatorDashboard(stores);
+ assert.deepEqual(result.departments.clients.records.map(r=>r.id),['CRM-INBOUND']);
+ assert.deepEqual(result.departments.prospects.records.map(r=>r.id),
+  ['CRM-SCRAPED','CRM-CONVERTED','CRM-LEGACY']);
+ assert.deepEqual(result.departments.provenance.records.map(r=>r.id),
+  ['CRM-UNKNOWN','CRM-CONFLICT']);
+ assert.equal(result.overview_counts.outbound_prospects,3);
+ assert.equal(result.overview_counts.provenance_review,2);
+ assert.equal(result.departments.prospects.records[1].details.Provenance,'CONVERTED_OUTBOUND');
+ assert.equal(result.departments.provenance.records[1].details.Provenance,'PROVENANCE_REVIEW');
+ assert.equal(result.side_effects,false);
+});
+test('unavailable CRM source does not falsely produce zero outbound prospects',async()=>{
+ const result=await loadOperatorDashboard(makeStores('CRM_Master'));
+ assert.equal(result.departments.prospects.state,'UNAVAILABLE');
+ assert.equal(result.departments.provenance.state,'UNAVAILABLE');
+ assert.equal(result.overview_counts.outbound_prospects,undefined);
+});
+
+test('explicit website-form origin is inbound but unsupported provenance remains review',async()=>{
+ const original=makeStores();
+ const rows=[
+  {crm_id:'WEB-1',lead_direction:'INBOUND',record_origin:'WEBSITE_FORM',
+   acquisition_source:'WEBSITE'},
+  {crm_id:'IMPORT-1',lead_direction:'INBOUND',record_origin:'DRIVE_IMPORT',
+   acquisition_source:'UNKNOWN'}
+ ];
+ const stores={...original,crm:{readObjects:async(name,options)=>
+  name==='CRM_Master'?rows:original.crm.readObjects(name,options)}};
+ const result=await loadOperatorDashboard(stores);
+ assert.deepEqual(result.departments.clients.records.map(r=>r.id),['WEB-1']);
+ assert.deepEqual(result.departments.provenance.records.map(r=>r.id),['IMPORT-1']);
+});
