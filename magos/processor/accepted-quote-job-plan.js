@@ -12,6 +12,10 @@ async function planAcceptedJob({stores,quoteId,jobId,sourceEventId,acceptanceEvi
  const opportunity=(await stores.crm.findByKey('Jobs_Opportunities','opportunity_id',quote.opportunity_id))?.object;
  const readiness=assessQuoteToJob({quote,job:opportunity,acceptanceEvidence,paymentClearance});
  if(readiness.decision!=='READY_FOR_GOVERNED_JOB_CREATION')return {state:readiness.decision,readiness};
+ // The job cannot be assembled from an accepted quote with missing client
+ // identity or scope. Reject before P3 commits, not only at postcommit readback.
+ if(!v(opportunity?.client_crm_id)||!v(quote['Project / Scope']))
+  return {state:'REVIEW_REQUIRED',reason_code:'ACCEPTED_JOB_CLIENT_OR_SCOPE_MISSING'};
  if(!v(jobId).startsWith('JOB-'))return {state:'REVIEW_REQUIRED',reason_code:'INVALID_JOB_ID'};
  const existing=(await stores.commercial.findByKey('Job Execution','Job ID',jobId))?.object;
  if(typeof stores.commercial.readObjects!=='function')return {state:'REVIEW_REQUIRED',reason_code:'EXECUTION_INDEX_UNAVAILABLE'};
@@ -24,7 +28,7 @@ async function planAcceptedJob({stores,quoteId,jobId,sourceEventId,acceptanceEvi
  const plan=createJobFromAcceptedScope({
    idempotency_key:'MAGOS_JOB_CREATE_V1|'+sourceEventId+'|'+quoteId,
    source_event_id:sourceEventId,evidence_link:acceptanceEvidence,
-   quote_preconditions:[{store:'commercial',sheet:'Quotes',key:{header:'quote_id',value:quoteId},expect:{'Quote Status':'ACCEPTED','Line Control State':quote['Line Control State'],opportunity_id:quote.opportunity_id}},{store:'crm',sheet:'Jobs_Opportunities',key:{header:'opportunity_id',value:quote.opportunity_id},expect:{job_id:''}}],
+   quote_preconditions:[{store:'commercial',sheet:'Quotes',key:{header:'quote_id',value:quoteId},expect:{'Quote Status':'ACCEPTED','Line Control State':quote['Line Control State'],'Project / Scope':quote['Project / Scope'],opportunity_id:quote.opportunity_id}},{store:'crm',sheet:'Jobs_Opportunities',key:{header:'opportunity_id',value:quote.opportunity_id},expect:{job_id:''}}],
    job_target:{store:'crm',workbook_role:'CRM',sheet:'Jobs_Opportunities',key:{header:'opportunity_id',value:quote.opportunity_id},authority:'AUTHORITATIVE',entity_type:'Job'},
    job_changes:{job_id:jobId,job_status:'JOB_CREATED'},
    execution_target:{store:'commercial',workbook_role:'COMMERCIAL',sheet:'Job Execution',key:{header:'Execution ID',value:executionId},link_id:'LNK-009'},
