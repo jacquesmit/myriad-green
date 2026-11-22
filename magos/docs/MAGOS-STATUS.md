@@ -468,3 +468,9 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - **Engineering correction:** added `lead-provenance.js` classification and blocked scraped/outbound events from P3 inbound `LEAD_SUBMITTED` processor before planning writes. Dashboard now separates inbound, outbound (including original-outbound conversions) and provenance-review records within the existing CRM source. No new authoritative datasets or fabricated conversion.
 - **QA:** new negative/positive lead processor, dashboard and browser navigation regressions. Runtime P2 workflow now explicitly tests `lead-intake.test.js`; source-level tests, CI and PR merge PENDING.
 - **Remaining gates:** verify runtime UI against actual full CRM source; reconcile duplicate and UNKNOWN provenance records with source events before reclassification; validate lead-to-quote conversion by original channel; no automatic outreach or live Sheets edits. MAGOS end-to-end business acceptance remains open.
+
+
+### 22 November 2026 — Verified CRM direction distribution
+
+- Read-only `CRM_Master!BV1:BY1553`: 1,408 non-empty provenance rows in returned range, comprising 1,325 labelled OUTBOUND, 58 INBOUND, 19 UNKNOWN and 6 missing/malformed direction labels. All outbound-labelled rows in the returned provenance sample show SCRAPER origin and OUTBOUND_PROSPECTING acquisition. Treat these as direction labels, not converted opportunities or paid customer counts.
+- Corrected website form origin recognition in source classifier; unknown imported and inconsistent records remain in separate provenance review. Full deduplication, verified historical conversion links and live Command Centre acceptance pending.
