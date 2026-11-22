@@ -225,6 +225,30 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
         });
         overviewCounts[metric] = projection.counts[metric];
         let workItems=projection.attention;
+        if(key==='jobs'){
+          // The active-jobs KPI intentionally excludes completed/cancelled
+          // work. The Jobs workspace must not hide their real closeout,
+          // warranty, cost or receivable inspections.
+          const visible=new Set(records.map(item=>item.id));
+          for(const sourceJob of input){
+            const opportunityId=txt(sourceJob.opportunity_id);
+            const jobId=txt(sourceJob.job_id);
+            if(!opportunityId||!jobId||visible.has(opportunityId)||
+               !index.has(opportunityId))continue;
+            visible.add(opportunityId);
+            records.push(record(opportunityId,sourceJob.primary_service,
+              sourceJob.job_status||'UNKNOWN',
+              sourceJob.next_action||'Review completed or historical job evidence',{
+                job_id:jobId,
+                client_id:txt(sourceJob.client_crm_id),
+                'Recorded payment status':txt(sourceJob.payment_status),
+                'Recorded invoice':txt(sourceJob.invoice_number),
+                'Completion evidence status':'NOT_INDEPENDENTLY_VERIFIED'
+              }));
+          }
+          overviewCounts.jobs_with_recorded_id=records.filter(item=>
+            !!txt(item.details?.job_id)).length;
+        }
         if(key==='quotes'){
           // Pending-quotes KPI still measures outstanding action, but the
           // Quotes workspace must retain accepted/linked, declined and
