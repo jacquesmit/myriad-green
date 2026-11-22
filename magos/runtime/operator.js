@@ -319,6 +319,13 @@
       list.append(element('dt', name), valueCell);
     }
     target.append(list);
+    if(department==='quotes'){
+      const signingOutput=element('p');
+      signingOutput.setAttribute('role','status');
+      const signingCheck=button('Check client signing readiness',
+        ()=>inspectClientSigningReadiness(signingOutput,signingCheck),'secondary');
+      target.append(signingCheck,signingOutput);
+    }
     // Relationships are supplied by the read-only server projection from
     // exact canonical IDs. Never create links using fuzzy client name matches.
     if(Array.isArray(item.related)&&item.related.length){
@@ -768,6 +775,31 @@
       ].join(' · ');
     }catch{
       if(inspection===active)output.textContent='Scheduling evidence unavailable. Review source bookings.';
+    }finally{
+      clearTimeout(deadline);
+      if(inspection===active)button.disabled=false;
+    }
+  }
+
+  async function inspectClientSigningReadiness(output,button){
+    const active=new AbortController();
+    inspection?.abort();inspection=active;button.disabled=true;
+    output.textContent='Checking the live client signing page and reviewed receipt bridge…';
+    const deadline=setTimeout(()=>active.abort(),25000);
+    try{
+      const response=await read('/v1/operator/client-signing-readiness',active.signal);
+      const report=await response.json();
+      if(inspection!==active)return;
+      if(report.schema_version!=='MAGOS_CLIENT_SIGNING_READINESS_V1'||
+         report.side_effects!==false)throw Error('SIGNING_READINESS_UNAVAILABLE');
+      const blockers=(report.checks||[]).filter(c=>c.state!=='PASS')
+        .map(c=>c.reason_code?.replaceAll('_',' ')||'Unverified prerequisite');
+      output.textContent=report.state==='READY_FOR_CONTROLLED_SIGNING_TEST'?
+        'Page and reviewed bridge available. Live customer signing, approval and quote-version verification still require controlled testing.':
+        'Client signing blocked: '+(blockers.join(' · ')||'Provider checks unavailable');
+    }catch{
+      if(inspection===active)
+        output.textContent='Client signing status unavailable; no acceptance or job release authorized.';
     }finally{
       clearTimeout(deadline);
       if(inspection===active)button.disabled=false;
