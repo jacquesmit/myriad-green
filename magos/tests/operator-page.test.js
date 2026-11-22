@@ -189,3 +189,11 @@ test('completed job history remains discoverable alongside separate active job K
  assert.match(source,/Active jobs KPI excludes completed and cancelled jobs/);
  assert.match(source,/Inspect complete job closure/);
 });
+
+test('quote details offer real client signing readiness without issuing a client link',()=>{
+ const source=fs.readFileSync(require.resolve('../runtime/operator.js'),'utf8');
+ assert.match(source,/Check client signing readiness/);
+ assert.match(source,/client-signing-readiness/);
+ assert.match(source,/READY_FOR_CONTROLLED_SIGNING_TEST/);
+ assert.match(source,/Live customer signing, approval and quote-version verification still require controlled testing/);
+});
