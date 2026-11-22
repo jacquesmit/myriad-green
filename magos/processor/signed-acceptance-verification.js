@@ -16,6 +16,9 @@ async function verifySignedAcceptance({stores,quoteId,evidenceVerifier}={}){
  return {state:'SIGNED_ACCEPTANCE_VERIFIED',quote_id:quoteId,opportunity_id:v(quote.opportunity_id),
    evidence_ref:v(att.evidence_ref),source_event_id:v(att.source_event_id),
    signer_identity:v(att.signer_identity),signed_at:v(att.signed_at),
+   quote_version:v(att.quote_version)||null,
+   quote_version_verified:att.authority==='WP_VERIFIED_SIGNED_RECEIPT_AND_CANONICAL_COMMERCIAL_MATCH' &&
+     !!v(att.quote_version),
    authority:'TRUSTED_PROVIDER_ATTESTATION',writes:[],side_effects:false};
 }
 module.exports={verifySignedAcceptance};
