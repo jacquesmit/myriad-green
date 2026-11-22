@@ -13,7 +13,7 @@ async function inspectJobRelease({stores,quoteId}={}){
  const opportunity=opportunityId?(await stores.crm.findByKey('Jobs_Opportunities','opportunity_id',opportunityId))?.object:null;
  const failures=[];
  if(v(quote['Quote Status']).toUpperCase()!=='ACCEPTED') failures.push('QUOTE_NOT_ACCEPTED');
- if(v(quote['Line Control State']).toUpperCase()!=='PASS')failures.push('QUOTE_LINES_NOT_VERIFIED');
+ if(!['PASS','LINE_CONTROL_OK'].includes(v(quote['Line Control State']).toUpperCase()))failures.push('QUOTE_LINES_NOT_VERIFIED');
  if(!opportunity||v(opportunity.opportunity_id)!==opportunityId)failures.push('OPPORTUNITY_NOT_VERIFIED');
  if(v(opportunity?.job_id))failures.push('JOB_ALREADY_EXISTS');
  return {state:failures.length?'REVIEW_REQUIRED':'READY_FOR_EVIDENCE_REVIEW',
