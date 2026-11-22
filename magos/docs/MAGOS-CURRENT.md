@@ -264,3 +264,10 @@ For each real MAGOS code change:
 - Read `CRM_Master!BV1:BY1553` (only lead direction, origin, acquisition and first contact; no CRM data altered). Google Sheets returned 1,464 rows including headers/blank provenance rows; 1,408 rows had at least one populated attribution field. Recorded `lead_direction`: **1,325 OUTBOUND**, **58 INBOUND**, **19 UNKNOWN**, and **6 missing/malformed** (including invalid email/forwarded labels). These are counts of *labels*, not validated leads, not sales and not proof of live production readiness.
 - All 1,325 recorded `OUTBOUND` rows in this bounded sample have `SCRAPER / OUTBOUND_PROSPECTING` source metadata. The code now adds `WEBSITE_FORM` to the accepted explicit inbound-origin vocabulary. Historical invalid/unknown provenance is held for review, never silently reassigned.
 - No mass reclassification, campaigns or client writes performed. Source row offsets may not equal immutable CRM IDs; do not use row numbers as identity.
+
+
+### 22 November 2026 — Scraper attribution segregation merged and inbound count hardened
+
+- [PR #77](https://github.com/jacquesmit/myriad-green/pull/77) MERGED to `main` at `26748fd382657f2a30c9d318c771190aa95b5da7`. Exact tested head `f523c92ae5de0995fc3fb98eccca15b4e26f4e5e` passed MAGOS Runtime P2 #219, Document Extract #278 and Evolving Status Gate #29. Code/CI PASS; live HOSTAFRICA operator UI acceptance PENDING.
+- After merging, another dashboard weakness was isolated: `projectOperations` accepted generic `source_type=LEAD` as inbound even when `source_system=UNKNOWN`; this could overstate inbound opportunities. New change requires a credible inbound source system for any lead type; excludes scraper/google-places/outbound and supplier, RFQ, invoice or document types regardless of labels. Explicit inbound evidence still requires qualification and is not a booked or paid job.
+- Regression tests cover unknown-source generic LEAD, scraped event mislabelled as WEBSITE_FORM, known Gmail/WordPress customer enquiries and separate RFQ/invoice handling. No source records modified. Branch `codex/magos-inbound-queue-source-authority-20261122`; CI/merge PENDING.
