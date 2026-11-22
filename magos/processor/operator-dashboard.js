@@ -5,6 +5,7 @@ const { classifyCrmProvenance } = require('./lead-provenance');
 const { inspectAttributedConversions } = require('./attributed-conversions');
 const {quoteValidityReview}=require('./quote-validity');
 const {inspectVariationRegister}=require('./variation-review');
+const {inspectLabourCostRegister}=require('./labour-reconciliation');
 const { calculateExpected } = require('./payment-control-audit');
 const { DEFAULT_IDS } = require('../writer/transaction-writer');
 
@@ -20,6 +21,8 @@ const tabs = {
   suppliers: ['supplier', 'Suppliers', 826555595, ['supplier_id', 'supplier_name', 'supplier_approval_state', 'active_status']],
   evidence: ['commercial', 'Job Execution', 1264514302, ['Execution ID', 'Job ID', 'Before Evidence', 'After Evidence', 'Completion Sign-off']],
   variations: ['commercial', 'Variations', 1009, ['Variation ID', 'Job ID', 'Original Scope Ref', 'Approval Status', 'Approval Evidence', 'Selling Price Impact (R)', 'Execution Status']],
+  labour_rates: ['commercial', 'Labour Rates', 1010, ['labour_rate_id', 'person_role', 'rate_basis', 'rate', 'currency', 'effective_from']],
+  labour_margins: ['commercial', 'Project Cost & Margin', 1011, ['margin_record_id', 'job_id', 'crew_daily_rate_total', 'crew_days', 'provisional_labour_cost']],
   exceptions: ['audit', 'Sync_Exceptions', 2012, ['exception_id', 'status', 'action_required']],
 };
 
@@ -148,7 +151,7 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
   const departments = {};
   const overviewCounts = {};
   const attention = [];
-  for (const key of keys.filter(key => key !== 'allocations')) {
+  for (const key of keys.filter(key => !['allocations','labour_rates','labour_margins'].includes(key))) {
     const [store, sheet, gid] = tabs[key];
     const source = { name: sheet, url: sourceLink(stores[store]?.spreadsheetId || DEFAULT_IDS[store], gid) };
     try {
@@ -307,6 +310,38 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
     })));
   }catch{
     departments.conversions={state:'UNAVAILABLE',source:conversionSource};
+  }
+  // Aspire/LMN labour economics: reuse existing commercial source records,
+  // without inventing worker assignments, time logs or verified payroll.
+  const labourSource={name:'Labour Rates / Project Cost & Margin',
+    url:sourceLink(stores.commercial?.spreadsheetId || DEFAULT_IDS.commercial,1010)};
+  try{
+    const report=inspectLabourCostRegister({
+      rateRows:rows('labour_rates'),marginRows:rows('labour_margins')
+    });
+    if(report.state==='UNAVAILABLE')throw Error('LABOUR_SOURCES_UNAVAILABLE');
+    departments.labour={
+      state:report.state==='PARTIAL'?'PARTIAL':'LIVE',source:labourSource,
+      records:report.records.map(item=>record(item.id,'Job labour '+item.id,
+        item.status,item.next_action,{
+          'Margin record':item.margin_record_id,
+          'Daily crew rate (ZAR)':item.crew_daily_rate_zar,
+          'Crew days':item.crew_days,
+          'Provisional labour cost (ZAR)':item.provisional_labour_cost_zar,
+          'Calculated crew cost (ZAR)':item.calculated_crew_cost_zar,
+          'Actual labour verified':'NO',
+          'Blockers':item.blockers.join(', ')
+        })),
+      rate_issues:report.rate_issues
+    };
+    overviewCounts.labour_cost_review=report.counts.requires_review;
+    attention.push(...report.records.filter(item=>
+      item.blockers.includes('CREW_RATE_DAYS_COST_MISMATCH')).slice(0,100).map(item=>({
+        type:'LABOUR_COST_REVIEW',department:'labour',id:item.id,
+        next_action:item.next_action
+      })));
+  }catch{
+    departments.labour={state:'UNAVAILABLE',source:labourSource};
   }
   return {
     schema_version: 'MAGOS_OPERATOR_DASHBOARD/V1',
