@@ -205,3 +205,29 @@ test('every attributed-conversion exception is a selectable Command Centre detai
    row.status==='REVIEW_REQUIRED'));
  }
 });
+
+test('dashboard flags recorded issued quotes past validity without chasing drafts or changing source rows',async()=>{
+ const existing=makeStores();
+ const quoteRows=[
+  {quote_id:'Q-ELAPSED','Quote Status':'SENT','Valid Until':'2026-11-15',
+   'Days Remaining':'999','Next Action':'Call customer'},
+  {quote_id:'Q-FUTURE','Quote Status':'SENT','Valid Until':'2026-12-04',
+   'Next Action':'Confirm site details'},
+  {quote_id:'Q-DRAFT','Quote Status':'TO_CONFIRM','Valid Until':'2026-10-01',
+   'Next Action':'Validate canonical pricing'},
+  {quote_id:'Q-UNKNOWN','Quote Status':'ISSUED','Valid Until':'bad'}
+ ];
+ const stores={...existing,commercial:{readObjects:async(name,options)=>
+  name==='Quotes'?quoteRows:existing.commercial.readObjects(name,options)}};
+ const output=await loadOperatorDashboard(stores,()=>new Date('2026-11-22T07:00:00Z'));
+ assert.equal(output.overview_counts.quotes_validity_review,2);
+ const records=output.departments.quotes.records;
+ assert.equal(records.find(r=>r.id==='Q-ELAPSED').details['Validity review'],'VALIDITY_ELAPSED_REVIEW');
+ assert.match(records.find(r=>r.id==='Q-ELAPSED').next_action,/revised valid pricing/);
+ assert.equal(records.find(r=>r.id==='Q-DRAFT').details['Validity review'],'NOT_RECORDED_ISSUED');
+ assert.equal(records.find(r=>r.id==='Q-FUTURE').details['Validity review'],'WITHIN_RECORDED_VALIDITY');
+ const alerted=output.attention.filter(item=>item.type==='QUOTE_EXPIRED_REVIEW');
+ assert.deepEqual(alerted.map(item=>item.id),['Q-ELAPSED','Q-UNKNOWN']);
+ assert.equal(output.side_effects,false);
+ assert.equal(quoteRows[0]['Quote Status'],'SENT');
+});
