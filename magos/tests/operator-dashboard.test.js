@@ -338,3 +338,24 @@ test('one Command Centre transaction navigates linked CRM, job, quote, variation
  assert.ok(dashboard.canonical_navigation.linked_records>0);
  assert.equal(dashboard.side_effects,false);
 });
+
+test('accepted job-linked and historical quotes remain searchable without inflating pending KPI',async()=>{
+ const base=makeStores();
+ const sourceQuotes=[
+  {quote_id:'Q-SENT',opportunity_id:'O-1','Quote Status':'SENT',
+   'Project / Scope':'Service quotation'},
+  {quote_id:'Q-ACCEPTED',opportunity_id:'O-2',job_id:'JOB-2',
+   'Quote Status':'ACCEPTED','Project / Scope':'Accepted installation'},
+  {quote_id:'Q-DECLINED',opportunity_id:'O-3',
+   'Quote Status':'DECLINED','Project / Scope':'Declined option'}
+ ];
+ const stores={...base,commercial:{readObjects:async(tab,options)=>
+  tab==='Quotes'?sourceQuotes:base.commercial.readObjects(tab,options)}};
+ const dashboard=await loadOperatorDashboard(stores);
+ assert.equal(dashboard.overview_counts.pending_quotes,1);
+ assert.deepEqual(dashboard.departments.quotes.records.map(x=>x.id),
+  ['Q-SENT','Q-ACCEPTED','Q-DECLINED']);
+ assert.equal(dashboard.departments.quotes.records[1].details.job_id,'JOB-2');
+ assert.equal(dashboard.departments.quotes.records[1].status,'ACCEPTED');
+ assert.equal(dashboard.side_effects,false);
+});
