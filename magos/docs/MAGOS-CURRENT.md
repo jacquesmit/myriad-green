@@ -192,3 +192,11 @@ For each real MAGOS code change:
 
 - [PR #68](https://github.com/jacquesmit/myriad-green/pull/68) MERGED into `main` at `c64e47ff7942b05c2920078a8ca0ee655ed86bf4` after exact-head `55e3ecf5b057c3f27c438cd373ca3efb1ab904c6` passed Runtime P2 #201, Document Extract #256 and Evolving Status Gate #16.
 - Read-only maintenance candidates now use documented last service metadata when complete and chronological, otherwise refuse incomplete service claims; anchors avoid month-end cumulative drift. **Canonical Installed_Parts source schema and evidence provenance must still be validated**; this is NOT proof a service happened, permission to message a customer, or a live operational release.
+
+
+## 22 November 2026 — Independent aftercare service evidence authority (candidate)
+
+- Corrected the post-#68 evidence defect: merely filling `Installed_Parts.last_service_date`, `last_service_job_id` and `last_service_evidence` is **not** independently verified servicing. The prior code incorrectly labelled those fields `VERIFIED_LAST_SERVICE` and could reset the recurring schedule from self-entered data.
+- `assessAftercare` now rejects any claimed last service unless an **independent, exactly matched server-generated canonical Job Execution receipt** identifies installed part, service job, date, evidence, client, property and verified source; duplicated, mismatched, missing, unavailable and forged-source receipts fail closed. `inspectJobAftercare` accepts only an optional server-configured verifier callback, never an HTTP customer-provided receipt. Missing callback does not pass.
+- Existing installed-date-only draft maintenance remains usable, and no bookings, messages, warranties or client records are changed. Unit regressions include accepted receipt and negative provider failures.
+- **Production BLOCKED:** the actual canonical service receipt adapter must be integrated against verified live `Job Execution` headers and evidence. The verifier callback is a strict contract, NOT an independent provider integration. Do not mark recurring service automation active from passing tests. Candidate CI/merge pending.
