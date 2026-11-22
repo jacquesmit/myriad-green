@@ -231,3 +231,32 @@ test('dashboard flags recorded issued quotes past validity without chasing draft
  assert.equal(output.side_effects,false);
  assert.equal(quoteRows[0]['Quote Status'],'SENT');
 });
+
+test('Simpro/Fergus variation register enters Command Centre and flags retrospective consent',async()=>{
+ const baseline=makeStores();
+ const variationRows=[
+  {'Variation ID':'VAR-1','Job ID':'JOB-1',Client:'Tank client',
+   'Original Scope Ref':'Q-1','New Finding':'Tank dimensions changed',
+   'Additional Work':'Alternative tank installed','Cost Impact (R)':'0',
+   'Selling Price Impact (R)':'0','Approval Status':'DRAFT',
+   'Approval Evidence':'','Execution Status':'WORK_COMPLETED',
+   'Drive Evidence':'https://drive.google.com/file/d/evidence/view'},
+  {'Variation ID':'VAR-2','Job ID':'JOB-2',Client:'Irrigation client',
+   'Original Scope Ref':'Q-2','New Finding':'Extra fittings',
+   'Additional Work':'Replace fittings','Cost Impact (R)':'100',
+   'Selling Price Impact (R)':'350','Approval Status':'APPROVED',
+   'Approval Evidence':'https://drive.google.com/file/d/approval/view',
+   'Execution Status':'WORK_COMPLETED','Drive Evidence':'https://drive.google.com/file/d/after/view',
+   'Invoice Ref':'INV-2'}
+ ];
+ const stores={...baseline,commercial:{readObjects:async(name,options)=>
+  name==='Variations'?variationRows:baseline.commercial.readObjects(name,options)}};
+ const r=await loadOperatorDashboard(stores);
+ assert.equal(r.departments.variations.state,'LIVE');
+ assert.equal(r.overview_counts.variations_review,1);
+ assert.equal(r.overview_counts.retrospective_variations,1);
+ assert.ok(r.departments.variations.records.find(x=>x.id==='VAR-1')
+  .details.Blockers.includes('RETROSPECTIVE_CLIENT_APPROVAL_REQUIRED'));
+ assert.ok(r.attention.some(x=>x.department==='variations'&&x.id==='VAR-1'));
+ assert.equal(r.side_effects,false);
+});
