@@ -290,7 +290,7 @@ test('labour economics are visible by job without treating provisional crew days
 test('real Intake_Queue customer RFQ appears in operator inbound and source-linked conversion views',async()=>{
  const baseline=makeStores();
  const client={crm_id:'CRM-R',company:'Filtration client',lead_direction:'INBOUND',
-  record_origin:'GMAIL_CUSTOMER_RFQ',acquisition_source:'EMAIL'};
+  record_origin:'GMAIL',acquisition_source:'EMAIL'};
  const opportunity={opportunity_id:'OPP-R',client_crm_id:'CRM-R',job_id:''};
  const intake={intake_id:'INT-R',source_system:'GMAIL',source_type:'RFQ',
   source_event_id:'EV-R',match_status:'NEW_RECORD',processing_status:'LINKED',
