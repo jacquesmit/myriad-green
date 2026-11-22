@@ -25,6 +25,8 @@ on:
       - 'magos/tests/release-preflight.test.js'
       - 'magos/tests/hostafrica-release.test.js'
       - 'magos/scripts/hostafrica-release.sh'
+      - 'magos/scripts/whole-system-acceptance.js'
+      - 'magos/tests/whole-system-acceptance.test.js'
       - 'magos/tests/wordpress-acceptance-verifier.test.js'
       - 'magos/tests/accept-reviewed-quote.test.js'
       - 'magos/tests/record-direct-job-cost.test.js'
@@ -79,6 +81,8 @@ on:
       - 'magos/tests/release-preflight.test.js'
       - 'magos/tests/hostafrica-release.test.js'
       - 'magos/scripts/hostafrica-release.sh'
+      - 'magos/scripts/whole-system-acceptance.js'
+      - 'magos/tests/whole-system-acceptance.test.js'
       - 'magos/tests/wordpress-acceptance-verifier.test.js'
       - 'magos/tests/accept-reviewed-quote.test.js'
       - 'magos/tests/record-direct-job-cost.test.js'
@@ -130,6 +134,8 @@ jobs:
       - run: node --check app.js
       - name: HostAfrica controlled release regression tests
         run: node --test tests/hostafrica-release.test.js
+      - name: Whole MAGOS acceptance evaluator regression tests
+        run: node --test tests/whole-system-acceptance.test.js
       - name: Hosted app.js entrypoint smoke
         run: |
           export PORT=18081
