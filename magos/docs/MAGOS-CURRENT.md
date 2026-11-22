@@ -318,3 +318,11 @@ For each real MAGOS code change:
 - Corrected a production-status defect in `system-coverage.js`: 22 source PASS labels alone can no longer set `production_complete=true`. It instead reports `capability_gates_passed` separately and `production_complete=false`/`production_acceptance=NOT_VERIFIED` until an independently validated live release-attestation path is installed.
 - Frontend source already exists at `magos/runtime/operator-page.js`, `operator.js`, `operator.css` on existing `/operator`. External attempt to read `https://runtime.myriadgreen.co.za/operator` and `/healthz` through web lookup was inaccessible; the currently deployed frontend version was NOT verified. This PR does not deploy it.
 - New delivery roadmap, operator-page and all-green-gate-failure regression tests added to Runtime P2 CI. Branch `codex/magos-front-end-rollout-tracker-20261122`; CI and merge pending.
+
+
+### 22 November 2026 — Frontend delivery milestone merge and weekly accountability
+
+- [PR #83](https://github.com/jacquesmit/myriad-green/pull/83) merged SHA e7cfc8232d199b9b6e2d86651436a7d55b98af97. Exact tested head d6f5628a2d0d710e310c343e5b82751d32cabb73: MAGOS Runtime P2 #227 PASS, Document Extract #290 PASS, Evolving Status Gate #35 PASS. Frontend delivery tracker is in GitHub main but NOT confirmed deployed.
+- Existing Sunday 19:00 Africa/Johannesburg MAGOS Runtime Status automation 6ab789218dbc81918d17a7400478e5d2 updated successfully to cover 22 capability gates, proposed dates, late milestones, live frontend state, verified deployed SHA and production acceptance. It is monitoring/reporting, not autonomous software development.
+- External read-only access tests for https://runtime.myriadgreen.co.za/operator and https://runtime.myriadgreen.co.za/healthz were inconclusive: web lookup inaccessible, terminal DNS resolution unsuccessful. Cannot claim hosted outage or successful release. Actual operator login, source records and deployment remain NOT VERIFIED.
+- UI-01 25 Nov 2026, FLOW-02 4 Dec 2026, FIELD-03 18 Dec 2026 and FULL-04 15 Jan 2027 are PROPOSED planning targets, not delivery commitments. No milestone is independently accepted in production.
