@@ -359,3 +359,47 @@ test('accepted job-linked and historical quotes remain searchable without inflat
  assert.equal(dashboard.departments.quotes.records[1].status,'ACCEPTED');
  assert.equal(dashboard.side_effects,false);
 });
+
+test('completed jobs remain in the workspace for actual closeout and warranties, not in active KPI',async()=>{
+ const base=makeStores();
+ const jobs=[
+  {opportunity_id:'OP-ACT',job_id:'JOB-ACT',job_status:'IN_PROGRESS',
+   client_crm_id:'CRM-A',primary_service:'Irrigation'},
+  {opportunity_id:'OP-DONE',job_id:'JOB-DONE',job_status:'JOB_COMPLETED',
+   client_crm_id:'CRM-D',primary_service:'Backup water',
+   payment_status:'TO_CONFIRM',invoice_number:'INV-DONE'},
+  {opportunity_id:'OP-CANCEL',job_id:'JOB-CANCEL',job_status:'CANCELLED',
+   client_crm_id:'CRM-C',primary_service:'Irrigation'},
+  {opportunity_id:'OP-UNCONVERTED',job_id:'',job_status:'OPEN',
+   client_crm_id:'CRM-P',primary_service:'Diagnostics'}
+ ];
+ const stores={...base,crm:{readObjects:async(name,options)=>
+  name==='Jobs_Opportunities'?jobs:base.crm.readObjects(name,options)}};
+ const report=await loadOperatorDashboard(stores);
+ assert.equal(report.overview_counts.active_jobs,1);
+ assert.equal(report.overview_counts.jobs_with_recorded_id,3);
+ assert.deepEqual(report.departments.jobs.records.map(r=>r.id),
+  ['OP-ACT','OP-DONE','OP-CANCEL']);
+ const done=report.departments.jobs.records.find(r=>r.id==='OP-DONE');
+ assert.equal(done.status,'JOB_COMPLETED');
+ assert.equal(done.details.job_id,'JOB-DONE');
+ assert.equal(done.details.client_id,'CRM-D');
+ assert.equal(done.details['Recorded payment status'],'TO_CONFIRM');
+ assert.equal(done.details['Completion evidence status'],'NOT_INDEPENDENTLY_VERIFIED');
+ assert.equal(report.side_effects,false);
+});
+test('completed duplicate job opportunity IDs stay quarantined, not reopened by historical view',async()=>{
+ const base=makeStores();
+ const stores={...base,crm:{readObjects:async(name,options)=>
+  name==='Jobs_Opportunities'?[
+   {opportunity_id:'OP-DUP',job_id:'JOB-1',job_status:'JOB_COMPLETED'},
+   {opportunity_id:'OP-DUP',job_id:'JOB-2',job_status:'JOB_COMPLETED'}
+  ]:base.crm.readObjects(name,options)}};
+ const report=await loadOperatorDashboard(stores);
+ assert.equal(report.departments.jobs.state,'PARTIAL');
+ assert.equal(report.departments.jobs.records.length,1);
+ assert.equal(report.departments.jobs.records[0].status,'REVIEW_REQUIRED');
+ assert.equal(report.departments.jobs.records[0].details.job_id,undefined);
+ assert.equal(report.overview_counts.active_jobs,0);
+ assert.equal(report.overview_counts.jobs_with_recorded_id,0);
+});
