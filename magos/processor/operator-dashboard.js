@@ -219,7 +219,12 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
     departments.conversions={
       state:conversion.state==='UNAVAILABLE'?'UNAVAILABLE':
         conversion.state==='REVIEW_REQUIRED'?'PARTIAL':'LIVE',
-      records:conversion.records.map(record=>({
+      records:[
+        ...conversion.exceptions.map(reason=>record(reason,
+          'Attribution reconciliation', 'REVIEW_REQUIRED',
+          'Reconcile canonical CRM, opportunity, quotation and execution IDs',
+          {'Source exception':reason,'Source authority':'Canonical registers'})),
+        ...conversion.records.map(record=>({
         id:record.id,title:record.source,status:record.status,
         next_action:record.next_action,
         details:{
@@ -235,7 +240,7 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
           'Payment':record.payment_status,
           'Profit':record.profit_status
         }
-      })),
+      }))],
       source:conversionSource,exception_count:conversion.exceptions.length,
       by_source:conversion.by_source
     };

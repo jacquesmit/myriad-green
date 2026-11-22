@@ -175,6 +175,50 @@
     paginate($('record-pages'), page, matches.length, index => { page = index; hideDetail(); renderRecords(); });
   }
 
+  function renderConversionFunnel(){
+    const panel=$('conversion-funnel');
+    panel.hidden=department!=='conversions';
+    if(panel.hidden)return;
+    const workspace=data?.departments?.conversions;
+    const rows=$('conversion-funnel-rows');
+    if(!workspace||workspace.state==='UNAVAILABLE'||!Array.isArray(workspace.by_source)){
+      $('conversion-funnel-status').textContent=
+        'Canonical sources unavailable — conversion totals are UNKNOWN, not zero.';
+      rows.replaceChildren();
+      return;
+    }
+    $('conversion-funnel-status').textContent=[
+      workspace.state==='PARTIAL'?'Attribution requires review':'Read-only source attribution',
+      (workspace.exception_count||0)+' source exceptions',
+      'Quoted and accepted are record states, not payment confirmation'
+    ].join(' · ');
+    const groups=workspace.by_source.slice().sort((a,b)=>
+      (b.linked_jobs||0)-(a.linked_jobs||0)||
+      (b.opportunities||0)-(a.opportunities||0)||
+      String(a.source).localeCompare(String(b.source)));
+    if(!groups.length){
+      rows.replaceChildren();
+      const row=element('tr'),cell=element('td',
+        'No verifiable source-linked opportunities in the accessible records.');
+      cell.colSpan=5;row.append(cell);rows.append(row);
+      return;
+    }
+    rows.replaceChildren(...groups.map(group=>{
+      const row=element('tr'),source=element('td');
+      const sourceName=String(group.source||'UNKNOWN');
+      source.append(button(sourceName,()=>{
+        $('search').value=sourceName;
+        page=0;hideDetail();renderRecords();
+      },'row-link'));
+      row.append(source,
+        element('td',String(group.opportunities??'Unknown')),
+        element('td',String(group.quoted??'Unknown')),
+        element('td',String(group.accepted??'Unknown')),
+        element('td',String(group.linked_jobs??'Unknown')));
+      return row;
+    }));
+  }
+
   function renderDeliveryRoadmap() {
     const panel=$('delivery');
     const roadmap=coverage?.delivery;
@@ -216,6 +260,7 @@
     $('department-title').textContent = labels[department];
     $('department-note').textContent = descriptions[department];
     renderDeliveryRoadmap();
+    renderConversionFunnel();
     $('directory').hidden = department !== 'registers';
     $('records').hidden = department === 'registers';
     const source = $('source');

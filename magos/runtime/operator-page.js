@@ -52,6 +52,17 @@ function operatorPage() {
           <th scope="col">Status / next action</th>
         </tr></thead><tbody id="delivery-rows"></tbody></table></div>
       </section>
+      <section id="conversion-funnel" class="panel" aria-label="Conversion by acquisition source" hidden>
+        <div class="panel-head"><div>
+          <h3>Acquisition source to job</h3>
+          <p>Canonical opportunities, quotations and linked jobs. Not collected revenue or proven profit.</p>
+          <p id="conversion-funnel-status" role="status"></p>
+        </div></div>
+        <div class="table-wrap"><table>
+          <thead><tr><th scope="col">Original acquisition source</th><th scope="col">Opportunities</th><th scope="col">Quoted</th><th scope="col">Recorded accepted</th><th scope="col">Linked jobs</th></tr></thead>
+          <tbody id="conversion-funnel-rows"></tbody>
+        </table></div>
+      </section>
       <div id="directory" class="directory" hidden></div>
       <div id="records" class="panel" hidden>
         <div class="panel-head">

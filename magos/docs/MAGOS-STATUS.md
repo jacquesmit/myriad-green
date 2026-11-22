@@ -524,3 +524,10 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - PR #83 rollout tracker merged `e7cfc8232d199b9b6e2d86651436a7d55b98af97` after Runtime P2 #227 PASS, Document Extract #290 PASS and Evolving Status Gate #35 PASS on head `d6f5628a2d0d710e310c343e5b82751d32cabb73`.
 - Candidate core frontend addition: new `/v1/operator/deployment` requires the existing distinct operator credential; independent commit SHA at worker start is shown in the existing `/operator` header, or NOT VERIFIED. New tests check unauthorized denial, matching/mismatching/dirty startup checkout and zero writes.
 - Source code and GitHub CI do not prove live runtime is serving this version; real hosted authenticated browser read, actual CRM/finance joins and 16-gate production acceptance remain NOT_VERIFIED.
+
+
+## 22 November 2026 — Real frontend conversion funnel candidate
+
+- Continued MAGOS frontend implementation (not only planning): read-only acquisition-source funnel with opportunities, quotes, recorded accepted quotes and linked jobs, source filter into individual canonical records, explicit no-revenue assertion, and unknown source failure handling.
+- Operator conversion exception IDs now resolve to actual `REVIEW_REQUIRED` records in the department; previously the action queue could route to a non-existent detail. No new business authority, contact action or spreadsheet mutation.
+- Tests staged in `operator-page.test.js` and `operator-dashboard.test.js`; branch `codex/magos-frontend-source-funnel-20261122`. CI/merge pending. Full live UI/browser and production business acceptance NOT VERIFIED; original source separation remains unchanged.

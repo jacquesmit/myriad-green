@@ -123,3 +123,19 @@ test('operator frontend shows fingerprint after unlock and clears it on lock',()
  assert.match(script,/live business acceptance still pending/);
  assert.doesNotMatch(script,/localStorage|sessionStorage/);
 });
+
+test('lead-to-job funnel is visible in existing Command Centre with source drilldown and no revenue assertion',()=>{
+ const html=operatorPage();
+ const script=fs.readFileSync(require.resolve('../runtime/operator.js'),'utf8');
+ assert.match(html,/id="conversion-funnel"/);
+ assert.match(html,/id="conversion-funnel-rows"/);
+ assert.match(html,/Acquisition source to job/);
+ assert.match(html,/Not collected revenue or proven profit/);
+ assert.match(script,/function renderConversionFunnel\(/);
+ assert.match(script,/workspace\.by_source/);
+ assert.match(script,/group\.linked_jobs/);
+ assert.match(script,/renderConversionFunnel\(\)/);
+ assert.match(script,/Canonical sources unavailable/);
+ assert.match(script,/\$\('search'\)\.value=sourceName/);
+ assert.doesNotMatch(script,/localStorage|sessionStorage/);
+});
