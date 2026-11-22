@@ -21,6 +21,17 @@ test('canonical financial evidence does not replace independently verified signe
  assert.equal(r.state,'REVIEW_REQUIRED');
  assert.deepEqual(r.writes,[]);
 });
+test('LINE_CONTROL_OK quote reaches acceptance and bank evidence checks',async()=>{
+ const s=stores();const lookup=s.commercial.findByKey;
+ s.commercial.findByKey=async(...args)=>{
+  const record=await lookup(...args);
+  return record?.object?{object:{...record.object,'Line Control State':'LINE_CONTROL_OK'}}:record;
+ };
+ const result=await assessJobActivation({stores:s,quoteId:'Q1'});
+ assert.equal(result.quote.state,'READY_FOR_EVIDENCE_REVIEW');
+ assert.equal(result.deposit.state,'CLEARED_ALLOCATION_EVIDENCED');
+ assert.equal(result.state,'REVIEW_REQUIRED');
+});
 test('uncleared deposit remains blocked from job activation',async()=>{
  const r=await assessJobActivation({stores:stores('PROOF_RECEIVED'),quoteId:'Q1'});
  assert.equal(r.checks.financial_evidence,'REVIEW_REQUIRED');
