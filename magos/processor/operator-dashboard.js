@@ -1,6 +1,7 @@
 'use strict';
 
 const { projectOperations } = require('./operator-snapshot');
+const { classifyCrmProvenance } = require('./lead-provenance');
 const { calculateExpected } = require('./payment-control-audit');
 const { DEFAULT_IDS } = require('../writer/transaction-writer');
 
@@ -98,7 +99,8 @@ function projectFinance(controls, allocations) {
 
 const dedicated = {
   clients: rows => rows.map(r => record(r.crm_id, r.company, r.crm_status, r.next_action, {
-    'Lead direction': txt(r.lead_direction), 'Acquisition source': txt(r.acquisition_source),
+    'Lead direction': txt(r.lead_direction), 'Record origin': txt(r.record_origin),
+    'Acquisition source': txt(r.acquisition_source), 'First contact': txt(r.first_contact_channel),
     'Opportunity ID': txt(r.opportunity_id), 'Job ID': txt(r.job_id), 'Follow-up': txt(r.next_follow_up_date),
   })),
   dispatch: rows => rows.map(r => record(r.booking_id, r.service_name,
@@ -144,7 +146,33 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
       const { index, conflicts } = indexRows(rows(key), idFields[key]);
       const input = [...index.values()];
       let records;
-      if (key === 'finance') {
+      if (key === 'clients') {
+        // Split one canonical CRM_Master into exclusive operator views.
+        // Scraped businesses do not become customer enquiries just because
+        // both kinds of records occupy the CRM workbook.
+        const groups={inbound:[],outbound:[],unknown:[]};
+        for(const item of input){
+          const provenance=classifyCrmProvenance(item);
+          const enriched={...item,__provenance:provenance};
+          if(provenance.kind==='INBOUND_ENQUIRY')groups.inbound.push(enriched);
+          else if(['OUTBOUND_PROSPECT','CONVERTED_OUTBOUND'].includes(provenance.kind))
+            groups.outbound.push(enriched);
+          else groups.unknown.push(enriched);
+        }
+        const project=(items)=>dedicated.clients(items).map((record,i)=>({
+          ...record,
+          details:{...record.details,
+            'Provenance':items[i].__provenance.kind,
+            'Provenance reason':items[i].__provenance.reason}
+        }));
+        records=project(groups.inbound);
+        departments.prospects={state:conflicts.size?'PARTIAL':'LIVE',
+          conflict_count:conflicts.size,records:project(groups.outbound),source};
+        departments.provenance={state:conflicts.size?'PARTIAL':'LIVE',
+          conflict_count:conflicts.size,records:project(groups.unknown),source};
+        overviewCounts.outbound_prospects=groups.outbound.length;
+        overviewCounts.provenance_review=groups.unknown.length+conflicts.size;
+      } else if (key === 'finance') {
         records = projectFinance(input, rows('allocations'));
         overviewCounts.contracts_with_balance = records.filter(item => item.details['Contract balance (ZAR)'] > 0).length;
       } else if (dedicated[key]) {
@@ -172,6 +200,10 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
         records: [...conflictRows, ...records], source };
     } catch {
       departments[key] = { state: 'UNAVAILABLE', source };
+      if(key==='clients'){
+        departments.prospects={state:'UNAVAILABLE',source};
+        departments.provenance={state:'UNAVAILABLE',source};
+      }
     }
   }
   return {
