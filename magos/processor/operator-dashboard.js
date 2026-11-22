@@ -6,6 +6,7 @@ const { inspectAttributedConversions } = require('./attributed-conversions');
 const {quoteValidityReview}=require('./quote-validity');
 const {inspectVariationRegister}=require('./variation-review');
 const {inspectLabourCostRegister}=require('./labour-reconciliation');
+const {canonicalRelations}=require('./operator-crosslinks');
 const { calculateExpected } = require('./payment-control-audit');
 const { DEFAULT_IDS } = require('../writer/transaction-writer');
 
@@ -343,8 +344,10 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
   }catch{
     departments.labour={state:'UNAVAILABLE',source:labourSource};
   }
+  const navigation=canonicalRelations(departments);
   return {
     schema_version: 'MAGOS_OPERATOR_DASHBOARD/V1',
+    canonical_navigation:{linked_records:navigation.linked_records,links:navigation.links,conflicts:navigation.conflicts},
     checked_at: now().toISOString(),
     departments,
     overview_counts: overviewCounts,
