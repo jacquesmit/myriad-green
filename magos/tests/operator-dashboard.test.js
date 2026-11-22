@@ -306,3 +306,56 @@ test('real Intake_Queue customer RFQ appears in operator inbound and source-link
  assert.equal(result.overview_counts.inbound_linked_opportunities,1);
  assert.equal(result.side_effects,false);
 });
+
+test('one Command Centre transaction navigates linked CRM, job, quote, variation, field and labour without guessing',async()=>{
+ const base=makeStores();
+ const override={
+  CRM_Master:[{crm_id:'CRM-M',company:'Installation client',lead_direction:'INBOUND',
+    record_origin:'GMAIL',acquisition_source:'EMAIL',opportunity_id:'OP-M'}],
+  Jobs_Opportunities:[{opportunity_id:'OP-M',client_crm_id:'CRM-M',
+    job_id:'JOB-M',job_status:'IN_PROGRESS',primary_service:'Irrigation'}],
+  Quotes:[{quote_id:'Q-M',opportunity_id:'OP-M',job_id:'JOB-M',
+    'Quote Status':'ACCEPTED'}],
+  'Job Execution':[{'Execution ID':'EX-M','Job ID':'JOB-M',
+    'Completion Status':'IN_PROGRESS'}],
+  Variations:[{'Variation ID':'VAR-M','Job ID':'JOB-M',
+    'Original Scope Ref':'Q-M','New Finding':'Extra valve','Additional Work':'Fit valve',
+    'Cost Impact (R)':'50','Selling Price Impact (R)':'100','Approval Status':'DRAFT'}],
+  'Labour Rates':[{labour_rate_id:'R-M',person_role:'TECH',rate_basis:'PER_DAY',
+    rate:'350',currency:'ZAR',effective_from:'2026-08-02'}],
+  'Project Cost & Margin':[{margin_record_id:'M-M',job_id:'JOB-M',
+    crew_daily_rate_total:'350',crew_days:'1',provisional_labour_cost:'350'}]
+ };
+ const stores={...base,...Object.fromEntries(['crm','commercial'].map(name=>[
+  name,{readObjects:async(tab,options)=>tab in override?
+   override[tab]:base[name].readObjects(tab,options)}
+ ]))};
+ const dashboard=await loadOperatorDashboard(stores);
+ const job=dashboard.departments.jobs.records.find(x=>x.id==='OP-M');
+ assert.ok(job);
+ for(const target of ['clients','quotes','variations','evidence','labour'])
+  assert.ok(job.related.some(x=>x.department===target),target);
+ assert.ok(dashboard.canonical_navigation.linked_records>0);
+ assert.equal(dashboard.side_effects,false);
+});
+
+test('accepted job-linked and historical quotes remain searchable without inflating pending KPI',async()=>{
+ const base=makeStores();
+ const sourceQuotes=[
+  {quote_id:'Q-SENT',opportunity_id:'O-1','Quote Status':'SENT',
+   'Project / Scope':'Service quotation'},
+  {quote_id:'Q-ACCEPTED',opportunity_id:'O-2',job_id:'JOB-2',
+   'Quote Status':'ACCEPTED','Project / Scope':'Accepted installation'},
+  {quote_id:'Q-DECLINED',opportunity_id:'O-3',
+   'Quote Status':'DECLINED','Project / Scope':'Declined option'}
+ ];
+ const stores={...base,commercial:{readObjects:async(tab,options)=>
+  tab==='Quotes'?sourceQuotes:base.commercial.readObjects(tab,options)}};
+ const dashboard=await loadOperatorDashboard(stores);
+ assert.equal(dashboard.overview_counts.pending_quotes,1);
+ assert.deepEqual(dashboard.departments.quotes.records.map(x=>x.id),
+  ['Q-SENT','Q-ACCEPTED','Q-DECLINED']);
+ assert.equal(dashboard.departments.quotes.records[1].details.job_id,'JOB-2');
+ assert.equal(dashboard.departments.quotes.records[1].status,'ACCEPTED');
+ assert.equal(dashboard.side_effects,false);
+});
