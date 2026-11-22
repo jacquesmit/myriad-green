@@ -474,3 +474,10 @@ Three independently merged/tested development changes now exist on GitHub `main`
 
 - Read-only `CRM_Master!BV1:BY1553`: 1,408 non-empty provenance rows in returned range, comprising 1,325 labelled OUTBOUND, 58 INBOUND, 19 UNKNOWN and 6 missing/malformed direction labels. All outbound-labelled rows in the returned provenance sample show SCRAPER origin and OUTBOUND_PROSPECTING acquisition. Treat these as direction labels, not converted opportunities or paid customer counts.
 - Corrected website form origin recognition in source classifier; unknown imported and inconsistent records remain in separate provenance review. Full deduplication, verified historical conversion links and live Command Centre acceptance pending.
+
+
+### 22 November 2026 — Lead segregation integrated, inbound KPI credibility candidate
+
+- PR #77 merged `26748fd382657f2a30c9d318c771190aa95b5da7` after exact-head `f523c92ae5de0995fc3fb98eccca15b4e26f4e5e` passed Runtime P2 #219, Document Extract #278, Evolving Status Gate #29. Existing CRM_Master source columns now determine exclusive read-only client/prospect/provenance views; P3 rejects outbound prospect sources before lead writes.
+- Next core correction: avoid treating every generic `LEAD` Intake_Queue type as an inbound enquiry without a source-system attestation. `operator-snapshot.js` now requires listed inbound source systems; excludes known outbound/prospecting/supplier/financial types. Regression tests added. CODE candidate / CI and merge pending.
+- Actual live sales counts, deduplication and qualification need independent source tests; production UI deployed SHA NOT VERIFIED. No outreach, scraping, client or sheet modifications.
