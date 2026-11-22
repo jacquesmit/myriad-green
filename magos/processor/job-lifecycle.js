@@ -5,6 +5,7 @@
 const {inspectDepositEvidence}=require('./deposit-evidence-inspection');
 const {inspectSchedulingReadiness}=require('./scheduling-readiness');
 const {inspectOperationalClosure}=require('./operational-closure');
+const {verifySignedAcceptance}=require('./signed-acceptance-verification');
 const v=x=>String(x??'').trim();
 const up=x=>v(x).toUpperCase();
 const complete=new Set(['COMPLETED','JOB_COMPLETED','HANDOVER_COMPLETE','CLOSED']);
@@ -15,7 +16,7 @@ const fail=(jobId,reason)=>({
  independent_bank_confirmation:false,writes:[],side_effects:false
 });
 
-async function inspectJobLifecycle({stores,jobId,asOf}={}){
+async function inspectJobLifecycle({stores,jobId,asOf,evidenceVerifier}={}){
  if(!v(jobId)||!stores?.crm?.readObjects||!stores?.commercial?.readObjects||
     !stores?.commercial?.findByKey||!stores?.supplier?.readObjects)
    return fail(jobId,'CANONICAL_LIFECYCLE_SOURCE_UNAVAILABLE');
@@ -58,6 +59,25 @@ async function inspectJobLifecycle({stores,jobId,asOf}={}){
  record('ACCEPTED_QUOTE',quoteReady?'PASS':'REVIEW_REQUIRED',
   quoteReady?'':'ACCEPTED_QUOTE_VERSION_OR_SCOPE_UNVERIFIED',
   'Resolve accepted quote, approved line control and matching execution scope');
+ // A status marked ACCEPTED is a commercial ledger claim, NOT a signature.
+ // Reuse the existing trusted-provider verifier and fail closed when absent.
+ let signedAcceptance={state:'REVIEW_REQUIRED',
+   reason_code:'ACCEPTED_QUOTE_SCOPE_NOT_VERIFIED'};
+ if(quoteReady){
+  try{
+   signedAcceptance=await verifySignedAcceptance({stores,quoteId,evidenceVerifier});
+  }catch{
+   signedAcceptance={state:'REVIEW_REQUIRED',reason_code:'SIGNED_ACCEPTANCE_PROVIDER_UNAVAILABLE'};
+  }
+ }
+ const signed=signedAcceptance.state==='SIGNED_ACCEPTANCE_VERIFIED'&&
+   signedAcceptance.quote_id===quoteId&&
+   signedAcceptance.opportunity_id===opportunityId;
+ record('CLIENT_SIGNED_ACCEPTANCE',signed?'EVIDENCED_ONLY':'REVIEW_REQUIRED',
+  signed?'SIGNED_CLIENT_ACCEPTANCE_REQUIRES_RELEASE_RECONCILIATION':
+    signedAcceptance.reason_code||'SIGNED_ACCEPTANCE_NOT_VERIFIED',
+  'Verify independent signed client acceptance for the exact quotation and opportunity');
+
  const jobReady=up(job.job_status)!=='CANCELLED' &&
     ['JOB_CREATED','SCHEDULED','IN_PROGRESS','COMPLETED','JOB_COMPLETED','CLOSED'].includes(up(job.job_status));
  record('CANONICAL_JOB',jobReady?'PASS':'REVIEW_REQUIRED',
@@ -94,6 +114,14 @@ async function inspectJobLifecycle({stores,jobId,asOf}={}){
   state:'REVIEW_REQUIRED',phase:isComplete?'CLOSEOUT':'DELIVERY',
   next_action:actions[0]||'Obtain independent bank confirmation and owner release',
   blockers,stages,
+  client_acceptance:{
+   state:signedAcceptance.state,
+   evidence_verified:signed,
+   source_event_id:signed?signedAcceptance.source_event_id:null,
+   evidence_ref:signed?signedAcceptance.evidence_ref:null,
+   quote_version_verified:false,
+   independent_owner_release:false
+  },
   deposit:{state:deposit.state,independent_bank_confirmation:false},
   operational:{state:next.state},
   production_complete:false,independent_bank_confirmation:false,
