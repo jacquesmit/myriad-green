@@ -38,13 +38,14 @@
     ['quotes_validity_review', 'Quote validity review', 'quotes'],
     ['variations_review', 'Variations to resolve', 'variations'],
     ['active_jobs', 'Active jobs', 'jobs'],
+    ['job_status_review', 'Job status conflicts', 'jobs'],
     ['jobs_with_recorded_id', 'Jobs on record', 'jobs'],
     ['contracts_with_balance', 'Contracts with balance', 'finance'],
     ['labour_cost_review', 'Labour to reconcile', 'labour'],
     ['procurement_review', 'Purchasing review', 'procurement'],
     ['open_exceptions', 'Open exceptions', 'exceptions'],
   ];
-  const actionRank = ['EXCEPTION', 'VARIATION_REVIEW', 'LABOUR_COST_REVIEW', 'QUOTE_EXPIRED_REVIEW', 'ACCEPTED_QUOTE_REVIEW', 'PROCUREMENT_REVIEW', 'QUOTE_FOLLOWUP', 'JOB_ACTION'];
+  const actionRank = ['EXCEPTION', 'VARIATION_REVIEW', 'JOB_STATUS_REVIEW', 'LABOUR_COST_REVIEW', 'QUOTE_EXPIRED_REVIEW', 'ACCEPTED_QUOTE_REVIEW', 'PROCUREMENT_REVIEW', 'QUOTE_FOLLOWUP', 'JOB_ACTION'];
   const dateFormat = new Intl.DateTimeFormat('en-ZA', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Africa/Johannesburg' });
   const zar = new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' });
   const pageSize = 25;

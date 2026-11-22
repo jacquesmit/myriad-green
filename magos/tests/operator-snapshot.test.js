@@ -125,3 +125,16 @@ test('canonical real customer RFQ is captured but unlinked and supplier RFQs rem
  assert.equal(r.records.leads[0].id,'MAIL-1');
  assert.equal(r.records.leads[0].opportunity_id,'OPP-1');
 });
+
+test('active job count uses canonical supported work states and does not equate job ID with active work',()=>{
+ const result=projectOperations({jobs:[
+  {opportunity_id:'O-1',job_id:'JOB-1',job_status:'JOB_COMPLETED_CLOSED'},
+  {opportunity_id:'O-2',job_id:'JOB-2',job_status:'NO_JOB'},
+  {opportunity_id:'O-3',job_id:'JOB-3',job_status:'ASSESSMENT_NEEDED'},
+  {opportunity_id:'O-4',job_id:'JOB-4',job_status:'JOB_IN_PROGRESS'},
+  {opportunity_id:'O-5',job_id:'JOB-5',job_status:'JOB_BOOKED'}
+ ]});
+ assert.equal(result.counts.active_jobs,2);
+ assert.deepEqual(result.records.jobs.map(x=>x.id),['O-4','O-5']);
+ assert.deepEqual(result.writes,[]);
+});

@@ -13,7 +13,7 @@ const tables = {
     { intake_id: 'IN-2', source_event_id: 'same', source_system: 'WEBSITE', source_type: 'WEBSITE_FORM', processing_status: 'NEW' },
   ],
   CRM_Master: [{ crm_id: 'CRM-1', company: 'Example client' }],
-  Jobs_Opportunities: [{ opportunity_id: 'DUP', job_id: 'J-1' }, { opportunity_id: 'DUP', job_id: 'J-2' }, { opportunity_id: 'O-1', job_id: 'J-3' }],
+  Jobs_Opportunities: [{ opportunity_id: 'DUP', job_id: 'J-1' }, { opportunity_id: 'DUP', job_id: 'J-2' }, { opportunity_id: 'O-1', job_id: 'J-3', job_status: 'JOB_IN_PROGRESS' }],
   Quotes: [{ quote_id: 'Q-1', 'Quote Status': 'SENT', 'Project / Scope': 'Irrigation' }],
   Bookings: [{ booking_id: 'B-1', appointment_start: '2026-11-12 09:00', mgos_booking_status: 'CONFIRMED', staff_technician: 'Crew A' }],
   'Payment Control': [
@@ -402,4 +402,24 @@ test('completed duplicate job opportunity IDs stay quarantined, not reopened by 
  assert.equal(report.departments.jobs.records[0].details.job_id,undefined);
  assert.equal(report.overview_counts.active_jobs,0);
  assert.equal(report.overview_counts.jobs_with_recorded_id,0);
+});
+
+test('actual recorded contradictory job states become review actions but not active work',async()=>{
+ const base=makeStores();
+ const rows=[
+  {opportunity_id:'O-CLOSED',job_id:'J-CLOSED',job_status:'JOB_COMPLETED_CLOSED'},
+  {opportunity_id:'O-NOJOB',job_id:'J-NOJOB',job_status:'NO_JOB'},
+  {opportunity_id:'O-UNKNOWN',job_id:'J-UNKNOWN',job_status:'ASSESSMENT_NEEDED'},
+  {opportunity_id:'O-ACTIVE',job_id:'J-ACTIVE',job_status:'JOB_IN_PROGRESS'}
+ ];
+ const stores={...base,crm:{readObjects:async(name,options)=>
+  name==='Jobs_Opportunities'?rows:base.crm.readObjects(name,options)}};
+ const r=await loadOperatorDashboard(stores);
+ assert.equal(r.overview_counts.active_jobs,1);
+ assert.equal(r.overview_counts.job_status_review,2);
+ assert.equal(r.overview_counts.jobs_with_recorded_id,4);
+ assert.equal(r.departments.jobs.records.find(x=>x.id==='O-CLOSED').status,'JOB_COMPLETED_CLOSED');
+ assert.equal(r.departments.jobs.records.find(x=>x.id==='O-NOJOB').status,'REVIEW_REQUIRED');
+ assert.equal(r.attention.filter(x=>x.type==='JOB_STATUS_REVIEW').length,2);
+ assert.equal(r.side_effects,false);
 });
