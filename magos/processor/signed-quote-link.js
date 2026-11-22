@@ -9,22 +9,40 @@ function deriveQuoteVersion(lines,quoteId) {
   const versions=new Set(current.map(x=>txt(x.quote_version)));
   return current.length>0 && versions.size===1 ? [...versions][0] : null;
 }
-async function inspectSigningPage({request=globalThis.fetch}={}){
+async function inspectSigningReadiness({request=globalThis.fetch}={}){
+ const checks=[],add=(name,pass,reason)=>checks.push({
+  name,state:pass?'PASS':'BLOCKED',reason_code:pass?null:reason
+ });
+ const retrieve=async url=>{
   try{
-    const p=await request(host+'/wp-json/wp/v2/pages?slug=accept-and-sign-quotation',{
-      redirect:'error',signal:AbortSignal.timeout(10000)
-    });
-    if(p.status!==200)return false;
-    const pages=await p.json();
-    if(!Array.isArray(pages)||!pages.some(row=>row.id===9481 && row.status==='publish'))
-      return false;
-    const routes=await request(host+'/wp-json/mgos/v1',{
-      redirect:'error',signal:AbortSignal.timeout(10000)
-    });
-    if(routes.status!==200)return false;
-    const index=await routes.json();
-    return Boolean(index?.routes?.['/mgos/v1/quote-acceptance/verify-v2']);
-  }catch{return false;}
+   const response=await request(url,{
+    redirect:'error',signal:AbortSignal.timeout(10000)
+   });
+   if(response?.status!==200)return null;
+   return await response.json();
+  }catch{return null;}
+ };
+ const pages=await retrieve(host+'/wp-json/wp/v2/pages?slug=accept-and-sign-quotation');
+ const published=Array.isArray(pages)&&pages.some(row=>
+  row.id===9481&&row.status==='publish');
+ add('CLIENT_SIGNING_PAGE',published,'CLIENT_SIGNING_PAGE_NOT_PUBLISHED_OR_UNAVAILABLE');
+ // Check the companion independently even when the page is draft. This gives
+ // the owner both blockers instead of a generic false/no-route response.
+ const index=await retrieve(host+'/wp-json/mgos/v1');
+ const companion=Boolean(index?.routes?.['/mgos/v1/quote-acceptance/verify-v2']);
+ add('INDEPENDENT_SIGNATURE_BRIDGE',companion,
+  'REVIEWED_CLIENT_SIGNATURE_BRIDGE_NOT_REGISTERED_OR_UNAVAILABLE');
+ return {
+  schema_version:'MAGOS_CLIENT_SIGNING_READINESS_V1',
+  state:checks.every(c=>c.state==='PASS')?'READY_FOR_CONTROLLED_SIGNING_TEST':'BLOCKED',
+  checks,customer_signature_verified:false,
+  client_link_authorized:false,job_creation_authorized:false,
+  bank_clearance_verified:false,writes:[],side_effects:false
+ };
+}
+async function inspectSigningPage(args={}){
+ const report=await inspectSigningReadiness(args);
+ return report.state==='READY_FOR_CONTROLLED_SIGNING_TEST';
 }
 async function issueSignedQuoteLink({
  stores,quoteId,secret=process.env.MAGOS_WP_ACCEPTANCE_LINK_SECRET,
@@ -93,4 +111,4 @@ async function issueSignedQuoteLink({
     writes:[],side_effects:false
   };
 }
-module.exports={issueSignedQuoteLink,inspectSigningPage,deriveQuoteVersion};
+module.exports={issueSignedQuoteLink,inspectSigningPage,inspectSigningReadiness,deriveQuoteVersion};
