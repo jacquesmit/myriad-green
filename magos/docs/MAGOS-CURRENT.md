@@ -178,3 +178,11 @@ For each real MAGOS code change:
 - [PR #66](https://github.com/jacquesmit/myriad-green/pull/66) **MERGED** into `main` at `9fc577b5b23ec696bf7aa9fdba13d98084a65dc9`; exact head `9a533c63a046d13af9cc1ea6a932f9f7e6cbae93` passed MAGOS Runtime P2 #199, Document Extract #252, Evolving Status Gate #14. This is source/test PASS only, **not** live release certification.
 - The 21 November reply on existing ticket #3622207 was **rejected** by HOSTAFRICA's closed-ticket system (two automated rejection emails). On 22 November, a **new unthreaded email** was successfully submitted to `support@hostafrica.com` requesting a NEW ticket and read-only host/Git/worker facts. Sending email does not prove a new ticket exists; HOSTAFRICA acceptance/ID and server evidence are PENDING.
 - Public `/healthz` and `/readyz` could not be retrieved via available web checks; mark **UNKNOWN**, not outage. No payment, client signature, WP release, bank credentials or customer data were changed.
+
+
+## 22 November 2026 — Recurring aftercare service-history correction (candidate)
+
+- Existing `magos/processor/aftercare-readiness.js` derived recurring maintenance exclusively from installed date. A separately serviced pump/valve/tank could therefore receive an incorrect next-due suggestion. This is an operational accuracy issue, not merely a dashboard concern.
+- Candidate now derives the next service interval from **independently documented last servicing** when `last_service_date`, `last_service_job_id`, and `last_service_evidence` are all present, chronologically valid and linked to the installed part. Missing/contradictory metadata blocks the draft candidate for owner review; historical assets with no recorded servicing continue to use installation as a provisional anchor.
+- The calculation now anchors all monthly intervals to the original verified date, avoiding cumulative end-of-month drift. Records remain `DRAFT_REVIEW_ONLY`; client consent, message sending, warranty liability and booking remain unauthorized.
+- Unit regressions cover verified cadence reset, partial/no proof, impossible/future/preinstallation dates and end-of-month recurrence. **Source PR/test and live aftercare register verification still pending**. No customer contact or live Sheets edits.
