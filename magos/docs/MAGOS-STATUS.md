@@ -460,3 +460,11 @@ Three independently merged/tested development changes now exist on GitHub `main`
 
 - Added a job-detail **Inspect full job lifecycle** action to existing MAGOS operator UI. Calls the governed read-only endpoint introduced in merged PR #75, and presents canonical quote, bank ledger evidence, scheduling or closure, next action, and explicit bank/production caution. No new record store or execution authority.
 - Branch `codex/magos-lifecycle-command-centre-20261122` with operator-page test and both status Markdown updates. CI/merge pending; actual HOSTAFRICA deployment, bank callback, client signature acceptance and golden lead-to-paid-job remain unverified.
+
+
+## 22 November 2026 — Inbound enquiries vs scraped outbound contacts (development)
+
+- **Read-only live evidence:** Myriad Green Outreach CRM `CRM_Master` includes `lead_direction`, `record_origin`, `acquisition_source`, `first_contact_channel` and source evidence; verified initial rows classified `OUTBOUND / SCRAPER / OUTBOUND_PROSPECTING`, later customer enquiry rows `INBOUND / WHATSAPP_CLIENT_REQUEST`, and historical `UNKNOWN / DRIVE_IMPORT`. The `today_outreach` tab holds outbound tasks. The CRM contains both prospecting and real client records; membership in `CRM_Master` alone is not an inbound customer lead.
+- **Engineering correction:** added `lead-provenance.js` classification and blocked scraped/outbound events from P3 inbound `LEAD_SUBMITTED` processor before planning writes. Dashboard now separates inbound, outbound (including original-outbound conversions) and provenance-review records within the existing CRM source. No new authoritative datasets or fabricated conversion.
+- **QA:** new negative/positive lead processor, dashboard and browser navigation regressions. Runtime P2 workflow now explicitly tests `lead-intake.test.js`; source-level tests, CI and PR merge PENDING.
+- **Remaining gates:** verify runtime UI against actual full CRM source; reconcile duplicate and UNKNOWN provenance records with source events before reclassification; validate lead-to-quote conversion by original channel; no automatic outreach or live Sheets edits. MAGOS end-to-end business acceptance remains open.
