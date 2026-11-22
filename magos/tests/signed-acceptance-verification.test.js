@@ -31,3 +31,21 @@ test('activation combines canonical cleared funds and provider signature, but ne
  assert.equal(r.checks.financial_evidence,'EVIDENCED');
  assert.deepEqual(r.writes,[]);
 });
+
+test('only exact WordPress canonical quote-version attestation can surface version verified',async()=>{
+ const official=async({quote_id,opportunity_id})=>({
+  verified:true,quote_id,opportunity_id,source_event_id:'SIGN-V2',
+  evidence_ref:'drive://receipt/SIGN-V2',signer_identity:'Client',
+  signed_at:'2026-11-22T08:00:00Z',quote_version:'V4',
+  authority:'WP_VERIFIED_SIGNED_RECEIPT_AND_CANONICAL_COMMERCIAL_MATCH'
+ });
+ const officialResult=await verifySignedAcceptance({
+  stores,quoteId:'Q-1',evidenceVerifier:official});
+ assert.equal(officialResult.quote_version,'V4');
+ assert.equal(officialResult.quote_version_verified,true);
+ const untrusted=await verifySignedAcceptance({
+  stores,quoteId:'Q-1',evidenceVerifier:async(args)=>({
+   ...await official(args),authority:'MANUALLY_ASSERTED'
+  })});
+ assert.equal(untrusted.quote_version_verified,false);
+});
