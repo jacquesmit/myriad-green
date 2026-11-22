@@ -316,6 +316,9 @@
     }
     target.append(list);
     if (department === 'jobs' && item.details?.job_id) {
+      const variationButton=button('View job scope variations',
+        ()=>show('variations',item.details.job_id),'secondary');
+      target.append(variationButton);
       const journeyOutput=element('p');
       journeyOutput.setAttribute('role','status');
       const journeyCheck=button('Inspect full job lifecycle',
