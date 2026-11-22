@@ -6,13 +6,25 @@ function projectOperations({leads=[],jobs=[],quotes=[],procurement=[],exceptions
  const unique=(rows,key)=>{const seen=new Set();return rows.filter(r=>{const id=txt(r[key]);if(!id||seen.has(id))return false;seen.add(id);return true;});};
  // Only operational inbound enquiries belong in this queue. Scraper and outbound
  // prospecting stay outside active leads; other intake documents are not leads.
- const inboundTypes=new Set(['WEBSITE_FORM','WEB_FORM','CONTACT_FORM','LEAD','ENQUIRY','INQUIRY','WHATSAPP_LEAD','FACEBOOK_LEAD','BOOKING_ORDER','BOOKING','SERVICE_REQUEST']);
- const inboundSystems=new Set(['WEBSITE','WHATSAPP','FACEBOOK','FLUENT_FORMS','AMELIA']);
+ const inboundTypes=new Set(['WEBSITE_FORM','WEB_FORM','CONTACT_FORM','LEAD',
+  'LEAD_SUBMISSION','ENQUIRY','INQUIRY','WHATSAPP_LEAD','FACEBOOK_LEAD',
+  'BOOKING_ORDER','BOOKING','SERVICE_REQUEST']);
+ const inboundSystems=new Set(['WEBSITE','WORDPRESS','GMAIL','WHATSAPP',
+  'FACEBOOK','FLUENT_FORMS','AMELIA','PHONE','GOOGLE_BUSINESS',
+  'GOOGLE_ADS','REFERRAL','ORGANIC_SEARCH','DIRECT_EMAIL']);
+ const nonLeadTypes=new Set(['SUPPLIER_EMAIL','SUPPLIER_QUOTE','INVOICE',
+  'OTHER','RFQ','PAYMENT','PURCHASE_ORDER','DOCUMENT']);
  const isInbound=r=>{
   const system=upper(r.source_system),type=upper(r.source_type);
-  const combined=[system,type,upper(r.source),upper(r.source_category)].join('|');
-  if(/SCRAPER|OUTBOUND|PROSPECTING|TODAY_OUTREACH/.test(combined))return false;
-  return inboundTypes.has(type)||(inboundSystems.has(system)&&!['SUPPLIER_EMAIL','SUPPLIER_QUOTE','INVOICE','OTHER','RFQ'].includes(type));
+  const combined=[system,type,upper(r.source),upper(r.source_category),
+    upper(r.lead_direction),upper(r.record_origin),upper(r.acquisition_source)].join('|');
+  if(/SCRAPER|OUTBOUND|PROSPECTING|TODAY_OUTREACH|GOOGLE_PLACES/.test(combined))
+    return false;
+  // A bare "LEAD" / "ENQUIRY" classification does not prove that a
+  // source system delivered a real customer request.
+  if(!inboundSystems.has(system)||nonLeadTypes.has(type))return false;
+  return inboundTypes.has(type)||
+    (!type&&['WEBSITE','WORDPRESS','WHATSAPP','FACEBOOK','FLUENT_FORMS','AMELIA'].includes(system));
  };
  const openLeads=unique(leads,'source_event_id').filter(r=>isInbound(r)&&!['COMPLETED','CLOSED','IGNORED','FILED','RESOLVED'].includes(upper(r.processing_status||r.status||r.intake_status)));
  const allQuotes=unique(quotes,'quote_id');
