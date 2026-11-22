@@ -88,3 +88,27 @@ test('active jobs KPI excludes unconverted prospects and completed jobs',()=>{
  assert.equal(result.counts.active_jobs,1);
  assert.equal(result.records.jobs[0].job_id,'JOB-1');
 });
+
+test('generic LEAD from an unverified source never inflates inbound enquiry KPIs',()=>{
+ const snapshot=projectOperations({leads:[
+  {source_event_id:'SCR-1',source_system:'SCRAPER',source_type:'LEAD',processing_status:'NEW'},
+  {source_event_id:'UNKNOWN-2',source_system:'UNKNOWN',source_type:'LEAD',processing_status:'NEW'},
+  {source_event_id:'PLACE-3',source_system:'GOOGLE_PLACES',source_type:'WEBSITE_FORM',processing_status:'NEW'},
+  {source_event_id:'DIR-4',source_system:'GMAIL',source_type:'LEAD',processing_status:'NEW'},
+  {source_event_id:'SITE-5',source_system:'WORDPRESS',source_type:'WEBSITE_FORM',processing_status:'NEW'},
+  {source_event_id:'RFQ-6',source_system:'GMAIL',source_type:'RFQ',processing_status:'NEW'},
+  {source_event_id:'INVOICE-7',source_system:'GMAIL',source_type:'INVOICE',processing_status:'NEW'}
+ ]});
+ assert.equal(snapshot.counts.open_leads,2);
+ assert.deepEqual(snapshot.records.leads.map(x=>x.id),['DIR-4','SITE-5']);
+});
+test('intake explicit outbound direction and scraped origin override a claimed inbound type',()=>{
+ const report=projectOperations({leads:[
+  {source_event_id:'BAD-1',source_system:'GMAIL',source_type:'LEAD',
+   lead_direction:'OUTBOUND',processing_status:'NEW'},
+  {source_event_id:'BAD-2',source_system:'WORDPRESS',source_type:'WEBSITE_FORM',
+   record_origin:'SCRAPER',processing_status:'NEW'},
+  {source_event_id:'OK-3',source_system:'AMELIA',source_type:'BOOKING',processing_status:'NEW'}
+ ]});
+ assert.deepEqual(report.records.leads.map(x=>x.id),['OK-3']);
+});
