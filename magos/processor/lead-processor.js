@@ -3,6 +3,7 @@
 const { EventProcessor } = require('./event-processor');
 const { LeadResolver } = require('./lead-resolver');
 const { planLeadSubmitted } = require('./lead-planner');
+const { assessInboundEvent } = require('./lead-provenance');
 
 function createLeadProcessor({ lookupService, now } = {}) {
   if (!lookupService) throw new Error('lookupService is required');
@@ -32,6 +33,13 @@ function createLeadProcessor({ lookupService, now } = {}) {
 
   return {
     async decide(envelope) {
+      const provenance=assessInboundEvent(envelope);
+      if(!provenance.allowed)return {
+        decision:'REVIEW_REQUIRED',
+        reason_code:provenance.reason_code,
+        transaction_plan:undefined,
+        side_effects:false
+      };
       const decision = await base.decide(envelope);
       if (
         decision.decision === 'AUTO_WRITE' &&
