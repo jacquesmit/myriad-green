@@ -4,14 +4,16 @@
   const $ = id => document.getElementById(id);
   const groups = [
     ['Command centre', [['overview', 'Overview'], ['system', 'Whole MAGOS build'], ['exceptions', 'Exceptions']]],
-    ['Clients and delivery', [['leads', 'Lead intake'], ['clients', 'Clients / CRM'], ['quotes', 'Quotes & acceptance'], ['jobs', 'Active jobs'], ['dispatch', 'Dispatch & bookings'], ['evidence', 'Work proof']]],
+    ['Clients and delivery', [['leads', 'Inbound enquiries'], ['clients', 'Inbound CRM'], ['prospects', 'Scraper / outbound prospects'], ['provenance', 'Provenance review'], ['quotes', 'Quotes & acceptance'], ['jobs', 'Active jobs'], ['dispatch', 'Dispatch & bookings'], ['evidence', 'Work proof']]],
     ['Commercial', [['finance', 'Finance & payments'], ['procurement', 'Procurement'], ['suppliers', 'Suppliers'], ['registers', 'Other registers']]],
   ];
   const labels = Object.fromEntries(groups.flatMap(([, entries]) => entries));
   const descriptions = {
     system: 'All MAGOS capabilities, live readiness and completion gates from the existing Control Hub.',
-    leads: 'Inbound work and the next routing decision.',
-    clients: 'Client and prospect records, with acquisition source and follow-up.',
+    leads: 'Verified operational inbound work and the next routing decision.',
+    clients: 'Inbound CRM enquiries separated from scraped prospecting records.',
+    prospects: 'Original scraper and outbound prospects, including converted prospects whose origin is preserved.',
+    provenance: 'Imported and conflicting CRM records requiring proof before they count as inbound enquiries.',
     quotes: 'Pending quotes and accepted quotes waiting for a linked job.',
     jobs: 'Active jobs with their canonical opportunity and client links.',
     dispatch: 'Appointments, booking state, crew and supporting evidence.',
@@ -23,7 +25,9 @@
     registers: 'Open the existing supplier pricing, marketing, publishing and governance registers.',
   };
   const metrics = [
-    ['open_leads', 'Open leads', 'leads'],
+    ['open_leads', 'Inbound leads', 'leads'],
+    ['outbound_prospects', 'Outbound prospects', 'prospects'],
+    ['provenance_review', 'Source review', 'provenance'],
     ['pending_quotes', 'Pending quotes', 'quotes'],
     ['active_jobs', 'Active jobs', 'jobs'],
     ['contracts_with_balance', 'Contracts with balance', 'finance'],
