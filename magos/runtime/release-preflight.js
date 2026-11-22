@@ -75,12 +75,85 @@ async function releasePreflight({expectedSha,baseUrl,runtimeToken,operatorToken,
   coverage.data?.schema_version==='MAGOS_SYSTEM_COVERAGE_V1' &&
   coverage.data?.side_effects===false &&
   coverage.data?.counts?.total>=1,'CANONICAL_COVERAGE_UNAVAILABLE');
+ // A green health endpoint and a served browser shell are not evidence that
+ // the owner can use the deployed Command Centre. Verify the browser contract,
+ // exact operator process fingerprint, protected data, and real source records.
+ async function readPublicText(endpoint){
+  try{
+   const response=await request(base+endpoint,{
+    method:'GET',redirect:'error',signal:AbortSignal.timeout(12000)
+   });
+   return {status:response.status,body:await response.text()};
+  }catch{return {status:null,body:''};}
+ }
+ const [shell,script,style]=await Promise.all([
+  readPublicText('/operator'),readPublicText('/operator.js'),
+  readPublicText('/operator.css')
+ ]);
+ add('OPERATOR_BROWSER_SHELL',shell.status===200 &&
+  shell.body.includes('id="login"') &&
+  shell.body.includes('id="filters"') &&
+  shell.body.includes('id="queue"') &&
+  shell.body.includes('id="department"') &&
+  shell.body.includes('id="deployment"') &&
+  shell.body.includes('src="/operator.js"') &&
+  shell.body.includes('href="/operator.css"'),
+  'OPERATOR_HTML_INCOMPLETE_OR_UNAVAILABLE');
+ add('OPERATOR_BROWSER_ASSETS',script.status===200&&
+  script.body.includes('/v1/operator/dashboard')&&
+  script.body.includes('renderView')&&
+  style.status===200&&style.body.includes('.workspace'),
+  'OPERATOR_JS_OR_CSS_UNAVAILABLE');
+ const operatorBuild=await read('OPERATOR_DEPLOYMENT','/v1/operator/deployment',{
+  token:operatorToken,header:'X-MAGOS-Operator-Token'
+ });
+ add('OPERATOR_DEPLOYMENT_IDENTITY',operatorBuild.response?.status===200&&
+  operatorBuild.data?.schema_version==='MAGOS_OPERATOR_DEPLOYMENT_V1'&&
+  operatorBuild.data?.status==='PROCESS_START_GIT_MATCH'&&
+  operatorBuild.data?.commit_sha===expectedSha.toLowerCase()&&
+  operatorBuild.data?.production_complete===false&&
+  operatorBuild.data?.side_effects===false,
+  'OPERATOR_VISIBLE_DEPLOYMENT_SHA_NOT_VERIFIED');
+ let anonymousStatus=null,writerCredentialStatus=null;
+ try {
+  const response=await request(base+'/v1/operator/dashboard',{
+   method:'GET',redirect:'error',signal:AbortSignal.timeout(12000)
+  });
+  anonymousStatus=response.status;
+ }catch{}
+ try {
+  const response=await request(base+'/v1/operator/dashboard',{
+   method:'GET',redirect:'error',signal:AbortSignal.timeout(12000),
+   headers:{'X-MAGOS-Operator-Token':runtimeToken}
+  });
+  writerCredentialStatus=response.status;
+ }catch{}
+ add('OPERATOR_AUTH_ISOLATION',anonymousStatus===401&&writerCredentialStatus===401,
+  'OPERATOR_DASHBOARD_AUTH_NOT_ISOLATED');
+ const dashboard=await read('OPERATOR_DATA','/v1/operator/dashboard',{
+  token:operatorToken,header:'X-MAGOS-Operator-Token'
+ });
+ const departments=dashboard.data?.departments;
+ const core=['clients','jobs','quotes'];
+ const healthy=departments&&core.every(name=>
+  ['LIVE','PARTIAL'].includes(departments[name]?.state)&&
+  Array.isArray(departments[name]?.records));
+ const sourceRows=healthy?core.reduce((sum,name)=>
+  sum+departments[name].records.filter(row=>
+   typeof row.id==='string'&&row.id.length>0&&
+   typeof row.status==='string'&&row.status.length>0).length,0):0;
+ add('OPERATOR_CANONICAL_RECORDS',dashboard.response?.status===200&&
+  dashboard.data?.schema_version==='MAGOS_OPERATOR_DASHBOARD/V1'&&
+  dashboard.data?.side_effects===false&&healthy&&sourceRows>0,
+  'OPERATOR_CORE_REGISTERS_OR_RECORDS_UNAVAILABLE');
+
  return {
   schema_version:'MAGOS_RELEASE_PREFLIGHT_V1',
   expected_commit_sha:expectedSha.toLowerCase(),
   ready:checks.every(check=>check.state==='PASS'),
   checks,
   capability_counts:coverage.data?.counts||null,
+  operator_core_record_count:sourceRows,
   site_complete:coverage.data?.production_complete===true,
   production_business_acceptance_verified:false,
   write_side_effects:false
