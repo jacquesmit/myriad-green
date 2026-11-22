@@ -297,3 +297,10 @@ For each real MAGOS code change:
 - Original outbound/scraper attribution remains immutable when the business later receives a genuine inbound enquiry; `inbound_link_state` and `matched_inbound_events` are independent of original `source`. Multiple inbound events for a single opportunity are counted as one inbound-linked opportunity in overview metrics, not multiple sales. Scraped records, unknown event sources and supplier/RFQ document types do not inflate inbound counts.
 - Command Centre `conversions` records now show original source and independently linked inbound events, with `Inbound linked` overview metric. No new source authority, duplicate CRM ledger, client communication or payment assertion.
 - Regression tests cover original scraped origin plus later WhatsApp event, website form linkage, duplicate source events, incorrect CRM ownership, unknown/scraper lead types and non-lead supplier email. **Branch pending CI/merge and production runtime confirmation.**
+
+
+### 22 November 2026 — Inbound-to-sale linkage merged
+
+- [PR #81](https://github.com/jacquesmit/myriad-green/pull/81) MERGED to `main` at `e87ea7588138b35faa87c5feb1cd1aac3503fcc0`; exact tested head `27b6417b9da295399450c352903a5b326d4fa713`: MAGOS Runtime P2 #225 PASS, Document Extract #286 PASS, Evolving Status Gate #33 PASS.
+- The canonical `Intake_Queue` → `CRM_Master` → `Jobs_Opportunities` → `Quotes` → `Job Execution` read-only trace exists in merged code and is exposed from the operator dashboard. It preserves original acquisition source and tracks later inbound contact separately; missing, conflicting and duplicate source links are not counted as proven customer conversions.
+- **Runtime evidence remains pending:** GitHub CI validated code against fixtures, not the actual production server with connected live CRM, signed acceptance and independent bank provider receipts. No live sheet mutations, payment authorizations or client outreach were performed.
