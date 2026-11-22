@@ -454,3 +454,9 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - Fail-closed guards prevent ambiguous job, execution, quote, client or opportunity linking. The inspector refuses to equate Payment_Events evidence with independent provider clearance, scheduling readiness with a real Amelia/Calendar booking, or owner-review readiness with closure and payment.
 - Runtime route `/v1/operator/job-lifecycle/:jobId`; new `tests/job-lifecycle.test.js` wired to Runtime P2 CI. Branch `codex/magos-unified-job-lifecycle-20261122` CODE STAGED, CI/merge PENDING. Zero customer, payment, website or supplier mutations.
 - End-to-end production lead→signed quote→bank clearance→job→procurement→field→invoice→aftercare remains not validated. No false `COMPLETE` status.
+
+
+### 22 November 2026 — Operational Command Centre lifecycle integration candidate
+
+- Added a job-detail **Inspect full job lifecycle** action to existing MAGOS operator UI. Calls the governed read-only endpoint introduced in merged PR #75, and presents canonical quote, bank ledger evidence, scheduling or closure, next action, and explicit bank/production caution. No new record store or execution authority.
+- Branch `codex/magos-lifecycle-command-centre-20261122` with operator-page test and both status Markdown updates. CI/merge pending; actual HOSTAFRICA deployment, bank callback, client signature acceptance and golden lead-to-paid-job remain unverified.
