@@ -225,3 +225,10 @@ For each real MAGOS code change:
 - `accepted-quote-job-plan.js` now refuses an accepted job with missing canonical CRM ID or accepted project scope *before* writing. The accepted scope is pinned to the quote P3 compare-and-match preconditions so an intervening scope edit cannot silently enter a job.
 - Regression tests cover full positive writer roundtrip, wrong client, scope drift, false deposit state, wrong scheduling/job status, missing scope/client before write and source read-back failures. No payment/provider confirmation is fabricated; actual independent bank callback remains unconfigured. The code treats an already-committed but inconsistent job as `COMMIT_READBACK_UNVERIFIED` for reconciliation, **not as safely rolled back**.
 - Candidate branch `codex/magos-core-job-readback-integrity-20261122`; GitHub CI/merge pending. Production execution, quote signature WordPress bridge, real provider clearance and a live golden lead-to-paid-job remain BLOCKED/UNKNOWN. No live customer/financial rows changed.
+
+
+## 22 November 2026 — Core quote activation line-state mismatch correction
+
+- Confirmed a cross-module defect in the business lifecycle: `quote-to-job-readiness.js` permits canonical accepted quote `Line Control State=LINE_CONTROL_OK`, while `job-release-inspection.js` previously recognized only `PASS`. A valid accepted quote could therefore pass one core workflow and be falsely blocked in the operator activation/financial-signature assessment.
+- Updated the canonical read-only job-release inspection to recognize both supported statuses `PASS` and `LINE_CONTROL_OK`; all other/unknown states remain blocked. Added job-release and job-activation regression checks confirming bank receipt evidence remains **evidence only**, not independent payment authority. No customer records or bank statuses changed.
+- Feature branch `codex/magos-quote-activation-line-state-20261122`; CI/merge pending. This is a core lifecycle integration repair; live WordPress client-signature and independent bank/provider release remain unverified.

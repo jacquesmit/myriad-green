@@ -440,3 +440,9 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - Found and corrected a real after-commit integrity gap. Previously P3 could report job creation success despite a changed accepted scope, CRM client or deposit field because postcommit read-back checked identifiers only. Now validate exact P3 planned CRM job state and Commercial Job Execution fields; ensure CRM client equals execution CRM ID, and fail closed on source exceptions.
 - Precommit quote-to-job planner rejects missing client ID/accepted scope and pins exact quote scope to P3 source preconditions. Added direct and executor/HTTP regression tests.
 - CODE STAGED; CI/merge PENDING. A committed transaction with bad read-back is `COMMIT_READBACK_UNVERIFIED`, requiring operational reconciliation; no implied rollback. No HOSTAFRICA deployment, bank payment callback, production source mutation or customer contact.
+
+
+## 22 November 2026 — Accepted quote state consistency (development)
+
+- Reconciled supported quote-line statuses across `quote-to-job-readiness` and `job-release-inspection`: `PASS` and `LINE_CONTROL_OK` are recognized consistently. Prevents a valid accepted quote from being blocked before the signed-acceptance/bank-evidence checks in `assessJobActivation`.
+- Added negative/positive integration regressions to both job-release inspection and activation tests. Code candidate, CI/merge pending. No new payment authority or source write was granted; independent clearance still required for job creation.
