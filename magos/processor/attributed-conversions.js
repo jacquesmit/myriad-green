@@ -14,8 +14,8 @@ function index(rows,key){
  }
  return {found,invalid};
 }
-function inspectAttributedConversions({clients,opportunities,quotes,executions}={}){
- if(![clients,opportunities,quotes,executions].every(Array.isArray))
+function inspectAttributedConversions({clients,opportunities,quotes,executions,intakes=[]}={}){
+ if(![clients,opportunities,quotes,executions,intakes].every(Array.isArray))
   return {schema_version:'MAGOS_ATTRIBUTED_CONVERSION_V1',
    state:'UNAVAILABLE',reason_code:'CANONICAL_CONVERSION_SOURCES_UNAVAILABLE',
    records:[],by_source:[],exceptions:[],writes:[],side_effects:false};
@@ -25,6 +25,37 @@ function inspectAttributedConversions({clients,opportunities,quotes,executions}=
  const executionIdx=index(executions,'Execution ID');
  const exceptions=[...clientIdx.invalid,...opportunityIdx.invalid,
    ...quoteIdx.invalid,...executionIdx.invalid];
+ // Inbound contact is separate from original acquisition. Link source events
+ // only through exact canonical CRM and opportunity IDs; never by name/phone.
+ const inboundSystems=new Set(['WEBSITE','WORDPRESS','GMAIL','WHATSAPP','FACEBOOK',
+  'FLUENT_FORMS','AMELIA','PHONE','GOOGLE_BUSINESS','GOOGLE_ADS',
+  'REFERRAL','ORGANIC_SEARCH','DIRECT_EMAIL']);
+ const inboundTypes=new Set(['WEBSITE_FORM','WEB_FORM','CONTACT_FORM','LEAD',
+  'LEAD_SUBMISSION','ENQUIRY','INQUIRY','WHATSAPP_LEAD','FACEBOOK_LEAD',
+  'BOOKING_ORDER','BOOKING','SERVICE_REQUEST']);
+ const inboundEventLinks=new Map();
+ const seenEventKeys=new Set(),conflictEventKeys=new Set();
+ for(const intake of intakes){
+  const source=up(intake.source_system),type=up(intake.source_type),
+   event=v(intake.source_event_id);
+  const outboundMarkers=[source,type,up(intake.record_origin),up(intake.lead_direction),
+   up(intake.acquisition_source)].join('|');
+  if(/SCRAPER|OUTBOUND|PROSPECTING|TODAY_OUTREACH|GOOGLE_PLACES/.test(outboundMarkers) ||
+     !inboundSystems.has(source)||!inboundTypes.has(type))continue;
+  if(!event){exceptions.push('INBOUND_SOURCE_EVENT_MISSING');continue;}
+  const eventKey=source+'|'+event;
+  if(seenEventKeys.has(eventKey)){
+   conflictEventKeys.add(eventKey);
+   exceptions.push('DUPLICATE_INBOUND_SOURCE_EVENT:'+eventKey);
+   continue;
+  }
+  seenEventKeys.add(eventKey);
+  const crm=v(intake.matched_crm_id),opportunity=v(intake.matched_opportunity_id);
+  if(!crm||!opportunity)continue; // captured enquiry without verified conversion
+  const links=inboundEventLinks.get(opportunity)||[];
+  links.push({event_key:eventKey,crm_id:crm});
+  inboundEventLinks.set(opportunity,links);
+ }
  const quotesByOpportunity=new Map(),executionsByJob=new Map(),jobOwner=new Map();
  for(const row of quoteIdx.found.values()){
   const opportunity=v(row.opportunity_id);
@@ -55,6 +86,11 @@ function inspectAttributedConversions({clients,opportunities,quotes,executions}=
     provenance.kind==='OUTBOUND_PROSPECT'||provenance.kind==='CONVERTED_OUTBOUND'?
      (up(client.record_origin)==='SCRAPER'||up(client.acquisition_source)==='OUTBOUND_PROSPECTING'?'OUTBOUND_SCRAPER':'OUTBOUND_OTHER'):
      up(client.acquisition_source)||'UNKNOWN';
+  const inboundLinks=inboundEventLinks.get(opportunity)||[];
+  const linkedInbound=inboundLinks.filter(link=>
+   link.crm_id===crm&&!conflictEventKeys.has(link.event_key));
+  if(inboundLinks.some(link=>link.crm_id!==crm))
+   exceptions.push('INBOUND_CLIENT_LINK_CONFLICT:'+opportunity);
   const quoteMatches=quotesByOpportunity.get(opportunity)||[];
   const validQuotes=quoteMatches.filter(q=>v(q.opportunity_id)===opportunity);
   const quoted=validQuotes.length>0;
@@ -85,6 +121,8 @@ function inspectAttributedConversions({clients,opportunities,quotes,executions}=
   if(linkedJob)addCount(source,'linked_jobs');
   records.push({
    id:opportunity,client_crm_id:crm,source,
+   matched_inbound_events:linkedInbound.length,
+   inbound_link_state:linkedInbound.length?'MATCHED':'NOT_VERIFIED',
    original_origin:v(client.record_origin),
    provenance:provenance.kind,quote_count:validQuotes.length,
    quoted,accepted,job_id:job,linked_job:linkedJob,
@@ -100,7 +138,8 @@ function inspectAttributedConversions({clients,opportunities,quotes,executions}=
   state:exceptions.length?'REVIEW_REQUIRED':'READ_ONLY_ATTRIBUTION',
   counts:{opportunities:records.length,quoted:records.filter(r=>r.quoted).length,
    accepted:records.filter(r=>r.accepted).length,linked_jobs:records.filter(r=>r.linked_job).length,
-   source_exceptions:exceptions.length},
+   source_exceptions:exceptions.length,
+   inbound_linked_opportunities:records.filter(r=>r.inbound_link_state==='MATCHED').length},
   by_source:[...sourceSummary.values()].map(group=>({
    ...group,linked_jobs:records.filter(r=>r.source===group.source&&r.linked_job).length
   })).sort((a,b)=>a.source.localeCompare(b.source)),

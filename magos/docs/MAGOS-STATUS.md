@@ -496,3 +496,10 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - Integrated into existing Command Centre `conversions` view and two overview metrics: attributable linked jobs and source attribution exceptions. No additional source store, legacy sheet mutation, bank provider configuration, or client outreach.
 - Tests cover original source, quote and job correlation, mismatched client/quote/execution, duplicate/reused job IDs, unknown provenance and authenticated read-only dashboard. Runtime P2 workflow updated. Source-code branch pending CI and merge.
 - Recorded quote ACCEPTED status is not standalone signed acceptance. Actual bank-confirmed revenue, expenses, profit, enquiry qualification and ROAS remain NOT_VERIFIED. Deployment and live historical conversion reconciliation remain pending.
+
+
+### 22 November 2026 — Inbound event to canonical sales conversion linkage candidate
+
+- PR #80 merged `e3ffdaa8382c6505b1f4b7846684da5cc96e1093`, tested head `b155611c12ee7d0d8c8baaacf5416baaafc66e22`: Runtime P2 #223 PASS; Document Extract #284 PASS; Evolving Status Gate #32 PASS.
+- New `attributed-conversions.js` inbound linkage identifies actual inbound Intake_Queue events matching client+opportunity, while retaining original customer acquisition source. Duplicate event identity and conflicting CRM mapping fail closed; scraped/unknown or supplier-document events do not count as enquiries. Dashboard exposes matched inbound event number, match state and one-per-opportunity summary.
+- Code candidate branch `codex/magos-inbound-to-sale-linkage-20261122`. Tests added; CI/merge pending. Client signature verification, bank provider clearance, job profitability, full production end-to-end testing and actual source data reconciliation remain open.

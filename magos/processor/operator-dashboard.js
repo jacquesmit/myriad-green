@@ -214,7 +214,7 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
   try{
     const conversion=inspectAttributedConversions({
       clients:rows('clients'),opportunities:rows('jobs'),
-      quotes:rows('quotes'),executions:rows('evidence')
+      quotes:rows('quotes'),executions:rows('evidence'),intakes:rows('leads')
     });
     departments.conversions={
       state:conversion.state==='UNAVAILABLE'?'UNAVAILABLE':
@@ -226,6 +226,8 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
           'Client CRM ID':record.client_crm_id,
           'Origin':record.original_origin,
           'Provenance':record.provenance,
+          'Inbound enquiries linked':record.matched_inbound_events,
+          'Inbound link status':record.inbound_link_state,
           'Quoted':record.quoted?'YES':'NO',
           'Accepted':record.accepted?'YES':'NO',
           'Verified job link':record.linked_job?'YES':'NO',
@@ -238,6 +240,7 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
       by_source:conversion.by_source
     };
     overviewCounts.attributed_jobs=conversion.counts.linked_jobs;
+    overviewCounts.inbound_linked_opportunities=conversion.counts.inbound_linked_opportunities;
     overviewCounts.attribution_exceptions=conversion.counts.source_exceptions;
     attention.push(...conversion.exceptions.slice(0,100).map(reason=>({
       type:'EXCEPTION',department:'conversions',id:reason,

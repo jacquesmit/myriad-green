@@ -24,7 +24,7 @@ const input=()=>({clients:crm.map(x=>({...x})),opportunities:opp.map(x=>({...x})
 test('canonical funnel separates outbound conversion, inbound quote and unknown origin',()=>{
  const result=inspectAttributedConversions(input());
  assert.equal(result.state,'READ_ONLY_ATTRIBUTION');
- assert.deepEqual(result.counts,{opportunities:3,quoted:2,accepted:1,linked_jobs:1,source_exceptions:0});
+ assert.deepEqual(result.counts,{opportunities:3,quoted:2,accepted:1,linked_jobs:1,source_exceptions:0,inbound_linked_opportunities:0});
  assert.equal(result.records.find(r=>r.id==='O-S').source,'OUTBOUND_SCRAPER');
  assert.equal(result.records.find(r=>r.id==='O-S').linked_job,true);
  assert.equal(result.records.find(r=>r.id==='O-W').source,'WEBSITE');
@@ -96,4 +96,51 @@ test('operator dashboard has protected conversion output with zero writer calls'
   assert.equal(data.departments.conversions.by_source.length,3);
   assert.equal(writes,0);
  }finally{await new Promise(ok=>server.close(ok));}
+});
+
+test('matched inbound intake events link separately from original scraped acquisition',()=>{
+ const data=input();
+ data.intakes=[
+  {source_system:'WHATSAPP',source_type:'LEAD',source_event_id:'CONTACT-1',
+   matched_crm_id:'C-S',matched_opportunity_id:'O-S',processing_status:'CLOSED'},
+  {source_system:'WORDPRESS',source_type:'WEBSITE_FORM',source_event_id:'WEB-1',
+   matched_crm_id:'C-W',matched_opportunity_id:'O-W',processing_status:'LINKED'}
+ ];
+ const r=inspectAttributedConversions(data);
+ assert.equal(r.counts.inbound_linked_opportunities,2);
+ assert.equal(r.records.find(row=>row.id==='O-S').source,'OUTBOUND_SCRAPER');
+ assert.equal(r.records.find(row=>row.id==='O-S').inbound_link_state,'MATCHED');
+ assert.equal(r.records.find(row=>row.id==='O-S').matched_inbound_events,1);
+ assert.equal(r.records.find(row=>row.id==='O-W').matched_inbound_events,1);
+ assert.equal(r.counts.linked_jobs,1);
+});
+test('duplicate inbound event or incorrect CRM does not create a verified customer conversion',()=>{
+ const data=input();
+ data.intakes=[
+  {source_system:'WORDPRESS',source_type:'WEBSITE_FORM',source_event_id:'FORM-1',
+   matched_crm_id:'C-W',matched_opportunity_id:'O-W'},
+  {source_system:'WORDPRESS',source_type:'WEBSITE_FORM',source_event_id:'FORM-1',
+   matched_crm_id:'C-X',matched_opportunity_id:'O-W'},
+  {source_system:'GMAIL',source_type:'LEAD',source_event_id:'MAIL-1',
+   matched_crm_id:'WRONG',matched_opportunity_id:'O-S'}
+ ];
+ const r=inspectAttributedConversions(data);
+ assert.equal(r.counts.inbound_linked_opportunities,0);
+ assert.equal(r.state,'REVIEW_REQUIRED');
+ assert.ok(r.exceptions.some(reason=>reason.startsWith('DUPLICATE_INBOUND_SOURCE_EVENT')));
+ assert.ok(r.exceptions.includes('INBOUND_CLIENT_LINK_CONFLICT:O-S'));
+});
+test('scraper events, generic unknown leads and supplier RFQs never produce inbound links',()=>{
+ const data=input();
+ data.intakes=[
+  {source_system:'SCRAPER',source_type:'LEAD',source_event_id:'S1',
+   matched_crm_id:'C-S',matched_opportunity_id:'O-S'},
+  {source_system:'UNKNOWN',source_type:'LEAD',source_event_id:'U1',
+   matched_crm_id:'C-W',matched_opportunity_id:'O-W'},
+  {source_system:'GMAIL',source_type:'RFQ',source_event_id:'R1',
+   matched_crm_id:'C-W',matched_opportunity_id:'O-W'}
+ ];
+ const r=inspectAttributedConversions(data);
+ assert.equal(r.counts.inbound_linked_opportunities,0);
+ assert.equal(r.counts.linked_jobs,1);
 });
