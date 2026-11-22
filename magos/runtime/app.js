@@ -69,6 +69,7 @@ function createRuntimeApp({
   supplierStockSplitAuthority = null,
   quoteSigningSecret = process.env.MAGOS_WP_ACCEPTANCE_LINK_SECRET,
   signingPageReadiness = () => require('../processor/signed-quote-link').inspectSigningPage(),
+  signingReadinessInspector = null,
   jobAuthorityVerifier = null,
   // Trusted server-side bank/provider settlement confirmation, never HTTP input.
   bankClearanceVerifier = null,
@@ -365,7 +366,7 @@ function createRuntimeApp({
   app.get('/v1/operator/client-signing-readiness',requireOperatorRead,async(req,res)=>{
     try{
       const {inspectSigningReadiness}=require('../processor/signed-quote-link');
-      const report=await inspectSigningReadiness();
+      const report=await (signingReadinessInspector||inspectSigningReadiness)();
       res.set('Cache-Control','private, no-store');
       return res.status(report.state==='READY_FOR_CONTROLLED_SIGNING_TEST'?200:202).json(report);
     }catch{
