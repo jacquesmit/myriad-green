@@ -481,3 +481,10 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - PR #77 merged `26748fd382657f2a30c9d318c771190aa95b5da7` after exact-head `f523c92ae5de0995fc3fb98eccca15b4e26f4e5e` passed Runtime P2 #219, Document Extract #278, Evolving Status Gate #29. Existing CRM_Master source columns now determine exclusive read-only client/prospect/provenance views; P3 rejects outbound prospect sources before lead writes.
 - Next core correction: avoid treating every generic `LEAD` Intake_Queue type as an inbound enquiry without a source-system attestation. `operator-snapshot.js` now requires listed inbound source systems; excludes known outbound/prospecting/supplier/financial types. Regression tests added. CODE candidate / CI and merge pending.
 - Actual live sales counts, deduplication and qualification need independent source tests; production UI deployed SHA NOT VERIFIED. No outreach, scraping, client or sheet modifications.
+
+
+### 22 November 2026 — #78 merged, exact test evidence
+
+- `operator-snapshot.js` inbound-source credibility regression PR #78 merged at `c5ebc0c0c676066cb7c5ebd5360ec025c656c2e0`. Exact tested head `3c5dc4ff237fa06c876562dd116eca420f1d22d6`: Runtime P2 #221 PASS, Document Extract #280 PASS, Evolving Status Gate #30 PASS.
+- Source of truth remains Myriad Green Outreach CRM `CRM_Master` and `Intake_Queue`; no second lead database or fake customer classifications. #77 segregates scraper prospects from actual inbound CRM records; #78 prevents unverified generic LEAD sources from influencing inbound KPI. Preserves historical source, unknown/contradictory provenance, client conversion evidence and source record identities.
+- **Next core business gate:** reconcile actual source-attributed enquiry→quote→accepted job conversion by unique canonical IDs, dedupe and verify provider evidence; deploy tested Command Centre and inspect against live CRM. This has not been completed by source-classification code. MAGOS overall production status remains NOT COMPLETE.
