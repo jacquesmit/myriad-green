@@ -25,7 +25,12 @@ async function executeAcceptedJob({writer,quoteId,jobId,sourceEventId,authorityV
  if(committed?.state!=='COMMITTED' && committed?.state!=='DUPLICATE_NO_OP')
   return {state:committed?.state||'REVIEW_REQUIRED',job_id:jobId,transaction:committed,execution_id:result.execution_id};
  const {verifyJobReadback}=require('./job-commit-readback');
- const readback=await verifyJobReadback({stores:writer.stores,jobId,opportunityId:result.readiness.opportunity_id,executionId:result.execution_id,quoteId});
+ const crmWrite=result.plan.writes?.find(w=>w.store==='crm' && w.sheet==='Jobs_Opportunities');
+ const executionWrite=result.plan.writes?.find(w=>w.store==='commercial' && w.sheet==='Job Execution');
+ const readback=await verifyJobReadback({stores:writer.stores,jobId,
+  opportunityId:result.readiness.opportunity_id,executionId:result.execution_id,quoteId,
+  expectedJobChanges:crmWrite?.changes,
+  expectedExecutionValues:executionWrite?.values});
  return {state:readback.verified?committed.state:'COMMIT_READBACK_UNVERIFIED',job_id:jobId,transaction:committed,execution_id:result.execution_id,readback};
 }
 module.exports={executeAcceptedJob};
