@@ -170,3 +170,14 @@ test('operator navigation exposes Aspire/LMN labour cost review without false fi
  assert.match(source,/Labour to reconcile/);
  assert.match(source,/Actual timesheets not independently verified/);
 });
+
+test('real frontend renders read-only related work shortcuts using server-derived exact record links',()=>{
+ const source=fs.readFileSync(require.resolve('../runtime/operator.js'),'utf8');
+ const css=fs.readFileSync(require.resolve('../runtime/operator.css'),'utf8');
+ assert.match(source,/Related MAGOS work/);
+ assert.match(source,/item\.related/);
+ assert.match(source,/show\(targetRecord\.department,targetRecord\.id\)/);
+ assert.match(source,/data\?\.departments\?\.\[targetRecord\.department\]/);
+ assert.match(css,/\.related-actions/);
+ assert.doesNotMatch(source,/localStorage|sessionStorage/);
+});
