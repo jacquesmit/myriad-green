@@ -432,3 +432,11 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - PR #71 merged `ff420aecb0d6a7c514ee474e880d09deb239430a`, exact head `5b004afa9d749f4b185f9213e470db93d9babee4`, three CI workflows PASS. Source contract includes unique reviewed Service_History plus completed signed-off Commercial Job Execution. Failure/missing canonical tab refuses to attest service.
 - Connected Sheets read-only header evidence established actual schema migration dependency: 23-column Supplier Installed_Parts has no last-service fields; Supplier Service_History tab not present; Commercial Job Execution lacks installed-part and service completion date. Code integration is staged in main but real live service-history intake is **NOT** operational, no source edits or customer actions performed.
 - HOSTAFRICA new ticket #3957866 acknowledgment received. Read-only checkout and running SHA, Git fetch ability, bank settlement callback, signature bridge, full golden lifecycle, and backup/restore signoff remain open. **MAGOS NOT COMPLETE**.
+
+
+## 22 November 2026 — Core lead-to-cash P3 job creation integrity candidate
+
+- **Build focus:** integrate the authoritative lead-to-paid-job spine; stop optimizing unrelated aftercare and provider coordination in place of transaction correctness.
+- Found and corrected a real after-commit integrity gap. Previously P3 could report job creation success despite a changed accepted scope, CRM client or deposit field because postcommit read-back checked identifiers only. Now validate exact P3 planned CRM job state and Commercial Job Execution fields; ensure CRM client equals execution CRM ID, and fail closed on source exceptions.
+- Precommit quote-to-job planner rejects missing client ID/accepted scope and pins exact quote scope to P3 source preconditions. Added direct and executor/HTTP regression tests.
+- CODE STAGED; CI/merge PENDING. A committed transaction with bad read-back is `COMMIT_READBACK_UNVERIFIED`, requiring operational reconciliation; no implied rollback. No HOSTAFRICA deployment, bank payment callback, production source mutation or customer contact.
