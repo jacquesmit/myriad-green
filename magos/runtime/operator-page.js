@@ -14,7 +14,7 @@ function operatorPage() {
   </aside>
   <main id="content">
     <header class="topbar">
-      <div><p class="eyebrow">MYRIAD GREEN / OPERATIONS</p><h1>MAGOS / Myriad Green</h1><p>Operations command centre</p></div>
+      <div><p class="eyebrow">MYRIAD GREEN / OPERATIONS</p><h1>MAGOS / Myriad Green</h1><p>Operations command centre</p><p id="deployment" role="status">Deployed code: not yet verified</p></div>
       <span class="badge" id="connection">Locked</span>
     </header>
     <section class="access" aria-label="Dashboard access">

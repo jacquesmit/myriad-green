@@ -340,6 +340,26 @@ function createRuntimeApp({
     }
     return next();
   }
+  // Independent operator credential can inspect process-start Git provenance,
+  // without exposing the privileged writer token or allowing deployment.
+  app.get('/v1/operator/deployment',requireOperatorRead,(req,res)=>{
+    const declared=String(deployedCommitSha||'').trim().toLowerCase();
+    const startup=String(startupGitState?.sha||'').trim().toLowerCase();
+    const valid=/^[a-f0-9]{40}$/;
+    const verified=valid.test(declared)&&valid.test(startup)&&
+      startupGitState?.dirty===false&&declared===startup;
+    res.status(verified?200:202).json({
+      schema_version:'MAGOS_OPERATOR_DEPLOYMENT_V1',
+      status:verified?'PROCESS_START_GIT_MATCH':'NOT_VERIFIED',
+      commit_sha:verified?declared:null,
+      checkout_sha_at_process_start:verified?startup:null,
+      tracked_worktree_clean_at_start:verified?true:null,
+      source:'PROCESS_START_GIT_AND_DEPLOY_DECLARATION',
+      production_business_acceptance:'NOT_VERIFIED',
+      production_complete:false,
+      writes:[],side_effects:false
+    });
+  });
   app.get('/v1/operator/coverage',requireOperatorRead,async(req,res)=>{
     try {
       if(!systemCoverageReader)systemCoverageReader=systemCoverageReaderFactory();
