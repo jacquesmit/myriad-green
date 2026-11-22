@@ -12,6 +12,8 @@ test('rollout milestones use canonical capability states and proposed targets on
  assert.equal(r.counts.validated,0);
  assert.equal(r.counts.missed,0);
  assert.equal(r.milestones[0].target_date,'2026-11-25');
+ assert.equal(r.milestones[0].target_time_local,'17:00');
+ assert.equal(r.milestones[0].target_timezone,'Africa/Johannesburg');
  assert.equal(r.milestones[0].recorded_pass,0);
  assert.ok(r.milestones[0].blockers.includes('CAP-020'));
  assert.equal(r.targets_approved,false);

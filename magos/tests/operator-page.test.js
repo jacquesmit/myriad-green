@@ -147,3 +147,12 @@ test('frontend prioritizes real quote validity review without automatic client s
  assert.match(source,/No automatic sending/);
  assert.doesNotMatch(source,/AUTOMATIC_QUOTE_SEND/);
 });
+
+test('frontend includes scope variation review and retains independent job closeout gates',()=>{
+ const source=fs.readFileSync(require.resolve('../runtime/operator.js'),'utf8');
+ assert.match(source,/Scope variations/);
+ assert.match(source,/Variations to resolve/);
+ assert.match(source,/VARIATION_REVIEW/);
+ assert.match(source,/Simpro\/Fergus benchmark/);
+ assert.match(source,/Inspect complete job closure/);
+});

@@ -4,6 +4,7 @@ const { projectOperations } = require('./operator-snapshot');
 const { classifyCrmProvenance } = require('./lead-provenance');
 const { inspectAttributedConversions } = require('./attributed-conversions');
 const {quoteValidityReview}=require('./quote-validity');
+const {inspectVariationRegister}=require('./variation-review');
 const { calculateExpected } = require('./payment-control-audit');
 const { DEFAULT_IDS } = require('../writer/transaction-writer');
 
@@ -18,6 +19,7 @@ const tabs = {
   procurement: ['commercial', 'Procurement', 1602387347, ['Procurement ID', 'Procurement Gate', 'technical_gate', 'Next Action']],
   suppliers: ['supplier', 'Suppliers', 826555595, ['supplier_id', 'supplier_name', 'supplier_approval_state', 'active_status']],
   evidence: ['commercial', 'Job Execution', 1264514302, ['Execution ID', 'Job ID', 'Before Evidence', 'After Evidence', 'Completion Sign-off']],
+  variations: ['commercial', 'Variations', 1009, ['Variation ID', 'Job ID', 'Original Scope Ref', 'Approval Status', 'Approval Evidence', 'Selling Price Impact (R)', 'Execution Status']],
   exceptions: ['audit', 'Sync_Exceptions', 2012, ['exception_id', 'status', 'action_required']],
 };
 
@@ -33,7 +35,7 @@ const amount = value => {
 const idFields = {
   leads: 'intake_id', clients: 'crm_id', quotes: 'quote_id', jobs: 'opportunity_id',
   dispatch: 'booking_id', finance: 'Control ID', procurement: 'Procurement ID',
-  suppliers: 'supplier_id', evidence: 'Execution ID', exceptions: 'exception_id',
+  suppliers: 'supplier_id', evidence: 'Execution ID', variations: 'Variation ID', exceptions: 'exception_id',
 };
 
 function indexRows(rows, key) {
@@ -179,6 +181,27 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
           conflict_count:conflicts.size,records:project(groups.unknown),source};
         overviewCounts.outbound_prospects=groups.outbound.length;
         overviewCounts.provenance_review=groups.unknown.length+conflicts.size;
+      } else if (key === 'variations') {
+        // Run inspection on all rows, before ID filtering, to retain duplicates.
+        const inspection=inspectVariationRegister(rows(key));
+        records=inspection.records.map(item=>record(item.id,
+          item.client||item.job_id,item.state,item.next_action,{
+            'Job ID':item.job_id,'Original scope':item.original_scope_ref,
+            'Approval status':item.approval_status,
+            'Execution status':item.execution_status,
+            'Price change (ZAR)':item.price_impact_zar,
+            'Cost change (ZAR)':item.cost_impact_zar,
+            'Invoice reference':item.invoice_ref,
+            'Blockers':item.blockers.join(', '),
+            'Payment clearance':item.payment_clearance
+          }));
+        overviewCounts.variations_review=inspection.counts.review;
+        overviewCounts.retrospective_variations=inspection.counts.retrospective;
+        attention.push(...inspection.records.filter(item=>item.state==='REVIEW_REQUIRED')
+          .slice(0,100).map(item=>({
+            department:'variations',type:'VARIATION_REVIEW',id:item.id,
+            next_action:item.next_action
+          })));
       } else if (key === 'finance') {
         records = projectFinance(input, rows('allocations'));
         overviewCounts.contracts_with_balance = records.filter(item => item.details['Contract balance (ZAR)'] > 0).length;
