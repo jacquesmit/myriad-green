@@ -517,3 +517,10 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - Added 4 **proposed, conditional** delivery milestones for UI pilot 25 Nov, lead-to-job pilot 4 Dec, field/finance pilot 18 Dec and whole-business release acceptance candidate 15 Jan 2027. These are planning assumptions; dates have not been user-approved or proven by live evidence. Code derives recorded PASS counts/blockers from authoritative coverage and marks missed targets when overdue.
 - Real operator frontend system view now includes a milestone table, gate counts, next action and missed-target notice, all read-only with the current operator credential. No new project ledger. Full source PASS alone no longer equates to production acceptance; distinct `capability_gates_passed` and fail-closed `production_complete=false` / `production_acceptance=NOT_VERIFIED` enforced.
 - Tests staged for proposed target logic, clock, overdue, missing capabilities, UI rendering, 22-PASS safety check. Production dashboard/authenticated live read and real client-to-paid-job still unverified. Branch `codex/magos-front-end-rollout-tracker-20261122`, CI/merge pending. No live business records, passwords or hosting changes.
+
+
+## 22 November 2026 — Frontend deployment identity implementation candidate
+
+- PR #83 rollout tracker merged `e7cfc8232d199b9b6e2d86651436a7d55b98af97` after Runtime P2 #227 PASS, Document Extract #290 PASS and Evolving Status Gate #35 PASS on head `d6f5628a2d0d710e310c343e5b82751d32cabb73`.
+- Candidate core frontend addition: new `/v1/operator/deployment` requires the existing distinct operator credential; independent commit SHA at worker start is shown in the existing `/operator` header, or NOT VERIFIED. New tests check unauthorized denial, matching/mismatching/dirty startup checkout and zero writes.
+- Source code and GitHub CI do not prove live runtime is serving this version; real hosted authenticated browser read, actual CRM/finance joins and 16-gate production acceptance remain NOT_VERIFIED.
