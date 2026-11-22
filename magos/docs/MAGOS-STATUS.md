@@ -404,3 +404,9 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - Implemented a source-level correction in `aftercare-readiness.js`: last independently evidenced service date resets recurrence; inconsistent or unsupported claims fail closed. Month-end drift corrected using intervals from the immutable anchor. Only a read-only draft service candidate is emitted.
 - Regression tests appended to `aftercare-readiness.test.js`; existing runtime CI already executes this test file. Branch `codex/magos-aftercare-servicing-evidence-20261122` staging for PR, CI and merge. This does NOT schedule any recurring appointment, trigger a review, contact a client or decide warranty liability.
 - Current canonical Installed_Parts schema still requires source-column verification before using new `last_service_*` values in production. Existing source authority remains unchanged.
+
+
+### 22 November 2026 — PR #68 merged with exact CI evidence
+
+- Aftercare recurrence source and regressions merged to `main`, SHA `c64e47ff7942b05c2920078a8ca0ee655ed86bf4`. Exact tested head `55e3ecf5b057c3f27c438cd373ca3efb1ab904c6`; Runtime P2 #201 PASS, Document Extract #256 PASS, Evolving Status Gate #16 PASS.
+- Implementation corrects source-level recurrence interval calculations only. LAST SERVICE recorded identifiers and text evidence are NOT independent proof until real service Job Execution and attached evidence are reconciled; emitted draft candidate is not an appointment, client communication or warranty decision. HOSTAFRICA hosted version and end-to-end lifecycle remain unverified.
