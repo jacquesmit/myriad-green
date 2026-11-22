@@ -9,7 +9,7 @@ const money=v=>{
  if(!/^(\d+|\d{1,3}(,\d{3})+)(\.\d{1,2})?$/.test(s))return null;
  const n=Number(s.replace(/,/g,''));return Number.isFinite(n)&&n>=0?n:null;
 };
-const approved=new Set(['APPROVED','ACCEPTED','SIGNED','CLIENT_APPROVED']);
+const {inspectVariationRegister}=require('./variation-review');
 const evidenced=new Set(['EVIDENCED','SUPPLIER_INVOICE_EVIDENCED','BANK_EVIDENCED','VERIFIED']);
 function uniqueRecord(rows,field,id) {
  const found=rows.filter(x=>val(x[field])===id);
@@ -36,14 +36,25 @@ async function inspectJobCloseout({stores,jobId}={}){
  const variations=variationRows.filter(r=>val(r['Job ID'])===jobId);
  if(upper(exec?.['Variation Required'])==='YES'&&!variations.length)
   blockers.push('REQUIRED_VARIATION_NOT_RECORDED');
+ // Apply the SAME canonical variation validation used by the operator
+ // workspace; closeout cannot ignore undocumented price/cost/scope/invoice.
+ const inspectedVariations=inspectVariationRegister(variations);
  const seenVariations=new Set();
- for(const row of variations){
-  const id=val(row['Variation ID']);
-  if(!id || seenVariations.has(id)){blockers.push('DUPLICATE_OR_MISSING_VARIATION_ID');continue;}
+ for(const item of inspectedVariations.records){
+  const id=item.id;
+  if(!id || seenVariations.has(id)){
+   blockers.push('DUPLICATE_OR_MISSING_VARIATION_ID');
+  }
   seenVariations.add(id);
-  if(!approved.has(upper(row['Approval Status'])) || !val(row['Approval Evidence']))
-   blockers.push('VARIATION_APPROVAL_UNVERIFIED:'+id);
-  if(['DRAFT','TO_CONFIRM','PENDING'].includes(upper(row['Execution Status'])))
+  for(const reason of item.blockers){
+   if(reason==='CLIENT_VARIATION_APPROVAL_UNVERIFIED')
+    blockers.push('VARIATION_APPROVAL_UNVERIFIED:'+id);
+   else if(reason==='DUPLICATE_VARIATION_ID')
+    blockers.push('DUPLICATE_OR_MISSING_VARIATION_ID');
+   else blockers.push('VARIATION_'+reason+':'+(id||'UNKNOWN'));
+  }
+  const raw=variations.find(row=>val(row['Variation ID'])===id);
+  if(['DRAFT','TO_CONFIRM','PENDING'].includes(upper(raw?.['Execution Status'])))
    blockers.push('VARIATION_EXECUTION_UNRESOLVED:'+id);
  }
  if(!exec || !['COMPLETED','WORK_COMPLETE','HANDOVER_COMPLETE','CLOSED'].includes(
@@ -88,6 +99,8 @@ async function inspectJobCloseout({stores,jobId}={}){
   blockers:[...new Set(blockers)],
   warnings:[...new Set(warnings)],
   variation_count:variations.length,
+  variation_review_count:inspectedVariations.counts.review,
+  variation_retrospective_count:inspectedVariations.counts.retrospective,
   direct_cost_line_count:costs.length,
   evidenced_cost_sum_zar:Number(evidencedCosts.toFixed(2)),
   provisional_unverified_cost_sum_zar:Number(pendingCosts.toFixed(2)),

@@ -546,3 +546,10 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - Command Centre now has a `Scope variations` department, `Variations to resolve` KPI, retrospective count and review queue. Separate existing job closeout controls remain in force; code does not mark any client, quote, variation, invoice, payment or capability COMPLETE. Tests for source and frontend behavior added and CI wired.
 - Recorded proposed milestone checkpoints now specify `17:00 SAST` in the existing date-aware delivery tracker; they are review checkpoints, not promises of production readiness. Target dates remain 25 Nov, 4 Dec, 18 Dec 2026 and 15 Jan 2027. Exact final production completion time is UNKNOWN while hosted SHA, signed quote, independently cleared bank receipts, genuine jobs, costing and full-system release acceptance remain unverified.
 - Branch `codex/magos-variation-command-centre-20261122`; CI and merge pending. Live source read occurred without write; actual deployed frontend not certified.
+
+
+## 22 November 2026 — Variation commercial checks now gate actual job closeout
+
+- Identified gap after merging variation review: source `job-closeout-readiness.js` still relied on old approval-only variation validation and did not enforce the Simpro/Fergus commercial reconciliation performed by the new `variations` frontend. Resolved by reusing canonical `inspectVariationRegister` for both frontend and field closeout. Missing cost/sell figures, original scope, client sign-off, invoice link and completed-work proof block final financial-close review; duplicate variation IDs fail closed.
+- Added **View job scope variations** drill-down on the existing job detail. No new database or paid/closed status assertion.
+- Updated closeout fixture and added specific negative/regression tests and combined operational-closure test. CI/merge pending on branch `codex/magos-variation-closeout-integrity-20261122`. No live financial or customer records modified. CAP-010 production FAIL remains until owner-visible real execution and complete benchmark acceptance.
