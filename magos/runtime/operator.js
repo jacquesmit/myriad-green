@@ -226,6 +226,11 @@
     }
     target.append(list);
     if (department === 'jobs' && item.details?.job_id) {
+      const journeyOutput=element('p');
+      journeyOutput.setAttribute('role','status');
+      const journeyCheck=button('Inspect full job lifecycle',
+        ()=>inspectWholeJob(item.details.job_id,journeyOutput,journeyCheck),'secondary');
+      target.append(journeyCheck,journeyOutput);
       const output = element('p');
       output.setAttribute('role','status');
       const check = button('Inspect actual costs & closeout',
@@ -621,6 +626,34 @@
       ].join(' · ');
     }catch{
       if(inspection===active)output.textContent='Scheduling evidence unavailable. Review source bookings.';
+    }finally{
+      clearTimeout(deadline);
+      if(inspection===active)button.disabled=false;
+    }
+  }
+
+  async function inspectWholeJob(jobId,output,button) {
+    const active=new AbortController();
+    inspection?.abort();inspection=active;button.disabled=true;
+    output.textContent='Checking the accepted quote, payment evidence, job, schedule and closure…';
+    const deadline=setTimeout(()=>active.abort(),15000);
+    try{
+      const response=await read('/v1/operator/job-lifecycle/'+encodeURIComponent(jobId),active.signal);
+      const result=await response.json();
+      if(inspection!==active)return;
+      if(result.schema_version!=='MAGOS_JOB_LIFECYCLE_V1')
+        throw Error('JOB_LIFECYCLE_UNAVAILABLE');
+      const names=(result.stages||[]).map(stage=>
+        stage.name.replaceAll('_',' ')+': '+stage.state.replaceAll('_',' '));
+      output.textContent=[
+        'Business phase: '+(result.phase||'REVIEW_REQUIRED').replaceAll('_',' '),
+        ...names,
+        'Next: '+(result.next_action||'Review canonical source evidence'),
+        'Bank settlement and actual completion require independent verification'
+      ].join(' · ');
+    }catch{
+      if(inspection===active)output.textContent=
+        'Unified job evidence unavailable. Inspect canonical job and finance registers.';
     }finally{
       clearTimeout(deadline);
       if(inspection===active)button.disabled=false;

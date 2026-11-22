@@ -241,3 +241,9 @@ For each real MAGOS code change:
 - Checks uniqueness of the job/Job Execution records, exact opportunity/client/quote linkage and accepted scope equality before invoking downstream checks. Conflicting identities fail closed. Completed work follows closeout rather than falsely failing because it cannot be rescheduled.
 - Regression tests cover active job lifecycle, deposit evidence versus authority, bad client/opportunity, stale scope, completed job routing and protected HTTP with zero writer calls. No server/provider changes or customer data modifications.
 - Code candidate branch `codex/magos-unified-job-lifecycle-20261122`; CI/merge PENDING. The output is an operator diagnostic, NOT a replacement for real bank provider attestation or the golden customer transaction.
+
+
+### 22 November 2026 — Business lifecycle visible in Command Centre (candidate)
+
+- Following tested and merged [PR #75](https://github.com/jacquesmit/myriad-green/pull/75) (`3c37192817e331ff98608443ce9d1e7490c0faa8`), each job detail card now offers **Inspect full job lifecycle**, using existing authenticated `/v1/operator/job-lifecycle/:jobId` rather than requiring a separate API client. The browser renders quote, ledger, scheduling/closeout stage states and a next action via safe `textContent`, without a second data ledger or customer-data write.
+- Added an operator-page source regression ensuring integrated action/API linkage, neutral independent-bank warning and no browser token storage. This is a code candidate; CI/merge and deployed Command Centre are NOT VERIFIED. Existing detailed inspections are preserved.
