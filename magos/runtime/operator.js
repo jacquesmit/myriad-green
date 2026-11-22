@@ -317,6 +317,28 @@
       list.append(element('dt', name), valueCell);
     }
     target.append(list);
+    // Relationships are supplied by the read-only server projection from
+    // exact canonical IDs. Never create links using fuzzy client name matches.
+    if(Array.isArray(item.related)&&item.related.length){
+      const related=element('section',undefined,'related-work');
+      related.append(element('h4','Related MAGOS work'));
+      const actions=element('div',undefined,'related-actions');
+      for(const targetRecord of item.related){
+        if(!labels[targetRecord.department]||
+           !data?.departments?.[targetRecord.department]?.records?.some(
+            row=>row.id===targetRecord.id))continue;
+        const label=labels[targetRecord.department]+' · '+targetRecord.id;
+        actions.append(button(label,
+          ()=>show(targetRecord.department,targetRecord.id),'secondary'));
+      }
+      if(actions.children.length){
+        related.append(actions);
+        if(item.related_overflow>0)
+          related.append(element('small',item.related_overflow+
+            ' further linked records. Open a related department to search.'));
+        target.append(related);
+      }
+    }
     if (department === 'jobs' && item.details?.job_id) {
       const variationButton=button('View job scope variations',
         ()=>show('variations',item.details.job_id),'secondary');
