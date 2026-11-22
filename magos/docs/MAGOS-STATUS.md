@@ -503,3 +503,9 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - PR #80 merged `e3ffdaa8382c6505b1f4b7846684da5cc96e1093`, tested head `b155611c12ee7d0d8c8baaacf5416baaafc66e22`: Runtime P2 #223 PASS; Document Extract #284 PASS; Evolving Status Gate #32 PASS.
 - New `attributed-conversions.js` inbound linkage identifies actual inbound Intake_Queue events matching client+opportunity, while retaining original customer acquisition source. Duplicate event identity and conflicting CRM mapping fail closed; scraped/unknown or supplier-document events do not count as enquiries. Dashboard exposes matched inbound event number, match state and one-per-opportunity summary.
 - Code candidate branch `codex/magos-inbound-to-sale-linkage-20261122`. Tests added; CI/merge pending. Client signature verification, bank provider clearance, job profitability, full production end-to-end testing and actual source data reconciliation remain open.
+
+
+### 22 November 2026 — #81 exact merge receipt; end-to-end business acceptance still open
+
+- Inbound-to-sale correlation PR #81 merged `e87ea7588138b35faa87c5feb1cd1aac3503fcc0` after exact head `27b6417b9da295399450c352903a5b326d4fa713` passed Runtime P2 #225, Document Extract #286, Evolving Status Gate #33. Original acquisition and later customer enquiry now tracked as separate concepts in the canonical read-only conversion spine; duplicate event IDs and conflicting client/opportunity links fail closed.
+- Full MAGOS production release NOT COMPLETE: live runtime commit/read credential verification, signed client quote acceptance, independent bank settlement and true invoice/cost/profit attribution across one job still require authenticated end-to-end acceptance. CI PASS is code evidence only, not production certification.
