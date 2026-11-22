@@ -62,7 +62,11 @@ class SystemCoverageReader {
       checked_at:new Date().toISOString(),
       counts,capabilities,delivery,
       entire_business_scope:true,
-      production_complete:capabilities.length>0 && counts.pass===counts.total,
+      // Source capability labels are necessary, never sufficient for launch.
+      // Production requires independently verified host/real-provider gates.
+      capability_gates_passed:capabilities.length>0 && counts.pass===counts.total,
+      production_complete:false,
+      production_acceptance:'NOT_VERIFIED',
       side_effects:false
     };
   }
