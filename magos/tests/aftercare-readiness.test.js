@@ -61,7 +61,12 @@ test('source reader detects duplicate jobs and does not manufacture asset record
 test('verified last service resets recurring schedule and retains provenance',()=>{
  const serviced={...asset,last_service_date:'2026-09-15',
    last_service_job_id:'JOB-SVC-42',last_service_evidence:'drive://verified-service-receipt'};
- const result=run({assets:[serviced]});
+ const result=run({assets:[serviced],serviceReceipts:[{
+   installed_part_id:'INST-1',service_job_id:'JOB-SVC-42',
+   service_date:'2026-09-15',evidence_ref:'drive://verified-service-receipt',
+   client_id:'CRM-1',property_id:'PROP-1',
+   source:'CANONICAL_JOB_EXECUTION',state:'VERIFIED'
+ }]});
  assert.equal(result.state,'AFTERCARE_CANDIDATES_PREPARED');
  assert.equal(result.service_due_candidates[0].due_date,'2027-03-15');
  assert.equal(result.service_due_candidates[0].recurrence_anchor_type,'VERIFIED_LAST_SERVICE');
@@ -87,4 +92,52 @@ test('recurrence uses original anchor without cumulative month-end drift',()=>{
  const result=run({asOf:'2026-10-01',maintenancePolicy:[{...rule,interval_months:1}]});
  assert.equal(result.service_due_candidates[0].due_date,'2026-10-31');
  assert.equal(result.service_due_candidates[0].recurrence_anchor_type,'INSTALLATION');
+});
+
+test('asset self-attestation without independent service proof is blocked',()=>{
+ const serviced={...asset,last_service_date:'2026-09-15',
+   last_service_job_id:'JOB-SVC-42',last_service_evidence:'drive://receipt'};
+ const result=run({assets:[serviced]});
+ assert.equal(result.state,'REVIEW_REQUIRED');
+ assert.equal(result.service_due_candidates.length,0);
+ assert.ok(result.issues.includes('INDEPENDENT_SERVICE_RECEIPT_NOT_VERIFIED:INST-1'));
+});
+test('forged, mismatched and duplicate service receipts never unlock schedule',()=>{
+ const serviced={...asset,last_service_date:'2026-09-15',
+   last_service_job_id:'JOB-SVC-42',last_service_evidence:'drive://receipt'};
+ const correct={installed_part_id:'INST-1',service_job_id:'JOB-SVC-42',
+   service_date:'2026-09-15',evidence_ref:'drive://receipt',
+   client_id:'CRM-1',property_id:'PROP-1',source:'CANONICAL_JOB_EXECUTION',state:'VERIFIED'};
+ for(const receipts of [
+   [{...correct,client_id:'OTHER'}],
+   [{...correct,service_date:'2026-09-16'}],
+   [{...correct,source:'ASSET_ROW'}],
+   [{...correct,evidence_ref:'drive://other'}],
+   [correct,correct]
+ ]){
+   const r=run({assets:[serviced],serviceReceipts:receipts});
+   assert.equal(r.service_due_candidates.length,0);
+   assert.ok(r.issues.includes('INDEPENDENT_SERVICE_RECEIPT_NOT_VERIFIED:INST-1'));
+ }
+});
+test('canonical inspection invokes an independent service verifier only server side',async()=>{
+ const serviced={...asset,last_service_date:'2026-09-15',
+   last_service_job_id:'JOB-SVC-42',last_service_evidence:'drive://receipt'};
+ const stores={
+   crm:{readObjects:async()=>[job]},
+   commercial:{readObjects:async()=>[execution]},
+   supplier:{readObjects:async()=>[serviced]}
+ };
+ const receipt={installed_part_id:'INST-1',service_job_id:'JOB-SVC-42',
+   service_date:'2026-09-15',evidence_ref:'drive://receipt',
+   client_id:'CRM-1',property_id:'PROP-1',source:'CANONICAL_JOB_EXECUTION',state:'VERIFIED'};
+ const blocked=await inspectJobAftercare({stores,jobId:'JOB-1',asOf:'2026-11-21',maintenancePolicy:[rule]});
+ assert.equal(blocked.state,'REVIEW_REQUIRED');
+ const allowed=await inspectJobAftercare({stores,jobId:'JOB-1',asOf:'2026-11-21',
+   maintenancePolicy:[rule],verifyServiceReceipt:async()=>receipt});
+ assert.equal(allowed.state,'AFTERCARE_CANDIDATES_PREPARED');
+ assert.equal(allowed.service_due_candidates[0].due_date,'2027-03-15');
+ const failed=await inspectJobAftercare({stores,jobId:'JOB-1',asOf:'2026-11-21',
+   maintenancePolicy:[rule],verifyServiceReceipt:async()=>{throw Error('UNAVAILABLE');}});
+ assert.equal(failed.state,'REVIEW_REQUIRED');
 });
