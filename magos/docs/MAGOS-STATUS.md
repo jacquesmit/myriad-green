@@ -397,3 +397,10 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - Whole-system acceptance evaluator PR #66 merged, commit `9fc577b5b23ec696bf7aa9fdba13d98084a65dc9`. Exact source head passed MAGOS Runtime P2 workflow #199, Document Extract #252 and Evolving Status Gate #14. The 16 checks are evidence metadata gates, not live validation; independent confirmation is required before any production claim.
 - HOSTAFRICA closed-ticket reply was rejected (21 November; original #3622207). New, standalone request sent to `support@hostafrica.com` on 22 November seeking a new ticket and read-only cPanel/Git/worker evidence. Await provider acceptance and response. **No host deployment occurred.**
 - Remaining blockers: no confirmed running SHA, reviewed WordPress signature plugin install or published signing page, verified bank/provider settlement API, controlled end-to-end lifecycle release, ecommerce payment/fulfilment and audited backups/restore. MAGOS remains PARTIAL; not complete.
+
+
+## 22 November 2026 — Aftercare maintenance recurrence service-history integrity (development branch)
+
+- Implemented a source-level correction in `aftercare-readiness.js`: last independently evidenced service date resets recurrence; inconsistent or unsupported claims fail closed. Month-end drift corrected using intervals from the immutable anchor. Only a read-only draft service candidate is emitted.
+- Regression tests appended to `aftercare-readiness.test.js`; existing runtime CI already executes this test file. Branch `codex/magos-aftercare-servicing-evidence-20261122` staging for PR, CI and merge. This does NOT schedule any recurring appointment, trigger a review, contact a client or decide warranty liability.
+- Current canonical Installed_Parts schema still requires source-column verification before using new `last_service_*` values in production. Existing source authority remains unchanged.

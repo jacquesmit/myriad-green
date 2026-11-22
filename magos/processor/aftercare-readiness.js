@@ -68,15 +68,39 @@ function assessAftercare({job,execution,assets=[],asOf,maintenancePolicy=[]}={})
        upper(rule.approval_state)!=='APPROVED'||!value(rule.policy_id)){
        issues.push('MAINTENANCE_POLICY_NOT_VERIFIED:'+asset.part_id);continue;
      }
-     let next=addMonths(installed,months);
+     // A verified service resets the recurrence anchor; an unverified
+     // service claim must not silently reset or duplicate the cadence.
+     const rawServiceDate=value(asset.last_service_date);
+     const serviceDate=rawServiceDate?dateOnly(rawServiceDate):null;
+     const hasServiceFields=!!(rawServiceDate || value(asset.last_service_evidence) ||
+       value(asset.last_service_job_id));
+     if(hasServiceFields && (!serviceDate || !value(asset.last_service_evidence) ||
+       !value(asset.last_service_job_id) || serviceDate<installed ||
+       (current && serviceDate>current))){
+       issues.push('LAST_SERVICE_EVIDENCE_UNVERIFIED:'+id);
+       continue;
+     }
+     const anchor=serviceDate||installed;
+     // Calculate from the same anchor to avoid end-of-month drift.
+     // Never label an overdue service as already completed.
+     let intervals=1;
+     let next=addMonths(anchor,months*intervals);
      if(current){
-       // Bounded loop; no synthetic write or client outreach.
-       for(let i=0;i<120 && next<current;i++)next=addMonths(next,months);
+       while(next<current && intervals<1200){
+         intervals+=1;
+         next=addMonths(anchor,months*intervals);
+       }
+       if(next<current){
+         issues.push('SERVICE_SCHEDULE_EXCEEDS_VERIFIED_RANGE:'+id);
+         continue;
+       }
      }
      due.push({
        candidate_id:'SERVICE_DUE|'+id+'|'+rule.policy_id+'|'+next,
        installed_part_id:id,part_id:value(asset.part_id),
        policy_id:value(rule.policy_id),due_date:next,
+       recurrence_anchor_date:anchor,
+       recurrence_anchor_type:serviceDate?'VERIFIED_LAST_SERVICE':'INSTALLATION',
        status:'DRAFT_REVIEW_ONLY'
      });
    }

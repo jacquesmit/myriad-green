@@ -57,3 +57,34 @@ test('source reader detects duplicate jobs and does not manufacture asset record
  assert.equal(result.state,'REVIEW_REQUIRED');
  assert.ok(result.issues.includes('JOB_EXECUTION_ID_NOT_UNIQUE_OR_MISSING'));
 });
+
+test('verified last service resets recurring schedule and retains provenance',()=>{
+ const serviced={...asset,last_service_date:'2026-09-15',
+   last_service_job_id:'JOB-SVC-42',last_service_evidence:'drive://verified-service-receipt'};
+ const result=run({assets:[serviced]});
+ assert.equal(result.state,'AFTERCARE_CANDIDATES_PREPARED');
+ assert.equal(result.service_due_candidates[0].due_date,'2027-03-15');
+ assert.equal(result.service_due_candidates[0].recurrence_anchor_type,'VERIFIED_LAST_SERVICE');
+ assert.equal(result.service_due_candidates[0].recurrence_anchor_date,'2026-09-15');
+ assert.equal(result.service_due_candidates[0].status,'DRAFT_REVIEW_ONLY');
+ assert.equal(result.service_message_authorized,false);
+});
+test('unverified, future and preinstallation servicing cannot change the schedule',()=>{
+ for(const change of [
+   {last_service_date:'2026-09-15'},
+   {last_service_evidence:'receipt-only'},
+   {last_service_date:'2026-12-05',last_service_job_id:'JOB-2',last_service_evidence:'proof'},
+   {last_service_date:'2025-12-01',last_service_job_id:'JOB-2',last_service_evidence:'proof'},
+   {last_service_date:'2026-02-30',last_service_job_id:'JOB-2',last_service_evidence:'proof'}
+ ]){
+   const result=run({assets:[{...asset,...change}]});
+   assert.equal(result.state,'REVIEW_REQUIRED');
+   assert.equal(result.service_due_candidates.length,0);
+   assert.ok(result.issues.includes('LAST_SERVICE_EVIDENCE_UNVERIFIED:INST-1'));
+ }
+});
+test('recurrence uses original anchor without cumulative month-end drift',()=>{
+ const result=run({asOf:'2026-10-01',maintenancePolicy:[{...rule,interval_months:1}]});
+ assert.equal(result.service_due_candidates[0].due_date,'2026-10-31');
+ assert.equal(result.service_due_candidates[0].recurrence_anchor_type,'INSTALLATION');
+});
