@@ -144,3 +144,23 @@ test('scraper events, generic unknown leads and supplier RFQs never produce inbo
  assert.equal(r.counts.inbound_linked_opportunities,0);
  assert.equal(r.counts.linked_jobs,1);
 });
+
+test('canonical linked customer RFQ joins to one real inbound opportunity without supplier leakage',()=>{
+ const d=input();
+ d.intakes=[{
+  intake_id:'INT-CUSTOMER',source_system:'GMAIL',source_type:'RFQ',
+  source_event_id:'MAIL-CUSTOMER',match_status:'NEW_RECORD',
+  processing_status:'LINKED',matched_crm_id:'C-W',matched_opportunity_id:'O-W'
+ },{
+  intake_id:'INT-SUPPLIER',source_system:'GMAIL',source_type:'RFQ',
+  source_event_id:'MAIL-SUPPLIER',match_status:'NEW_RECORD',
+  processing_status:'LINKED',supplier_id:'SUP-1',
+  matched_crm_id:'C-S',matched_opportunity_id:'O-S'
+ }];
+ const r=inspectAttributedConversions(d);
+ assert.equal(r.counts.inbound_linked_opportunities,1);
+ assert.equal(r.records.find(x=>x.id==='O-W').matched_inbound_events,1);
+ assert.equal(r.records.find(x=>x.id==='O-S').matched_inbound_events,0);
+ assert.equal(r.records.find(x=>x.id==='O-S').source,'OUTBOUND_SCRAPER');
+ assert.deepEqual(r.writes,[]);
+});
