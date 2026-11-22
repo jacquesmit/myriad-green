@@ -64,3 +64,12 @@ test('operator coverage requires a separate read credential',async()=>{
   assert.equal(body.production_complete,false);
  } finally {await new Promise(resolve=>server.close(resolve));}
 });
+
+test('coverage endpoint exposes milestone dates but never certifies launch from source metadata',async()=>{
+ const r=await new SystemCoverageReader({store}).read();
+ assert.equal(r.delivery.schema_version,'MAGOS_DELIVERY_ROADMAP_V1');
+ assert.equal(r.delivery.milestones.length,4);
+ assert.equal(r.delivery.production_rollout_committed,false);
+ assert.equal(r.delivery.milestones[0].independently_validated,false);
+ assert.equal(r.production_complete,false);
+});
