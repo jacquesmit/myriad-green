@@ -139,3 +139,11 @@ test('lead-to-job funnel is visible in existing Command Centre with source drill
  assert.match(script,/\$\('search'\)\.value=sourceName/);
  assert.doesNotMatch(script,/localStorage|sessionStorage/);
 });
+
+test('frontend prioritizes real quote validity review without automatic client sending',()=>{
+ const source=fs.readFileSync(require.resolve('../runtime/operator.js'),'utf8');
+ assert.match(source,/Quote validity review/);
+ assert.match(source,/QUOTE_EXPIRED_REVIEW/);
+ assert.match(source,/No automatic sending/);
+ assert.doesNotMatch(source,/AUTOMATIC_QUOTE_SEND/);
+});

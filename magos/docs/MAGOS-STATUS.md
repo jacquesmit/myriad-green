@@ -531,3 +531,10 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - Continued MAGOS frontend implementation (not only planning): read-only acquisition-source funnel with opportunities, quotes, recorded accepted quotes and linked jobs, source filter into individual canonical records, explicit no-revenue assertion, and unknown source failure handling.
 - Operator conversion exception IDs now resolve to actual `REVIEW_REQUIRED` records in the department; previously the action queue could route to a non-existent detail. No new business authority, contact action or spreadsheet mutation.
 - Tests staged in `operator-page.test.js` and `operator-dashboard.test.js`; branch `codex/magos-frontend-source-funnel-20261122`. CI/merge pending. Full live UI/browser and production business acceptance NOT VERIFIED; original source separation remains unchanged.
+
+
+## 22 November 2026 — Issued quote validity attention queue candidate
+
+- Built revenue-oriented read-only quote validity inspection using actual Commercial `Quotes` `Valid Until` calendar values and Johannesburg local date. Declared status `SENT/ISSUED/AWAITING_ACCEPTANCE` must be present before client-facing follow-up becomes a candidate action; `TO_CONFIRM`, draft, accepted, declined and cancelled records are held outside automatic follow-up. Missing/invalid validity requires operator review, never silent expiration.
+- Added `Quote validity review` overview metric, source date/status visibility and priority `QUOTE_EXPIRED_REVIEW` action records in existing Command Centre. No source mutation, email dispatch, quote version change, discount or payment action.
+- Tests in `quote-validity.test.js`, `operator-dashboard.test.js` and `operator-page.test.js`, plus Runtime P2 CI wiring. Branch `codex/magos-quote-validity-review-20261122`; CI/merge and actual production read NOT VERIFIED. Full MAGOS release gate not complete.

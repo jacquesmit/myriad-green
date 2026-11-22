@@ -15,7 +15,7 @@
     prospects: 'Original scraper and outbound prospects, including converted prospects whose origin is preserved.',
     provenance: 'Imported and conflicting CRM records requiring proof before they count as inbound enquiries.',
     conversions: 'Original acquisition plus verified inbound contact event links through opportunity, quotation and job. Payments and margin require independent evidence.',
-    quotes: 'Pending quotes and accepted quotes waiting for a linked job.',
+    quotes: 'Recorded issued quotes, local validity deadlines, and accepted quotes awaiting governed job release. No automatic sending.',
     jobs: 'Active jobs with their canonical opportunity and client links.',
     dispatch: 'Appointments, booking state, crew and supporting evidence.',
     evidence: 'Before and after evidence, variations and completion sign-off.',
@@ -33,12 +33,13 @@
     ['inbound_linked_opportunities', 'Inbound linked', 'conversions'],
     ['attribution_exceptions', 'Attribution gaps', 'conversions'],
     ['pending_quotes', 'Pending quotes', 'quotes'],
+    ['quotes_validity_review', 'Quote validity review', 'quotes'],
     ['active_jobs', 'Active jobs', 'jobs'],
     ['contracts_with_balance', 'Contracts with balance', 'finance'],
     ['procurement_review', 'Purchasing review', 'procurement'],
     ['open_exceptions', 'Open exceptions', 'exceptions'],
   ];
-  const actionRank = ['EXCEPTION', 'ACCEPTED_QUOTE_REVIEW', 'PROCUREMENT_REVIEW', 'QUOTE_FOLLOWUP', 'JOB_ACTION'];
+  const actionRank = ['EXCEPTION', 'QUOTE_EXPIRED_REVIEW', 'ACCEPTED_QUOTE_REVIEW', 'PROCUREMENT_REVIEW', 'QUOTE_FOLLOWUP', 'JOB_ACTION'];
   const dateFormat = new Intl.DateTimeFormat('en-ZA', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Africa/Johannesburg' });
   const zar = new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' });
   const pageSize = 25;

@@ -3,13 +3,14 @@
 const { projectOperations } = require('./operator-snapshot');
 const { classifyCrmProvenance } = require('./lead-provenance');
 const { inspectAttributedConversions } = require('./attributed-conversions');
+const {quoteValidityReview}=require('./quote-validity');
 const { calculateExpected } = require('./payment-control-audit');
 const { DEFAULT_IDS } = require('../writer/transaction-writer');
 
 const tabs = {
   leads: ['crm', 'Intake_Queue', 1816318913, ['intake_id', 'source_event_id', 'source_system', 'source_type', 'processing_status']],
   clients: ['crm', 'CRM_Master', 1621110075, ['crm_id', 'company', 'lead_direction', 'crm_status', 'next_action']],
-  quotes: ['commercial', 'Quotes', 1001, ['quote_id', 'Quote Status', 'opportunity_id', 'job_id', 'Next Action']],
+  quotes: ['commercial', 'Quotes', 1001, ['quote_id', 'Quote Status', 'opportunity_id', 'job_id', 'Next Action', 'Valid Until']],
   jobs: ['crm', 'Jobs_Opportunities', 1816318915, ['opportunity_id', 'job_id', 'job_status', 'next_action']],
   dispatch: ['crm', 'Bookings', 1816318918, ['booking_id', 'appointment_start', 'mgos_booking_status', 'staff_technician']],
   finance: ['commercial', 'Payment Control', 914551623, ['Control ID', 'Financial Status', 'Contract Value (R)', 'Deposit Required (R)', 'Next Action']],
@@ -137,6 +138,11 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
     if (result[key].status !== 'fulfilled' || !Array.isArray(result[key].value)) throw new Error('Register unavailable');
     return result[key].value;
   };
+  const parts=new Intl.DateTimeFormat('en-GB',{
+    timeZone:'Africa/Johannesburg',year:'numeric',month:'2-digit',day:'2-digit'
+  }).formatToParts(now());
+  const getPart=name=>parts.find(p=>p.type===name)?.value;
+  const localDay=getPart('year')+'-'+getPart('month')+'-'+getPart('day');
   const departments = {};
   const overviewCounts = {};
   const attention = [];
@@ -191,7 +197,32 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
           return record(id, original?.[titles[key]], status, next_action, details);
         });
         overviewCounts[metric] = projection.counts[metric];
-        attention.push(...projection.attention.map(item => ({ ...item, department: key })));
+        let workItems=projection.attention;
+        if(key==='quotes'){
+          const reviews=new Map();
+          for(const quote of input){
+            const validity=quoteValidityReview(quote,localDay);
+            reviews.set(txt(quote.quote_id),validity);
+          }
+          records=records.map(item=>{
+            const validity=reviews.get(item.id);
+            if(!validity)return item;
+            return {...item,
+              next_action:validity.action_required?validity.next_action:item.next_action,
+              details:{...item.details,
+                'Valid until':validity.valid_until||'UNKNOWN',
+                'Validity review':validity.state,
+                'Customer delivery':'NOT_INDEPENDENTLY_VERIFIED'}};
+          });
+          overviewCounts.quotes_validity_review=[...reviews.values()].filter(
+            review=>review.action_required).length;
+          workItems=workItems.map(item=>{
+            const validity=reviews.get(txt(item.id));
+            if(!validity?.action_required)return item;
+            return {...item,type:'QUOTE_EXPIRED_REVIEW',next_action:validity.next_action};
+          });
+        }
+        attention.push(...workItems.map(item => ({ ...item, department: key })));
       }
       const conflictRows = [...conflicts].map(id => record(id, 'Duplicate record ID', 'REVIEW_REQUIRED',
         'Compare the matching rows in the source register before acting'));
