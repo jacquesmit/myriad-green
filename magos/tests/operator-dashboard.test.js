@@ -147,3 +147,18 @@ test('unavailable CRM source does not falsely produce zero outbound prospects',a
  assert.equal(result.departments.provenance.state,'UNAVAILABLE');
  assert.equal(result.overview_counts.outbound_prospects,undefined);
 });
+
+test('explicit website-form origin is inbound but unsupported provenance remains review',async()=>{
+ const original=makeStores();
+ const rows=[
+  {crm_id:'WEB-1',lead_direction:'INBOUND',record_origin:'WEBSITE_FORM',
+   acquisition_source:'WEBSITE'},
+  {crm_id:'IMPORT-1',lead_direction:'INBOUND',record_origin:'DRIVE_IMPORT',
+   acquisition_source:'UNKNOWN'}
+ ];
+ const stores={...original,crm:{readObjects:async(name,options)=>
+  name==='CRM_Master'?rows:original.crm.readObjects(name,options)}};
+ const result=await loadOperatorDashboard(stores);
+ assert.deepEqual(result.departments.clients.records.map(r=>r.id),['WEB-1']);
+ assert.deepEqual(result.departments.provenance.records.map(r=>r.id),['IMPORT-1']);
+});
