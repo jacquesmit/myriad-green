@@ -4,7 +4,7 @@
   const $ = id => document.getElementById(id);
   const groups = [
     ['Command centre', [['overview', 'Overview'], ['system', 'Whole MAGOS build'], ['exceptions', 'Exceptions']]],
-    ['Clients and delivery', [['leads', 'Inbound enquiries'], ['clients', 'Inbound CRM'], ['prospects', 'Scraper / outbound prospects'], ['provenance', 'Provenance review'], ['quotes', 'Quotes & acceptance'], ['jobs', 'Active jobs'], ['dispatch', 'Dispatch & bookings'], ['evidence', 'Work proof']]],
+    ['Clients and delivery', [['leads', 'Inbound enquiries'], ['clients', 'Inbound CRM'], ['prospects', 'Scraper / outbound prospects'], ['provenance', 'Provenance review'], ['conversions', 'Lead-to-job conversion'], ['quotes', 'Quotes & acceptance'], ['jobs', 'Active jobs'], ['dispatch', 'Dispatch & bookings'], ['evidence', 'Work proof']]],
     ['Commercial', [['finance', 'Finance & payments'], ['procurement', 'Procurement'], ['suppliers', 'Suppliers'], ['registers', 'Other registers']]],
   ];
   const labels = Object.fromEntries(groups.flatMap(([, entries]) => entries));
@@ -14,6 +14,7 @@
     clients: 'Inbound CRM enquiries separated from scraped prospecting records.',
     prospects: 'Original scraper and outbound prospects, including converted prospects whose origin is preserved.',
     provenance: 'Imported and conflicting CRM records requiring proof before they count as inbound enquiries.',
+    conversions: 'Canonical client source to opportunity, quotation and linked job. Payments and margin require independent evidence.',
     quotes: 'Pending quotes and accepted quotes waiting for a linked job.',
     jobs: 'Active jobs with their canonical opportunity and client links.',
     dispatch: 'Appointments, booking state, crew and supporting evidence.',
@@ -28,6 +29,8 @@
     ['open_leads', 'Inbound leads', 'leads'],
     ['outbound_prospects', 'Outbound prospects', 'prospects'],
     ['provenance_review', 'Source review', 'provenance'],
+    ['attributed_jobs', 'Source-linked jobs', 'conversions'],
+    ['attribution_exceptions', 'Attribution gaps', 'conversions'],
     ['pending_quotes', 'Pending quotes', 'quotes'],
     ['active_jobs', 'Active jobs', 'jobs'],
     ['contracts_with_balance', 'Contracts with balance', 'finance'],

@@ -488,3 +488,11 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - `operator-snapshot.js` inbound-source credibility regression PR #78 merged at `c5ebc0c0c676066cb7c5ebd5360ec025c656c2e0`. Exact tested head `3c5dc4ff237fa06c876562dd116eca420f1d22d6`: Runtime P2 #221 PASS, Document Extract #280 PASS, Evolving Status Gate #30 PASS.
 - Source of truth remains Myriad Green Outreach CRM `CRM_Master` and `Intake_Queue`; no second lead database or fake customer classifications. #77 segregates scraper prospects from actual inbound CRM records; #78 prevents unverified generic LEAD sources from influencing inbound KPI. Preserves historical source, unknown/contradictory provenance, client conversion evidence and source record identities.
 - **Next core business gate:** reconcile actual source-attributed enquiry→quote→accepted job conversion by unique canonical IDs, dedupe and verify provider evidence; deploy tested Command Centre and inspect against live CRM. This has not been completed by source-classification code. MAGOS overall production status remains NOT COMPLETE.
+
+
+## 22 November 2026 — Core source-attributed conversion reporting (development candidate)
+
+- A new read-only `attributed-conversions.js` links canonical CRM acquisition source to opportunity, quote and Job Execution, requiring exact IDs and rejecting conflicting/duplicate joins. Source-unknown records stay unknown. One scraper prospect without an opportunity is **not** counted as a lead or sale. Converted scraper origin is retained rather than rewritten to organic or inbound.
+- Integrated into existing Command Centre `conversions` view and two overview metrics: attributable linked jobs and source attribution exceptions. No additional source store, legacy sheet mutation, bank provider configuration, or client outreach.
+- Tests cover original source, quote and job correlation, mismatched client/quote/execution, duplicate/reused job IDs, unknown provenance and authenticated read-only dashboard. Runtime P2 workflow updated. Source-code branch pending CI and merge.
+- Recorded quote ACCEPTED status is not standalone signed acceptance. Actual bank-confirmed revenue, expenses, profit, enquiry qualification and ROAS remain NOT_VERIFIED. Deployment and live historical conversion reconciliation remain pending.
