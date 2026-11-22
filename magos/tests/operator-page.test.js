@@ -48,3 +48,13 @@ test('operator exposes read-only supplier cost inspection and shows source block
  assert.match(source,/No financial cost released/);
  assert.doesNotMatch(source,/\/v1\/transactions[\s\S]*SUPPLIER_COST_AUTO_APPROVE/);
 });
+
+test('Command Centre offers one integrated lifecycle inspection for each linked job',()=>{
+ const source=fs.readFileSync(require.resolve('../runtime/operator.js'),'utf8');
+ assert.match(source,/Inspect full job lifecycle/);
+ assert.match(source,/\/v1\/operator\/job-lifecycle\//);
+ assert.match(source,/result\.stages/);
+ assert.match(source,/result\.next_action/);
+ assert.match(source,/Bank settlement and actual completion require independent verification/);
+ assert.doesNotMatch(source,/localStorage|sessionStorage/);
+});
