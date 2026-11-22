@@ -163,3 +163,10 @@ test('job details link directly to the existing scoped variation workspace',()=>
  assert.match(source,/show\('variations',item\.details\.job_id\)/);
  assert.doesNotMatch(source,/localStorage|sessionStorage/);
 });
+
+test('operator navigation exposes Aspire/LMN labour cost review without false final profit',()=>{
+ const source=fs.readFileSync(require.resolve('../runtime/operator.js'),'utf8');
+ assert.match(source,/Labour cost review/);
+ assert.match(source,/Labour to reconcile/);
+ assert.match(source,/Actual timesheets not independently verified/);
+});
