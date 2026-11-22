@@ -171,3 +171,10 @@ For each real MAGOS code change:
 - Accepts only a JSON `gates` object with exact named gate IDs; absent/malformed/unsupported PASS evidence becomes FAIL. PASS entries require a pinned tested 40-character SHA, HTTPS evidence link, verification timestamp and named reviewer. PARTIAL never becomes PASS. No bank, customer, supplier or WordPress writes.
 - Run: `node magos/scripts/whole-system-acceptance.js /path/to/release-evidence.json`. Nonzero exit code for blocked or malformed evidence. This script checks evidence *shape*, **not actual host truth** or the evidence links; manual independent source verification is still mandatory. No input evidence file is committed or fabricated. Validated CI/merge and live sign-off PENDING.
 - **Security correction:** GitHub repository metadata obtained on 2026-11-22 reports `jacquesmit/myriad-green` as **public**, despite older runbook language calling it private. Confirm intended visibility and audit Git history for credentials before host releases. Git public status is not proof of leaked secrets.
+
+
+### 22 November 2026 — Acceptance evaluator merged and support re-open attempt corrected
+
+- [PR #66](https://github.com/jacquesmit/myriad-green/pull/66) **MERGED** into `main` at `9fc577b5b23ec696bf7aa9fdba13d98084a65dc9`; exact head `9a533c63a046d13af9cc1ea6a932f9f7e6cbae93` passed MAGOS Runtime P2 #199, Document Extract #252, Evolving Status Gate #14. This is source/test PASS only, **not** live release certification.
+- The 21 November reply on existing ticket #3622207 was **rejected** by HOSTAFRICA's closed-ticket system (two automated rejection emails). On 22 November, a **new unthreaded email** was successfully submitted to `support@hostafrica.com` requesting a NEW ticket and read-only host/Git/worker facts. Sending email does not prove a new ticket exists; HOSTAFRICA acceptance/ID and server evidence are PENDING.
+- Public `/healthz` and `/readyz` could not be retrieved via available web checks; mark **UNKNOWN**, not outage. No payment, client signature, WP release, bank credentials or customer data were changed.
