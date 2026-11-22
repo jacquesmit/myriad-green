@@ -12,7 +12,8 @@ function isCanonicalCustomerRfq(row){
  if(!['GMAIL','DIRECT_EMAIL','WEBSITE','WORDPRESS','FLUENT_FORMS'].includes(source))return false;
  if(denied.test([source,up(row.record_origin),up(row.lead_direction),
    up(row.acquisition_source),up(row.source_category)].join('|')))return false;
- if(v(row.supplier_id)||supplierDoc.test(up(row.business_document_type)))return false;
+ if(v(row.supplier_id)||supplierDoc.test([up(row.business_document_type),
+   up(row.source_category)].join('|')))return false;
  if(['SELF_TEST','TEST','SPAM','PHISHING','SUPPLIER'].includes(up(row.match_status)))return false;
  if(!['LINKED','MATCHED'].includes(up(row.processing_status)))return false;
  if(!['EXACT_MATCH','NEW_RECORD','MATCHED','LINKED'].includes(up(row.match_status)))return false;
