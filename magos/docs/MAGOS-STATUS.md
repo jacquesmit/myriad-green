@@ -446,3 +446,11 @@ Three independently merged/tested development changes now exist on GitHub `main`
 
 - Reconciled supported quote-line statuses across `quote-to-job-readiness` and `job-release-inspection`: `PASS` and `LINE_CONTROL_OK` are recognized consistently. Prevents a valid accepted quote from being blocked before the signed-acceptance/bank-evidence checks in `assessJobActivation`.
 - Added negative/positive integration regressions to both job-release inspection and activation tests. Code candidate, CI/merge pending. No new payment authority or source write was granted; independent clearance still required for job creation.
+
+
+## 22 November 2026 — Integrated canonical job journey candidate
+
+- Added one authenticated, read-only job lifecycle inspector spanning quote, CRM/Commercial job identity, reconciled deposit event evidence, scheduling/procurement and completion/finance. Previously these existed as separate endpoints without one consistent job identity and next-action result.
+- Fail-closed guards prevent ambiguous job, execution, quote, client or opportunity linking. The inspector refuses to equate Payment_Events evidence with independent provider clearance, scheduling readiness with a real Amelia/Calendar booking, or owner-review readiness with closure and payment.
+- Runtime route `/v1/operator/job-lifecycle/:jobId`; new `tests/job-lifecycle.test.js` wired to Runtime P2 CI. Branch `codex/magos-unified-job-lifecycle-20261122` CODE STAGED, CI/merge PENDING. Zero customer, payment, website or supplier mutations.
+- End-to-end production lead→signed quote→bank clearance→job→procurement→field→invoice→aftercare remains not validated. No false `COMPLETE` status.

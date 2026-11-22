@@ -372,6 +372,24 @@ function createRuntimeApp({
       return res.status(503).json({error:'DEPOSIT_EVIDENCE_UNAVAILABLE'});
     }
   });
+  // Integrated, read-only lead-to-job-to-closeout transaction view.
+  // Ledger evidence is never mislabeled as independent provider settlement.
+  app.get('/v1/operator/job-lifecycle/:jobId',requireOperatorInspection,async(req,res)=>{
+    try{
+      const {inspectJobLifecycle}=require('../processor/job-lifecycle');
+      const parts=new Intl.DateTimeFormat('en-GB',{
+        timeZone:'Africa/Johannesburg',year:'numeric',month:'2-digit',day:'2-digit'
+      }).formatToParts(new Date());
+      const part=type=>parts.find(x=>x.type===type)?.value;
+      const asOf=part('year')+'-'+part('month')+'-'+part('day');
+      const result=await inspectJobLifecycle({
+        stores:getWriter().stores,jobId:req.params.jobId,asOf
+      });
+      return res.status(result.state==='REVIEW_REQUIRED'?202:200).json(result);
+    }catch{
+      return res.status(503).json({error:'JOB_LIFECYCLE_SOURCE_UNAVAILABLE'});
+    }
+  });
   app.get('/v1/operator/scheduling-readiness/:jobId',requireOperatorInspection,async(req,res)=>{
     try {
       const {inspectSchedulingReadiness}=require('../processor/scheduling-readiness');
