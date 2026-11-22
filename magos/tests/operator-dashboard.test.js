@@ -162,3 +162,46 @@ test('explicit website-form origin is inbound but unsupported provenance remains
  assert.deepEqual(result.departments.clients.records.map(r=>r.id),['WEB-1']);
  assert.deepEqual(result.departments.provenance.records.map(r=>r.id),['IMPORT-1']);
 });
+
+test('conversion source groups are available in existing operator response with actionable exception records',async()=>{
+ const baseline=makeStores();
+ const clientRows=[
+  {crm_id:'C-OUT',company:'Outbound company',lead_direction:'OUTBOUND',
+   record_origin:'SCRAPER',acquisition_source:'OUTBOUND_PROSPECTING'},
+  {crm_id:'C-IN',company:'Inbound customer',lead_direction:'INBOUND',
+   record_origin:'WEBSITE_FORM',acquisition_source:'WEBSITE'}
+ ];
+ const opportunityRows=[
+  {opportunity_id:'OP-OUT',client_crm_id:'C-OUT',job_id:'J-OUT',job_status:'IN_PROGRESS'},
+  {opportunity_id:'OP-IN',client_crm_id:'C-IN',job_id:''}
+ ];
+ const quoteRows=[
+  {quote_id:'Q-OUT',opportunity_id:'OP-OUT','Quote Status':'ACCEPTED'},
+  {quote_id:'Q-IN',opportunity_id:'OP-IN','Quote Status':'SENT'}
+ ];
+ const executionRows=[{'Execution ID':'EX-OUT','Job ID':'J-OUT',opportunity_id:'OP-OUT',
+  quote_id:'Q-OUT','CRM ID':'C-OUT'}];
+ const override={CRM_Master:clientRows,Jobs_Opportunities:opportunityRows,
+  Quotes:quoteRows,'Job Execution':executionRows};
+ const stores={...baseline,crm:{readObjects:async(name,options)=>
+  name in override?override[name]:baseline.crm.readObjects(name,options)},
+  commercial:{readObjects:async(name,options)=>
+   name in override?override[name]:baseline.commercial.readObjects(name,options)}};
+ const report=await loadOperatorDashboard(stores);
+ assert.equal(report.departments.conversions.state,'LIVE');
+ assert.deepEqual(report.departments.conversions.by_source.map(r=>r.source),
+  ['OUTBOUND_SCRAPER','WEBSITE']);
+ assert.equal(report.departments.conversions.by_source[0].linked_jobs,1);
+ assert.equal(report.overview_counts.attributed_jobs,1);
+ assert.equal(report.departments.conversions.records.filter(r=>r.status==='LINKED_JOB').length,1);
+ assert.equal(report.side_effects,false);
+});
+test('every attributed-conversion exception is a selectable Command Centre detail record',async()=>{
+ const report=await loadOperatorDashboard(makeStores());
+ const items=report.attention.filter(x=>x.department==='conversions');
+ assert.ok(items.length>0);
+ for(const item of items){
+  assert.ok(report.departments.conversions.records.some(row=>row.id===item.id&&
+   row.status==='REVIEW_REQUIRED'));
+ }
+});
