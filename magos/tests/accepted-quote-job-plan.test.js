@@ -63,3 +63,27 @@ test('live LINE_CONTROL_OK value permits verified quote-to-job planning and is p
  assert.equal(r.state,'READY_FOR_GOVERNED_JOB_CREATION');
  assert.equal(r.plan.preconditions[0].expect['Line Control State'],'LINE_CONTROL_OK');
 });
+
+test('missing accepted scope and canonical CRM ID fail before P3 plan creation',async()=>{
+ for(const change of [
+  {where:'Quotes',field:'Project / Scope',value:''},
+  {where:'Jobs_Opportunities',field:'client_crm_id',value:''}
+ ]){
+  const f=fixture();
+  const original=change.where==='Quotes'?f.stores.commercial.findByKey:f.stores.crm.findByKey;
+  const store=change.where==='Quotes'?f.stores.commercial:f.stores.crm;
+  store.findByKey=async(...args)=>{
+   const result=await original(...args);
+   return args[0]===change.where&&result?.object?
+    {object:{...result.object,[change.field]:change.value}}:result;
+  };
+  const r=await planAcceptedJob({...f.args,stores:f.stores});
+  assert.equal(r.state,'REVIEW_REQUIRED');
+  assert.equal(r.reason_code,'ACCEPTED_JOB_CLIENT_OR_SCOPE_MISSING');
+  assert.equal(r.plan,undefined);
+ }
+});
+test('accepted quote scope is pinned in P3 source compare-and-match',async()=>{
+ const f=fixture();const r=await planAcceptedJob({...f.args,stores:f.stores});
+ assert.equal(r.plan.preconditions[0].expect['Project / Scope'],'Irrigation');
+});
