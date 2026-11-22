@@ -242,7 +242,7 @@
       const tr=element('tr');
       const milestone=element('td');
       milestone.append(element('strong',item.label),
-        element('small','Target '+item.target_date+' · '+item.id));
+        element('small','Proposed '+item.target_date+' '+item.target_time_local+' SAST · '+item.id));
       const gates=element('td');
       gates.append(element('strong',item.recorded_pass+'/'+item.capability_count+' PASS'));
       gates.append(element('small',item.blockers.length?
