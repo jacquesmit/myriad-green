@@ -1,5 +1,6 @@
 'use strict';
 // A read-only command-center projection, never a second source of truth.
+const {isCanonicalCustomerRfq}=require('./customer-rfq-provenance');
 const txt=v=>String(v??'').trim();
 const upper=v=>txt(v).toUpperCase();
 function projectOperations({leads=[],jobs=[],quotes=[],procurement=[],exceptions=[]}={}){
@@ -22,6 +23,7 @@ function projectOperations({leads=[],jobs=[],quotes=[],procurement=[],exceptions
     return false;
   // A bare "LEAD" / "ENQUIRY" classification does not prove that a
   // source system delivered a real customer request.
+  if(type==='RFQ')return isCanonicalCustomerRfq(r);
   if(!inboundSystems.has(system)||nonLeadTypes.has(type))return false;
   return inboundTypes.has(type)||
     (!type&&['WEBSITE','WORDPRESS','WHATSAPP','FACEBOOK','FLUENT_FORMS','AMELIA'].includes(system));
