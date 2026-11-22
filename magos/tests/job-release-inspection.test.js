@@ -24,6 +24,16 @@ test('unaccepted quote and existing job cannot be released',async()=>{
   assert.equal(r.state,'REVIEW_REQUIRED');
  }
 });
+test('LINE_CONTROL_OK accepted by planning is also accepted by job activation',async()=>{
+ const stores=fixture();const original=stores.commercial.findByKey;
+ stores.commercial.findByKey=async(...args)=>{
+  const row=await original(...args);
+  return row?.object?{object:{...row.object,'Line Control State':'LINE_CONTROL_OK'}}:row;
+ };
+ const result=await inspectJobRelease({stores,quoteId:'Q-ACCEPTED'});
+ assert.equal(result.state,'READY_FOR_EVIDENCE_REVIEW');
+ assert.equal(result.line_control_state,'LINE_CONTROL_OK');
+});
 test('authenticated job readiness HTTP endpoint accesses canonical readers only',async()=>{
  const app=createRuntimeApp({token:'secret',writerFactory:()=>({stores:fixture(),execute:async()=>{throw Error('MUST_NOT_WRITE')}})});
  const server=http.createServer(app);await new Promise(done=>server.listen(0,'127.0.0.1',done));
