@@ -45,6 +45,11 @@ test('one job report binds accepted quote, canonical job and finance without cla
  assert.equal(report.stages.find(s=>s.name==='ACCEPTED_QUOTE').state,'PASS');
  assert.equal(report.stages.find(s=>s.name==='CANONICAL_JOB').state,'PASS');
  assert.equal(report.stages.find(s=>s.name==='RECORDED_DEPOSIT').state,'EVIDENCED_ONLY');
+ assert.equal(report.stages.find(s=>s.name==='CLIENT_SIGNED_ACCEPTANCE').state,'REVIEW_REQUIRED');
+ assert.equal(report.client_acceptance.state,'REVIEW_REQUIRED');
+ assert.equal(report.client_acceptance.evidence_verified,false);
+ assert.equal(report.client_acceptance.quote_version_verified,false);
+ assert.ok(report.blockers.some(x=>x.startsWith('CLIENT_SIGNED_ACCEPTANCE:')));
  assert.equal(report.deposit.independent_bank_confirmation,false);
  assert.equal(report.production_complete,false);
  assert.equal(report.booking_authorized,false);
@@ -96,4 +101,71 @@ test('HTTP operator lifecycle endpoint is authenticated and never calls writer.e
   assert.equal(data.production_complete,false);
   assert.equal(writes,0);
  }finally{await new Promise(done=>server.close(done));}
+});
+
+test('trusted signed acceptance is separately evidenced but does not automatically release job or certify quote version',async()=>{
+ const signature=async({quote_id,opportunity_id})=>({
+  verified:true,quote_id,opportunity_id,
+  evidence_ref:'drive://signed/quote-T',
+  signer_identity:'Test signer',signed_at:'2026-11-22T08:00:00Z',
+  source_event_id:'SIGNATURE-EVENT-T'
+ });
+ const r=await inspectJobLifecycle({stores:fixture(),jobId:'JOB-T',
+  asOf:'2026-11-22',evidenceVerifier:signature});
+ assert.equal(r.stages.find(x=>x.name==='ACCEPTED_QUOTE').state,'PASS');
+ assert.equal(r.stages.find(x=>x.name==='CLIENT_SIGNED_ACCEPTANCE').state,'EVIDENCED_ONLY');
+ assert.equal(r.client_acceptance.evidence_verified,true);
+ assert.equal(r.client_acceptance.quote_version_verified,false);
+ assert.equal(r.client_acceptance.source_event_id,'SIGNATURE-EVENT-T');
+ assert.equal(r.independent_bank_confirmation,false);
+ assert.equal(r.job_close_authorized,false);
+ assert.equal(r.booking_authorized,false);
+ assert.equal(r.production_complete,false);
+ assert.deepEqual(r.writes,[]);
+});
+test('wrong quotation identity, untrusted signed acceptance and provider failures fail closed',async()=>{
+ for(const evidenceVerifier of [
+  async({opportunity_id})=>({verified:true,quote_id:'Q-WRONG',opportunity_id,
+   evidence_ref:'drive://signed/x',signer_identity:'Someone',
+   signed_at:'2026-11-22T08:00:00Z',source_event_id:'SIGNED-WRONG'}),
+  async()=>({verified:false}),
+  async()=>{throw Error('provider unavailable');}
+ ]){
+  const r=await inspectJobLifecycle({stores:fixture(),jobId:'JOB-T',
+   asOf:'2026-11-22',evidenceVerifier});
+  assert.equal(r.stages.find(x=>x.name==='CLIENT_SIGNED_ACCEPTANCE').state,'REVIEW_REQUIRED');
+  assert.equal(r.client_acceptance.evidence_verified,false);
+  assert.equal(r.production_complete,false);
+  assert.deepEqual(r.writes,[]);
+ }
+});
+test('ledger ACCEPTED quote with mismatched scope cannot be elevated by otherwise valid signature',async()=>{
+ let verificationCalls=0;
+ const r=await inspectJobLifecycle({stores:fixture({
+   executionRow:{...execution,'Accepted Scope':'UNAPPROVED REPLACEMENT'}
+  }),jobId:'JOB-T',asOf:'2026-11-22',
+  evidenceVerifier:async()=>{verificationCalls++;return {verified:true};}
+ });
+ assert.equal(verificationCalls,0);
+ assert.equal(r.client_acceptance.evidence_verified,false);
+ assert.equal(r.stages.find(x=>x.name==='CLIENT_SIGNED_ACCEPTANCE').state,'REVIEW_REQUIRED');
+ assert.equal(r.stages.find(x=>x.name==='ACCEPTED_QUOTE').state,'REVIEW_REQUIRED');
+});
+test('HTTP lifecycle with recorded accepted quote and no trusted verifier cannot claim signed acceptance',async()=>{
+ const app=createRuntimeApp({
+  token:'writer-secret',operatorReadToken:'operator-secret',
+  writerFactory:()=>({stores:fixture(),execute:async()=>{throw Error('NO_WRITES')}})
+ });
+ const server=http.createServer(app);
+ await new Promise(ok=>server.listen(0,'127.0.0.1',ok));
+ try{
+  const result=await fetch('http://127.0.0.1:'+server.address().port+'/v1/operator/job-lifecycle/JOB-T',{
+   headers:{'X-MAGOS-Operator-Token':'operator-secret'}
+  });
+  assert.equal(result.status,202);
+  const report=await result.json();
+  assert.equal(report.client_acceptance.evidence_verified,false);
+  assert.equal(report.stages.find(x=>x.name==='CLIENT_SIGNED_ACCEPTANCE').state,'REVIEW_REQUIRED');
+  assert.equal(report.production_complete,false);
+ }finally{await new Promise(ok=>server.close(ok));}
 });
