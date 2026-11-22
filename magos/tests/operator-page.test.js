@@ -156,3 +156,10 @@ test('frontend includes scope variation review and retains independent job close
  assert.match(source,/Simpro\/Fergus benchmark/);
  assert.match(source,/Inspect complete job closure/);
 });
+
+test('job details link directly to the existing scoped variation workspace',()=>{
+ const source=fs.readFileSync(require.resolve('../runtime/operator.js'),'utf8');
+ assert.match(source,/View job scope variations/);
+ assert.match(source,/show\('variations',item\.details\.job_id\)/);
+ assert.doesNotMatch(source,/localStorage|sessionStorage/);
+});
