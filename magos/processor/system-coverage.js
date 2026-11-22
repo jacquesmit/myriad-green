@@ -49,11 +49,11 @@ class SystemCoverageReader {
       else if(key==='FAIL')counts.fail++;
       else counts.other++;
     }
-    const localDate=new Intl.DateTimeFormat('en-CA',{
+    const parts=new Intl.DateTimeFormat('en-GB',{
       timeZone:'Africa/Johannesburg',year:'numeric',month:'2-digit',day:'2-digit'
-    }).format(new Date());
-    const asOf=/^\d{4}-\d{2}-\d{2}$/.test(localDate)?
-      localDate:new Date().toISOString().slice(0,10);
+    }).formatToParts(new Date());
+    const part=type=>parts.find(p=>p.type===type)?.value;
+    const asOf=part('year')+'-'+part('month')+'-'+part('day');
     const delivery=buildDeliveryRoadmap({capabilities,asOf});
     return {
       schema_version:'MAGOS_SYSTEM_COVERAGE_V1',
