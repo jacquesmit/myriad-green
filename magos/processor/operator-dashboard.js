@@ -2,6 +2,7 @@
 
 const { projectOperations } = require('./operator-snapshot');
 const { classifyCrmProvenance } = require('./lead-provenance');
+const { inspectAttributedConversions } = require('./attributed-conversions');
 const { calculateExpected } = require('./payment-control-audit');
 const { DEFAULT_IDS } = require('../writer/transaction-writer');
 
@@ -205,6 +206,45 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
         departments.provenance={state:'UNAVAILABLE',source};
       }
     }
+  }
+  // The funnel is one read-only join of already fetched authoritative tables.
+  // If any required register failed, no partial/zero conversion claim is shown.
+  const conversionSource={name:'CRM_Master / Jobs_Opportunities / Quotes / Job Execution',
+    url:sourceLink(stores.crm?.spreadsheetId || DEFAULT_IDS.crm,1621110075)};
+  try{
+    const conversion=inspectAttributedConversions({
+      clients:rows('clients'),opportunities:rows('jobs'),
+      quotes:rows('quotes'),executions:rows('evidence')
+    });
+    departments.conversions={
+      state:conversion.state==='UNAVAILABLE'?'UNAVAILABLE':
+        conversion.state==='REVIEW_REQUIRED'?'PARTIAL':'LIVE',
+      records:conversion.records.map(record=>({
+        id:record.id,title:record.source,status:record.status,
+        next_action:record.next_action,
+        details:{
+          'Client CRM ID':record.client_crm_id,
+          'Origin':record.original_origin,
+          'Provenance':record.provenance,
+          'Quoted':record.quoted?'YES':'NO',
+          'Accepted':record.accepted?'YES':'NO',
+          'Verified job link':record.linked_job?'YES':'NO',
+          'Job ID':record.job_id,
+          'Payment':record.payment_status,
+          'Profit':record.profit_status
+        }
+      })),
+      source:conversionSource,exception_count:conversion.exceptions.length,
+      by_source:conversion.by_source
+    };
+    overviewCounts.attributed_jobs=conversion.counts.linked_jobs;
+    overviewCounts.attribution_exceptions=conversion.counts.source_exceptions;
+    attention.push(...conversion.exceptions.slice(0,100).map(reason=>({
+      type:'EXCEPTION',department:'conversions',id:reason,
+      next_action:'Reconcile canonical CRM, opportunity, quotation and execution IDs'
+    })));
+  }catch{
+    departments.conversions={state:'UNAVAILABLE',source:conversionSource};
   }
   return {
     schema_version: 'MAGOS_OPERATOR_DASHBOARD/V1',
