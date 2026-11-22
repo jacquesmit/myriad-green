@@ -403,7 +403,8 @@ function createRuntimeApp({
       const part=type=>parts.find(x=>x.type===type)?.value;
       const asOf=part('year')+'-'+part('month')+'-'+part('day');
       const result=await inspectJobLifecycle({
-        stores:getWriter().stores,jobId:req.params.jobId,asOf
+        stores:getWriter().stores,jobId:req.params.jobId,asOf,
+        evidenceVerifier:getSignedAcceptanceVerifier()
       });
       return res.status(result.state==='REVIEW_REQUIRED'?202:200).json(result);
     }catch{
