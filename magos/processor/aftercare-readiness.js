@@ -161,6 +161,22 @@ async function inspectJobAftercare({stores,jobId,asOf,maintenancePolicy=[],verif
  // authority. If absent/unavailable, the assessment fails closed per asset.
  const linkedAssets=assets.filter(a=>value(a.job_id)===jobId);
  const serviceReceipts=[];
+ // The live Supplier Installed_Parts tab does not yet have last_service_*
+ // columns, and Service_History is not yet provisioned. Do not fabricate
+ // records. Read the canonical service register only for claimed servicing.
+ if(typeof verifyServiceReceipt!=='function' &&
+    linkedAssets.some(a=>value(a.last_service_date)||value(a.last_service_job_id)||
+      value(a.last_service_evidence))){
+   try{
+     const historyRows=await stores.supplier.readObjects('Service_History',{maxRows:null});
+     const {verifyCanonicalServiceReceipts}=require('./service-history-verifier');
+     serviceReceipts.push(...verifyCanonicalServiceReceipts({
+       job:jj[0],assets:linkedAssets,executionRows:executions,historyRows
+     }));
+   }catch(_error){
+     // Missing tab, permissions, changed headers or provider error => no receipts.
+   }
+ }
  if(typeof verifyServiceReceipt==='function'){
    for(const asset of linkedAssets){
      if(!value(asset.last_service_date) && !value(asset.last_service_job_id) &&
