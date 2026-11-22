@@ -181,3 +181,11 @@ test('real frontend renders read-only related work shortcuts using server-derive
  assert.match(css,/\.related-actions/);
  assert.doesNotMatch(source,/localStorage|sessionStorage/);
 });
+
+test('completed job history remains discoverable alongside separate active job KPI',()=>{
+ const source=fs.readFileSync(require.resolve('../runtime/operator.js'),'utf8');
+ assert.match(source,/Jobs on record/);
+ assert.match(source,/including completed and historical work/);
+ assert.match(source,/Active jobs KPI excludes completed and cancelled jobs/);
+ assert.match(source,/Inspect complete job closure/);
+});
