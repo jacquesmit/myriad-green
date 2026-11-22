@@ -73,3 +73,16 @@ test('coverage endpoint exposes milestone dates but never certifies launch from 
  assert.equal(r.delivery.milestones[0].independently_validated,false);
  assert.equal(r.production_complete,false);
 });
+
+test('even 22 source PASS capability rows do not certify live production',async()=>{
+ const all=Array.from({length:22},(_,i)=>({
+  ...rows[0], 'Capability ID':'CAP-'+String(i+1).padStart(3,'0'),
+  'Current State':'PASS'
+ }));
+ const report=await new SystemCoverageReader({store:{readObjects:async()=>all}}).read();
+ assert.equal(report.counts.pass,22);
+ assert.equal(report.capability_gates_passed,true);
+ assert.equal(report.production_complete,false);
+ assert.equal(report.production_acceptance,'NOT_VERIFIED');
+ assert.equal(report.delivery.counts.validated,0);
+});
