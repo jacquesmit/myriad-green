@@ -119,7 +119,9 @@ async function inspectJobLifecycle({stores,jobId,asOf,evidenceVerifier}={}){
    evidence_verified:signed,
    source_event_id:signed?signedAcceptance.source_event_id:null,
    evidence_ref:signed?signedAcceptance.evidence_ref:null,
-   quote_version_verified:false,
+   quote_version_verified:signed&&signedAcceptance.quote_version_verified===true,
+   quote_version:signed&&signedAcceptance.quote_version_verified===true?
+    signedAcceptance.quote_version:null,
    independent_owner_release:false
   },
   deposit:{state:deposit.state,independent_bank_confirmation:false},
