@@ -424,3 +424,11 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - Live read-only spreadsheet headers confirmed: Supplier `Installed_Parts` has no last-service linkage columns and no `Service_History` sheet; Commercial `Job Execution` has job/CRM/completion state/sign-off but not exact installed-part service dates. Prior speculative fields cannot be treated as operating production columns.
 - Added `service-history-verifier.js` and integration into aftercare inspection, with canonical service history plus independent Commercial execution join and human reviewed receipt. Missing/duplicated/unapproved/mismatched/unfinished records => no reset. New tests and GitHub runtime workflow wiring; both Markdown records updated.
 - **Next explicit migration:** define and authorize Service_History canonical schema in Writer_Schema_Registry/Data_Ownership_Matrix and provision via controlled release, then verify actual real service evidence. No Sheets changes in this PR, no automatic review outreach, no client booking. CODE candidate; CI/merge/live acceptance PENDING.
+
+
+### 22 November 2026 — Verified aftercare merges and HOSTAFRICA ticket
+
+- PR #70 merged `3b3883281d28fbea1c52926d1caf28b0c976d363`, exact head `7037df7de9a479bb5d3c5dd9a7590a71d01ed975`, three CI workflows PASS.
+- PR #71 merged `ff420aecb0d6a7c514ee474e880d09deb239430a`, exact head `5b004afa9d749f4b185f9213e470db93d9babee4`, three CI workflows PASS. Source contract includes unique reviewed Service_History plus completed signed-off Commercial Job Execution. Failure/missing canonical tab refuses to attest service.
+- Connected Sheets read-only header evidence established actual schema migration dependency: 23-column Supplier Installed_Parts has no last-service fields; Supplier Service_History tab not present; Commercial Job Execution lacks installed-part and service completion date. Code integration is staged in main but real live service-history intake is **NOT** operational, no source edits or customer actions performed.
+- HOSTAFRICA new ticket #3957866 acknowledgment received. Read-only checkout and running SHA, Git fetch ability, bank settlement callback, signature bridge, full golden lifecycle, and backup/restore signoff remain open. **MAGOS NOT COMPLETE**.
