@@ -175,6 +175,39 @@
     paginate($('record-pages'), page, matches.length, index => { page = index; hideDetail(); renderRecords(); });
   }
 
+  function renderDeliveryRoadmap() {
+    const panel=$('delivery');
+    const roadmap=coverage?.delivery;
+    panel.hidden=department!=='system'||!roadmap;
+    if(panel.hidden)return;
+    if(roadmap.schema_version!=='MAGOS_DELIVERY_ROADMAP_V1'||
+       !Array.isArray(roadmap.milestones)||roadmap.side_effects!==false) {
+      panel.hidden=true;
+      return;
+    }
+    $('delivery-summary').textContent=[
+      roadmap.as_of+' (Johannesburg)',
+      'Planning targets, not approved deadlines',
+      (roadmap.counts?.missed||0)+' overdue targets',
+      'No production completion certified'
+    ].join(' · ');
+    $('delivery-rows').replaceChildren(...roadmap.milestones.map(item=>{
+      const tr=element('tr');
+      const milestone=element('td');
+      milestone.append(element('strong',item.label),
+        element('small','Target '+item.target_date+' · '+item.id));
+      const gates=element('td');
+      gates.append(element('strong',item.recorded_pass+'/'+item.capability_count+' PASS'));
+      gates.append(element('small',item.blockers.length?
+        'Open: '+item.blockers.join(', '):'Source gates passed, live validation still required'));
+      const next=element('td');
+      next.append(element('strong',item.state.replaceAll('_',' ')));
+      next.append(element('small',item.next_action));
+      tr.append(milestone,gates,next);
+      return tr;
+    }));
+  }
+
   function renderView() {
     renderNavigation();
     $('overview').hidden = department !== 'overview';
@@ -182,6 +215,7 @@
     if (department === 'overview') return renderOverview();
     $('department-title').textContent = labels[department];
     $('department-note').textContent = descriptions[department];
+    renderDeliveryRoadmap();
     $('directory').hidden = department !== 'registers';
     $('records').hidden = department === 'registers';
     const source = $('source');
@@ -380,6 +414,7 @@
         throw new Error('INVALID_COVERAGE_RESPONSE');
       }
       coverage={
+        delivery:result.delivery,
         state:'LIVE',
         records:result.capabilities.map(cap=>({
           id:cap.id,title:cap.name,status:cap.state,

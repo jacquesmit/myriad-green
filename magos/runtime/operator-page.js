@@ -42,6 +42,16 @@ function operatorPage() {
         <div><p class="eyebrow">DEPARTMENT WORKSPACE</p><h2 id="department-title"></h2><p id="department-note"></p></div>
         <a id="source" class="button secondary" target="_blank" rel="noopener noreferrer" hidden>Open register ↗</a>
       </div>
+      <section id="delivery" class="panel" aria-label="MAGOS delivery targets and completion gates" hidden>
+        <div class="panel-head"><div><h3>Delivery and rollout tracker</h3>
+          <p>Proposed dates, not delivery promises. Progress is read from authoritative capability gates.</p>
+          <p id="delivery-summary" role="status"></p></div></div>
+        <div class="table-wrap"><table><thead><tr>
+          <th scope="col">Milestone / proposed target</th>
+          <th scope="col">Recorded gates</th>
+          <th scope="col">Status / next action</th>
+        </tr></thead><tbody id="delivery-rows"></tbody></table></div>
+      </section>
       <div id="directory" class="directory" hidden></div>
       <div id="records" class="panel" hidden>
         <div class="panel-head">

@@ -10,6 +10,7 @@ const READ_ONLY_SCOPE='https://www.googleapis.com/auth/spreadsheets.readonly';
 const REQUIRED_HEADERS=['Capability ID','Business Capability','Current State','Implementation State',
   'Completion Gate','Primary Gap','Priority','Next Action','Do Not Mark Complete Until'];
 const truth=v=>String(v??'').trim();
+const {buildDeliveryRoadmap}=require('./delivery-roadmap');
 
 class SystemCoverageReader {
   constructor({store}={}) {
@@ -48,14 +49,24 @@ class SystemCoverageReader {
       else if(key==='FAIL')counts.fail++;
       else counts.other++;
     }
+    const parts=new Intl.DateTimeFormat('en-GB',{
+      timeZone:'Africa/Johannesburg',year:'numeric',month:'2-digit',day:'2-digit'
+    }).formatToParts(new Date());
+    const part=type=>parts.find(p=>p.type===type)?.value;
+    const asOf=part('year')+'-'+part('month')+'-'+part('day');
+    const delivery=buildDeliveryRoadmap({capabilities,asOf});
     return {
       schema_version:'MAGOS_SYSTEM_COVERAGE_V1',
       source:'CONTROL_HUB_BUSINESS_CAPABILITY_MAP',
       authority:'READ_ONLY_PROJECTION',
       checked_at:new Date().toISOString(),
-      counts,capabilities,
+      counts,capabilities,delivery,
       entire_business_scope:true,
-      production_complete:capabilities.length>0 && counts.pass===counts.total,
+      // Source capability labels are necessary, never sufficient for launch.
+      // Production requires independently verified host/real-provider gates.
+      capability_gates_passed:capabilities.length>0 && counts.pass===counts.total,
+      production_complete:false,
+      production_acceptance:'NOT_VERIFIED',
       side_effects:false
     };
   }
