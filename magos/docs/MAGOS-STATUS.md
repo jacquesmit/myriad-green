@@ -410,3 +410,10 @@ Three independently merged/tested development changes now exist on GitHub `main`
 
 - Aftercare recurrence source and regressions merged to `main`, SHA `c64e47ff7942b05c2920078a8ca0ee655ed86bf4`. Exact tested head `55e3ecf5b057c3f27c438cd373ca3efb1ab904c6`; Runtime P2 #201 PASS, Document Extract #256 PASS, Evolving Status Gate #16 PASS.
 - Implementation corrects source-level recurrence interval calculations only. LAST SERVICE recorded identifiers and text evidence are NOT independent proof until real service Job Execution and attached evidence are reconciled; emitted draft candidate is not an appointment, client communication or warranty decision. HOSTAFRICA hosted version and end-to-end lifecycle remain unverified.
+
+
+## 22 November 2026 — Aftercare independent service authority candidate
+
+- Engineering defect in the last merged recurrence calculation: three asset-row values were treated as "verified" despite no independent corroboration. Branch `codex/magos-aftercare-independent-service-authority-20261122` changes the assessment to require exactly matched canonical Job Execution service receipts, with independently configured verifier function and fail-closed source failures. No real service event is fabricated.
+- Regression tests: valid receipt, missing receipt, wrong client/date/source/evidence, duplicate receipts, callback exception. The existing canonical installed-date schedule remains read-only and tentative.
+- **Evidence status:** CODE STAGED, CI/merge PENDING; real provider verifier/production data validation PENDING. HOSTAFRICA running SHA, WordPress signature flow, bank integration and all other production gates remain open.

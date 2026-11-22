@@ -18,7 +18,7 @@ const addMonths=(date,months)=>{
  const last=new Date(Date.UTC(destYear,destMonth+1,0)).getUTCDate();
  return new Date(Date.UTC(destYear,destMonth,Math.min(d,last))).toISOString().slice(0,10);
 };
-function assessAftercare({job,execution,assets=[],asOf,maintenancePolicy=[]}={}){
+function assessAftercare({job,execution,assets=[],asOf,maintenancePolicy=[],serviceReceipts=[]}={}){
  const issues=[],work=[];
  const jobId=value(job?.job_id);
  if(!jobId||value(execution?.['Job ID'])!==jobId)
@@ -80,6 +80,23 @@ function assessAftercare({job,execution,assets=[],asOf,maintenancePolicy=[]}={})
        issues.push('LAST_SERVICE_EVIDENCE_UNVERIFIED:'+id);
        continue;
      }
+     // This receipt is returned by the independent server-side Job Execution
+     // verifier; never infer verification from asset-controlled columns alone.
+     if(serviceDate){
+       const matches=serviceReceipts.filter(r=>
+         value(r.installed_part_id)===id &&
+         value(r.service_job_id)===value(asset.last_service_job_id));
+       const receipt=matches[0];
+       if(matches.length!==1 || upper(receipt?.state)!=='VERIFIED' ||
+          value(receipt?.service_date)!==serviceDate ||
+          value(receipt?.evidence_ref)!==value(asset.last_service_evidence) ||
+          value(receipt?.client_id)!==value(job?.client_crm_id) ||
+          value(receipt?.property_id)!==value(job?.property_id) ||
+          upper(receipt?.source)!=='CANONICAL_JOB_EXECUTION'){
+         issues.push('INDEPENDENT_SERVICE_RECEIPT_NOT_VERIFIED:'+id);
+         continue;
+       }
+     }
      const anchor=serviceDate||installed;
      // Calculate from the same anchor to avoid end-of-month drift.
      // Never label an overdue service as already completed.
@@ -122,7 +139,7 @@ function assessAftercare({job,execution,assets=[],asOf,maintenancePolicy=[]}={})
    writes:[],side_effects:false
  };
 }
-async function inspectJobAftercare({stores,jobId,asOf,maintenancePolicy=[]}={}){
+async function inspectJobAftercare({stores,jobId,asOf,maintenancePolicy=[],verifyServiceReceipt}={}){
  if(!value(jobId)||!stores?.crm?.readObjects||!stores?.commercial?.readObjects||
     !stores?.supplier?.readObjects){
    return {state:'REVIEW_REQUIRED',issues:['CANONICAL_AFTERCARE_READERS_MISSING'],
@@ -140,6 +157,30 @@ async function inspectJobAftercare({stores,jobId,asOf,maintenancePolicy=[]}={}){
    return {state:'REVIEW_REQUIRED',issues:['JOB_EXECUTION_ID_NOT_UNIQUE_OR_MISSING'],
     writes:[],side_effects:false};
  }
- return assessAftercare({job:jj[0],execution:ee[0],assets,asOf,maintenancePolicy});
+ // External service proof must be checked by an independently configured
+ // authority. If absent/unavailable, the assessment fails closed per asset.
+ const linkedAssets=assets.filter(a=>value(a.job_id)===jobId);
+ const serviceReceipts=[];
+ if(typeof verifyServiceReceipt==='function'){
+   for(const asset of linkedAssets){
+     if(!value(asset.last_service_date) && !value(asset.last_service_job_id) &&
+        !value(asset.last_service_evidence))continue;
+     try{
+       const receipt=await verifyServiceReceipt({
+         installed_part_id:value(asset.installed_part_id),
+         service_job_id:value(asset.last_service_job_id),
+         service_date:value(asset.last_service_date),
+         evidence_ref:value(asset.last_service_evidence),
+         client_id:value(jj[0].client_crm_id),
+         property_id:value(jj[0].property_id)
+       });
+       if(receipt && typeof receipt==='object' && !Array.isArray(receipt))
+         serviceReceipts.push(receipt);
+     }catch(_error){
+       // Never downgrade an unavailable authority to asset self-attestation.
+     }
+   }
+ }
+ return assessAftercare({job:jj[0],execution:ee[0],assets,asOf,maintenancePolicy,serviceReceipts});
 }
 module.exports={assessAftercare,inspectJobAftercare,dateOnly,addMonths};
