@@ -88,3 +88,60 @@ test('signing-link governance endpoint requires its own credential and never wri
   assert.equal(writes,0);
  }finally{await new Promise(resolve=>server.close(resolve));}
 });
+
+test('signing diagnostics identify both missing published page and reviewed client bridge independently',async()=>{
+ const request=async url=>({status:200,json:async()=>{
+  if(url.includes('/wp/v2/pages?'))return [{id:9481,status:'draft'}];
+  return {routes:{'/mgos/v1/quote-acceptance/verify':{}}};
+ }});
+ const {inspectSigningReadiness}=require('../processor/signed-quote-link');
+ const report=await inspectSigningReadiness({request});
+ assert.equal(report.state,'BLOCKED');
+ assert.deepEqual(report.checks.map(c=>c.reason_code),[
+  'CLIENT_SIGNING_PAGE_NOT_PUBLISHED_OR_UNAVAILABLE',
+  'REVIEWED_CLIENT_SIGNATURE_BRIDGE_NOT_REGISTERED_OR_UNAVAILABLE'
+ ]);
+ assert.equal(report.client_link_authorized,false);
+ assert.equal(report.customer_signature_verified,false);
+ assert.deepEqual(report.writes,[]);
+});
+test('both signing prerequisites make a controlled test candidate, not a signed customer receipt',async()=>{
+ const request=async url=>({status:200,json:async()=>url.includes('/pages?')?
+  [{id:9481,status:'publish'}]:
+  {routes:{'/mgos/v1/quote-acceptance/verify-v2':{methods:['GET']}}}});
+ const {inspectSigningReadiness}=require('../processor/signed-quote-link');
+ const report=await inspectSigningReadiness({request});
+ assert.equal(report.state,'READY_FOR_CONTROLLED_SIGNING_TEST');
+ assert.equal(report.customer_signature_verified,false);
+ assert.equal(report.job_creation_authorized,false);
+ assert.equal(report.bank_clearance_verified,false);
+ assert.equal(report.side_effects,false);
+});
+test('signing readiness endpoint is protected, read only and does not expose business records',async()=>{
+ let reads=0,writes=0;
+ const app=createRuntimeApp({
+  token:'private-writer',operatorReadToken:'operator-view',
+  signingReadinessInspector:async()=>({
+   schema_version:'MAGOS_CLIENT_SIGNING_READINESS_V1',state:'BLOCKED',
+   checks:[{name:'CLIENT_SIGNING_PAGE',state:'BLOCKED',
+    reason_code:'CLIENT_SIGNING_PAGE_NOT_PUBLISHED_OR_UNAVAILABLE'}],
+   writes:[],side_effects:false
+  }),
+  writerFactory:()=>{reads++;return {execute:async()=>{writes++;}}}
+ });
+ const server=http.createServer(app);
+ await new Promise(ok=>server.listen(0,'127.0.0.1',ok));
+ try{
+  const url='http://127.0.0.1:'+server.address().port+
+   '/v1/operator/client-signing-readiness';
+  assert.equal((await fetch(url)).status,401);
+  assert.equal((await fetch(url,{headers:{'X-MAGOS-Operator-Token':'private-writer'}})).status,401);
+  const response=await fetch(url,{headers:{'X-MAGOS-Operator-Token':'operator-view'}});
+  assert.equal(response.status,202);
+  const report=await response.json();
+  assert.equal(report.state,'BLOCKED');
+  assert.equal(report.customer_signature_verified,undefined);
+  assert.equal(writes,0);
+  assert.equal(reads,0);
+ }finally{await new Promise(ok=>server.close(ok));}
+});
