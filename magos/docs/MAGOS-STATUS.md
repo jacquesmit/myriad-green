@@ -584,3 +584,10 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - Added tests in `operator-crosslinks.test.js`, `operator-dashboard.test.js`, `operator-page.test.js`, and Runtime P2 CI wiring. Candidate branch `codex/magos-canonical-cross-record-navigation-20261122`; CI/merge pending. Hosted running SHA and user browser acceptance remain NOT VERIFIED; overall 22 capabilities and 16 production release gates unchanged.
 
 - Initial PR CI exposed that source-linked accepted quotations were absent from the Quotes workspace because the original action queue projection only returns pending/unconverted quotes. Corrected the **underlying real dashboard**: preserve historical/accepted-linked quote records for owner search and exact contextual job links while retaining pending KPI semantics. Additional test added; requires fresh CI before merge.
+
+
+## 22 November 2026 — Preserve completed jobs for closeout, WPVibe verified read-only
+
+- Fixed operational usability defect: Jobs workspace dropped completed jobs because it used the active-only projection. Now uniquely identified job records stay available for closeout, warranties, evidence and financial review while the Active jobs KPI remains active-only and **Jobs on record** counts recorded jobs. Historical or cancelled status is shown verbatim and is **not** evidence of paid or independently verified close.
+- Added tests for completed work, active-only KPI, cancelled history, unconverted opportunities and duplicate-key quarantine. Branch `codex/magos-completed-job-closeout-workspace-20261122` pending CI/merge. No customer, financial or runtime source writes.
+- WPVibe verified live WordPress administrative read connection and existing Amelia + quote-acceptance plugins; a WordPress plugin being installed does not demonstrate that HostAfrica Node runtime is deployed or that signed quote → cleared deposit → execution is accepted. No WordPress shop changes. Whole-system production status unchanged.
