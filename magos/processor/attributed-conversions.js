@@ -25,7 +25,7 @@ function inspectAttributedConversions({clients,opportunities,quotes,executions}=
  const executionIdx=index(executions,'Execution ID');
  const exceptions=[...clientIdx.invalid,...opportunityIdx.invalid,
    ...quoteIdx.invalid,...executionIdx.invalid];
- const byOpportunity=new Map(),quotesByOpportunity=new Map(),executionsByJob=new Map();
+ const quotesByOpportunity=new Map(),executionsByJob=new Map(),jobOwner=new Map();
  for(const row of quoteIdx.found.values()){
   const opportunity=v(row.opportunity_id);
   if(!opportunity){exceptions.push('QUOTE_OPPORTUNITY_MISSING:'+v(row.quote_id));continue;}
@@ -53,7 +53,8 @@ function inspectAttributedConversions({clients,opportunities,quotes,executions}=
   const provenance=classifyCrmProvenance(client);
   const source=provenance.kind==='PROVENANCE_REVIEW'?'UNKNOWN':
     provenance.kind==='OUTBOUND_PROSPECT'||provenance.kind==='CONVERTED_OUTBOUND'?
-     'OUTBOUND_SCRAPER':up(client.acquisition_source)||'UNKNOWN';
+     (up(client.record_origin)==='SCRAPER'||up(client.acquisition_source)==='OUTBOUND_PROSPECTING'?'OUTBOUND_SCRAPER':'OUTBOUND_OTHER'):
+     up(client.acquisition_source)||'UNKNOWN';
   const quoteMatches=quotesByOpportunity.get(opportunity)||[];
   const validQuotes=quoteMatches.filter(q=>v(q.opportunity_id)===opportunity);
   const quoted=validQuotes.length>0;
@@ -63,8 +64,15 @@ function inspectAttributedConversions({clients,opportunities,quotes,executions}=
   const execution=executionsForJob.length===1?executionsForJob[0]:null;
   const matchingQuotes=validQuotes.filter(q=>up(q['Quote Status'])==='ACCEPTED' &&
    v(execution?.quote_id)===v(q.quote_id));
-  const linkedJob=!!job&&executionsForJob.length===1&&matchingQuotes.length===1&&
+  let linkedJob=!!job&&executionsForJob.length===1&&matchingQuotes.length===1&&
    v(execution.opportunity_id)===opportunity&&v(execution['CRM ID'])===crm;
+  if(job&&jobOwner.has(job)){
+   exceptions.push('JOB_ID_REUSED_ACROSS_OPPORTUNITIES:'+job);
+   linkedJob=false;
+   const prior=records.find(r=>r.id===jobOwner.get(job));
+   if(prior){prior.linked_job=false;prior.status='REVIEW_REQUIRED';
+    prior.next_action='Reconcile shared Job ID across canonical opportunities';}
+  } else if(job)jobOwner.set(job,opportunity);
   if(job&&!linkedJob)exceptions.push('JOB_LINK_UNVERIFIED:'+opportunity);
   if(executionsForJob.length>1)exceptions.push('DUPLICATE_JOB_EXECUTION:'+job);
   if(accepted&&matchingQuotes.length>1)exceptions.push('AMBIGUOUS_ACCEPTED_QUOTE:'+opportunity);
@@ -87,14 +95,15 @@ function inspectAttributedConversions({clients,opportunities,quotes,executions}=
     quoted&&!accepted?'Review quotation follow-up':'Qualify opportunity and confirm next commercial step',
    payment_status:'NOT_VERIFIED',profit_status:'NOT_VERIFIED'
   });
-  byOpportunity.set(opportunity,true);
  }
  return {schema_version:'MAGOS_ATTRIBUTED_CONVERSION_V1',
   state:exceptions.length?'REVIEW_REQUIRED':'READ_ONLY_ATTRIBUTION',
   counts:{opportunities:records.length,quoted:records.filter(r=>r.quoted).length,
    accepted:records.filter(r=>r.accepted).length,linked_jobs:records.filter(r=>r.linked_job).length,
    source_exceptions:exceptions.length},
-  by_source:[...sourceSummary.values()].sort((a,b)=>a.source.localeCompare(b.source)),
+  by_source:[...sourceSummary.values()].map(group=>({
+   ...group,linked_jobs:records.filter(r=>r.source===group.source&&r.linked_job).length
+  })).sort((a,b)=>a.source.localeCompare(b.source)),
   records,exceptions:[...new Set(exceptions)],
   payment_authorized:false,revenue_verified:false,
   writes:[],side_effects:false};
