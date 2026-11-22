@@ -81,3 +81,45 @@ test('operator frontend renders live capability-backed delivery targets without 
  assert.match(source,/item\.blockers/);
  assert.doesNotMatch(source,/localStorage|sessionStorage/);
 });
+
+test('operator deployment fingerprint is independent of privileged writer auth',async()=>{
+ const sha='a'.repeat(40),other='b'.repeat(40);
+ const make=(startup,declared)=>createRuntimeApp({
+  token:'runtime-private',operatorReadToken:'operator-read',
+  deployedCommitSha:declared,startupGitStateReader:()=>startup,
+  writerFactory:()=>{throw Error('DEPLOYMENT_MUST_NOT_READ_BUSINESS_DATA')}
+ });
+ for(const [state,declared,status,expected] of [
+  [{sha,dirty:false},sha,200,'PROCESS_START_GIT_MATCH'],
+  [{sha:other,dirty:false},sha,202,'NOT_VERIFIED'],
+  [{sha,dirty:true},sha,202,'NOT_VERIFIED'],
+  [{sha,dirty:false},undefined,202,'NOT_VERIFIED']
+ ]){
+  const server=http.createServer(make(state,declared));
+  await new Promise(done=>server.listen(0,'127.0.0.1',done));
+  try{
+   const url='http://127.0.0.1:'+server.address().port+'/v1/operator/deployment';
+   assert.equal((await fetch(url)).status,401);
+   const denied=await fetch(url,{headers:{'X-MAGOS-Operator-Token':'runtime-private'}});
+   assert.equal(denied.status,401);
+   const response=await fetch(url,{headers:{'X-MAGOS-Operator-Token':'operator-read'}});
+   assert.equal(response.status,status);
+   const result=await response.json();
+   assert.equal(result.status,expected);
+   assert.equal(result.commit_sha,status===200?sha:null);
+   assert.equal(result.production_complete,false);
+   assert.equal(result.production_business_acceptance,'NOT_VERIFIED');
+   assert.deepEqual(result.writes,[]);
+  }finally{await new Promise(done=>server.close(done));}
+ }
+});
+test('operator frontend shows fingerprint after unlock and clears it on lock',()=>{
+ const html=operatorPage();
+ const script=fs.readFileSync(require.resolve('../runtime/operator.js'),'utf8');
+ assert.match(html,/id="deployment"/);
+ assert.match(script,/\/v1\/operator\/deployment/);
+ assert.match(script,/void loadDeploymentIdentity\(\)/);
+ assert.match(script,/\$\('deployment'\)\.textContent='Deployed code: not yet verified'/);
+ assert.match(script,/live business acceptance still pending/);
+ assert.doesNotMatch(script,/localStorage|sessionStorage/);
+});
