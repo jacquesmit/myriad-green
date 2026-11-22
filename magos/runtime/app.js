@@ -360,6 +360,18 @@ function createRuntimeApp({
       writes:[],side_effects:false
     });
   });
+  // Live WordPress client-signing dependencies, without disclosing bearer
+  // tokens or treating installed software as an actual client receipt.
+  app.get('/v1/operator/client-signing-readiness',requireOperatorRead,async(req,res)=>{
+    try{
+      const {inspectSigningReadiness}=require('../processor/signed-quote-link');
+      const report=await inspectSigningReadiness();
+      res.set('Cache-Control','private, no-store');
+      return res.status(report.state==='READY_FOR_CONTROLLED_SIGNING_TEST'?200:202).json(report);
+    }catch{
+      return res.status(503).json({error:'CLIENT_SIGNING_READINESS_UNAVAILABLE'});
+    }
+  });
   app.get('/v1/operator/coverage',requireOperatorRead,async(req,res)=>{
     try {
       if(!systemCoverageReader)systemCoverageReader=systemCoverageReaderFactory();
