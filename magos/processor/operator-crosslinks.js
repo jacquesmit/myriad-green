@@ -6,8 +6,9 @@ const fields=Object.freeze({
  clients:r=>({crm:r.id,opportunity:r.details?.['Opportunity ID'],job:r.details?.['Job ID']}),
  prospects:r=>({crm:r.id,opportunity:r.details?.['Opportunity ID'],job:r.details?.['Job ID']}),
  provenance:r=>({crm:r.id,opportunity:r.details?.['Opportunity ID'],job:r.details?.['Job ID']}),
- conversions:r=>({opportunity:r.status==='REVIEW_REQUIRED'?null:r.id,
-  crm:r.details?.['Client CRM ID'],job:r.details?.['Job ID']}),
+ conversions:r=>r.title==='Attribution reconciliation'?{}:({
+  opportunity:r.id,crm:r.details?.['Client CRM ID'],job:r.details?.['Job ID']
+ }),
  jobs:r=>({opportunity:r.id,crm:r.details?.client_id,job:r.details?.job_id}),
  quotes:r=>({quote:r.id,opportunity:r.details?.opportunity_id,job:r.details?.job_id}),
  finance:r=>({control:r.id,opportunity:r.details?.['Opportunity ID'],
