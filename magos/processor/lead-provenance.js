@@ -7,6 +7,7 @@ const up=x=>val(x).toUpperCase();
 const outbound=x=>/(^|[_\s-])(SCRAPER|SCRAPED|OUTBOUND|PROSPECTING|TODAY_OUTREACH|LEADGIBBON|GOOGLE_PLACES)(?=$|[_\s-])/.test(up(x));
 const inboundOrigins=new Set(['WEBSITE','WORDPRESS','FLUENT_FORMS','WHATSAPP',
  'WHATSAPP_CLIENT_REQUEST','WHATSAPP_MANUAL','FACEBOOK','FACEBOOK_LEAD',
+ 'WEBSITE_FORM','WEB_FORM','CONTACT_FORM',
  'GMAIL','EMAIL','REFERRAL','GOOGLE_BUSINESS','GOOGLE_ADS','ORGANIC_SEARCH','AMELIA']);
 const hasClientActivity=r=>!!(val(r.job_id)||val(r.invoice_id)||
   (val(r.quote_id)&&val(r.source_evidence))) &&
