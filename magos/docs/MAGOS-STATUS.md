@@ -417,3 +417,10 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - Engineering defect in the last merged recurrence calculation: three asset-row values were treated as "verified" despite no independent corroboration. Branch `codex/magos-aftercare-independent-service-authority-20261122` changes the assessment to require exactly matched canonical Job Execution service receipts, with independently configured verifier function and fail-closed source failures. No real service event is fabricated.
 - Regression tests: valid receipt, missing receipt, wrong client/date/source/evidence, duplicate receipts, callback exception. The existing canonical installed-date schedule remains read-only and tentative.
 - **Evidence status:** CODE STAGED, CI/merge PENDING; real provider verifier/production data validation PENDING. HOSTAFRICA running SHA, WordPress signature flow, bank integration and all other production gates remain open.
+
+
+## 22 November 2026 — Canonical aftercare source-schema mismatch resolved as fail-closed code (candidate)
+
+- Live read-only spreadsheet headers confirmed: Supplier `Installed_Parts` has no last-service linkage columns and no `Service_History` sheet; Commercial `Job Execution` has job/CRM/completion state/sign-off but not exact installed-part service dates. Prior speculative fields cannot be treated as operating production columns.
+- Added `service-history-verifier.js` and integration into aftercare inspection, with canonical service history plus independent Commercial execution join and human reviewed receipt. Missing/duplicated/unapproved/mismatched/unfinished records => no reset. New tests and GitHub runtime workflow wiring; both Markdown records updated.
+- **Next explicit migration:** define and authorize Service_History canonical schema in Writer_Schema_Registry/Data_Ownership_Matrix and provision via controlled release, then verify actual real service evidence. No Sheets changes in this PR, no automatic review outreach, no client booking. CODE candidate; CI/merge/live acceptance PENDING.
