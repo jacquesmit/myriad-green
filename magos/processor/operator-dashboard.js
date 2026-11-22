@@ -226,6 +226,22 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
         overviewCounts[metric] = projection.counts[metric];
         let workItems=projection.attention;
         if(key==='quotes'){
+          // Pending-quotes KPI still measures outstanding action, but the
+          // Quotes workspace must retain accepted/linked, declined and
+          // historical records so jobs can trace their actual source quote.
+          const visible=new Set(records.map(row=>row.id));
+          for(const sourceQuote of input){
+            const quoteId=txt(sourceQuote.quote_id);
+            if(!quoteId||visible.has(quoteId)||!index.has(quoteId))continue;
+            visible.add(quoteId);
+            records.push(record(quoteId,sourceQuote['Project / Scope'],
+              sourceQuote['Quote Status'],
+              sourceQuote['Next Action']||'Review recorded quotation and job linkage',{
+                opportunity_id:txt(sourceQuote.opportunity_id),
+                job_id:txt(sourceQuote.job_id),
+                drive_link:txt(sourceQuote['Drive Link'])
+              }));
+          }
           const reviews=new Map();
           for(const quote of input){
             const validity=quoteValidityReview(quote,localDay);
