@@ -257,3 +257,10 @@ For each real MAGOS code change:
 - **Command Centre:** derived exclusive `Inbound CRM`, `Scraper / outbound prospects`, `Provenance review` views from **one canonical CRM_Master read**, plus distinct counts. Legacy scrape-only records with source_query and map/website discovery evidence are conservatively labelled outbound; conflicting source metadata is held for review. No data migration, customer communication or scraping campaign was performed.
 - Tests added for original source/converted prospect, true inbound, unknown/contradictory records, unavailable CRM source, blocked outbound ingress, permitted website lead, and operator navigation; Runtime P2 CI now explicitly runs `lead-intake.test.js`.
 - Source CODE STAGED; CI/PR/merge and deployed browser validation PENDING. Do not claim full CRM remediation or verified live pipeline totals until full source scan/dedupe and controlled runtime checks.
+
+
+### 22 November 2026 — Full bounded CRM direction scan, read-only
+
+- Read `CRM_Master!BV1:BY1553` (only lead direction, origin, acquisition and first contact; no CRM data altered). Google Sheets returned 1,464 rows including headers/blank provenance rows; 1,408 rows had at least one populated attribution field. Recorded `lead_direction`: **1,325 OUTBOUND**, **58 INBOUND**, **19 UNKNOWN**, and **6 missing/malformed** (including invalid email/forwarded labels). These are counts of *labels*, not validated leads, not sales and not proof of live production readiness.
+- All 1,325 recorded `OUTBOUND` rows in this bounded sample have `SCRAPER / OUTBOUND_PROSPECTING` source metadata. The code now adds `WEBSITE_FORM` to the accepted explicit inbound-origin vocabulary. Historical invalid/unknown provenance is held for review, never silently reassigned.
+- No mass reclassification, campaigns or client writes performed. Source row offsets may not equal immutable CRM IDs; do not use row numbers as identity.
