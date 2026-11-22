@@ -169,3 +169,52 @@ test('HTTP lifecycle with recorded accepted quote and no trusted verifier cannot
   assert.equal(report.production_complete,false);
  }finally{await new Promise(ok=>server.close(ok));}
 });
+
+test('exact WordPress quote version verified in lifecycle only from trusted provider matching canonical IDs',async()=>{
+ const evidenceVerifier=async({quote_id,opportunity_id})=>({
+  verified:true,quote_id,opportunity_id,quote_version:'2026-11-V3',
+  authority:'WP_VERIFIED_SIGNED_RECEIPT_AND_CANONICAL_COMMERCIAL_MATCH',
+  evidence_ref:'drive://client/signed-quote',signer_identity:'Approved client',
+  signed_at:'2026-11-22T08:00:00Z',source_event_id:'WP-RECEIPT-V3'
+ });
+ const r=await inspectJobLifecycle({
+  stores:fixture(),jobId:'JOB-T',asOf:'2026-11-22',evidenceVerifier
+ });
+ assert.equal(r.client_acceptance.evidence_verified,true);
+ assert.equal(r.client_acceptance.quote_version_verified,true);
+ assert.equal(r.client_acceptance.quote_version,'2026-11-V3');
+ assert.equal(r.client_acceptance.independent_owner_release,false);
+ assert.equal(r.production_complete,false);
+});
+test('integrated authenticated lifecycle uses the configured provider verifier, not a status-only shortcut',async()=>{
+ let calls=0;
+ const app=createRuntimeApp({
+  token:'writer-private',operatorReadToken:'view-private',
+  signedAcceptanceVerifier:async({quote_id,opportunity_id})=>{
+   calls++;
+   return {verified:true,quote_id,opportunity_id,
+    quote_version:'V1',
+    authority:'WP_VERIFIED_SIGNED_RECEIPT_AND_CANONICAL_COMMERCIAL_MATCH',
+    evidence_ref:'drive://provider/verified',signer_identity:'Client',
+    signed_at:'2026-11-22T08:00:00Z',source_event_id:'VERIFIED-SIGNATURE'};
+  },
+  writerFactory:()=>({stores:fixture(),
+   execute:async()=>{throw Error('NO_WRITER_IN_READ_ONLY_LIFECYCLE')}})
+ });
+ const server=http.createServer(app);
+ await new Promise(ok=>server.listen(0,'127.0.0.1',ok));
+ try{
+  const endpoint='http://127.0.0.1:'+server.address().port+
+   '/v1/operator/job-lifecycle/JOB-T';
+  const response=await fetch(endpoint,{
+   headers:{'X-MAGOS-Operator-Token':'view-private'}
+  });
+  assert.equal(response.status,202);
+  const report=await response.json();
+  assert.equal(calls,1);
+  assert.equal(report.client_acceptance.evidence_verified,true);
+  assert.equal(report.client_acceptance.quote_version_verified,true);
+  assert.equal(report.client_acceptance.quote_version,'V1');
+  assert.equal(report.production_complete,false);
+ }finally{await new Promise(ok=>server.close(ok));}
+});
