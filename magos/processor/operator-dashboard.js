@@ -7,6 +7,7 @@ const {quoteValidityReview}=require('./quote-validity');
 const {inspectVariationRegister}=require('./variation-review');
 const {inspectLabourCostRegister}=require('./labour-reconciliation');
 const {canonicalRelations}=require('./operator-crosslinks');
+const {inspectJobStatusRegister,classifyJobStatus}=require('./job-status-classification');
 const { calculateExpected } = require('./payment-control-audit');
 const { DEFAULT_IDS } = require('../writer/transaction-writer');
 
@@ -245,6 +246,18 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
                 'Recorded invoice':txt(sourceJob.invoice_number),
                 'Completion evidence status':'NOT_INDEPENDENTLY_VERIFIED'
               }));
+          }
+          const statusAudit=inspectJobStatusRegister(input);
+          overviewCounts.job_status_review=statusAudit.counts.review;
+          for(const issue of statusAudit.review){
+            const row=records.find(x=>x.id===issue.opportunity_id);
+            if(!row)continue;
+            row.status='REVIEW_REQUIRED';
+            row.next_action='Reconcile recorded job status against canonical job execution evidence';
+            row.details['Original job status']=issue.recorded_status;
+            row.details['Status inconsistency']=issue.reason;
+            attention.push({department:'jobs',type:'JOB_STATUS_REVIEW',
+              id:issue.opportunity_id,next_action:row.next_action});
           }
           overviewCounts.jobs_with_recorded_id=records.filter(item=>
             !!txt(item.details?.job_id)).length;
