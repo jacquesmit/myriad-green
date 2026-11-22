@@ -35,6 +35,7 @@ function buildDeliveryRoadmap({capabilities=[],asOf,targets=TARGETS}={}){
   const overdue=asOf>target.target_date;
   return {
    id:target.id,label:target.label,target_date:target.target_date,
+   target_time_local:'17:00',target_timezone:'Africa/Johannesburg',
    target_type:'PROPOSED_PLANNING_TARGET_NOT_COMMITTED',
    state:overdue?'TARGET_MISSED':outstanding.length?'TARGET_OPEN':'SOURCE_GATES_PASSED_LIVE_TEST_REQUIRED',
    capability_count:target.capability_ids.length,
@@ -55,7 +56,7 @@ function buildDeliveryRoadmap({capabilities=[],asOf,targets=TARGETS}={}){
   production_rollout_committed:false,
   milestone_completion_source:'CONTROL_HUB_BUSINESS_CAPABILITY_MAP',
   deployment_evidence:'NOT_VERIFIED',
-  target_policy:'Dates are proposed planning targets, not promises. Completion requires live release acceptance.',
+  target_policy:'Dates and 17:00 SAST review checkpoints are proposed, not promises. Completion requires live release acceptance.',
   counts:{total:milestones.length,missed:milestones.filter(m=>m.state==='TARGET_MISSED').length,
    open:milestones.filter(m=>m.state==='TARGET_OPEN').length,
    validated:0},
