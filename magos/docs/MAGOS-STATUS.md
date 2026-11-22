@@ -561,3 +561,10 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - New `labour-reconciliation.js` calculates provisional rate × crew days with malformed/double IDs, missing inputs and mismatch exceptions; never calls the figure independently verified actual labour or job profit. `/operator` frontend now shows `Labour cost review` and per-job discrepancies plus evidence-review next action, using existing business sources.
 - Regression tests and CI workflow updated; branch `codex/magos-labour-cost-reconciliation-20261122` awaiting CI/merge. Source data and financial records unchanged; hosted frontend/deployment not verified.
 - CAP-010 actual job-closeout enforcement [PR #89](https://github.com/jacquesmit/myriad-green/pull/89) merged `b7578772087d30cddbfdbb0401f723f6cfbcd538`, tested head `b7ee8deb9499f0f7eb7dd59808639a7bf038e930`: Runtime P2 #237 PASS; Document Extract #301 PASS; Evolving Status Gate #41 PASS.
+
+
+## 22 November 2026 — Client RFQ leakage fix (read-only canonical source inspection; candidate)
+
+- Compared actual `CRM_Master`, `Intake_Queue`, `Jobs_Opportunities` live headers against MAGOS ingestion/attribution code. Confirmed customer RFQ `INT-20260727-GMAIL-0008` has immutable Gmail event ID and matched canonical CRM/opportunity IDs, but old code excluded `RFQ` categorically to avoid supplier mail pollution. Another legacy row has visibly malformed source schema, so no global RFQ trust is safe.
+- Implemented shared `isCanonicalCustomerRfq` requiring inbound provider + canonical linked record state, valid identities, non-supplier and non-outbound classification. Reused in operator inbound enquiries and conversion attribution, with explicit tests for customer qualification, supplier ID/document exclusion, missing links, self-test and outbound signals. No change to customer financial/job record; no automatic messages.
+- CI and merge pending for `codex/magos-customer-rfq-canonical-inbound-20261122`. The live dashboard and source-to-job commercial receipts remain NOT VERIFIED; CAP-001/002 remain PARTIAL.
