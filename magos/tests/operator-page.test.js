@@ -68,3 +68,16 @@ test('operator presents separate scraper, inbound CRM and provenance review navi
  assert.match(source,/provenance_review/);
  assert.doesNotMatch(source,/localStorage|sessionStorage/);
 });
+
+test('operator frontend renders live capability-backed delivery targets without browser-side guesses',()=>{
+ const html=operatorPage();
+ const source=fs.readFileSync(require.resolve('../runtime/operator.js'),'utf8');
+ assert.match(html,/id="delivery"/);
+ assert.match(html,/id="delivery-rows"/);
+ assert.match(html,/Proposed dates, not delivery promises/);
+ assert.match(source,/MAGOS_DELIVERY_ROADMAP_V1/);
+ assert.match(source,/roadmap\.milestones/);
+ assert.match(source,/item\.target_date/);
+ assert.match(source,/item\.blockers/);
+ assert.doesNotMatch(source,/localStorage|sessionStorage/);
+});
