@@ -16,8 +16,8 @@ function fixture(){
  const records={'Job Execution':[],'Payment Control':[control],
   'Payment_Allocations':[allocation],'Payment_Events':[event]};
  const stores={commercial:{readObjects:async sheet=>records[sheet]||[],
-  findByKey:async(t,k,id)=>t==='Quotes'&&id==='Q1'?{object:quote}:t==='Job Execution'&&executed&&id==='EXEC-1'?{object:{'Execution ID':'EXEC-1','Job ID':'JOB-1',opportunity_id:'O1',quote_id:'Q1'}}:null},
-  crm:{findByKey:async(t,k,id)=>t==='Jobs_Opportunities'&&id==='O1'?{object:{...opportunity,job_id:executed?'JOB-1':''}}:null}};
+  findByKey:async(t,k,id)=>t==='Quotes'&&id==='Q1'?{object:quote}:t==='Job Execution'&&executed&&id==='EXEC-1'?{object:{...lastPlan.writes.find(w=>w.sheet==='Job Execution').values}}:null},
+  crm:{findByKey:async(t,k,id)=>t==='Jobs_Opportunities'&&id==='O1'?{object:{...opportunity,...(executed?lastPlan.writes.find(w=>w.sheet==='Jobs_Opportunities').changes:{})}}:null}};
  const writer={stores,execute:async plan=>{written++;lastPlan=plan;executed=true;return {state:'COMMITTED',plan_id:plan.idempotency_key}}};
  return {writer,count:()=>written,plan:()=>lastPlan,records};
 }
@@ -145,4 +145,32 @@ test('bank-confirmed amount cannot be omitted or falsely replaced by an owner bo
   assert.equal(r.state,'REVIEW_REQUIRED');
   assert.equal(f.count(),0);
  }
+});
+
+test('P3 committed but swapped accepted scope cannot claim successful canonical job',async()=>{
+ const f=fixture();
+ const original=f.writer.stores.commercial.findByKey;
+ f.writer.stores.commercial.findByKey=async(...params)=>{
+  const record=await original(...params);
+  if(params[0]==='Job Execution' && record?.object)
+    return {object:{...record.object,'Accepted Scope':'WRONG SCOPE'}};
+  return record;
+ };
+ const r=await executeAcceptedJob({...args,writer:f.writer,authorityVerifier:verifier});
+ assert.equal(r.state,'COMMIT_READBACK_UNVERIFIED');
+ assert.equal(r.readback.reason_code,'CANONICAL_EXECUTION_READBACK_FIELD_MISMATCH');
+ assert.equal(f.count(),1);
+});
+test('P3 committed but changed CRM account is not a verified job',async()=>{
+ const f=fixture();
+ const original=f.writer.stores.crm.findByKey;
+ f.writer.stores.crm.findByKey=async(...params)=>{
+  const record=await original(...params);
+  if(record?.object && record.object.job_id==='JOB-1')
+   return {object:{...record.object,client_crm_id:'OTHER-CLIENT'}};
+  return record;
+ };
+ const r=await executeAcceptedJob({...args,writer:f.writer,authorityVerifier:verifier});
+ assert.equal(r.state,'COMMIT_READBACK_UNVERIFIED');
+ assert.equal(r.readback.reason_code,'CANONICAL_CLIENT_LINK_READBACK_MISMATCH');
 });
