@@ -260,3 +260,29 @@ test('Simpro/Fergus variation register enters Command Centre and flags retrospec
  assert.ok(r.attention.some(x=>x.department==='variations'&&x.id==='VAR-1'));
  assert.equal(r.side_effects,false);
 });
+
+test('labour economics are visible by job without treating provisional crew days as actuals',async()=>{
+ const existing=makeStores();
+ const rateRows=[
+  {labour_rate_id:'R-1',person_role:'HELPER',rate_basis:'PER_DAY',
+   rate:'350',currency:'ZAR',effective_from:'2026-08-02'}
+ ];
+ const margins=[
+  {margin_record_id:'M-1',job_id:'J-1',crew_daily_rate_total:'700',
+   crew_days:'2',provisional_labour_cost:'1400'},
+  {margin_record_id:'M-2',job_id:'J-2',crew_daily_rate_total:'700',
+   crew_days:'2',provisional_labour_cost:'1000'}
+ ];
+ const stores={...existing,commercial:{readObjects:async(name,options)=>{
+  if(name==='Labour Rates')return rateRows;
+  if(name==='Project Cost & Margin')return margins;
+  return existing.commercial.readObjects(name,options);
+ }}};
+ const report=await loadOperatorDashboard(stores);
+ assert.equal(report.departments.labour.state,'LIVE');
+ assert.equal(report.overview_counts.labour_cost_review,2);
+ assert.ok(report.departments.labour.records.some(r=>r.id==='J-1'&&
+  r.details['Actual labour verified']==='NO'));
+ assert.ok(report.attention.some(a=>a.department==='labour'&&a.id==='J-2'));
+ assert.equal(report.side_effects,false);
+});
