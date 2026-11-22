@@ -437,6 +437,28 @@
     }
   }
 
+  async function loadDeploymentIdentity(){
+    const output=$('deployment');
+    output.textContent='Checking deployed process identity…';
+    const active=new AbortController();
+    const deadline=setTimeout(()=>active.abort(),8000);
+    try{
+      const response=await read('/v1/operator/deployment',active.signal);
+      const result=await response.json();
+      if(!credential||result.schema_version!=='MAGOS_OPERATOR_DEPLOYMENT_V1'||
+         result.side_effects!==false)throw Error('DEPLOYMENT_UNAVAILABLE');
+      if(response.status===200&&result.status==='PROCESS_START_GIT_MATCH'&&
+         /^[0-9a-f]{40}$/.test(result.commit_sha)){
+        output.textContent='Running code identity: '+result.commit_sha.slice(0,12)+
+          ' (process-start Git checked; live business acceptance still pending)';
+      }else{
+        output.textContent='Running code identity NOT VERIFIED — do not assume latest GitHub code is deployed';
+      }
+    }catch{
+      if(credential)output.textContent='Deployment identity unavailable — do not assume live release';
+    }finally{clearTimeout(deadline);}
+  }
+
   function read(path, signal) {
     return fetch(path, {
       headers: { 'X-MAGOS-Operator-Token': credential },
@@ -810,6 +832,7 @@
     coverage = undefined;
     credential = '';
     data = undefined;
+    $('deployment').textContent='Deployed code: not yet verified';
     $('credential').value = '';
     $('credential').disabled = false;
     $('load').disabled = false;
@@ -857,6 +880,7 @@
         throw new Error('Dashboard unavailable');
       }
       data = result;
+      void loadDeploymentIdentity();
       page = 0;
       queuePage = 0;
       hideDetail();
