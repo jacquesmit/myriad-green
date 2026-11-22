@@ -318,3 +318,12 @@ For each real MAGOS code change:
 - Corrected a production-status defect in `system-coverage.js`: 22 source PASS labels alone can no longer set `production_complete=true`. It instead reports `capability_gates_passed` separately and `production_complete=false`/`production_acceptance=NOT_VERIFIED` until an independently validated live release-attestation path is installed.
 - Frontend source already exists at `magos/runtime/operator-page.js`, `operator.js`, `operator.css` on existing `/operator`. External attempt to read `https://runtime.myriadgreen.co.za/operator` and `/healthz` through web lookup was inaccessible; the currently deployed frontend version was NOT verified. This PR does not deploy it.
 - New delivery roadmap, operator-page and all-green-gate-failure regression tests added to Runtime P2 CI. Branch `codex/magos-front-end-rollout-tracker-20261122`; CI and merge pending.
+
+
+## 22 November 2026 — Command Centre live deployment fingerprint (candidate)
+
+- Delivery roadmap frontend is already on merged `main` via PR #83 `e7cfc8232d199b9b6e2d86651436a7d55b98af97`; CI PASS for exact source head `d6f5628a2d0d710e310c343e5b82751d32cabb73` (Runtime P2 #227, Document Extract #290, Evolving Status Gate #35).
+- A real user-visible gap remained: the Command Centre offered no proof of which Git commit the running HOSTAFRICA Node worker was actually serving. The existing privileged `/v1/runtime/build` was not accessible using the restricted operator credential.
+- Added read-only `GET /v1/operator/deployment` behind `requireOperatorRead` with **only the process-start declared deployment SHA compared against a clean process-start Git checkout**. Returns exact SHA only when both attest each other; otherwise HTTP 202 `NOT_VERIFIED`. Never uses a mutable live checkout, user HTTP-submitted SHA, or a public token. Explicitly reports production business acceptance unverified.
+- The existing operator frontend now displays short SHA or a prominent `NOT VERIFIED` message after authenticated dashboard load, and clears the information when locked. This is a prerequisite for verifying that recent frontend work is actually visible on the hosted application; it is **not** a claim of completed production acceptance.
+- Added HTTP authentication, false dirty/mismatch declaration and operator frontend tests. Branch `codex/magos-operator-deployment-verification-20261122`; CI/merge and actual hosted SHA verification pending. No provider settings or business rows changed.
