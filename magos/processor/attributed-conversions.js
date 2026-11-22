@@ -2,6 +2,7 @@
 // Canonical, read-only source attribution through real opportunity/quote/job links.
 // A scraped contact is NOT a lead. Job status and proof of payment are different.
 const {classifyCrmProvenance}=require('./lead-provenance');
+const {isCanonicalCustomerRfq}=require('./customer-rfq-provenance');
 const v=x=>String(x??'').trim();
 const up=x=>v(x).toUpperCase();
 function index(rows,key){
@@ -41,7 +42,7 @@ function inspectAttributedConversions({clients,opportunities,quotes,executions,i
   const outboundMarkers=[source,type,up(intake.record_origin),up(intake.lead_direction),
    up(intake.acquisition_source)].join('|');
   if(/SCRAPER|OUTBOUND|PROSPECTING|TODAY_OUTREACH|GOOGLE_PLACES/.test(outboundMarkers) ||
-     !inboundSystems.has(source)||!inboundTypes.has(type))continue;
+     !inboundSystems.has(source)||(!inboundTypes.has(type)&&!isCanonicalCustomerRfq(intake)))continue;
   if(!event){exceptions.push('INBOUND_SOURCE_EVENT_MISSING');continue;}
   const eventKey=source+'|'+event;
   if(seenEventKeys.has(eventKey)){

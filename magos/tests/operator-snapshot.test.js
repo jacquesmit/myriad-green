@@ -112,3 +112,16 @@ test('intake explicit outbound direction and scraped origin override a claimed i
  ]});
  assert.deepEqual(report.records.leads.map(x=>x.id),['OK-3']);
 });
+
+test('canonical real customer RFQ is captured but unlinked and supplier RFQs remain excluded',()=>{
+ const customer={intake_id:'INT-1',source_system:'GMAIL',source_type:'RFQ',
+  source_event_id:'MAIL-1',matched_crm_id:'CRM-1',
+  matched_opportunity_id:'OPP-1',match_status:'NEW_RECORD',processing_status:'LINKED'};
+ const r=projectOperations({leads:[customer,
+  {...customer,intake_id:'INT-2',source_event_id:'MAIL-2',matched_crm_id:''},
+  {...customer,intake_id:'INT-3',source_event_id:'MAIL-3',supplier_id:'SUP-1'}
+ ]});
+ assert.equal(r.counts.open_leads,1);
+ assert.equal(r.records.leads[0].id,'MAIL-1');
+ assert.equal(r.records.leads[0].opportunity_id,'OPP-1');
+});

@@ -286,3 +286,23 @@ test('labour economics are visible by job without treating provisional crew days
  assert.ok(report.attention.some(a=>a.department==='labour'&&a.id==='J-2'));
  assert.equal(report.side_effects,false);
 });
+
+test('real Intake_Queue customer RFQ appears in operator inbound and source-linked conversion views',async()=>{
+ const baseline=makeStores();
+ const client={crm_id:'CRM-R',company:'Filtration client',lead_direction:'INBOUND',
+  record_origin:'GMAIL',acquisition_source:'EMAIL'};
+ const opportunity={opportunity_id:'OPP-R',client_crm_id:'CRM-R',job_id:''};
+ const intake={intake_id:'INT-R',source_system:'GMAIL',source_type:'RFQ',
+  source_event_id:'EV-R',match_status:'NEW_RECORD',processing_status:'LINKED',
+  matched_crm_id:'CRM-R',matched_opportunity_id:'OPP-R'};
+ const override={CRM_Master:[client],Jobs_Opportunities:[opportunity],Intake_Queue:[intake],
+  Quotes:[],'Job Execution':[]};
+ const stores={...baseline,
+  crm:{readObjects:async(name,options)=>name in override?override[name]:baseline.crm.readObjects(name,options)},
+  commercial:{readObjects:async(name,options)=>name in override?override[name]:baseline.commercial.readObjects(name,options)}};
+ const result=await loadOperatorDashboard(stores);
+ assert.equal(result.overview_counts.open_leads,1);
+ assert.equal(result.departments.leads.records[0].id,'INT-R');
+ assert.equal(result.overview_counts.inbound_linked_opportunities,1);
+ assert.equal(result.side_effects,false);
+});
