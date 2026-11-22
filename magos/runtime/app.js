@@ -69,6 +69,7 @@ function createRuntimeApp({
   supplierStockSplitAuthority = null,
   quoteSigningSecret = process.env.MAGOS_WP_ACCEPTANCE_LINK_SECRET,
   signingPageReadiness = () => require('../processor/signed-quote-link').inspectSigningPage(),
+  signingReadinessInspector = null,
   jobAuthorityVerifier = null,
   // Trusted server-side bank/provider settlement confirmation, never HTTP input.
   bankClearanceVerifier = null,
@@ -359,6 +360,18 @@ function createRuntimeApp({
       production_complete:false,
       writes:[],side_effects:false
     });
+  });
+  // Live WordPress client-signing dependencies, without disclosing bearer
+  // tokens or treating installed software as an actual client receipt.
+  app.get('/v1/operator/client-signing-readiness',requireOperatorRead,async(req,res)=>{
+    try{
+      const {inspectSigningReadiness}=require('../processor/signed-quote-link');
+      const report=await (signingReadinessInspector||inspectSigningReadiness)();
+      res.set('Cache-Control','private, no-store');
+      return res.status(report.state==='READY_FOR_CONTROLLED_SIGNING_TEST'?200:202).json(report);
+    }catch{
+      return res.status(503).json({error:'CLIENT_SIGNING_READINESS_UNAVAILABLE'});
+    }
   });
   app.get('/v1/operator/coverage',requireOperatorRead,async(req,res)=>{
     try {
