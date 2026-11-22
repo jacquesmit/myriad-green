@@ -99,3 +99,18 @@ test('HTTP lifecycle closure is protected and cannot invoke any writer',async()=
   assert.equal(writes,0);
  }finally{await new Promise(resolve=>server.close(resolve));}
 });
+
+test('operational closeout refuses approved variation without validated commercial scope and invoice link',async()=>{
+ const variation={'Variation ID':'VAR-MISSING-INVOICE','Job ID':'JOB-T',
+  'Original Scope Ref':'Q-T','New Finding':'Extra pipe','Additional Work':'Fitting',
+  'Cost Impact (R)':'100','Selling Price Impact (R)':'250',
+  'Approval Status':'APPROVED','Approval Evidence':'test://signed',
+  'Execution Status':'WORK_COMPLETED','Drive Evidence':'test://site','Invoice Ref':''};
+ const r=await inspect({
+  'Job Execution':[{...execution,'Variation Required':'YES'}],
+  Variations:[variation]
+ });
+ assert.equal(r.state,'REVIEW_REQUIRED');
+ assert.ok(r.blockers.some(x=>x.includes('VARIATION_BILLABLE_VARIATION_INVOICE_LINK_MISSING')));
+ assert.equal(r.operational_close_authorized,false);
+});
