@@ -186,3 +186,9 @@ For each real MAGOS code change:
 - Candidate now derives the next service interval from **independently documented last servicing** when `last_service_date`, `last_service_job_id`, and `last_service_evidence` are all present, chronologically valid and linked to the installed part. Missing/contradictory metadata blocks the draft candidate for owner review; historical assets with no recorded servicing continue to use installation as a provisional anchor.
 - The calculation now anchors all monthly intervals to the original verified date, avoiding cumulative end-of-month drift. Records remain `DRAFT_REVIEW_ONLY`; client consent, message sending, warranty liability and booking remain unauthorized.
 - Unit regressions cover verified cadence reset, partial/no proof, impossible/future/preinstallation dates and end-of-month recurrence. **Source PR/test and live aftercare register verification still pending**. No customer contact or live Sheets edits.
+
+
+### 22 November 2026 — Aftercare cadence fix merged
+
+- [PR #68](https://github.com/jacquesmit/myriad-green/pull/68) MERGED into `main` at `c64e47ff7942b05c2920078a8ca0ee655ed86bf4` after exact-head `55e3ecf5b057c3f27c438cd373ca3efb1ab904c6` passed Runtime P2 #201, Document Extract #256 and Evolving Status Gate #16.
+- Read-only maintenance candidates now use documented last service metadata when complete and chronological, otherwise refuse incomplete service claims; anchors avoid month-end cumulative drift. **Canonical Installed_Parts source schema and evidence provenance must still be validated**; this is NOT proof a service happened, permission to message a customer, or a live operational release.
