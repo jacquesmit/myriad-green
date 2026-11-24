@@ -202,7 +202,7 @@ Do not create daily filler posts when there is no material verified event.
 | WAP-04 | exact published area-page mapping | CODED |
 | WAP-05 | service/product link policy | CODED |
 | WAP-06 | SEO/AEO/GEO plan | CODED |
-| WAP-07 | unit tests on exact branch SHA | PENDING CI |
+| WAP-07 | unit + authenticated runtime endpoint tests | PASS on PR #99 GitHub CI |
 | WAP-08 | authenticated WordPress publisher adapter | NOT IMPLEMENTED |
 | WAP-09 | live create + read-back | NOT VALIDATED |
 | WAP-10 | same-key replay / no duplicate | NOT VALIDATED |
@@ -216,11 +216,11 @@ Do not create daily filler posts when there is no material verified event.
 
 **DOCUMENTED:** source policy, lifecycle, internal-link policy, publishing boundary and acceptance gates.
 
-**NOT YET VALIDATED:** CI on the final branch head.
+**VALIDATED IN GIT:** PR #99 MAGOS Runtime P2, Document Extract and Evolving Status Gate passed on the reviewed implementation head. This is source/CI validation, not deployment.
 
 **NOT YET IMPLEMENTED:** autonomous WordPress publisher adapter.
 
-**NOT PRODUCTION COMPLETE:** no HOSTAFRICA deployment, no runtime endpoint acceptance and no unattended live WordPress write/read-back/replay test have occurred.
+**NOT PRODUCTION COMPLETE:** no HOSTAFRICA deployment of this feature, no live runtime endpoint acceptance and no unattended live WordPress write/read-back/replay test have occurred.
 
 ## Next implementation
 
