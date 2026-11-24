@@ -18,7 +18,7 @@
 | Procurement and supplier approval | Governed stages, read-only and protected write paths | TESTED paths | Independent approval/provider acceptance incomplete | PARTIAL |
 | Supplier `Cost_Allocations`, invoice/GRN/stock checks and expense controls | Code merged, [#50–#55](https://github.com/jacquesmit/myriad-green/pulls?q=is%3Apr+is%3Amerged) | PASS on reviewed commits | Exact independent invoice/stock authority and live write unverified | PARTIAL |
 | Receivables, completion, costs, field evidence and aftercare inspection | Code exists, protected inspections | TESTED paths | Final closeout and bank/provider acceptance incomplete | PARTIAL |
-| WooCommerce ecommerce / System Builder | Separate in-progress website work | Partial evidence | Full payment/shipping/tax and product hydraulic acceptance pending | PARTIAL / NOT READY |
+| Water Intelligence / Alert Publisher | Deterministic planner, rules, authenticated read-only endpoint and tests on candidate branch | CI PENDING | WordPress publisher adapter / live replay NOT VALIDATED | PARTIAL / CANDIDATE |\n| WooCommerce ecommerce / System Builder | Separate in-progress website work | Partial evidence | Full payment/shipping/tax and product hydraulic acceptance pending | PARTIAL / NOT READY |
 | HOSTAFRICA worker identification and release preflight | SHA attestation coded [#54](https://github.com/jacquesmit/myriad-green/pull/54) | PASS in CI | Worker deployment / release fingerprint NOT VERIFIED | BLOCKED |
 | Continuous documentation / status reconciliation | Gate [PR #56](https://github.com/jacquesmit/myriad-green/pull/56) MERGED at `ec1510d526fa44c1b0de97436e19d125b0582beb` | Gate and document CI PASS | Required GitHub branch protection NOT VERIFIED | PASS for workflow; PARTIAL for enforcement |
 
@@ -431,3 +431,15 @@ For each real MAGOS code change:
 - Extended the existing `signed-quote-link.js` contract with `inspectSigningReadiness()` returning two independent structured checks: `CLIENT_SIGNING_PAGE` and `INDEPENDENT_SIGNATURE_BRIDGE`. It reports BLOCKED with specific reasons for missing published page and unregistered `verify-v2` independently, rather than a single generic false. A successful route/page combination is **READY_FOR_CONTROLLED_SIGNING_TEST**, not signed-receipt acceptance, customer-link authorization, bank clearance or job creation. Existing `inspectSigningPage()` boolean and `issueSignedQuoteLink()` fail-closed source interfaces remain compatible.
 - Added authenticated read-only `GET /v1/operator/client-signing-readiness`, **separate operator credential** and no writer invocation. Quotes record detail now includes **Check client signing readiness** with next blockers shown from the actual WordPress source. No runtime token, WordPress bearer secret, customer data or signature ever returned by the diagnostic. Negative and positive tests cover both prerequisites, authenticated HTTP isolation, no writer calls and frontend action. Source branch `codex/magos-wordpress-client-signing-readiness-20261122`, CI and merge pending.
 - This improves the linked MAGOS → WordPress signing interface observability. It does **not** deploy the reviewed companion WordPress plugin, publish the signing page, verify a client signature, or validate a hosted Node runtime. Those are still live acceptance blockers.
+
+
+## 24 November 2026 — Water Intelligence / Alert Publisher candidate
+
+- Added `magos/content/water-alert-publisher.js` and `magos/rules/water-alert-publisher.v1.json` for deterministic municipal-water notice normalization, exact official-source verification, immutable source-event dedupe, content fingerprinting and `ACTIVE / RECENT / HISTORICAL` lifecycle.
+- Added authenticated read-only `POST /v1/content/water-alert/plan`. It performs no WordPress mutation and returns `publishing_performed:false`.
+- The planner maps area pages only from exact **published** site-index matches; it never invents a suburb URL. It carries Myriad Green outage/backup-water, pump, irrigation and shop link policy plus SEO/AEO/GEO requirements.
+- Added unit and runtime endpoint regression tests and dedicated [MAGOS-WATER-ALERT-PUBLISHER-V1.md](MAGOS-WATER-ALERT-PUBLISHER-V1.md).
+- **Current state:** CODED on `codex/magos-water-alert-publisher-20261124`; CI/PR evidence pending. WordPress publisher adapter, live create/update read-back, same-source replay, sitemap verification, rollback and HOSTAFRICA deployment are **NOT VALIDATED**.
+- The module is intentionally not in the governed write workflow catalogue yet. A read-only planning endpoint is not publication authority.
+
+**Next gate:** implement a separately authenticated WordPress publisher adapter and prove one controlled official City of Tshwane notice through create/update → public read-back → Rank Math/schema → sitemap → identical replay with no duplicate.
