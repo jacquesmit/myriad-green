@@ -2,10 +2,16 @@
 
 > **Authoritative current index.** Read this file **first**, then [MAGOS-STATUS.md](MAGOS-STATUS.md) for append-only engineering history, the relevant subsystem runbook, source code, CI, and live sources. Previous decisions stay discoverable. A historic claim never overrides newer verified source evidence. Never claim deployment or customer transaction acceptance from a GitHub merge.
 
-**As-of:** 2026-11-21 (Africa/Johannesburg); live WordPress rechecked after PR #56  
+**As-of:** 2026-11-24 (Africa/Johannesburg); latest release reconciliation below  
 **System:** MAGOS — the existing whole-business Myriad Green operating system, not a new product or collection of renamed agents.  
 **Repository:** [jacquesmit/myriad-green](https://github.com/jacquesmit/myriad-green)  
 **Production:** `https://runtime.myriadgreen.co.za` — Node worker deploy SHA **NOT VERIFIED** against current `main`; public health/ready URLs were inaccessible via available read-only tool on 2026-11-21, not proof of outage.
+
+
+
+## 24 November 2026 — production release reconciliation (BLOCKED)
+HOSTAFRICA ticket #3957866 (22 Nov) confirmed production HEAD `88576e4595186e73259d5e4f32d2940ac8b4a569` on `codex/magos-production-intake-20261107`, clean tracked files, readable origin/main then `780bd0f3e3ce17ba7a0ed9d34e57e8b01c8b8954`, Node 20.20.2 and two MAGOS workers started after HEAD. This is historical evidence, not today's SHA. Tickets #9342462/#3622207 (11–12 Nov) approved the existing path/account-scoped recycle; do not request support again unless controlled local recovery fails. Reuse PR #65's `magos/scripts/hostafrica-release.sh` and existing preflight; do not create a parallel deployment path. Inspect first; reconcile host-only commits before checkout; pin tested main SHA, verify backup and private environment, recycle only scoped workers, verify loaded SHA and capability-specific endpoint, retain rollback receipt. No blind pull/reset or broad process kill. A new secret requires process reload, not a new app. A P5 health response is not release identity.
+24 Nov evidence: WPVibe plugin list exit 0, Water Alert Publisher 0.1.0 active; user confirmed configuration saved on both sides and website loads. Browser health P5 OK, readiness ready/auth_configured true; unauthenticated WP status 401; authenticated WP status returned NOT_FOUND for synthetic key (expected, no write). Authenticated empty POST to runtime /v1/content/water-alert/publish returned Cannot POST; expected 400 WATER_ALERT_NOTICE_REQUIRED from merged source. Runtime endpoint FAIL, actual running SHA and runtime token acceptance unverified; likely checkout lag or stale worker, not proven. No test article or server deployment performed. Do not repeat WP installation or credential setup. Next: existing controlled host release and empty POST smoke test, then real official-source acceptance/replay/update. Support escalation only after exact sanitized failure evidence. No credentials in Git or logs.
 
 ## One truth table
 
