@@ -444,3 +444,12 @@ For each real MAGOS code change:
 - The module is intentionally not in the governed write workflow catalogue yet. A read-only planning endpoint is not publication authority.
 
 **Next gate:** implement a separately authenticated WordPress publisher adapter and prove one controlled official City of Tshwane notice through create/update → public read-back → Rank Math/schema → sitemap → identical replay with no duplicate.
+
+
+### 24 November 2026 — Water intelligence discovery expansion
+
+- The Water Alert Publisher condition-watch now uses two evidence lanes.
+- **Official lane:** verified official municipal/Rand Water notices may become Local Water Alerts Journal create/update actions under the publication rules.
+- **Discovery lane:** credible local news, community publications, municipal reporting and public social signals may identify an event, but remain verification-only until an official source corroborates the facts.
+- Secondary-only reports must remain `REVIEW_REQUIRED`; they do not authorize a public post.
+- This expands detection coverage without weakening source provenance or duplicate controls.
