@@ -176,3 +176,19 @@ test('operator source failure and empty core dataset prevent frontend pilot PASS
   assert.ok(r.checks.some(c=>c.name==='OPERATOR_CANONICAL_RECORDS'&&c.state==='FAIL'));
  }
 });
+
+
+test('startup checkout works with legacy Git that rejects -C without weakening attestation',()=>{
+ const {localCheckout}=require('../runtime/release-preflight');
+ const root='/host/repositories/myriad-green';
+ const calls=[];
+ const execute=(command,args,options)=>{
+  assert.equal(command,'git');assert.equal(options.cwd,root);
+  assert.ok(!args.includes('-C'));calls.push(args);
+  return args[0]==='rev-parse'?sha+'\n':'';
+ };
+ assert.deepEqual(localCheckout(root,execute),{sha,dirty:false});
+ assert.deepEqual(calls,[['rev-parse','HEAD'],['status','--porcelain','--untracked-files=no']]);
+ assert.equal(localCheckout(root,(_command,args)=>args[0]==='rev-parse'?sha:' M app.js').dirty,true);
+ assert.throws(()=>localCheckout(root,()=>{throw Error('git unavailable')}));
+});
