@@ -2,9 +2,11 @@
 const {execFileSync}=require('node:child_process');
 const path=require('node:path');
 
-function localCheckout(root=path.resolve(__dirname,'../..')){
- const git=(...args)=>execFileSync('git',['-C',root,...args],{
-  encoding:'utf8',timeout:8000,stdio:['ignore','pipe','ignore']
+function localCheckout(root=path.resolve(__dirname,'../..'),execute=execFileSync){
+ // Older cPanel worker Git does not support -C. Spawn in the repository
+ // directory instead; retain independent Git SHA and tracked status checks.
+ const git=(...args)=>execute('git',args,{
+  cwd:root,encoding:'utf8',timeout:8000,stdio:['ignore','pipe','ignore']
  }).trim();
  return {sha:git('rev-parse','HEAD'),dirty:!!git('status','--porcelain','--untracked-files=no')};
 }
