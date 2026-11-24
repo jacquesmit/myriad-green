@@ -22,6 +22,14 @@ The old AG-xxx and JT-xxx catalogue is retained as a provenance crosswalk during
 
 These are operationally meaningful API routes, **not** autonomous LLM workers. A workflow's business result can be `REVIEW_REQUIRED`, `REJECTED`, `RETRY_REQUIRED`, etc.; a workflow endpoint existing is not proof of successful business mutation.
 
+### Water intelligence candidate
+
+`water-alert-publisher` is now a first-class MAGOS content-intelligence module, but it is **not yet registered as an executable write workflow** in `GET /v1/workflows`.
+
+The authenticated `POST /v1/content/water-alert/plan` endpoint is read-only. It verifies municipal-source provenance, deduplicates by immutable source event, classifies alert lifecycle and prepares exact area/service/product links plus SEO/AEO/GEO metadata. See [MAGOS Water Intelligence & Alert Publisher V1](MAGOS-WATER-ALERT-PUBLISHER-V1.md).
+
+Do not add it to the governed write catalogue until the WordPress publisher adapter has independent authentication, canonical post lookup, create/update read-back, same-key replay, sitemap verification and rollback evidence.
+
 ## Runtime
 
 - `GET /v1/workflows` — bearer-authenticated catalogue.
