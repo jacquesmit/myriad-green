@@ -8,6 +8,7 @@ const { planAgentTask } = require('../agents/agent-router');
 const { LiveAgentAuthority } = require('../agents/live-agent-authority');
 const { WorkflowRunner, WorkflowInputError } = require('../workflows/runner');
 const { listWorkflows } = require('../workflows/catalog');
+const { buildPublicationPlan } = require('../content/water-alert-publisher');
 const { EventProcessor } = require('../processor/event-processor');
 const {
   GovernedProcessorRegistry,
@@ -85,6 +86,8 @@ function createRuntimeApp({
   eventProcessorFactory = () => new EventProcessor(),
   liveAgentAuthorityFactory = () => new LiveAgentAuthority(),
   systemCoverageReaderFactory = () => new (require('../processor/system-coverage').SystemCoverageReader)(),
+  waterAlertPlanner = buildPublicationPlan,
+  waterAlertNow = () => new Date(),
   eventDispatcherFactory = ({ writer }) =>
     new GovernedProcessorRegistry({ writer }),
   version = process.env.MAGOS_RUNTIME_VERSION || 'P2'
@@ -605,6 +608,31 @@ function createRuntimeApp({
       workflows:listWorkflows(),
       runtime:'GOVERNED_EVENT_RUNNER'
     });
+  });
+
+  // Read-only water intelligence planner. It verifies source provenance,
+  // deduplicates by immutable source event, maps lifecycle/internal links and
+  // prepares SEO/AEO/GEO metadata. It never publishes to WordPress.
+  app.post('/v1/content/water-alert/plan', requireRuntimeAuth, (req,res) => {
+    const body=req.body||{};
+    if(!body.notice || typeof body.notice!=='object' || Array.isArray(body.notice)) {
+      return res.status(400).json({error:'WATER_ALERT_NOTICE_REQUIRED'});
+    }
+    try {
+      const result=waterAlertPlanner(body.notice,{
+        now:waterAlertNow(),
+        existing_posts:Array.isArray(body.existing_posts)?body.existing_posts:[],
+        site_index:body.site_index && typeof body.site_index==='object' ? body.site_index : {}
+      });
+      const status=result.state==='REVIEW_REQUIRED'?202:200;
+      return res.status(status).json({
+        ...result,
+        endpoint_mode:'READ_ONLY_PLAN',
+        publishing_performed:false
+      });
+    } catch(error) {
+      return res.status(400).json({error:'WATER_ALERT_PLAN_FAILED',detail:error.message});
+    }
   });
 
   app.post('/v1/workflows/run', requireRuntimeAuth, async (req,res) => {
