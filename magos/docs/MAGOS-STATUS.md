@@ -706,3 +706,19 @@ No live Journal post, client record, payment, quote, supplier or job record was 
 - Live official-source create → REST read-back → public HTML/schema → sitemap → same-key replay = NOT YET EXECUTED through the merged adapter.
 
 **Next production gate:** controlled installation of the reviewed ZIP + private `MAGOS_WATER_ALERT_PUBLISH_TOKEN` configuration on WordPress, corresponding private runtime secret on HOSTAFRICA, then one real official notice create/replay/update acceptance.
+
+
+## 24 November 2026 — WordPress custom-plugin deployment audit
+
+Created `MAGOS-WORDPRESS-PLUGIN-DEPLOYMENT-REGISTER.md` as the standing source/install/activation/feature/rollback register for custom Myriad Green and MAGOS WordPress plugins.
+
+**Live authenticated audit:**
+- MAGOS Systems Calculator 3.0.0 — ACTIVE.
+- Myriad Green Quote Acceptance Bridge 0.3.2 — ACTIVE.
+- Myriad Green — Native Catalog Browser 0.1.0 — ACTIVE.
+- MAGOS Reviewed Client Signature Receipt 0.1.0 — NOT PRESENT in live plugin list; `verify-v2` route returns `rest_no_route`.
+- MAGOS Water Alert Publisher 0.1.0 — NOT PRESENT in live plugin list; `water-alert/status` route returns `rest_no_route`.
+
+**Governance gap:** the current source implementation for Systems Calculator, Quote Acceptance Bridge and Native Catalog Browser was not found as canonical plugin source in the current Git search. Their live activation is verified, but source-to-live reconciliation is still pending.
+
+**Truth:** custom-plugin deployment is PARTIAL. Two reviewed plugins remain undeployed, and three live custom plugins need canonical Git-source reconciliation.
