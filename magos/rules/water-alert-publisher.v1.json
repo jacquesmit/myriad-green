@@ -1,0 +1,136 @@
+{
+  "schema_version": "MAGOS_WATER_ALERT_RULES_V1",
+  "category_slug": "local-water-alerts",
+  "allowed_alert_types": [
+    "TANKER_DISTRIBUTION",
+    "WATER_INTERRUPTION",
+    "LOW_PRESSURE",
+    "WATER_RESTRICTION",
+    "RECOVERY_UPDATE",
+    "WATER_QUALITY"
+  ],
+  "providers": {
+    "CITY_OF_TSHWANE": {
+      "display_name": "City of Tshwane",
+      "official_domains": [
+        "tshwane.gov.za"
+      ],
+      "official_social_accounts": [
+        "CityTshwane"
+      ],
+      "official_social_domains": [
+        "x.com",
+        "twitter.com"
+      ]
+    },
+    "JOHANNESBURG_WATER": {
+      "display_name": "Johannesburg Water",
+      "official_domains": [
+        "johannesburgwater.co.za",
+        "joburg.org.za"
+      ],
+      "official_social_accounts": [
+        "JHBWater",
+        "JohannesburgWater"
+      ],
+      "official_social_domains": [
+        "x.com",
+        "twitter.com"
+      ]
+    },
+    "RAND_WATER": {
+      "display_name": "Rand Water",
+      "official_domains": [
+        "randwater.co.za"
+      ],
+      "official_social_accounts": [
+        "Rand_Water",
+        "RandWater"
+      ],
+      "official_social_domains": [
+        "x.com",
+        "twitter.com"
+      ]
+    }
+  },
+  "lifecycle": {
+    "recent_days": 7,
+    "historical_after_days": 7
+  },
+  "publishing": {
+    "auto_publish_active_only": true,
+    "require_official_primary_source": true,
+    "require_source_event_id": true,
+    "require_effective_date": true,
+    "require_affected_area": true,
+    "wordpress_category_slug": "local-water-alerts"
+  },
+  "internal_links": {
+    "primary": [
+      {
+        "role": "OUTAGE_BACKUP",
+        "url": "https://myriadgreen.co.za/water-backup-solutions-during-outages/"
+      },
+      {
+        "role": "MUNICIPAL_BACKUP",
+        "url": "https://myriadgreen.co.za/rainwater-harvesting-systems/municipal-water-backup-solutions/"
+      },
+      {
+        "role": "BACKUP_WATER_HUB",
+        "url": "https://myriadgreen.co.za/water-systems/"
+      }
+    ],
+    "secondary": [
+      {
+        "role": "WATER_STORAGE",
+        "url": "https://myriadgreen.co.za/water-storage-during-outages/"
+      },
+      {
+        "role": "JOJO_INTEGRATION",
+        "url": "https://myriadgreen.co.za/jojo-tank-backup-integration/"
+      },
+      {
+        "role": "LOW_PRESSURE",
+        "url": "https://myriadgreen.co.za/low-water-pressure-solutions/"
+      },
+      {
+        "role": "PUMPS",
+        "url": "https://myriadgreen.co.za/borehole-and-pump-systems/"
+      },
+      {
+        "role": "IRRIGATION",
+        "url": "https://myriadgreen.co.za/irrigation-systems/"
+      },
+      {
+        "role": "EMERGENCY_SUPPORT",
+        "url": "https://myriadgreen.co.za/emergency-water-system-call-out-gauteng/"
+      }
+    ],
+    "shop": [
+      {
+        "role": "TANK_SHOP",
+        "url": "https://myriadgreen.co.za/shop-water-storage-tanks/"
+      },
+      {
+        "role": "PUMP_SHOP",
+        "url": "https://myriadgreen.co.za/shop-water-pumps/"
+      },
+      {
+        "role": "IRRIGATION_SHOP",
+        "url": "https://myriadgreen.co.za/shop-irrigation-equipment/"
+      }
+    ]
+  },
+  "discovery": {
+    "secondary_sources_allowed": true,
+    "publication_eligible": false,
+    "purpose": "DISCOVERY_AND_CORROBORATION_ONLY",
+    "source_classes": [
+      "CREDIBLE_LOCAL_NEWS",
+      "COMMUNITY_PUBLICATION",
+      "PUBLIC_SOCIAL_SIGNAL",
+      "MUNICIPAL_REPORTING"
+    ],
+    "require_official_corroboration_before_publication": true
+  }
+}

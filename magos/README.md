@@ -25,6 +25,14 @@ submission can be blocked by guard, identity, evidence, approval, authority
 or state gates. Nothing in this feature grants independent agent tools or
 creates another ledger.
 
+## Water intelligence and alert publisher (candidate)
+
+MAGOS now contains a read-only Water Intelligence planning subsystem for verified municipal water notices. See [MAGOS Water Intelligence & Alert Publisher V1](docs/MAGOS-WATER-ALERT-PUBLISHER-V1.md).
+
+`POST /v1/content/water-alert/plan` is bearer-authenticated and **side-effect free**. It verifies registered official sources, derives an immutable source key and content fingerprint, classifies `ACTIVE / RECENT / HISTORICAL`, maps only exact published Myriad Green area pages supplied by the site index, and returns service/product links plus an SEO/AEO/GEO publication plan.
+
+This candidate **does not publish to WordPress**. The WordPress publisher adapter, create/update read-back, same-key replay, sitemap verification and rollback acceptance remain required before unattended publishing can be enabled.
+
 ## Historical AG/JT registry (compatibility/proposal only)
 
 Read [MAGOS Agent Orchestration V2](docs/MAGOS-AGENT-ORCHESTRATION-V1.md)
