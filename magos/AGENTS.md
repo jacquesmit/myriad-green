@@ -41,3 +41,6 @@ canonical ownership or production QA gates. A functional workflow must
 pass tests and a live same-key replay/readback acceptance case before
 claiming production PASS. Prefer working code and the exact failing
 runtime test over new charts, documents or generic agent definitions.
+
+## Shared HOSTAFRICA release testing (mandatory)
+Use `npm run test:hostafrica` in an isolated candidate checkout; retain the exact SHA, full log and successful exit status before authorizing deployment. Never interpret a killed process as a passing test or substitute a targeted rerun for full release acceptance. See the cPanel runbook.
