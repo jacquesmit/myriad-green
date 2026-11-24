@@ -647,3 +647,13 @@ The planner accepts a municipal water notice and returns a side-effect-free publ
 - **PRODUCTION COMPLETE:** NO.
 
 This deliberately preserves the existing MAGOS boundary: the read-only planner is not a new business writer and does not use the P3 Transaction Writer to mutate WordPress. A future publisher adapter requires separate credentials, supported WordPress APIs, exact existing-post lookup and independent read-back/replay acceptance before unattended publishing is permitted.
+
+
+## 24 November 2026 — Water intelligence secondary discovery lane
+
+- Expanded Water Alert Publisher policy from official-source-only discovery to a two-lane model.
+- Lane 1 remains publication-eligible only after exact verification of registered official City of Tshwane, Johannesburg Water, Rand Water or later approved municipal sources.
+- Lane 2 now scans credible local news, community publications, municipal reporting and relevant public social signals for early discovery.
+- Lane 2 is explicitly **not publication authority**. A secondary-only report remains `REVIEW_REQUIRED` until an official source corroborates the event.
+- The active Water Alert Publisher automation was updated to use this rule while retaining dedupe, exact area-page linking, SEO/AEO/GEO, schema and post-publish verification.
+- No production MAGOS runtime deployment is claimed from this documentation update.
