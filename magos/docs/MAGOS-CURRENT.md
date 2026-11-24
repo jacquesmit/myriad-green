@@ -466,3 +466,10 @@ For each real MAGOS code change:
 - A dedicated CI workflow packages only the reviewed PHP + CSS into a reproducible ZIP with SHA-256.
 
 **Truth:** source implementation is a candidate until exact-head CI passes. The plugin is not yet installed live; no HOSTAFRICA runtime deployment or unattended WordPress publish has been validated from this code path.
+
+
+### Water Alert Publisher merge evidence
+
+- PR #100 merged into `main` at `96562c1ab2eda4ea983eced2a9e754edc508f5f8`; exact PR head `7a575f8c3a534856a8acefae422a34d0326b9746` passed all five relevant GitHub workflows.
+- Reproducible WordPress plugin artifact was produced and checksummed.
+- Live deployment remains **BLOCKED / NOT VALIDATED** because the connected WPVibe plugin installer accepts repository slugs only and cannot upload this private GitHub ZIP artifact. Do not substitute a theme/snippet hack for the reviewed plugin boundary.
