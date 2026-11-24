@@ -612,3 +612,38 @@ Three independently merged/tested development changes now exist on GitHub `main`
 - WPVibe connected WordPress read-only: legacy quote bridge **0.3.2** installed, reviewed client receipt route `/mgos/v1/quote-acceptance/verify-v2` **404 rest_no_route**, client signing page ID 9481 **draft**. This is direct live evidence of why signed-quote verification is still blocked; no client approval/payment/job writes were made.
 - Added shared signing readiness check with separate page/companion error codes, protected operator API and Quotes workspace **Check client signing readiness** control. Even when both dependencies pass, result is only READY_FOR_CONTROLLED_SIGNING_TEST, never complete business signing or payment authorization. Tests for failure, success candidate, HTTP token isolation and no writer invocation.
 - Branch `codex/magos-wordpress-client-signing-readiness-20261122`, CI/merge pending. HostAfrica latest Node runtime SHA, signed customer receipt, WordPress companion installation, page publishing and entire MAGOS golden customer path remain NOT VERIFIED.
+
+
+## 24 November 2026 — Water Intelligence / Alert Publisher V1 candidate
+
+**Branch:** `codex/magos-water-alert-publisher-20261124`
+
+### Implemented on candidate branch
+- New deterministic module: `magos/content/water-alert-publisher.js`.
+- New source/publishing policy: `magos/rules/water-alert-publisher.v1.json`.
+- New dedicated system specification: `magos/docs/MAGOS-WATER-ALERT-PUBLISHER-V1.md`.
+- New tests: `magos/tests/water-alert-publisher.test.js` and `magos/tests/water-alert-runtime.test.js`.
+- New authenticated read-only endpoint: `POST /v1/content/water-alert/plan`.
+
+### Functional contract
+The planner accepts a municipal water notice and returns a side-effect-free publication plan. It:
+1. validates registered provider and exact official domain/social account;
+2. requires immutable source event identity, effective date, registered alert type and affected area;
+3. derives `WATER_ALERT|<PROVIDER>|<SOURCE_EVENT_ID>` plus a content fingerprint;
+4. distinguishes new post, same-source update and exact duplicate no-op;
+5. classifies `ACTIVE / RECENT / HISTORICAL`;
+6. maps only exact published Myriad Green area pages from a supplied site index;
+7. attaches approved outage/backup-water, pump, irrigation and commerce routes;
+8. prepares SEO/AEO/GEO metadata and BlogPosting/FAQ schema requirements.
+
+### Truth state
+- **CODED:** PASS on branch.
+- **LOCAL/CI TEST RESULT:** PENDING until GitHub CI runs on exact PR head.
+- **RUNTIME DEPLOYED:** NOT VERIFIED.
+- **WORDPRESS AUTO-PUBLISH:** NOT IMPLEMENTED.
+- **LIVE CREATE/UPDATE READ-BACK:** NOT VALIDATED.
+- **SAME-SOURCE REPLAY / NO DUPLICATE:** NOT VALIDATED against WordPress.
+- **SITEMAP/INDEXABILITY READ-BACK:** NOT VALIDATED through the future adapter.
+- **PRODUCTION COMPLETE:** NO.
+
+This deliberately preserves the existing MAGOS boundary: the read-only planner is not a new business writer and does not use the P3 Transaction Writer to mutate WordPress. A future publisher adapter requires separate credentials, supported WordPress APIs, exact existing-post lookup and independent read-back/replay acceptance before unattended publishing is permitted.
