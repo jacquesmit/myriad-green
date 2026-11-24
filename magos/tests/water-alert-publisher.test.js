@@ -103,3 +103,19 @@ test('official website source requires approved provider domain',()=>{
     source_account:''
   }))).verified,false);
 });
+
+test('social account must match the account encoded in the source URL',()=>{
+  const plan=buildPublicationPlan(notice({
+    source_account:'CityTshwane',
+    source_url:'https://x.com/ImposterAccount/status/123'
+  }),{now:new Date('2026-11-24T12:00:00Z')});
+  assert.equal(plan.state,'REVIEW_REQUIRED');
+  assert.ok(plan.reason_codes.includes('SOURCE_ACCOUNT_URL_MISMATCH'));
+});
+test('verified source still requires explicit source evidence',()=>{
+  const plan=buildPublicationPlan(notice({evidence:[]}),{
+    now:new Date('2026-11-24T12:00:00Z')
+  });
+  assert.equal(plan.state,'REVIEW_REQUIRED');
+  assert.ok(plan.reason_codes.includes('MISSING_EVIDENCE'));
+});
