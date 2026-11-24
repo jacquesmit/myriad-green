@@ -286,14 +286,20 @@ final class MAGOS_Water_Alert_Publisher {
         }
 
         $content=self::render_content($payload);
+        $featured=absint($post['featured_media_id']??0);
+        if($featured && (get_post_type($featured)!=='attachment' || !wp_attachment_is_image($featured))) {
+            return new WP_Error('magos_water_alert_featured_media_invalid','Featured media is not a valid image attachment.',['status'=>409]);
+        }
+
         $data=[
             'post_type'=>'post','post_status'=>'publish','post_title'=>$title,
             'post_name'=>$slug,'post_excerpt'=>$excerpt,'post_content'=>$content,
-            'post_category'=>[$category],'tags_input'=>$tags
+            'post_category'=>[$category]
         ];
         if($existing)$data['ID']=$existing;
         $post_id=wp_insert_post(wp_slash($data),true);
         if(is_wp_error($post_id))return $post_id;
+        if($tags) wp_set_post_terms($post_id,$tags,'post_tag',false);
 
         update_post_meta($post_id,self::SOURCE_META,$source_key);
         update_post_meta($post_id,self::FINGERPRINT_META,$fingerprint);
@@ -303,13 +309,7 @@ final class MAGOS_Water_Alert_Publisher {
         update_post_meta($post_id,self::FAQ_META,is_array($post['faq']??null)?$post['faq']:[]);
         self::write_seo_meta($post_id,$post['seo']??[]);
 
-        $featured=absint($post['featured_media_id']??0);
-        if($featured){
-            if(get_post_type($featured)!=='attachment' || !wp_attachment_is_image($featured)) {
-                return new WP_Error('magos_water_alert_featured_media_invalid','Featured media is not a valid image attachment.',['status'=>409]);
-            }
-            set_post_thumbnail($post_id,$featured);
-        }
+        if($featured) set_post_thumbnail($post_id,$featured);
         clean_post_cache($post_id);
         return self::response($post_id,$existing?'UPDATE_EXISTING':'CREATE_NEW',$source_key,$fingerprint);
     }
