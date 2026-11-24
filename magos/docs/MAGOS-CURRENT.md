@@ -453,3 +453,16 @@ For each real MAGOS code change:
 - **Discovery lane:** credible local news, community publications, municipal reporting and public social signals may identify an event, but remain verification-only until an official source corroborates the facts.
 - Secondary-only reports must remain `REVIEW_REQUIRED`; they do not authorize a public post.
 - This expands detection coverage without weakening source provenance or duplicate controls.
+
+
+## 24 November 2026 — Water Alert WordPress publisher candidate
+
+- Water Intelligence / Alert Publisher V1 planner from PR #99 is merged into `main` at `d0320a06338b61a6e1ee87a0aead937d6c0aff38`.
+- New candidate branch `codex/magos-water-alert-wordpress-publisher-20261124` adds a dedicated WordPress companion plugin and Node publisher adapter.
+- The WordPress boundary is idempotent by immutable source key + content fingerprint: CREATE_NEW, UPDATE_EXISTING or DUPLICATE_NO_OP. Duplicate source-key ambiguity blocks.
+- The runtime publication endpoint uses a separate credential and re-verifies official source + ACTIVE lifecycle. Caller-supplied ready/verified flags, existing-post claims and area-index claims are not publication authority.
+- Public acceptance requires canonical REST read-back, live HTML provenance markers, FAQ schema and Rank Math post-sitemap inclusion.
+- Live WordPress taxonomy was checked before coding: category `local-water-alerts`; tags `tshwane-water`, `johannesburg-water`, `water-tankers`, `water-interruption`, `backup-water`, `booster-pumps`, `jojo-tanks`, `low-water-pressure` exist.
+- A dedicated CI workflow packages only the reviewed PHP + CSS into a reproducible ZIP with SHA-256.
+
+**Truth:** source implementation is a candidate until exact-head CI passes. The plugin is not yet installed live; no HOSTAFRICA runtime deployment or unattended WordPress publish has been validated from this code path.
