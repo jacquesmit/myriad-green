@@ -12,18 +12,45 @@
   "providers": {
     "CITY_OF_TSHWANE": {
       "display_name": "City of Tshwane",
-      "official_domains": ["tshwane.gov.za"],
-      "official_social_accounts": ["CityTshwane"]
+      "official_domains": [
+        "tshwane.gov.za"
+      ],
+      "official_social_accounts": [
+        "CityTshwane"
+      ],
+      "official_social_domains": [
+        "x.com",
+        "twitter.com"
+      ]
     },
     "JOHANNESBURG_WATER": {
       "display_name": "Johannesburg Water",
-      "official_domains": ["johannesburgwater.co.za", "joburg.org.za"],
-      "official_social_accounts": ["JHBWater", "JohannesburgWater"]
+      "official_domains": [
+        "johannesburgwater.co.za",
+        "joburg.org.za"
+      ],
+      "official_social_accounts": [
+        "JHBWater",
+        "JohannesburgWater"
+      ],
+      "official_social_domains": [
+        "x.com",
+        "twitter.com"
+      ]
     },
     "RAND_WATER": {
       "display_name": "Rand Water",
-      "official_domains": ["randwater.co.za"],
-      "official_social_accounts": ["Rand_Water", "RandWater"]
+      "official_domains": [
+        "randwater.co.za"
+      ],
+      "official_social_accounts": [
+        "Rand_Water",
+        "RandWater"
+      ],
+      "official_social_domains": [
+        "x.com",
+        "twitter.com"
+      ]
     }
   },
   "lifecycle": {
@@ -40,22 +67,58 @@
   },
   "internal_links": {
     "primary": [
-      {"role":"OUTAGE_BACKUP","url":"https://myriadgreen.co.za/water-backup-solutions-during-outages/"},
-      {"role":"MUNICIPAL_BACKUP","url":"https://myriadgreen.co.za/rainwater-harvesting-systems/municipal-water-backup-solutions/"},
-      {"role":"BACKUP_WATER_HUB","url":"https://myriadgreen.co.za/water-systems/"}
+      {
+        "role": "OUTAGE_BACKUP",
+        "url": "https://myriadgreen.co.za/water-backup-solutions-during-outages/"
+      },
+      {
+        "role": "MUNICIPAL_BACKUP",
+        "url": "https://myriadgreen.co.za/rainwater-harvesting-systems/municipal-water-backup-solutions/"
+      },
+      {
+        "role": "BACKUP_WATER_HUB",
+        "url": "https://myriadgreen.co.za/water-systems/"
+      }
     ],
     "secondary": [
-      {"role":"WATER_STORAGE","url":"https://myriadgreen.co.za/water-storage-during-outages/"},
-      {"role":"JOJO_INTEGRATION","url":"https://myriadgreen.co.za/jojo-tank-backup-integration/"},
-      {"role":"LOW_PRESSURE","url":"https://myriadgreen.co.za/low-water-pressure-solutions/"},
-      {"role":"PUMPS","url":"https://myriadgreen.co.za/borehole-and-pump-systems/"},
-      {"role":"IRRIGATION","url":"https://myriadgreen.co.za/irrigation-systems/"},
-      {"role":"EMERGENCY_SUPPORT","url":"https://myriadgreen.co.za/emergency-water-system-call-out-gauteng/"}
+      {
+        "role": "WATER_STORAGE",
+        "url": "https://myriadgreen.co.za/water-storage-during-outages/"
+      },
+      {
+        "role": "JOJO_INTEGRATION",
+        "url": "https://myriadgreen.co.za/jojo-tank-backup-integration/"
+      },
+      {
+        "role": "LOW_PRESSURE",
+        "url": "https://myriadgreen.co.za/low-water-pressure-solutions/"
+      },
+      {
+        "role": "PUMPS",
+        "url": "https://myriadgreen.co.za/borehole-and-pump-systems/"
+      },
+      {
+        "role": "IRRIGATION",
+        "url": "https://myriadgreen.co.za/irrigation-systems/"
+      },
+      {
+        "role": "EMERGENCY_SUPPORT",
+        "url": "https://myriadgreen.co.za/emergency-water-system-call-out-gauteng/"
+      }
     ],
     "shop": [
-      {"role":"TANK_SHOP","url":"https://myriadgreen.co.za/shop-water-storage-tanks/"},
-      {"role":"PUMP_SHOP","url":"https://myriadgreen.co.za/shop-water-pumps/"},
-      {"role":"IRRIGATION_SHOP","url":"https://myriadgreen.co.za/shop-irrigation-equipment/"}
+      {
+        "role": "TANK_SHOP",
+        "url": "https://myriadgreen.co.za/shop-water-storage-tanks/"
+      },
+      {
+        "role": "PUMP_SHOP",
+        "url": "https://myriadgreen.co.za/shop-water-pumps/"
+      },
+      {
+        "role": "IRRIGATION_SHOP",
+        "url": "https://myriadgreen.co.za/shop-irrigation-equipment/"
+      }
     ]
   }
 }
