@@ -120,5 +120,17 @@
         "url": "https://myriadgreen.co.za/shop-irrigation-equipment/"
       }
     ]
+  },
+  "discovery": {
+    "secondary_sources_allowed": true,
+    "publication_eligible": false,
+    "purpose": "DISCOVERY_AND_CORROBORATION_ONLY",
+    "source_classes": [
+      "CREDIBLE_LOCAL_NEWS",
+      "COMMUNITY_PUBLICATION",
+      "PUBLIC_SOCIAL_SIGNAL",
+      "MUNICIPAL_REPORTING"
+    ],
+    "require_official_corroboration_before_publication": true
   }
 }
