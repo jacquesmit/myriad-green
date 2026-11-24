@@ -9,6 +9,7 @@ const { LiveAgentAuthority } = require('../agents/live-agent-authority');
 const { WorkflowRunner, WorkflowInputError } = require('../workflows/runner');
 const { listWorkflows } = require('../workflows/catalog');
 const { buildPublicationPlan } = require('../content/water-alert-publisher');
+const { makeWordPressWaterAlertPublisher } = require('../content/wordpress-water-alert-publisher');
 const { EventProcessor } = require('../processor/event-processor');
 const {
   GovernedProcessorRegistry,
@@ -88,6 +89,9 @@ function createRuntimeApp({
   systemCoverageReaderFactory = () => new (require('../processor/system-coverage').SystemCoverageReader)(),
   waterAlertPlanner = buildPublicationPlan,
   waterAlertNow = () => new Date(),
+  waterAlertPublishToken = process.env.MAGOS_WATER_ALERT_PUBLISH_TOKEN,
+  waterAlertFeaturedMediaId = Number(process.env.MAGOS_WP_WATER_ALERT_FEATURED_MEDIA_ID || 0),
+  waterAlertPublisherFactory = () => makeWordPressWaterAlertPublisher({ secret:waterAlertPublishToken }),
   eventDispatcherFactory = ({ writer }) =>
     new GovernedProcessorRegistry({ writer }),
   version = process.env.MAGOS_RUNTIME_VERSION || 'P2'
@@ -107,6 +111,7 @@ function createRuntimeApp({
   let liveAgentAuthority;
   let systemCoverageReader;
   let workflowRunner;
+  let waterAlertPublisher;
   const allowedLeadSources = parseAllowedLeadSources(leadIngressSources);
   const allowedSupplierEmailSources = parseAllowedSupplierEmailSources(supplierEmailIngressSources);
 
@@ -130,6 +135,11 @@ function createRuntimeApp({
   const getLiveAgentAuthority = () => {
     if (!liveAgentAuthority) liveAgentAuthority = liveAgentAuthorityFactory();
     return liveAgentAuthority;
+  };
+
+  const getWaterAlertPublisher = () => {
+    if(!waterAlertPublisher)waterAlertPublisher=waterAlertPublisherFactory();
+    return waterAlertPublisher;
   };
 
   const getWorkflowRunner = () => {
@@ -608,6 +618,60 @@ function createRuntimeApp({
       workflows:listWorkflows(),
       runtime:'GOVERNED_EVENT_RUNNER'
     });
+  });
+
+  // Separate CMS publication credential. It must not equal runtime, operator,
+  // ingress, finance, supplier or job-governance credentials.
+  const hasWaterAlertPublishToken=Boolean(waterAlertPublishToken) &&
+    String(waterAlertPublishToken).length>=32 &&
+    ![token,operatorReadToken,leadIngressToken,supplierEmailIngressToken,
+      supplierApprovalToken,jobCreationToken,procurementApprovalToken,
+      quoteSigningToken,quoteAcceptanceToken,directCostToken,provisionalCostToken]
+      .some(value=>constantTimeEqual(value,waterAlertPublishToken));
+  function requireWaterAlertPublish(req,res,next){
+    if(!hasWaterAlertPublishToken){
+      return res.status(503).json({error:'WATER_ALERT_PUBLISHER_NOT_CONFIGURED'});
+    }
+    if(!constantTimeEqual(req.get('X-MAGOS-Water-Alert-Token'),waterAlertPublishToken)){
+      return res.status(401).json({error:'UNAUTHORIZED'});
+    }
+    return next();
+  }
+
+  // Governed content publication boundary. The source is re-verified here;
+  // caller-supplied READY/verified flags or site-index data are ignored.
+  app.post('/v1/content/water-alert/publish',requireWaterAlertPublish,async(req,res)=>{
+    const notice=req.body?.notice;
+    if(!notice||typeof notice!=='object'||Array.isArray(notice)){
+      return res.status(400).json({error:'WATER_ALERT_NOTICE_REQUIRED'});
+    }
+    try{
+      const publisher=getWaterAlertPublisher();
+      const areaPages=await publisher.discoverAreaPages(
+        Array.isArray(notice.affected_areas)?notice.affected_areas:[]
+      );
+      const plan=waterAlertPlanner(notice,{
+        now:waterAlertNow(),existing_posts:[],site_index:{area_pages:areaPages}
+      });
+      if(plan.state!=='READY_TO_PUBLISH'){
+        return res.status(202).json({
+          ...plan,publishing_performed:false,
+          endpoint_mode:'VERIFIED_SOURCE_GATE'
+        });
+      }
+      const result=await publisher.publish({
+        plan,notice:plan.notice||notice,
+        featuredMediaId:Number.isInteger(waterAlertFeaturedMediaId)?waterAlertFeaturedMediaId:0
+      });
+      const status=['CREATE_NEW','UPDATE_EXISTING','DUPLICATE_NO_OP'].includes(result.state)
+        && result.verified===true ? 200 :
+        result.state==='REVIEW_REQUIRED' ? 202 : 503;
+      return res.status(status).json({
+        ...result,endpoint_mode:'WORDPRESS_PUBLISH_AND_READBACK'
+      });
+    }catch(error){
+      return res.status(503).json({error:'WATER_ALERT_PUBLISHER_UNAVAILABLE',detail:error.message});
+    }
   });
 
   // Read-only water intelligence planner. It verifies source provenance,
