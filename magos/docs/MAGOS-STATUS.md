@@ -657,3 +657,33 @@ This deliberately preserves the existing MAGOS boundary: the read-only planner i
 - Lane 2 is explicitly **not publication authority**. A secondary-only report remains `REVIEW_REQUIRED` until an official source corroborates the event.
 - The active Water Alert Publisher automation was updated to use this rule while retaining dedupe, exact area-page linking, SEO/AEO/GEO, schema and post-publish verification.
 - No production MAGOS runtime deployment is claimed from this documentation update.
+
+
+## 24 November 2026 — Water Alert WordPress publisher candidate
+
+**Merged prerequisite:** PR #99 → `main` at `d0320a06338b61a6e1ee87a0aead937d6c0aff38`.
+
+**Candidate branch:** `codex/magos-water-alert-wordpress-publisher-20261124`.
+
+### Source implementation
+- `magos/wordpress/mgos-water-alert-publisher.php`: dedicated bearer-authenticated REST publication/read-back boundary.
+- `magos/wordpress/assets/water-alert.css`: scoped responsive Journal alert presentation.
+- `magos/content/wordpress-water-alert-publisher.js`: pinned-origin MAGOS adapter with area-page discovery, create/update call, canonical read-back, public HTML/schema check and sitemap verification.
+- `POST /v1/content/water-alert/publish`: separate publisher credential; re-runs official-source and ACTIVE lifecycle gate before any CMS write.
+- Existing live WordPress category/tag slugs were checked through authenticated WPVibe before being put into rules. Missing configured tags/categories fail closed; the plugin never creates them automatically.
+- Reproducible package + dedicated GitHub workflow added.
+
+### Acceptance state
+- SOURCE CODED: PASS on candidate branch.
+- EXACT-HEAD CI: PENDING.
+- WORDPRESS PLUGIN INSTALLED: NO.
+- PRIVATE PUBLISH CREDENTIAL CONFIGURED: NOT VERIFIED.
+- LIVE CREATE + REST READ-BACK: NOT VALIDATED.
+- LIVE PUBLIC HTML + FAQ SCHEMA: NOT VALIDATED through adapter.
+- SAME-SOURCE IDENTICAL REPLAY: NOT VALIDATED live.
+- SAME-SOURCE CHANGED UPDATE: NOT VALIDATED live.
+- RANK MATH SITEMAP READ-BACK: NOT VALIDATED through adapter.
+- HOSTAFRICA NODE SHA / DEPLOYMENT: NOT VERIFIED for this candidate.
+- PRODUCTION COMPLETE: NO.
+
+No live Journal post, client record, payment, quote, supplier or job record was changed by the Git implementation itself.
