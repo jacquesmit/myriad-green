@@ -33,9 +33,14 @@ jobs:
       - uses: actions/checkout@v4
       - name: PHP syntax
         run: php -l magos/wordpress/mgos-water-alert-publisher.php
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: magos/package.json
       - name: Install MAGOS dependencies
         working-directory: magos
-        run: npm ci
+        run: npm install --no-audit --no-fund
       - name: Node publication tests
         run: node --test magos/tests/wordpress-water-alert-publisher.test.js magos/tests/wordpress-water-alert-plugin-source.test.js magos/tests/water-alert-publish-runtime.test.js
       - name: Build reproducible plugin
