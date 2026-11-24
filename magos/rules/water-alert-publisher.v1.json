@@ -21,7 +21,8 @@
       "official_social_domains": [
         "x.com",
         "twitter.com"
-      ]
+      ],
+      "tag_slug": "tshwane-water"
     },
     "JOHANNESBURG_WATER": {
       "display_name": "Johannesburg Water",
@@ -36,7 +37,8 @@
       "official_social_domains": [
         "x.com",
         "twitter.com"
-      ]
+      ],
+      "tag_slug": "johannesburg-water"
     },
     "RAND_WATER": {
       "display_name": "Rand Water",
@@ -50,7 +52,8 @@
       "official_social_domains": [
         "x.com",
         "twitter.com"
-      ]
+      ],
+      "tag_slug": null
     }
   },
   "lifecycle": {
@@ -63,7 +66,32 @@
     "require_source_event_id": true,
     "require_effective_date": true,
     "require_affected_area": true,
-    "wordpress_category_slug": "local-water-alerts"
+    "wordpress_category_slug": "local-water-alerts",
+    "tag_slugs_by_alert_type": {
+      "TANKER_DISTRIBUTION": [
+        "water-tankers",
+        "backup-water",
+        "jojo-tanks"
+      ],
+      "WATER_INTERRUPTION": [
+        "water-interruption",
+        "backup-water",
+        "jojo-tanks"
+      ],
+      "LOW_PRESSURE": [
+        "low-water-pressure",
+        "booster-pumps"
+      ],
+      "WATER_RESTRICTION": [
+        "backup-water"
+      ],
+      "RECOVERY_UPDATE": [
+        "water-interruption"
+      ],
+      "WATER_QUALITY": [
+        "backup-water"
+      ]
+    }
   },
   "internal_links": {
     "primary": [

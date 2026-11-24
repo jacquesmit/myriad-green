@@ -1,0 +1,61 @@
+name: MAGOS Water Alert WordPress Publisher
+on:
+  pull_request:
+    paths:
+      - 'magos/wordpress/mgos-water-alert-publisher.php'
+      - 'magos/wordpress/assets/water-alert.css'
+      - 'magos/content/wordpress-water-alert-publisher.js'
+      - 'magos/content/water-alert-publisher.js'
+      - 'magos/rules/water-alert-publisher.v1.json'
+      - 'magos/tests/wordpress-water-alert-publisher.test.js'
+      - 'magos/tests/wordpress-water-alert-plugin-source.test.js'
+      - 'magos/tests/water-alert-publish-runtime.test.js'
+      - 'magos/scripts/package-water-alert-plugin.sh'
+      - '.github/workflows/magos-water-alert-wp.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'magos/wordpress/mgos-water-alert-publisher.php'
+      - 'magos/wordpress/assets/water-alert.css'
+      - 'magos/content/wordpress-water-alert-publisher.js'
+      - 'magos/content/water-alert-publisher.js'
+      - 'magos/rules/water-alert-publisher.v1.json'
+      - 'magos/tests/wordpress-water-alert-publisher.test.js'
+      - 'magos/tests/wordpress-water-alert-plugin-source.test.js'
+      - 'magos/tests/water-alert-publish-runtime.test.js'
+      - 'magos/scripts/package-water-alert-plugin.sh'
+      - '.github/workflows/magos-water-alert-wp.yml'
+
+jobs:
+  publisher-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: PHP syntax
+        run: php -l magos/wordpress/mgos-water-alert-publisher.php
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: magos/package.json
+      - name: Install MAGOS dependencies
+        working-directory: magos
+        run: npm install --no-audit --no-fund
+      - name: Node publication tests
+        run: node --test magos/tests/wordpress-water-alert-publisher.test.js magos/tests/wordpress-water-alert-plugin-source.test.js magos/tests/water-alert-publish-runtime.test.js
+      - name: Build reproducible plugin
+        run: bash magos/scripts/package-water-alert-plugin.sh
+      - name: Verify ZIP contains only reviewed plugin files
+        run: |
+          unzip -l magos/dist/magos-water-alert-publisher.zip
+          test "$(unzip -Z1 magos/dist/magos-water-alert-publisher.zip | sort | tr '\n' ' ')" = "magos-water-alert-publisher/assets/water-alert.css magos-water-alert-publisher/magos-water-alert-publisher.php "
+          (cd magos/dist && sha256sum -c magos-water-alert-publisher.zip.sha256)
+      - name: Publish controlled install artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: magos-water-alert-publisher-plugin
+          path: |
+            magos/dist/magos-water-alert-publisher.zip
+            magos/dist/magos-water-alert-publisher.zip.sha256
+          if-no-files-found: error
+          retention-days: 30

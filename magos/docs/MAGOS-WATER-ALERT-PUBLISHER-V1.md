@@ -162,7 +162,7 @@ Source facts must remain source facts. Myriad Green service/product copy must be
 
 ## WordPress publishing boundary
 
-**Not yet enabled in this V1 candidate.**
+**Candidate adapter now implemented in Git; live installation and credentialed acceptance remain pending.**
 
 The planner returns:
 
@@ -215,7 +215,7 @@ Do not create daily filler posts when there is no material verified event.
 | WAP-05 | service/product link policy | CODED |
 | WAP-06 | SEO/AEO/GEO plan | CODED |
 | WAP-07 | unit + authenticated runtime endpoint tests | PASS on PR #99 GitHub CI |
-| WAP-08 | authenticated WordPress publisher adapter | NOT IMPLEMENTED |
+| WAP-08 | authenticated WordPress publisher adapter | CODED CANDIDATE |
 | WAP-09 | live create + read-back | NOT VALIDATED |
 | WAP-10 | same-key replay / no duplicate | NOT VALIDATED |
 | WAP-11 | update-existing live notice | NOT VALIDATED |
@@ -230,7 +230,7 @@ Do not create daily filler posts when there is no material verified event.
 
 **VALIDATED IN GIT:** PR #99 MAGOS Runtime P2, Document Extract and Evolving Status Gate passed on the reviewed implementation head. This is source/CI validation, not deployment.
 
-**NOT YET IMPLEMENTED:** autonomous WordPress publisher adapter.
+**IMPLEMENTED CANDIDATE:** separately authenticated WordPress companion plugin + MAGOS Node publisher adapter + protected runtime publish endpoint.
 
 **NOT PRODUCTION COMPLETE:** no HOSTAFRICA deployment of this feature, no live runtime endpoint acceptance and no unattended live WordPress write/read-back/replay test have occurred.
 
@@ -244,3 +244,55 @@ source -> plan -> create/update post -> Rank Math -> public read-back
 ```
 
 Only after that gate passes should the recurring automation be allowed to publish without operator intervention.
+
+
+## WordPress publisher adapter — candidate implementation
+
+Source files:
+
+- `magos/wordpress/mgos-water-alert-publisher.php`
+- `magos/wordpress/assets/water-alert.css`
+- `magos/content/wordpress-water-alert-publisher.js`
+- `magos/scripts/package-water-alert-plugin.sh`
+- `.github/workflows/magos-water-alert-wp.yml`
+
+Runtime boundary:
+
+`POST /v1/content/water-alert/publish`
+
+This endpoint uses `X-MAGOS-Water-Alert-Token`, which must be a separate >=32-character credential and cannot equal the runtime, operator, lead, supplier, quote, cost, job or procurement credentials.
+
+The runtime ignores caller claims that a notice is verified or publish-ready. It:
+
+1. reads the notice;
+2. discovers exact published Myriad Green area pages from the live WordPress REST index;
+3. re-runs the MAGOS source/lifecycle planner;
+4. stops at `REVIEW_REQUIRED` unless the source is verified and ACTIVE;
+5. sends only the server-created plan to the WordPress companion;
+6. reads the canonical post back by immutable source key;
+7. fetches the public post and verifies source/fingerprint markers plus FAQ schema;
+8. verifies the canonical post URL appears in `post-sitemap.xml`.
+
+### WordPress companion controls
+
+The companion:
+
+- authenticates with a dedicated bearer secret configured privately as `MAGOS_WATER_ALERT_PUBLISH_TOKEN`;
+- resolves an existing post by `_mgos_water_alert_source_key`;
+- returns `DUPLICATE_NO_OP` for an identical fingerprint;
+- updates the same post for a changed fingerprint;
+- refuses duplicate source-key ambiguity;
+- requires the existing `local-water-alerts` category;
+- resolves only pre-existing tag slugs and never creates taxonomy;
+- filters all internal links to `https://myriadgreen.co.za` URLs resolving to currently published WordPress objects;
+- stores source URL, alert type, affected areas and FAQ evidence as post metadata;
+- writes Rank Math title, description and focus keyword;
+- emits public provenance markers and FAQPage JSON-LD;
+- uses a scoped, versioned alert stylesheet;
+- validates optional featured media before the post write.
+
+### Reproducible release artifact
+
+The `MAGOS Water Alert WordPress Publisher` GitHub workflow lints the PHP source, runs the Node/runtime/source-contract tests, builds `magos-water-alert-publisher.zip`, verifies its file list and checksum, and uploads the ZIP + SHA-256 for controlled installation.
+
+A green artifact is **not** proof of live installation. Production PASS still requires exact plugin checksum, private credential configuration, route authentication tests, one controlled real-source create/read-back, same-key replay, same-source update, sitemap verification and rollback evidence.
