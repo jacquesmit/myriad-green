@@ -215,7 +215,7 @@ Do not create daily filler posts when there is no material verified event.
 | WAP-05 | service/product link policy | CODED |
 | WAP-06 | SEO/AEO/GEO plan | CODED |
 | WAP-07 | unit + authenticated runtime endpoint tests | PASS on PR #99 GitHub CI |
-| WAP-08 | authenticated WordPress publisher adapter | CODED CANDIDATE |
+| WAP-08 | authenticated WordPress publisher adapter | CODED + CI PASS; merged in PR #100 |
 | WAP-09 | live create + read-back | NOT VALIDATED |
 | WAP-10 | same-key replay / no duplicate | NOT VALIDATED |
 | WAP-11 | update-existing live notice | NOT VALIDATED |
@@ -296,3 +296,16 @@ The companion:
 The `MAGOS Water Alert WordPress Publisher` GitHub workflow lints the PHP source, runs the Node/runtime/source-contract tests, builds `magos-water-alert-publisher.zip`, verifies its file list and checksum, and uploads the ZIP + SHA-256 for controlled installation.
 
 A green artifact is **not** proof of live installation. Production PASS still requires exact plugin checksum, private credential configuration, route authentication tests, one controlled real-source create/read-back, same-key replay, same-source update, sitemap verification and rollback evidence.
+
+
+### Merge evidence — PR #100
+
+- PR #100 merged to `main` at `96562c1ab2eda4ea983eced2a9e754edc508f5f8`.
+- Exact PR head `7a575f8c3a534856a8acefae422a34d0326b9746` passed:
+  - MAGOS Water Alert WordPress Publisher;
+  - MAGOS Runtime P2;
+  - MAGOS Document Extract Tests;
+  - MAGOS Evolving Status Gate;
+  - MAGOS WordPress Signature Bridge.
+- Publisher workflow artifact `magos-water-alert-publisher-plugin` was produced with GitHub artifact digest `sha256:3e02b58eed858d6a591b6c07c38c4de422cdce25c0109ba795a6379919bc8fc9`.
+- This proves source/CI/package acceptance only. It does **not** prove the plugin is installed or enabled on live WordPress, that the dedicated secret is configured, or that HOSTAFRICA runs the merged Node SHA.
