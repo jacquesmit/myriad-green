@@ -32,7 +32,7 @@ Authenticated live WordPress plugin list and REST route checks were performed th
 | Myriad Green Quote Acceptance Bridge | ACTIVE | 0.3.2 · `mgos-quote-acceptance/mgos-quote-acceptance.php` | Live source is referenced in MAGOS docs; canonical plugin source file not found in current Git search | Legacy owner-test bridge is live; reviewed `verify-v2` route is absent | **PARTIAL / LEGACY** |
 | Myriad Green — Native Catalog Browser | ACTIVE | 0.1.0 · `mg-native-catalog-browser/mg-native-catalog-browser.php` | Plugin source file not found in current Git search | Live plugin activation confirmed; source-to-live reconciliation pending | **PARTIAL** |
 | MAGOS Reviewed Client Signature Receipt | **NOT INSTALLED / NOT ACTIVE** | Expected 0.1.0 · source `magos/wordpress/mgos-reviewed-client-signature.php` | SOURCE-CONTROLLED + reviewed packaging workflow exists | `/mgos/v1/quote-acceptance/verify-v2` returns `rest_no_route` | **FAIL deployment** |
-| MAGOS Water Alert Publisher | **NOT INSTALLED / NOT ACTIVE** | Expected 0.1.0 · source `magos/wordpress/mgos-water-alert-publisher.php` | SOURCE-CONTROLLED + CI PASS + reproducible ZIP artifact exists | `/mgos/v1/water-alert/status` returns `rest_no_route` | **FAIL deployment** |
+| MAGOS Water Alert Publisher | **ACTIVE** | Expected 0.1.0 · source `magos/wordpress/mgos-water-alert-publisher.php` | SOURCE-CONTROLLED + CI PASS + reproducible ZIP artifact exists | WP status 401 without token; authenticated NOT_FOUND | **PARTIAL — runtime route missing** |
 
 ## Immediate gaps
 
@@ -52,7 +52,7 @@ Do **not** mark customer signing production-ready until:
 
 ### 2. Water Alert Publisher
 
-The source-controlled publisher is merged and CI-tested, but it is not installed on live WordPress. Its REST route is absent.
+The source-controlled publisher is merged and CI-tested, and is now installed and active on live WordPress. Its REST route and dedicated authentication passed; Node runtime route is missing.
 
 Do **not** mark MAGOS water-alert auto-publishing production-complete until:
 
@@ -90,9 +90,14 @@ Whenever a new Myriad Green / MAGOS WordPress plugin is created or materially ch
 
 ## Current summary
 
-- Custom plugins confirmed live and active: **3**
-- Source-controlled reviewed plugins confirmed missing live: **2**
+- Custom plugins confirmed live and active: **4**
+- Source-controlled reviewed plugins confirmed missing live: **1**
 - Live custom plugins with unresolved Git-source reconciliation: **3**
 - WordPress plugin deployment layer overall: **PARTIAL**
 
 **Production-complete status:** **NO**.
+
+
+## 24 November 2026 — production release reconciliation (BLOCKED)
+HOSTAFRICA ticket #3957866 (22 Nov) confirmed production HEAD `88576e4595186e73259d5e4f32d2940ac8b4a569` on `codex/magos-production-intake-20261107`, clean tracked files, readable origin/main then `780bd0f3e3ce17ba7a0ed9d34e57e8b01c8b8954`, Node 20.20.2 and two MAGOS workers started after HEAD. This is historical evidence, not today's SHA. Tickets #9342462/#3622207 (11–12 Nov) approved the existing path/account-scoped recycle; do not request support again unless controlled local recovery fails. Reuse PR #65's `magos/scripts/hostafrica-release.sh` and existing preflight; do not create a parallel deployment path. Inspect first; reconcile host-only commits before checkout; pin tested main SHA, verify backup and private environment, recycle only scoped workers, verify loaded SHA and capability-specific endpoint, retain rollback receipt. No blind pull/reset or broad process kill. A new secret requires process reload, not a new app. A P5 health response is not release identity.
+24 Nov evidence: WPVibe plugin list exit 0, Water Alert Publisher 0.1.0 active; user confirmed configuration saved on both sides and website loads. Browser health P5 OK, readiness ready/auth_configured true; unauthenticated WP status 401; authenticated WP status returned NOT_FOUND for synthetic key (expected, no write). Authenticated empty POST to runtime /v1/content/water-alert/publish returned Cannot POST; expected 400 WATER_ALERT_NOTICE_REQUIRED from merged source. Runtime endpoint FAIL, actual running SHA and runtime token acceptance unverified; likely checkout lag or stale worker, not proven. No test article or server deployment performed. Do not repeat WP installation or credential setup. Next: existing controlled host release and empty POST smoke test, then real official-source acceptance/replay/update. Support escalation only after exact sanitized failure evidence. No credentials in Git or logs.

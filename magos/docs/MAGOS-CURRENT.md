@@ -2,10 +2,16 @@
 
 > **Authoritative current index.** Read this file **first**, then [MAGOS-STATUS.md](MAGOS-STATUS.md) for append-only engineering history, the relevant subsystem runbook, source code, CI, and live sources. Previous decisions stay discoverable. A historic claim never overrides newer verified source evidence. Never claim deployment or customer transaction acceptance from a GitHub merge.
 
-**As-of:** 2026-11-21 (Africa/Johannesburg); live WordPress rechecked after PR #56  
+**As-of:** 2026-11-24 (Africa/Johannesburg); latest release reconciliation below  
 **System:** MAGOS — the existing whole-business Myriad Green operating system, not a new product or collection of renamed agents.  
 **Repository:** [jacquesmit/myriad-green](https://github.com/jacquesmit/myriad-green)  
 **Production:** `https://runtime.myriadgreen.co.za` — Node worker deploy SHA **NOT VERIFIED** against current `main`; public health/ready URLs were inaccessible via available read-only tool on 2026-11-21, not proof of outage.
+
+
+
+## 24 November 2026 — production release reconciliation (BLOCKED)
+HOSTAFRICA ticket #3957866 (22 Nov) confirmed production HEAD `88576e4595186e73259d5e4f32d2940ac8b4a569` on `codex/magos-production-intake-20261107`, clean tracked files, readable origin/main then `780bd0f3e3ce17ba7a0ed9d34e57e8b01c8b8954`, Node 20.20.2 and two MAGOS workers started after HEAD. This is historical evidence, not today's SHA. Tickets #9342462/#3622207 (11–12 Nov) approved the existing path/account-scoped recycle; do not request support again unless controlled local recovery fails. Reuse PR #65's `magos/scripts/hostafrica-release.sh` and existing preflight; do not create a parallel deployment path. Inspect first; reconcile host-only commits before checkout; pin tested main SHA, verify backup and private environment, recycle only scoped workers, verify loaded SHA and capability-specific endpoint, retain rollback receipt. No blind pull/reset or broad process kill. A new secret requires process reload, not a new app. A P5 health response is not release identity.
+24 Nov evidence: WPVibe plugin list exit 0, Water Alert Publisher 0.1.0 active; user confirmed configuration saved on both sides and website loads. Browser health P5 OK, readiness ready/auth_configured true; unauthenticated WP status 401; authenticated WP status returned NOT_FOUND for synthetic key (expected, no write). Authenticated empty POST to runtime /v1/content/water-alert/publish returned Cannot POST; expected 400 WATER_ALERT_NOTICE_REQUIRED from merged source. Runtime endpoint FAIL, actual running SHA and runtime token acceptance unverified; likely checkout lag or stale worker, not proven. No test article or server deployment performed. Do not repeat WP installation or credential setup. Next: existing controlled host release and empty POST smoke test, then real official-source acceptance/replay/update. Support escalation only after exact sanitized failure evidence. No credentials in Git or logs.
 
 ## One truth table
 
@@ -473,3 +479,11 @@ For each real MAGOS code change:
 - PR #100 merged into `main` at `96562c1ab2eda4ea983eced2a9e754edc508f5f8`; exact PR head `7a575f8c3a534856a8acefae422a34d0326b9746` passed all five relevant GitHub workflows.
 - Reproducible WordPress plugin artifact was produced and checksummed.
 - Live deployment remains **BLOCKED / NOT VALIDATED** because the connected WPVibe plugin installer accepts repository slugs only and cannot upload this private GitHub ZIP artifact. Do not substitute a theme/snippet hack for the reviewed plugin boundary.
+
+
+## HOSTAFRICA resource-limited regression testing — 24 November 2026
+On exact candidate 78c351f4fe47370d9bdb0799dedfedd0a7d2554c, the default concurrent suite reported 614 pass / 5 fail (four SIGKILL file processes and one temporary local Git fixture assertion). Sequential rerun of all five affected files returned exit 0, 30 pass / 0 fail. Resource contention is strongly suggested, not independently proven. Actual origin/main access passed. On shared HOSTAFRICA use `npm run test:hostafrica` (Node test concurrency 1) in an isolated candidate checkout, with test-only configuration and no live business writes. Require a complete clean run, exact candidate SHA, retained log and exit 0 before approving deployment; a targeted retest does not replace the full suite. Do not upgrade npm or contact support solely for the initial failures. Full sequential suite, branch reconciliation, backup and live deployment remain pending. Production 88576e4595186e73259d5e4f32d2940ac8b4a569 preserved in verified local backup/magos-production-20261124; divergence 119/90. No production checkout or worker change. This named command is not yet a mechanically enforced release gate; PR review and exact-head tests pending.
+
+
+## Production branch reconciliation — 24 November 2026
+User-reported full sequential host test on pinned main 78c351f4fe47370d9bdb0799dedfedd0a7d2554c: 640 tests, 640 pass, zero fail/cancelled. This applies only to that candidate, not subsequent PR changes. Compared literal Express method/path declarations against production 88576e4595186e73259d5e4f32d2940ac8b4a569: no old literal routes missing; 24 added. Lead and supplier email adapters byte-identical. The old procurement approval HTTP regression file was absent on main despite the route remaining; restored its six tests unchanged from production in this PR to prevent regression of approval authority, generic-write denial and non-dispatch. Exact new PR-head CI and full semantic reconciliation remain pending. Old release-acceptance command was superseded in architecture by preflight and whole-system acceptance, but parity of all old checks is not yet certified. No live checkout or worker change. Verified local rollback branch points to original production SHA; not a full host backup.
