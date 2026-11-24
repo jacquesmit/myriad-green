@@ -27,10 +27,21 @@ Initial alert classes:
 
 The module is designed around the real Journal work already proven manually on Myriad Green: water notices need exact dates, affected areas, source provenance, internal links to relevant area/service/product pages, SEO/AEO/GEO structure and a clear `ACTIVE → RECENT → HISTORICAL` lifecycle.
 
+## Two-lane intelligence model
+
+MAGOS uses two distinct evidence lanes:
+
+1. **Official alert lane — publication-eligible.** Registered City of Tshwane, Johannesburg Water, Rand Water and later approved municipal sources may authorize a Journal create/update only after exact source verification.
+2. **News/community discovery lane — verification-only.** Credible local news, community publications, municipal reporting and relevant public social posts may surface an event for investigation, but they **cannot authorize publication**. MAGOS must locate and verify the corresponding official municipal/Rand Water source first. Without official corroboration the finding remains `REVIEW_REQUIRED`.
+
+This protects speed of discovery without allowing a media report, repost or community claim to become a Myriad Green factual alert by itself.
+
 ## Architecture
 
 ```text
-official municipal source
+news/community signal -> official-source corroboration gate
+                              |
+official municipal source ----+
   -> source verification
   -> immutable source_event_id
   -> normalized WaterAlertNotice
@@ -182,13 +193,14 @@ The intended schedule is a condition watch running several times per day.
 
 Each run:
 
-1. checks official municipal sources for material notices published since the previous successful run;
-2. normalizes and verifies them;
-3. checks existing Journal source keys;
-4. skips duplicates;
-5. prepares a publish/update plan;
-6. publishes only after the WordPress adapter passes production acceptance;
-7. otherwise reports the exact pending plan for operator execution.
+1. checks official municipal sources **and** secondary news/community sources for material water events since the previous successful run;
+2. treats secondary sources as discovery signals only and seeks official corroboration before any publication;
+3. normalizes and verifies officially corroborated notices;
+4. checks existing Journal source keys;
+5. skips duplicates;
+6. prepares a publish/update plan;
+7. publishes only after the WordPress adapter passes production acceptance;
+8. otherwise reports the exact pending plan for operator execution.
 
 Do not create daily filler posts when there is no material verified event.
 
