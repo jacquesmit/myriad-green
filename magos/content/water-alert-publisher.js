@@ -68,9 +68,20 @@ function verifyOfficialSource(notice){
   if(notice.source_channel==='OFFICIAL_SOCIAL'){
     const account=norm(notice.source_account);
     const allowed=(config.official_social_accounts||[]).map(norm);
-    return allowed.includes(account)
-      ? {verified:true,basis:'OFFICIAL_SOCIAL_ACCOUNT',provider:notice.provider}
-      : {verified:false,reason_code:'UNVERIFIED_SOCIAL_ACCOUNT'};
+    const host=hostname(notice.source_url);
+    if(!domainMatches(host,config.official_social_domains||[])){
+      return {verified:false,reason_code:'UNVERIFIED_SOCIAL_DOMAIN'};
+    }
+    let pathAccount='';
+    try{pathAccount=norm(new URL(notice.source_url).pathname.split('/').filter(Boolean)[0]);}
+    catch{pathAccount='';}
+    if(!allowed.includes(account)) {
+      return {verified:false,reason_code:'UNVERIFIED_SOCIAL_ACCOUNT'};
+    }
+    if(pathAccount && pathAccount!==account) {
+      return {verified:false,reason_code:'SOURCE_ACCOUNT_URL_MISMATCH'};
+    }
+    return {verified:true,basis:'OFFICIAL_SOCIAL_ACCOUNT',provider:notice.provider};
   }
 
   return {verified:false,reason_code:'UNSUPPORTED_SOURCE_CHANNEL'};
@@ -164,6 +175,7 @@ function buildPublicationPlan(input,{now=new Date(),existing_posts=[],site_index
   if(!notice.effective_date)failures.push('MISSING_EFFECTIVE_DATE');
   if(!notice.affected_areas.length)failures.push('MISSING_AFFECTED_AREA');
   if(!notice.title)failures.push('MISSING_TITLE');
+  if(!notice.evidence.length)failures.push('MISSING_EVIDENCE');
 
   if(failures.length){
     return {
