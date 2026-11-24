@@ -143,6 +143,13 @@ function internalLinks(notice,siteIndex={}){
     shop:rules.internal_links.shop
   };
 }
+function tagSlugs(notice){
+  const tags=new Set();
+  const providerTag=rules.providers?.[notice.provider]?.tag_slug;
+  if(providerTag)tags.add(providerTag);
+  for(const tag of rules.publishing?.tag_slugs_by_alert_type?.[notice.alert_type]||[])tags.add(tag);
+  return [...tags];
+}
 function seoPlan(notice){
   const provider=rules.providers[notice.provider]?.display_name || notice.provider;
   const place=notice.affected_areas.slice(0,3).join(', ');
@@ -208,6 +215,7 @@ function buildPublicationPlan(input,{now=new Date(),existing_posts=[],site_index
     content_fingerprint:hash,
     lifecycle,
     verification,
+    notice,
     existing_post_id:existing?.post_id||null,
     wordpress_adapter_required:true,
     post:{
@@ -222,6 +230,7 @@ function buildPublicationPlan(input,{now=new Date(),existing_posts=[],site_index
       tanker_points:notice.tanker_points,
       restrictions:notice.restrictions,
       faq:notice.faq,
+      tag_slugs:tagSlugs(notice),
       internal_links:internalLinks(notice,site_index),
       seo:seoPlan(notice)
     }
@@ -236,6 +245,7 @@ module.exports={
   fingerprint,
   exactAreaLinks,
   internalLinks,
+  tagSlugs,
   seoPlan,
   buildPublicationPlan
 };
