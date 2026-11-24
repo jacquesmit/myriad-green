@@ -66,3 +66,23 @@ Use this template:
 
 ## Governance
 This library is advisory, not proof of implementation. Existing verified requirements and production behaviour take precedence. Maintain change history in Git. MAGOS should reference the canonical file via repository link or synchronized documentation; do not claim a MAGOS runtime import without verification.
+
+## Verified design sources — 2026-11-24
+- **Navbar Gallery** — https://www.navbar.gallery/ — curated navigation gallery; inspect mega menus, dropdowns, search, mobile, and category navigation. Candidate: shop department and manufacturer navigation. Source checked 2026-11-24.
+- **Footer Design** — https://www.footer.design/ — curated footer gallery with grid, cards, typographic and animated examples. Candidate: service/contact footer. Source checked 2026-11-24.
+- **Scrolltide** — https://www.scrolltide.co/ — scroll-driven templates, components, sections and tutorials. Candidate: isolated, lightweight hero/section interactions; avoid copying Next.js/React/GSAP dependencies directly into Elementor without compatibility and performance assessment. Source checked 2026-11-24.
+- **Refero** — https://refero.design/ — real product pages, catalogue pages, filters, shopping flows and dashboards. Candidate: ecommerce product browsing and MAGOS dashboard information hierarchy. Source checked 2026-11-24.
+- **CTA Gallery** — exact intended website still TO_CONFIRM; do not invent URL.
+- **3D icons** — specific website(s) still TO_CONFIRM; license and performance checks mandatory.
+- **Superhero** — intended website/reference still TO_CONFIRM.
+
+### Safe adoption gate (mandatory)
+1. Identify existing WordPress/Elementor template, WooCommerce hooks, CSS/JS and MAGOS dependencies; capture baseline screenshots and functional tests.
+2. Select a specific pattern from a verified reference, record its URL and intended improvement. Treat it as inspiration, not a copy/paste mandate.
+3. Prototype in isolated scoped CSS/JS or staging/feature branch; avoid global selectors and framework conflicts. Respect reduced motion, keyboard accessibility and mobile performance.
+4. Test navigation, product variation images and pricing, cart, checkout, forms, WhatsApp, SEO metadata, responsive breakpoints and loading behaviour as applicable.
+5. Deploy only with approval and rollback. Record commit, screenshots, test results and production evidence. Do not mark COMPLETE without verification.
+6. Never install a new animation framework or rewrite a functioning section solely to imitate a reference.
+
+### Source-of-truth rule
+Main website repo is the proposed canonical library; ecommerce may mirror it, with a dated sync note. MAGOS integration remains PENDING until its documentation store/repository is located and verified. Future sources must include URL, pattern, compatibility, license, target component and adoption status.
