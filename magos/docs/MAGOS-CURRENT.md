@@ -20,6 +20,8 @@
 - Last measured whole-business capability map: 22 total, 0 fully PASS, 18 PARTIAL, 4 FAIL; site_complete:false, production_business_acceptance_verified:false. This snapshot predates final publishing replay; do not treat 18/22 as percent complete or invent a new count. Reconcile capability-specific gates against the tested release. Runtime release acceptance 100% (13/13); business acceptance remains PARTIAL.
 - Handover duplicated in Control Hub Core_Build_Queue L13 (CORE-012 cell note). Existing parent status unchanged.
 
+**P0 owner-approved usability gate:** conventional dashboard sign-in, secure sessions, MFA and role-based access. No cPanel/token entry for daily human access. See [dashboard authentication requirements](MAGOS-OPERATOR-DASHBOARD.md). DOCUMENTED, implementation and live acceptance pending.
+
 ### Next execution, in order
 1. Finish existing Water Alert Publisher: targeted Rank Math/LiteSpeed sitemap invalidation and bounded retry (no routine global purge); independent official notice content verification; legitimate changed-source update acceptance; securely connect existing scheduled Water Alert Publisher (no duplicate schedule, no secrets in prompts/Git); prove unattended run and safe failure reporting. Exact create/replay tests already PASS.
 2. Reconcile existing operator dashboard with verified runtime/capability evidence and expose publishing run outcomes, source links, review exceptions, freshness, next actions; preserve read-only boundary and separate governed action routes. No parallel dashboard or data store. UX/UI and reader-facing journal improvements separate deferred workstreams.
