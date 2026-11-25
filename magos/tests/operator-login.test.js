@@ -23,7 +23,7 @@ test('Google owner session is allowlisted, expiring, revocable across workers an
     async getToken(options){exchanges++;assert.equal(options.code,'fixture-code');assert.match(options.codeVerifier,/^[A-Za-z0-9_-]{43}$/);return {tokens:{id_token:'fixture-id-token'}};},
     async verifyIdToken(options){assert.equal(options.audience,'fixture-client');return {getPayload:()=>identity};}
   });
-  const make=()=>createRuntimeApp({token:'writer-secret',operatorReadToken:'operator-secret',waterAlertPublishToken:'publisher-secret',
+  const make=()=>createRuntimeApp({token:'writer-secret',operatorReadToken:'operator-secret',waterAlertPublishToken:'fixture-publisher-secret-not-for-production',
     operatorLogin:createOperatorLogin({env,now:()=>time,oauthFactory,audit:()=>{}}),
     startupGitStateReader:()=>({sha:'a'.repeat(40),dirty:false}),deployedCommitSha:'a'.repeat(40)});
   const servers=[http.createServer(make()),http.createServer(make())];
