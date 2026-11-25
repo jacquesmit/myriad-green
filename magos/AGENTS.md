@@ -1,5 +1,8 @@
 # MAGOS repository instructions
 
+## Mandatory current-state reconciliation before any task
+Read [MAGOS-CURRENT.md](docs/MAGOS-CURRENT.md) first, particularly its top authoritative handoff; then relevant source/runbook and append-only [MAGOS-STATUS.md](docs/MAGOS-STATUS.md). Historical blockers do not override newer verified evidence. Do not repeat completed deployment, authentication or acceptance tests absent changed code/configuration, new evidence or regression. Distinguish deployed SHA from documentation-only main HEAD, and release/readiness from business golden-path acceptance. Update CURRENT and STATUS together for material changes and reconcile affected Control Hub evidence. Do not use old chat summaries as authority over current verified records.
+
 For production hosting, runtime authentication, or live acceptance tasks, read
 [the production cPanel runbook](docs/CPANEL-PASSENGER-DEPLOY.md) first. Use its
 verified host settings and commands for `runtime.myriadgreen.co.za`. Check the
