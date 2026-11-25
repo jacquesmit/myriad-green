@@ -53,6 +53,10 @@
   let page = 0;
   let queuePage = 0;
   let credential = '';
+  let sessionActive = false;
+  let humanLoginConfigured = false;
+  let sessionExpiryTimer;
+  const authorized = () => sessionActive || Boolean(credential);
   let data;
   let coverage;
   let coverageRequest;
@@ -106,7 +110,7 @@
     $('search').value = recordId || '';
     hideDetail();
     renderView();
-    if (key === 'system' && !coverage && credential) loadCoverage();
+    if (key === 'system' && !coverage && authorized()) loadCoverage();
     if (recordId) {
       const record = data?.departments[key]?.records?.find(item => item.id === recordId);
       if (record) showDetail(record);
@@ -492,7 +496,7 @@
       const response = await read('/v1/operator/coverage',active.signal);
       if(!response.ok) throw new Error('COVERAGE_SOURCE_UNAVAILABLE');
       const result = await response.json();
-      if(coverageRequest !== active || !credential) return;
+      if(coverageRequest !== active || !authorized()) return;
       if(result.schema_version !== 'MAGOS_SYSTEM_COVERAGE_V1' ||
          !Array.isArray(result.capabilities) || result.side_effects !== false) {
         throw new Error('INVALID_COVERAGE_RESPONSE');
@@ -514,7 +518,7 @@
         source:{url:'https://docs.google.com/spreadsheets/d/1lxFrUEGeEojkxbpQiVfj1AxuB5C1ayaTzAT8rkaTObo/edit'}
       };
     }catch {
-      if(coverageRequest!==active || !credential)return;
+      if(coverageRequest!==active || !authorized())return;
       coverage={state:'UNAVAILABLE',records:[]};
     } finally {
       if(coverageRequest===active && department==='system')renderView();
@@ -529,7 +533,7 @@
     try{
       const response=await read('/v1/operator/deployment',active.signal);
       const result=await response.json();
-      if(!credential||result.schema_version!=='MAGOS_OPERATOR_DEPLOYMENT_V1'||
+      if(!authorized()||result.schema_version!=='MAGOS_OPERATOR_DEPLOYMENT_V1'||
          result.side_effects!==false)throw Error('DEPLOYMENT_UNAVAILABLE');
       if(response.status===200&&result.status==='PROCESS_START_GIT_MATCH'&&
          /^[0-9a-f]{40}$/.test(result.commit_sha)){
@@ -539,13 +543,14 @@
         output.textContent='Running code identity NOT VERIFIED — do not assume latest GitHub code is deployed';
       }
     }catch{
-      if(credential)output.textContent='Deployment identity unavailable — do not assume live release';
+      if(authorized())output.textContent='Deployment identity unavailable — do not assume live release';
     }finally{clearTimeout(deadline);}
   }
 
   function read(path, signal) {
     return fetch(path, {
-      headers: { 'X-MAGOS-Operator-Token': credential },
+      headers: credential ? { 'X-MAGOS-Operator-Token': credential } : {},
+      credentials: 'same-origin',
       cache: 'no-store',
       redirect: 'error',
       signal,
@@ -940,12 +945,18 @@
     coverageRequest = undefined;
     coverage = undefined;
     credential = '';
+    sessionActive = false;
+    clearTimeout(sessionExpiryTimer);
     data = undefined;
     $('deployment').textContent='Deployed code: not yet verified';
     $('credential').value = '';
     $('credential').disabled = false;
+    $('credential').hidden = humanLoginConfigured;
+    $('credential-label').hidden = humanLoginConfigured;
+    $('google-login').hidden = !humanLoginConfigured;
     $('load').disabled = false;
     $('load').textContent = 'Load live operations';
+    $('load').hidden = humanLoginConfigured;
     $('clear').hidden = true;
     $('asof').textContent = '';
     $('rows').replaceChildren();
@@ -958,12 +969,22 @@
     show('overview');
   }
 
-  $('clear').addEventListener('click', () => lock());
+  $('clear').addEventListener('click', async () => {
+    const wasSession = sessionActive;
+    lock(wasSession ? 'Signing out…' : undefined);
+    if (wasSession) {
+      try {
+        const response = await fetch('/operator/auth/logout',{method:'POST',credentials:'same-origin',cache:'no-store'});
+        if(!response.ok)throw Error('logout');
+        state('Signed out. Sign in with Google to continue.','Locked');
+      } catch { state('Local view cleared, but server logout failed. Retry sign-out or close this browser.','Review required','partial'); $('clear').hidden=false; sessionActive=true; }
+    }
+  });
   $('search').addEventListener('input', () => { page = 0; hideDetail(); renderRecords(); });
   $('login').addEventListener('submit', async event => {
     event.preventDefault();
     const entered = $('credential').value.trim();
-    if (!entered && !credential) {
+    if (!entered && !authorized()) {
       state('Enter the dashboard access token.', 'Locked');
       $('credential').focus();
       return;
@@ -982,7 +1003,7 @@
       const response = await read('/v1/operator/dashboard', active.signal);
       const result = await response.json();
       if (request !== active) return;
-      if (response.status === 401) return lock('The dashboard access token was rejected.');
+      if (response.status === 401) return lock('Access expired or rejected. Sign in again.');
       if (result.error === 'OPERATOR_ACCESS_NOT_CONFIGURED') return lock('Dashboard access has not been configured on the server.');
       if (!response.ok || result.schema_version !== 'MAGOS_OPERATOR_DASHBOARD/V1' || result.side_effects !== false ||
         !result.departments || !result.overview_counts || !Array.isArray(result.attention) || !Array.isArray(result.links)) {
@@ -995,6 +1016,8 @@
       hideDetail();
       $('asof').textContent = 'Checked ' + dateFormat.format(new Date(data.checked_at)) + ' SAST';
       $('load').textContent = 'Refresh operations';
+      $('load').hidden = false;
+      $('google-login').hidden = true;
       const departments = Object.values(data.departments);
       const unavailable = departments.filter(item => item.state === 'UNAVAILABLE').length;
       const conflicts = departments.reduce((total, item) => total + (item.conflict_count || 0), 0);
@@ -1013,4 +1036,24 @@
     }
   });
   renderView();
+  async function initializeLogin(){
+    try {
+      const response=await fetch('/operator/auth/status',{cache:'no-store',credentials:'same-origin'});
+      if(!response.ok)return;
+      const status=await response.json();
+      humanLoginConfigured=status.configured===true;
+      if(!humanLoginConfigured)return;
+      $('credential').hidden=true;
+      $('credential-label').hidden=true;
+      $('google-login').hidden=status.authenticated===true;
+      $('load').hidden=status.authenticated!==true;
+      sessionActive=status.authenticated===true;
+      if(sessionActive){
+        sessionExpiryTimer=setTimeout(()=>lock('Session expired. Sign in again.'),Math.max(0,status.expires_at-Date.now()));
+        $('login').requestSubmit();
+      }else state('Sign in with your approved Google account.','Locked');
+    }catch{/* Existing token access remains available if status is unavailable. */}
+  }
+  window.addEventListener('pageshow',event=>{if(event.persisted){lock();void initializeLogin();}});
+  void initializeLogin();
 })();
