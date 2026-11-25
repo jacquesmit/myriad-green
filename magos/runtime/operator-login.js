@@ -157,7 +157,7 @@ function createOperatorLogin({
     app.get('/operator/auth/status',(req,res)=>{
       noStore(res);
       const active=session(req);
-      res.json({configured:configured&&enabled(),authenticated:Boolean(active),
+      res.json({configured,available:enabled(),authenticated:Boolean(active),
         expires_at:active?active.expires:null});
     });
     app.get('/operator/auth/start',(req,res)=>{
@@ -177,11 +177,11 @@ function createOperatorLogin({
     app.get('/operator/auth/callback',async(req,res)=>{
       noStore(res);
       res.clearCookie(FLOW,cookieOptions);
-      const fail=()=>{if(privateDirectory())event('LOGIN_DENIED');return res.redirect(303,'/operator?login=failed');};
-      if(!enabled())return fail();
+      const fail=(record=true)=>{if(record&&privateDirectory())event('LOGIN_DENIED');return res.redirect(303,'/operator?login=failed');};
+      if(!enabled())return fail(false);
       const flow=unsign(cookie(req,FLOW));
       if(!flow||flow.epoch!==epoch()||!same(req.query.state,flow.state)||typeof req.query.code!=='string'||
-        req.query.code.length>4096)return fail();
+        req.query.code.length>4096)return fail(false);
       try {
         const oauth=oauthFactory(clientId,clientSecret);
         const {tokens}=await oauth.getToken({code:req.query.code,codeVerifier:flow.verifier,redirect_uri:CALLBACK});
