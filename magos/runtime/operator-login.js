@@ -50,6 +50,60 @@ function createOperatorLogin({
         (stat.mode & 0o077)===0 && (typeof process.getuid!=='function'||stat.uid===process.getuid());
     } catch { return false; }
   }
+  // Shared local worker security state. No raw cookie, provider token or password
+  // is written to the audit trail. Security files live outside the web root.
+  const epochFile = () => path.join(dir,'revocation-epoch');
+  const disabledFile = () => path.join(dir,'owner-login-disabled');
+  function epoch() {
+    try {
+      const value=fs.readFileSync(epochFile(),'utf8');
+      return validId(value)?value:null;
+    }catch(e){return e.code==='ENOENT'?'initial':null;}
+  }
+  function enabled() {
+    if(!privateDirectory()||epoch()===null)return false;
+    try {fs.lstatSync(disabledFile());return false;}
+    catch(e){return e.code==='ENOENT';}
+  }
+  function event(type) {
+    try {
+      const date=new Date(now()).toISOString();
+      const day=date.slice(0,10);
+      const target=path.join(dir,'audit-'+day+'.jsonl');
+      const fd=fs.openSync(target,fs.constants.O_WRONLY|fs.constants.O_APPEND|fs.constants.O_CREAT|fs.constants.O_NOFOLLOW,0o600);
+      try {
+        const st=fs.fstatSync(fd);
+        if(!st.isFile()||(st.mode&0o077)!==0||st.size>=2*1024*1024)return false;
+        fs.writeSync(fd,JSON.stringify({at:date,event:type})+'\n');
+      }finally{fs.closeSync(fd);}
+      try{audit(type);}catch{}
+      return true;
+    }catch{return false;}
+  }
+  function history() {
+    const result=[];
+    const files=fs.readdirSync(dir).filter(n=>/^audit-\d{4}-\d{2}-\d{2}\.jsonl$/.test(n)).sort().reverse().slice(0,7);
+    for(const name of files){
+      const target=path.join(dir,name),st=fs.lstatSync(target);
+      if(!st.isFile()||st.isSymbolicLink()||(st.mode&0o077)!==0||st.size>2*1024*1024+1024)continue;
+      for(const line of fs.readFileSync(target,'utf8').trim().split('\n').reverse()){
+        try{
+          const row=JSON.parse(line);
+          if(typeof row.at==='string'&&/^[A-Z_]{1,40}$/.test(row.event))result.push({at:row.at,event:row.event});
+        }catch{}
+        if(result.length>=100)return result;
+      }
+    }
+    return result;
+  }
+  function rotateEpoch() {
+    const tmp=path.join(dir,'epoch-'+random()+'.tmp');
+    try {
+      fs.writeFileSync(tmp,random(),{mode:0o600,flag:'wx'});
+      fs.renameSync(tmp,epochFile());
+      return true;
+    }catch{try{fs.unlinkSync(tmp);}catch{}return false;}
+  }
   const file = id => path.join(dir,digest(id)+'.json');
   function sign(data) {
     const encoded=Buffer.from(JSON.stringify(data)).toString('base64url');
@@ -76,13 +130,13 @@ function createOperatorLogin({
   }
   function session(req) {
     const id=cookie(req,SESSION);
-    if(!validId(id)||!privateDirectory())return null;
+    if(!validId(id)||!enabled())return null;
     try {
       const f=file(id),stat=fs.lstatSync(f);
       if(!stat.isFile()||stat.isSymbolicLink()||(stat.mode&0o077)!==0||stat.size>4096)return null;
       const s=JSON.parse(fs.readFileSync(f,'utf8'));
       if(!Number.isFinite(s.expires)||s.expires<=now()||
-        s.email!==ownerEmail||s.role!=='owner-read'||(ownerSub&&s.sub!==ownerSub))return null;
+        s.epoch!==epoch()||s.email!==ownerEmail||s.role!=='owner-read'||(ownerSub&&s.sub!==ownerSub))return null;
       return s;
     }catch{return null;}
   }
@@ -103,14 +157,14 @@ function createOperatorLogin({
     app.get('/operator/auth/status',(req,res)=>{
       noStore(res);
       const active=session(req);
-      res.json({configured:configured&&privateDirectory(),authenticated:Boolean(active),
+      res.json({configured:configured&&enabled(),authenticated:Boolean(active),
         expires_at:active?active.expires:null});
     });
     app.get('/operator/auth/start',(req,res)=>{
       noStore(res);
-      if(!privateDirectory())return res.status(503).send('Dashboard sign-in is not configured.');
+      if(!enabled())return res.status(503).send('Dashboard sign-in is not configured or has been disabled.');
       try {
-        const flow={state:random(),nonce:random(),verifier:random(),expires:now()+FLOW_MS};
+        const flow={state:random(),nonce:random(),verifier:random(),epoch:epoch(),expires:now()+FLOW_MS};
         const challenge=crypto.createHash('sha256').update(flow.verifier).digest('base64url');
         const url=oauthFactory(clientId,clientSecret).generateAuthUrl({
           access_type:'online',scope:['openid','email'],state:flow.state,nonce:flow.nonce,
@@ -123,10 +177,10 @@ function createOperatorLogin({
     app.get('/operator/auth/callback',async(req,res)=>{
       noStore(res);
       res.clearCookie(FLOW,cookieOptions);
-      const fail=()=>res.redirect(303,'/operator?login=failed');
-      if(!privateDirectory())return fail();
+      const fail=()=>{if(privateDirectory())event('LOGIN_DENIED');return res.redirect(303,'/operator?login=failed');};
+      if(!enabled())return fail();
       const flow=unsign(cookie(req,FLOW));
-      if(!flow||!same(req.query.state,flow.state)||typeof req.query.code!=='string'||
+      if(!flow||flow.epoch!==epoch()||!same(req.query.state,flow.state)||typeof req.query.code!=='string'||
         req.query.code.length>4096)return fail();
       try {
         const oauth=oauthFactory(clientId,clientSecret);
@@ -134,7 +188,7 @@ function createOperatorLogin({
         if(!tokens?.id_token)return fail();
         const ticket=await oauth.verifyIdToken({idToken:tokens.id_token,audience:clientId});
         const payload=ticket.getPayload();
-        if(!allowedIdentity(payload,flow)){audit('LOGIN_DENIED');return fail();}
+        if(!allowedIdentity(payload,flow)||!enabled()||flow.epoch!==epoch())return fail();
         // Prune expired sessions only after an independently authenticated login.
         for(const name of fs.readdirSync(dir)){
           if(!/^[a-f0-9]{64}\.json$/.test(name))continue;
@@ -147,12 +201,27 @@ function createOperatorLogin({
         const old=cookie(req,SESSION);
         if(validId(old)&&!revoke(old))return fail();
         const id=random(),expires=now()+SESSION_MS;
-        fs.writeFileSync(file(id),JSON.stringify({sub:payload.sub,email:ownerEmail,role:'owner-read',expires}),
+        fs.writeFileSync(file(id),JSON.stringify({sub:payload.sub,email:ownerEmail,role:'owner-read',epoch:flow.epoch,expires}),
           {mode:0o600,flag:'wx'});
+        if(!event('LOGIN_SUCCESS')){revoke(id);return fail();}
         res.cookie(SESSION,id,{...cookieOptions,maxAge:SESSION_MS});
-        audit('LOGIN_SUCCESS');
         return res.redirect(303,'/operator');
-      }catch{audit('LOGIN_FAILED');return fail();}
+      }catch{return fail();}
+    });
+    app.get('/operator/auth/security',(req,res)=>{
+      noStore(res);
+      if(!session(req))return res.status(401).json({error:'UNAUTHORIZED'});
+      try{return res.json({owner_only:true,public_registration:false,session_hours:8,events:history()});}
+      catch{return res.status(503).json({error:'SECURITY_HISTORY_UNAVAILABLE'});}
+    });
+    app.post('/operator/auth/revoke-all',(req,res)=>{
+      noStore(res);
+      if(req.get('origin')!==ORIGIN)return res.status(403).json({error:'ORIGIN_REQUIRED'});
+      if(!session(req))return res.status(401).json({error:'UNAUTHORIZED'});
+      if(!rotateEpoch())return res.status(503).json({error:'SESSION_REVOCATION_FAILED'});
+      res.clearCookie(SESSION,cookieOptions);
+      res.clearCookie(FLOW,cookieOptions);
+      return res.json({authenticated:false,all_human_sessions_revoked:true,audit_recorded:event('REVOKE_ALL')});
     });
     app.post('/operator/auth/logout',(req,res)=>{
       noStore(res);
@@ -161,7 +230,7 @@ function createOperatorLogin({
       if(validId(id)&&!revoke(id))return res.status(503).json({error:'SESSION_REVOCATION_FAILED'});
       res.clearCookie(SESSION,cookieOptions);
       res.clearCookie(FLOW,cookieOptions);
-      audit('LOGOUT');
+      event('LOGOUT');
       return res.json({authenticated:false});
     });
   }
