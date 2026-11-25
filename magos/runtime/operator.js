@@ -1083,13 +1083,13 @@
       if(!humanLoginConfigured)return;
       $('credential').hidden=true;
       $('credential-label').hidden=true;
-      $('google-login').hidden=status.authenticated===true;
+      $('google-login').hidden=status.authenticated===true||status.available===false;
       $('load').hidden=status.authenticated!==true;
       sessionActive=status.authenticated===true;
       if(sessionActive){
         sessionExpiryTimer=setTimeout(()=>lock('Session expired. Sign in again.'),Math.max(0,status.expires_at-Date.now()));
         $('login').requestSubmit();
-      }else state('Sign in with your approved Google account.','Locked');
+      }else state(status.available===false?'Owner sign-in is currently unavailable or locked. Contact the owner.':'Sign in with your approved Google account.','Locked');
     }catch{/* Existing token access remains available if status is unavailable. */}
   }
   window.addEventListener('pageshow',event=>{if(event.persisted){lock();void initializeLogin();}});
