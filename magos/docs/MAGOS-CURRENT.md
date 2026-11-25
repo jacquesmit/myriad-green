@@ -2,14 +2,32 @@
 
 > **Authoritative current index.** Read this file **first**, then [MAGOS-STATUS.md](MAGOS-STATUS.md) for append-only engineering history, the relevant subsystem runbook, source code, CI, and live sources. Previous decisions stay discoverable. A historic claim never overrides newer verified source evidence. Never claim deployment or customer transaction acceptance from a GitHub merge.
 
-**As-of:** 2026-11-24 (Africa/Johannesburg); latest release reconciliation below  
+**As-of:** 2026-11-25 (Africa/Johannesburg); authoritative snapshot immediately below.
 **System:** MAGOS — the existing whole-business Myriad Green operating system, not a new product or collection of renamed agents.  
 **Repository:** [jacquesmit/myriad-green](https://github.com/jacquesmit/myriad-green)  
-**Production:** `https://runtime.myriadgreen.co.za` — Node worker deploy SHA **NOT VERIFIED** against current `main`; public health/ready URLs were inaccessible via available read-only tool on 2026-11-21, not proof of outage.
+**Production:** `https://runtime.myriadgreen.co.za` — tested release `b5e73575e092ef6abf39842e3ffb9ff44a45084e` DEPLOYED; 647/647 tests and 13/13 read-only preflight PASS.
 
 
 
-## 24 November 2026 — production release reconciliation (BLOCKED)
+## CURRENT AUTHORITATIVE HANDOFF — 25 November 2026 (SAST)
+
+**DEPLOYED_AND_READ_ONLY_PREFLIGHT_PASS. BUSINESS_GOLDEN_PATH=NOT_YET_VERIFIED.** This section supersedes every earlier runtime/hosting/dashboard-deployment blocker or pending statement in this file and historical documents. Do not repeat passed checks or treat a historical incident as an active blocker. Revalidate only when new evidence, changed code/configuration, or a genuine regression requires it.
+
+- Production release: [PR #104](https://github.com/jacquesmit/myriad-green/pull/104), exact tested/deployed SHA `b5e73575e092ef6abf39842e3ffb9ff44a45084e`. Owner supplied cPanel Terminal evidence: **647/647 sequential regression tests PASS**, zero failures/cancellations/skips/todos; **13/13 live read-only preflight checks PASS**, ready:true. Checkout SHA, tracked cleanliness, health, readiness, running worker SHA, Sheets audit, workflow inspection, canonical coverage, browser shell/assets, operator identity, auth isolation and 129 core records validated. This is release/read readiness, not full business write acceptance. Subsequent documentation-only commits do not require redeployment.
+- Resolved host issues: PR #103 restored six procurement regression tests and sequential HOSTAFRICA test script; initial candidate 646/646 tests but live preflight 10/13, safely rolled back. PR #104 fixed legacy worker Git incompatibility (child-process cwd instead of git -C). Control Hub service account Viewer access restored; canonical coverage 22/22 readable. Corrected release passed all 13 checks. Do not request fresh credentials, reinstall the app, contact hosting support or redeploy merely because old notes say BLOCKED.
+- Water Alert Publisher v0.1.0 installed/active, dedicated isolated auth configured privately on both systems. Planner READY_TO_PUBLISH, no side effects. Runtime publish route and WordPress status authentication PASS. Production post 10622 created, owner viewed public article, canonical and public readback PASS. Initially REVIEW_REQUIRED / WP_ALERT_SITEMAP_NOT_CONFIRMED; index/follow, canonical, BlogPosting and social metadata verified. Rank Math links per sitemap changed 199 to 201 (owner reported issue with 200), saved and LiteSpeed purged; exact URL subsequently present. Exact replay returned DUPLICATE_NO_OP, same ID and fingerprint, verified:true, public_readback:true, sitemap_verified:true, faq_schema_verified:true. No new duplicate. Domain validation is not independent factual source verification. [Article](https://myriadgreen.co.za/journal/tshwane-water-supply-update-24-november-2026/); [evidence register](MAGOS-WORDPRESS-PLUGIN-DEPLOYMENT-REGISTER.md).
+- Dashboard: existing [operator page](https://runtime.myriadgreen.co.za/operator) is hosted by the same runtime; release preflight verified shell/assets, operator deployment identity, auth isolation, canonical coverage and 129 core records. Do not describe dashboard as undeployed. Per-record UX, new growth/publishing panel, persistent run history and end-to-end business actions not accepted merely by read preflight. See [dashboard requirements](MAGOS-OPERATOR-DASHBOARD.md).
+- Last measured whole-business capability map: 22 total, 0 fully PASS, 18 PARTIAL, 4 FAIL; site_complete:false, production_business_acceptance_verified:false. This snapshot predates final publishing replay; do not treat 18/22 as percent complete or invent a new count. Reconcile capability-specific gates against the tested release. Runtime release acceptance 100% (13/13); business acceptance remains PARTIAL.
+- Handover duplicated in Control Hub Core_Build_Queue L13 (CORE-012 cell note). Existing parent status unchanged.
+
+### Next execution, in order
+1. Finish existing Water Alert Publisher: targeted Rank Math/LiteSpeed sitemap invalidation and bounded retry (no routine global purge); independent official notice content verification; legitimate changed-source update acceptance; securely connect existing scheduled Water Alert Publisher (no duplicate schedule, no secrets in prompts/Git); prove unattended run and safe failure reporting. Exact create/replay tests already PASS.
+2. Reconcile existing operator dashboard with verified runtime/capability evidence and expose publishing run outcomes, source links, review exceptions, freshness, next actions; preserve read-only boundary and separate governed action routes. No parallel dashboard or data store. UX/UI and reader-facing journal improvements separate deferred workstreams.
+3. Continue existing whole-business golden path: reviewed quote signing, bank/provider clearance, job release, procurement/stock/approved costs, field evidence, invoice/reconciliation, closeout and aftercare. Do not mark untested business workflows complete. Ecommerce payment/shipping/tax remains a separate acceptance track.
+4. Reuse detect → verify → decide → execute → read back → record → deduplicate across CRM, approved job evidence/case studies, GBP/SEO, reviews, maintenance, procurement, inventory, finance and ecommerce. These are opportunities, not claims of production implementation. Prefer durable existing canonical sources and executable named workflows over new agent names.
+5. On every material change update CURRENT, append STATUS, update affected runbook/register and operational Control Hub evidence. Keep exact tested/deployed SHA distinct from docs-only main HEAD. Other chats must read this current snapshot before acting.
+
+## HISTORICAL — 24 November initial release blocker (RESOLVED by PR #104; not current)
 HOSTAFRICA ticket #3957866 (22 Nov) confirmed production HEAD `88576e4595186e73259d5e4f32d2940ac8b4a569` on `codex/magos-production-intake-20261107`, clean tracked files, readable origin/main then `780bd0f3e3ce17ba7a0ed9d34e57e8b01c8b8954`, Node 20.20.2 and two MAGOS workers started after HEAD. This is historical evidence, not today's SHA. Tickets #9342462/#3622207 (11–12 Nov) approved the existing path/account-scoped recycle; do not request support again unless controlled local recovery fails. Reuse PR #65's `magos/scripts/hostafrica-release.sh` and existing preflight; do not create a parallel deployment path. Inspect first; reconcile host-only commits before checkout; pin tested main SHA, verify backup and private environment, recycle only scoped workers, verify loaded SHA and capability-specific endpoint, retain rollback receipt. No blind pull/reset or broad process kill. A new secret requires process reload, not a new app. A P5 health response is not release identity.
 24 Nov evidence: WPVibe plugin list exit 0, Water Alert Publisher 0.1.0 active; user confirmed configuration saved on both sides and website loads. Browser health P5 OK, readiness ready/auth_configured true; unauthenticated WP status 401; authenticated WP status returned NOT_FOUND for synthetic key (expected, no write). Authenticated empty POST to runtime /v1/content/water-alert/publish returned Cannot POST; expected 400 WATER_ALERT_NOTICE_REQUIRED from merged source. Runtime endpoint FAIL, actual running SHA and runtime token acceptance unverified; likely checkout lag or stale worker, not proven. No test article or server deployment performed. Do not repeat WP installation or credential setup. Next: existing controlled host release and empty POST smoke test, then real official-source acceptance/replay/update. Support escalation only after exact sanitized failure evidence. No credentials in Git or logs.
 
@@ -17,16 +35,16 @@ HOSTAFRICA ticket #3957866 (22 Nov) confirmed production HEAD `88576e4595186e732
 
 | Capability / layer | Implemented | Automated tests | Production validated | Precise state |
 | --- | --- | --- | --- | --- |
-| MAGOS Node runtime and Command Centre | YES | PASS in GitHub CI | NOT VERIFIED at current SHA | PARTIAL |
+| MAGOS Node runtime and Command Centre | YES | 647/647 sequential PASS | Exact deployed release and dashboard read preflight PASS | RELEASE PASS; business workflows PARTIAL |
 | Canonical CRM/lead intake, quotations, job lifecycle and workflow routing | CODE EXISTS | TESTED paths | Golden end-to-end NOT VERIFIED | PARTIAL |
 | Governed P3 writer and audit/ownership controls | YES | TESTED paths | Live new-action readback NOT VERIFIED | PARTIAL |
 | WordPress reviewed quote signing / acceptance | GitHub candidate + verifier; quote-line version race preconditions staged for review | Node/PHP CI tested; newest race regression CI PENDING | Live WPVibe checked 2026-11-21: companion `verify-v2` route MISSING, page 9481 DRAFT | FAIL for production |
 | Procurement and supplier approval | Governed stages, read-only and protected write paths | TESTED paths | Independent approval/provider acceptance incomplete | PARTIAL |
 | Supplier `Cost_Allocations`, invoice/GRN/stock checks and expense controls | Code merged, [#50–#55](https://github.com/jacquesmit/myriad-green/pulls?q=is%3Apr+is%3Amerged) | PASS on reviewed commits | Exact independent invoice/stock authority and live write unverified | PARTIAL |
 | Receivables, completion, costs, field evidence and aftercare inspection | Code exists, protected inspections | TESTED paths | Final closeout and bank/provider acceptance incomplete | PARTIAL |
-| Water Intelligence / Alert Publisher | Deterministic planner, rules, authenticated read-only endpoint and tests on PR #99 | GitHub CI PASS | WordPress publisher adapter / live replay NOT VALIDATED | PARTIAL / CANDIDATE |
+| Water Intelligence / Alert Publisher | Planner + live WordPress publisher | CI + host regression PASS | Post 10622 created; public/sitemap/FAQ and exact replay PASS | PARTIAL: unattended schedule, targeted sitemap refresh, source verification and update pending |
 | WooCommerce ecommerce / System Builder | Separate in-progress website work | Partial evidence | Full payment/shipping/tax and product hydraulic acceptance pending | PARTIAL / NOT READY |
-| HOSTAFRICA worker identification and release preflight | SHA attestation coded [#54](https://github.com/jacquesmit/myriad-green/pull/54) | PASS in CI | Worker deployment / release fingerprint NOT VERIFIED | BLOCKED |
+| HOSTAFRICA worker identification and release preflight | PR #104 corrected worker Git compatibility | 647/647 PASS | 13/13 preflight PASS on deployed SHA b5e73575 | PASS for release |
 | Continuous documentation / status reconciliation | Gate [PR #56](https://github.com/jacquesmit/myriad-green/pull/56) MERGED at `ec1510d526fa44c1b0de97436e19d125b0582beb` | Gate and document CI PASS | Required GitHub branch protection NOT VERIFIED | PASS for workflow; PARTIAL for enforcement |
 
 ## Source-of-truth files and order of reading
@@ -50,14 +68,14 @@ For each real MAGOS code change:
 
 ## Highest-leverage next production actions
 
-1. Verify HOSTAFRICA host checkout, running worker and `/v1/runtime/build` identity; deploy approved, tested source safely with backup/rollback and independently confirm loaded SHA. **Not done.**
+1. HOSTAFRICA release verification **DONE** on b5e73575; do not repeat solely because earlier incident records exist. Finish unattended publishing and dashboard evidence reconciliation as described in current handoff.
 2. Install and test the new reviewed WordPress signature companion and client page with controlled signed-quote acceptance, exact issued version/PDF and cleared funds before any job creation. **Not done.**
 3. Bind real approved invoice and physical stock attestations to supplier-cost workflow; perform one controlled P3 cost write/readback and duplicate replay. **Not done.**
 4. Finish golden journeys for intake → CRM → quote → signed acceptance → cleared payment → job → procurement → field evidence → invoice → reconciliation → warranty/aftercare, then web shop purchase-to-fulfilment separately. **Not done.**
 
 **Release rule:** code PASS ≠ production PASS. `UNKNOWN` is never `YES`.
 
-## Latest verified delivery / next gate
+## Historical delivery evidence (older than current handoff)
 
 - **PR #55** [merged](https://github.com/jacquesmit/myriad-green/pull/55) at `365dd70b64b169baac4e292812d393484191fa7b`: supplier job queue independent authorities and one source snapshot; runtime + document CI PASS.
 - **PR #56** [merged](https://github.com/jacquesmit/myriad-green/pull/56) at `ec1510d526fa44c1b0de97436e19d125b0582beb`: mandatory Markdown reconciliation gate, this current state file, append-only history. New MAGOS Evolving Status Gate CI run #1 PASS; Document Extract CI PASS.
@@ -489,7 +507,7 @@ On exact candidate 78c351f4fe47370d9bdb0799dedfedd0a7d2554c, the default concurr
 User-reported full sequential host test on pinned main 78c351f4fe47370d9bdb0799dedfedd0a7d2554c: 640 tests, 640 pass, zero fail/cancelled. This applies only to that candidate, not subsequent PR changes. Compared literal Express method/path declarations against production 88576e4595186e73259d5e4f32d2940ac8b4a569: no old literal routes missing; 24 added. Lead and supplier email adapters byte-identical. The old procurement approval HTTP regression file was absent on main despite the route remaining; restored its six tests unchanged from production in this PR to prevent regression of approval authority, generic-write denial and non-dispatch. Exact new PR-head CI and full semantic reconciliation remain pending. Old release-acceptance command was superseded in architecture by preflight and whole-system acceptance, but parity of all old checks is not yet certified. No live checkout or worker change. Verified local rollback branch points to original production SHA; not a full host backup.
 
 
-## Hosted deployment incident — 24 November 2026
+## HISTORICAL — hosted deployment incident, 24 November 2026 (resolved by PR #104)
 Exact merged candidate 4a559cfd777e65a2b797ee5b1ad6d50888d88522 passed 646/646 sequential cPanel tests (exit 0). Private application archive gzip integrity passed; original Git rollback reference retained. Deployment switched checkout and requested scoped worker recycle. Live preflight passed 10/13 checks including health, readiness, audit source, dashboard authentication isolation and 129 core records; failed running worker identity, operator deployment identity and canonical coverage. Operator restored original declaration and checkout 88576e4595186e73259d5e4f32d2940ac8b4a569, recycled worker, health returned P5 ok. Read-only diagnosis using worker PATH reproduced legacy Git rejecting -C; use child-process cwd instead, retaining exact SHA and clean tracked checkout attestation. Control Hub connector independently verified all required headers and 22 distinct valid capability IDs; hosted service-account read returned HTTP 403. Actual denial reason/identity and minimum read permission must be confirmed, not inferred or bypassed. No change to capability records. Water Alert Publisher remains installed/authenticated but live runtime integration blocked. No further production deployment until both host prerequisites pass. New correction CI and exact release validation pending.
 
 
