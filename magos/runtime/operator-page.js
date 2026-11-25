@@ -25,9 +25,18 @@ function operatorPage() {
           <input id="credential" type="password" autocomplete="off" spellcheck="false">
           <button id="load" type="submit">Load live operations</button>
           <button id="clear" class="secondary" type="button" hidden>Lock</button>
+          <button id="security-open" class="secondary" type="button" hidden>Users &amp; security</button>
         </div>
       </form>
       <p id="message" role="status">Enter your dashboard access token to load the MAGOS registers.</p>
+    </section>
+    <section id="security-panel" class="panel" aria-label="Users and security" hidden>
+      <div class="panel-head"><div><h3>Users &amp; security</h3><p>Owner only. Public registration disabled.</p></div>
+      <button id="security-close" class="secondary" type="button">Close</button></div>
+      <div class="panel-head"><p>Human sessions expire after eight hours. Sign out every device if access is compromised.</p>
+      <button id="revoke-all" class="secondary" type="button">Sign out all devices</button></div>
+      <div class="panel-head"><p id="security-message" role="status"></p></div>
+      <div class="table-wrap"><table><thead><tr><th scope="col">Time (SAST)</th><th scope="col">Security event</th></tr></thead><tbody id="security-events"></tbody></table></div>
     </section>
     <section id="overview" aria-labelledby="overview-title">
       <div class="section-heading"><div><p class="eyebrow">OPERATING PICTURE</p><h2 id="overview-title">Command Centre</h2></div><span id="asof"></span></div>
