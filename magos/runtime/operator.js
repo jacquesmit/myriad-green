@@ -946,6 +946,10 @@
     coverage = undefined;
     credential = '';
     sessionActive = false;
+    $('security-panel').hidden = true;
+    $('security-open').hidden = true;
+    $('security-events').replaceChildren();
+    $('security-message').textContent = '';
     clearTimeout(sessionExpiryTimer);
     data = undefined;
     $('deployment').textContent='Deployed code: not yet verified';
@@ -969,6 +973,39 @@
     show('overview');
   }
 
+  $('security-close').addEventListener('click',()=>{$('security-panel').hidden=true;});
+  $('security-open').addEventListener('click',async()=>{
+    if(!sessionActive)return;
+    $('security-panel').hidden=false;
+    $('security-events').replaceChildren();
+    $('security-message').textContent='Reading security history…';
+    try{
+      const response=await fetch('/operator/auth/security',{credentials:'same-origin',cache:'no-store'});
+      if(!sessionActive)return;
+      if(response.status===401){lock('Session expired. Sign in again.');return;}
+      if(!response.ok)throw Error('history');
+      const result=await response.json();
+      if(!sessionActive||$('security-panel').hidden)return;
+      for(const row of result.events||[]){
+        const tr=element('tr');
+        tr.append(element('td',dateFormat.format(new Date(row.at))),element('td',row.event.replaceAll('_',' ')));
+        $('security-events').append(tr);
+      }
+      $('security-message').textContent='Recent security events (up to 100).';
+    }catch{if(sessionActive)$('security-message').textContent='Security history unavailable.';}
+  });
+  $('revoke-all').addEventListener('click',async()=>{
+    if(!sessionActive||!window.confirm('Sign out all human dashboard sessions, including this device?'))return;
+    $('revoke-all').disabled=true;
+    try{
+      const response=await fetch('/operator/auth/revoke-all',{method:'POST',credentials:'same-origin',cache:'no-store'});
+      if(!response.ok)throw Error('revocation');
+      const result=await response.json();
+      if(!result.all_human_sessions_revoked)throw Error('revocation');
+      lock(result.audit_recorded?'All human sessions revoked. Sign in again.':'All human sessions revoked; audit recording unavailable.');
+    }catch{if(sessionActive)$('security-message').textContent='Revocation not confirmed. Try again.';}
+    finally{$('revoke-all').disabled=false;}
+  });
   $('clear').addEventListener('click', async () => {
     const wasSession = sessionActive;
     lock(wasSession ? 'Signing out…' : undefined);
@@ -1018,6 +1055,7 @@
       $('load').textContent = 'Refresh operations';
       $('load').hidden = false;
       $('google-login').hidden = true;
+      $('security-open').hidden = !sessionActive;
       const departments = Object.values(data.departments);
       const unavailable = departments.filter(item => item.state === 'UNAVAILABLE').length;
       const conflicts = departments.reduce((total, item) => total + (item.conflict_count || 0), 0);
