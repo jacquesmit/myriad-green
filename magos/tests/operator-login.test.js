@@ -78,7 +78,26 @@ test('Google owner session is allowlisted, expiring, revocable across workers an
     flowCookie=await begin();identity=owner();
     const second=await callback(flowCookie);
     const secondSession=second.headers.get('set-cookie').match(/__Host-magos_operator=[A-Za-z0-9_-]{43}/)[0];
+    const security=await request(other+'/operator/auth/security',{headers:{cookie:secondSession}});
+    assert.equal(security.status,200);
+    const history=await security.json();
+    assert.equal(history.owner_only,true);
+    assert.equal(history.public_registration,false);
+    assert.ok(history.events.some(e=>e.event==='LOGIN_SUCCESS'));
+    assert.ok(history.events.some(e=>e.event==='LOGIN_DENIED'));
+    assert.equal((await request(base+'/operator/auth/security')).status,401);
+    assert.equal((await request(base+'/operator/auth/revoke-all',{method:'POST',headers:{cookie:secondSession,origin:'https://evil.example'}})).status,403);
+    assert.equal((await request(base+'/operator/auth/revoke-all',{method:'POST',headers:{cookie:secondSession,origin:'https://runtime.myriadgreen.co.za'}})).status,200);
+    assert.equal((await read(other,secondSession)).status,401);
+    flowCookie=await begin();identity=owner();
+    const third=await callback(flowCookie);
+    const thirdSession=third.headers.get('set-cookie').match(/__Host-magos_operator=[A-Za-z0-9_-]{43}/)[0];
+    fs.writeFileSync(path.join(dir,'owner-login-disabled'),'disabled',{mode:0o600});
+    assert.equal((await read(other,thirdSession)).status,401);
+    assert.equal((await request(base+'/operator/auth/start')).status,503);
+    fs.unlinkSync(path.join(dir,'owner-login-disabled'));
     time+=8*60*60*1000+1;
+    assert.equal((await read(base,thirdSession)).status,401);
     assert.equal((await read(base,secondSession)).status,401);
   }finally{
     await Promise.all(servers.map(s=>new Promise(resolve=>{s.close(resolve);s.closeAllConnections?.();})));
