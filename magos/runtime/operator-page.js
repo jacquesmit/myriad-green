@@ -18,8 +18,9 @@ function operatorPage() {
       <span class="badge" id="connection">Locked</span>
     </header>
     <section class="access" aria-label="Dashboard access">
+      <a id="google-login" class="button" href="/operator/auth/start" hidden>Sign in with Google</a>
       <form id="login" autocomplete="off">
-        <label for="credential">Dashboard access token</label>
+        <label id="credential-label" for="credential">Dashboard access token</label>
         <div class="access-actions">
           <input id="credential" type="password" autocomplete="off" spellcheck="false">
           <button id="load" type="submit">Load live operations</button>
