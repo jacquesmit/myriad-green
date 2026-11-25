@@ -22,6 +22,11 @@
 
 **P0 owner-approved usability gate:** conventional dashboard sign-in, secure sessions, MFA and role-based access. No cPanel/token entry for daily human access. See [dashboard authentication requirements](MAGOS-OPERATOR-DASHBOARD.md). DOCUMENTED, implementation and live acceptance pending.
 
+
+
+## Integration naming convention — owner direction, 25 November 2026
+Use distinct functional names in all future builds, deployment records and integration registers. Google Cloud project: **Myriad Green MAGOS** (existing); Google Auth Platform branding: **MAGOS Operator Access** (chosen name, configuration in progress); OAuth web client: **MAGOS Operator Web Client** (reserved name, creation not yet verified); frontend: **MAGOS Command Centre** (existing); backend: **MAGOS Runtime** (existing); future restricted WordPress integration: **MAGOS WPVibe Bridge** (planned, not built). Maintain these mappings in the existing integration/deployment documentation, not duplicate projects or credentials. Record actual creation, activation and verification separately; never store secrets in Git or registers. Use these exact names when resuming configuration or starting the bridge. Owner approval of naming is not proof of live OAuth activation.
+
 ### Next execution, in order
 1. Finish existing Water Alert Publisher: targeted Rank Math/LiteSpeed sitemap invalidation and bounded retry (no routine global purge); independent official notice content verification; legitimate changed-source update acceptance; securely connect existing scheduled Water Alert Publisher (no duplicate schedule, no secrets in prompts/Git); prove unattended run and safe failure reporting. Exact create/replay tests already PASS.
 2. Reconcile existing operator dashboard with verified runtime/capability evidence and expose publishing run outcomes, source links, review exceptions, freshness, next actions; preserve read-only boundary and separate governed action routes. No parallel dashboard or data store. UX/UI and reader-facing journal improvements separate deferred workstreams.
