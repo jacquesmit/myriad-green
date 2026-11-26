@@ -10,6 +10,11 @@
 
 
 
+
+
+## 26 November 2026 — engineering CI evidence and runner modernization candidate
+PR #109 merged at d502ead9070e4f34b6d0692131e800a3e57a542d after four exact-head CI workflows passed, including full sequential regression and container smoke. Package 2 upgrades checkout/setup-node v4 to v5 across six MAGOS workflows while preserving application Node 20 host compatibility. Runtime regression now retains TAP evidence for 14 days, with pipefail preserving failures. Candidate only until exact-head CI and artifact readback pass. Git exit 128 annotation cause remains unverified; do not declare warning resolved. Lockfile, dependency/security scanning, CORE-003 and branch protection remain pending. No production or business write acceptance implied.
+
 ## 26 November 2026 — engineering CI hardening candidate
 Existing Runtime P2 CI now triggers for all magos/** and MAGOS workflow changes and runs the complete sequential `npm run test:hostafrica` suite rather than a hand-maintained list. Existing entrypoint, container and release checks retained. Transaction writer CI aligned to documented Host Africa Node 20. Changes are candidate-only until exact-head CI passes and merge is verified; no host deployment or business acceptance implied. Dependency lockfile, protected branch enforcement, security scanning, isolated staging and CORE-003 golden-path execution remain outstanding. Preserve the last accepted production receipt and existing status authority.
 
