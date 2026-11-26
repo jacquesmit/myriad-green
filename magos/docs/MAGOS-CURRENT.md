@@ -10,6 +10,9 @@
 
 
 
+## 26 November 2026 — PR118 inspection hardening candidate
+Previous PR118 head a7507622e4901fe61398dc1961b349c3c62061f0 returned three successful CI runs; PR117 dashboard requirement additions preserved verbatim. New candidate bounds inspection source reads to 10001 rows, fails closed above 10000, limits displayed fields to 256 characters with explicit truncation, renders match sections instead of a wide table and restores cancelled duplicate controls. Added regression fixtures. Exact-head CI, browser acceptance, Drive parity and production deployment pending. No record correction authority or live writes.
+
 ## 26 November 2026 — commercial golden path integration candidate
 PR #115 merged at 83cdd7694be57a9ab1391b92797c2b9b849efc76 after three CI checks PASS. Control Hub Core_Build_Queue J4:L4 and J12:L12 updated and read back; CORE-003 and CORE-011 remain PARTIAL. Candidate 2c800a2146bf421e5dcb7b1d2142ee4b4759260b adds actual accepted-job executor + P3 writer integration using synthetic canonical stores and injected authority, asserting job/execution readback, repeated request no mutation, and payment reversal between plan and commit rejected by real writer. Existing executor replays route to REVIEW_REQUIRED before writer, not DUPLICATE_NO_OP; exact replay acceptance remains outstanding. Independent provider signatures/bank settlement, live canonical schema, production deployment and full business acceptance not proven. Exact-head CI pending. No live business writes.
 

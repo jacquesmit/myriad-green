@@ -32,7 +32,7 @@ const tables = {
 };
 const makeStores = (fail = '') => {
   const readObjects = async (name, options) => {
-    assert.equal(options.maxRows, null);
+    assert.ok(options.maxRows===null||options.maxRows===10001);
     assert.ok(options.requiredHeaders.length > 0);
     if (name === fail) throw new Error('Register unavailable');
     return tables[name];
@@ -451,3 +451,12 @@ test('operator action HTTP requires operator authority and fails closed on unava
   assert.equal((await fetch(base+'leads/DUP',{headers})).status,503);
  }finally{await new Promise(resolve=>server.close(resolve));}
 });
+
+ test('duplicate inspection fails closed at scan cap and truncates oversized projections',async()=>{
+ const {inspectOperatorAction}=require('../processor/operator-dashboard');
+ const run=rows=>inspectOperatorAction({stores:{crm:{readObjects:async(_,opts)=>{assert.equal(opts.maxRows,10001);return rows;}}},action:'inspect-duplicate',department:'jobs',id:'DUP'});
+ const limited=await run(Array.from({length:10001},()=>({opportunity_id:'OTHER'})));
+ assert.equal(limited.state,'SOURCE_LIMIT_EXCEEDED');assert.equal(limited.match_count,null);assert.equal(limited.side_effects,false);
+ const result=await run(Array.from({length:51},(_,i)=>({opportunity_id:'DUP',job_id:'X'.repeat(400)+i})));
+ assert.equal(result.match_count,51);assert.equal(result.matches.length,50);assert.equal(result.truncated,true);assert.equal(result.values_truncated,true);assert.equal(result.matches[0].fields.job_id.length,256);assert.ok(result.conflicting_fields.includes('job_id'));
+ });

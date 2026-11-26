@@ -808,28 +808,30 @@
   async function inspectDuplicate(scope,id,output,control){
     inspection?.abort();const active=new AbortController();inspection=active;
     control.disabled=true;output.textContent='Checking canonical records…';
+    active.signal.addEventListener('abort',()=>{control.disabled=false;if(inspection===active)output.textContent='Inspection cancelled or timed out. No records changed.';},{once:true});
     const deadline=setTimeout(()=>active.abort(),15000);
     try{
       const response=await read('/v1/operator/actions/inspect-duplicate/'+encodeURIComponent(scope)+'/'+encodeURIComponent(id),active.signal);
       const report=await response.json();
       if(inspection!==active)return;
       if(!response.ok||report.schema_version!=='MAGOS_OPERATOR_ACTION_V1'||report.side_effects!==false)throw Error('INSPECTION_UNAVAILABLE');
+      if(active.signal.aborted)return;
+      if(report.state==='SOURCE_LIMIT_EXCEEDED'){output.textContent='Source exceeds inspection limit; no complete match count available. Review canonical register.';return;}
       output.replaceChildren(element('h4',report.match_count+' matching records · '+report.state));
       output.append(element('p','Checked '+report.checked_at+' · '+report.source.name+' · Read-only; no correction authorized.'));
       if(report.conflicting_fields.length)output.append(element('p','Conflicting fields: '+report.conflicting_fields.join(', ')));
-      const table=element('table'),head=element('tr');
-      head.append(element('th','Field'));
-      for(const match of report.matches)head.append(element('th','Match '+match.match));
-      table.append(head);
-      for(const field of Object.keys(report.matches[0]?.fields||{})){
-        const row=element('tr');row.append(element('th',field));
-        for(const match of report.matches)row.append(element('td',match.fields[field]||'—'));
-        table.append(row);
+      for(const match of report.matches){
+        const section=element('section'),list=element('dl');
+        section.append(element('h5','Match '+match.match));
+        for(const [field,value] of Object.entries(match.fields)){
+          list.append(element('dt',field),element('dd',value||'—'));
+        }
+        section.append(list);output.append(section);
       }
-      if(report.matches.length)output.append(table);
+      if(report.values_truncated)output.append(element('p','Long field values shortened; review canonical source before acting.'));
       if(report.truncated)output.append(element('p','Only the first 50 matches are shown.'));
     }catch{if(inspection===active)output.textContent='Inspection unavailable. No records changed.';}
-    finally{clearTimeout(deadline);if(inspection===active)control.disabled=false;}
+    finally{clearTimeout(deadline);control.disabled=false;}
   }
 
   async function inspectClientSigningReadiness(output,button){
