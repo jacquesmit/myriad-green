@@ -371,31 +371,15 @@
       const variationButton=button('View job scope variations',
         ()=>show('variations',item.details.job_id),'secondary');
       target.append(variationButton);
-      const journeyOutput=element('p');
-      journeyOutput.setAttribute('role','status');
-      const journeyCheck=button('Inspect full job lifecycle',
-        ()=>inspectWholeJob(item.details.job_id,journeyOutput,journeyCheck),'secondary');
-      target.append(journeyCheck,journeyOutput);
-      const output = element('p');
-      output.setAttribute('role','status');
-      const check = button('Inspect actual costs & closeout',
-        () => inspectJobCloseout(item.details.job_id,output,check),'secondary');
-      target.append(check,output);
-      const scheduleOutput=element('p');
-      scheduleOutput.setAttribute('role','status');
-      const scheduleCheck=button('Inspect schedule readiness',
-        ()=>inspectScheduling(item.details.job_id,scheduleOutput,scheduleCheck),'secondary');
-      target.append(scheduleCheck,scheduleOutput);
-      const careOutput=element('p');
-      careOutput.setAttribute('role','status');
-      const careCheck=button('Inspect warranties & aftercare',
-        ()=>inspectAftercare(item.details.job_id,careOutput,careCheck),'secondary');
-      target.append(careCheck,careOutput);
-      const closureOutput=element('p');
-      closureOutput.setAttribute('role','status');
-      const closureCheck=button('Inspect complete job closure',
-        ()=>inspectOperationalClosure(item.details.job_id,closureOutput,closureCheck),'secondary');
-      target.append(closureCheck,closureOutput);
+      const workspace=element('section',undefined,'commercial-workspace');
+      workspace.append(element('h3','Job delivery workspace'),
+        element('p','Canonical delivery, material readiness, actual costs and closeout. Each check is independent; missing evidence is not a pass.'));
+      const jobOutput=element('div',undefined,'commercial-results');
+      jobOutput.setAttribute('aria-live','polite');
+      const jobCheck=button('Refresh delivery evidence',()=>inspectDeliveryWorkspace(item.details.job_id,jobOutput,jobCheck),'secondary');
+      workspace.append(jobCheck,jobOutput,buildProcurementDraftControls(item.details.job_id));
+      target.append(workspace);
+      jobCheck.click();
       const costArea=element('section');
       costArea.append(element('h3','Record provisional job expense'));
       const costInputs={};
@@ -956,6 +940,118 @@
       input.value='';
       button.disabled=false;
     }
+  }
+
+  async function inspectDeliveryWorkspace(jobId,output,control){
+    inspection?.abort();
+    const active=new AbortController();inspection=active;control.disabled=true;
+    const current=()=>inspection===active&&authorized()&&output.isConnected;
+    const deadline=setTimeout(()=>active.abort(),30000);
+    const stages=[
+      ['Delivery lifecycle','job-lifecycle','MAGOS_JOB_LIFECYCLE_V1',r=>[
+        ...(r.stages||[]).map(s=>s.name+': '+s.state),...(r.blockers||[]),r.next_action,
+        'Bank settlement and actual completion require independent verification']],
+      ['Materials and scheduling','scheduling-readiness','MAGOS_SCHEDULING_READINESS_V1',r=>[
+        Number.isInteger(r.procurement_requirement_count)?'Material requirements: '+r.procurement_requirement_count:null,
+        ...(r.blockers||[]),...(r.review_reasons||[]),'Provider availability and booking authorization remain separate.']],
+      ['Actual costs and field proof','job-closeout','MAGOS_JOB_CLOSEOUT_READINESS_V1',r=>[
+        typeof r.contract_value_zar==='number'?'Contract: '+zar.format(r.contract_value_zar):'Contract value unknown',
+        typeof r.evidenced_cost_sum_zar==='number'?'Evidenced direct costs: '+zar.format(r.evidenced_cost_sum_zar):'Actual costs unknown',
+        ...(r.blockers||[]),'Final profit is not independently verified.']],
+      ['Complete job closure and aftercare','operational-closure','MAGOS_OPERATIONAL_CLOSURE_V1',r=>[
+        r.finance?.state&&'Receivables: '+r.finance.state,
+        r.aftercare?.state&&'Aftercare: '+r.aftercare.state,
+        ...(r.blockers||[]),...(r.next_actions||[]),'No owner closure or outreach authorized.']]
+    ];
+    output.replaceChildren();
+    try{
+      // Sequential reads bound concurrent Sheets load; partial results survive failure.
+      for(const [title,path,schema,details] of stages){
+        if(!current())break;
+        const card=element('section',undefined,'commercial-stage');
+        card.append(element('h4',title));
+        const status=element('strong','Checking…');card.append(status);output.append(card);
+        try{
+          const response=await read('/v1/operator/'+path+'/'+encodeURIComponent(jobId),active.signal);
+          const report=await response.json();
+          if(!current())break;
+          if(!response.ok||!report.schema_version||(schema&&report.schema_version!==schema)||
+             report.job_id!==jobId||report.side_effects!==false||typeof report.state!=='string')
+            throw Error('UNVERIFIED_REPORT');
+          status.textContent=report.state.replaceAll('_',' ');
+          for(const line of details(report).filter(Boolean).slice(0,30))card.append(element('p',String(line)));
+          if(details(report).filter(Boolean).length>30)card.append(element('small','Additional evidence exists; inspect canonical source.'));
+        }catch{
+          if(current())status.textContent='UNAVAILABLE / NOT VERIFIED';
+        }
+      }
+      if(current())output.append(element('small','Inspection received '+dateFormat.format(new Date())+' · no records changed'));
+    }finally{
+      clearTimeout(deadline);control.disabled=false;if(inspection===active)inspection=undefined;
+    }
+  }
+
+  function buildProcurementDraftControls(jobId){
+    const section=element('section',undefined,'commercial-release');
+    section.append(element('h4','Prepare linked purchase order draft'),
+      element('p','Creates an internal DRAFT only. No supplier order, payment or release is authorized.'));
+    const fields={};
+    for(const [key,label,type] of [
+      ['supplierId','Canonical supplier ID','text'],['supplierQuoteId','Canonical supplier quotation ID','text'],
+      ['poId','Purchase order ID','text'],['sourceEventId','Source event reference','text'],
+      ['evidenceRef','Supplier quotation evidence reference','text'],['token','Separate procurement authorization','password']
+    ]){
+      const wrapper=element('label',label),input=element('input');
+      input.type=type;input.autocomplete='off';input.spellcheck=false;wrapper.append(input);section.append(wrapper);fields[key]=input;
+    }
+    const output=element('p');output.setAttribute('role','status');
+    const keys=['supplierId','supplierQuoteId','poId','sourceEventId','evidenceRef'];
+    const payload=()=>({jobId,...Object.fromEntries(keys.map(k=>[k,fields[k].value.trim()]))});
+    const signature=()=>JSON.stringify(payload());
+    let approvedPreview=null,busy=false;
+    const invalidate=()=>{approvedPreview=null;commit.disabled=true;};
+    const preview=button('Preview purchase order draft',()=>submit(true),'secondary');
+    const commit=button('Create internal draft',()=>submit(false),'secondary');commit.disabled=true;
+    for(const key of keys)fields[key].addEventListener('input',invalidate);
+    const actions=element('div',undefined,'related-actions');actions.append(preview,commit);section.append(actions,output);
+    async function submit(dryRun){
+      if(busy||!authorized()||!section.isConnected)return;
+      const body=payload(),key=signature(),token=fields.token.value.trim();
+      if(!token||keys.some(k=>!body[k])||[body.poId,body.sourceEventId].some(v=>v.includes('|'))){
+        output.textContent='Complete every canonical reference and separate authorization.';return;
+      }
+      if(!dryRun&&approvedPreview!==key){invalidate();return;}
+      if(!dryRun&&!window.confirm('Create this exact internal purchase order draft? No external order or payment will be authorized.'))return;
+      busy=true;invalidate();preview.disabled=true;fields.token.value='';
+      for(const k of keys)fields[k].disabled=true;
+      output.textContent=dryRun?'Checking supplier and quotation evidence…':'Creating governed internal draft…';
+      const active=new AbortController(),deadline=setTimeout(()=>active.abort(),30000);
+      try{
+        const response=await fetch('/v1/governance/procurement-draft',{
+          method:'POST',cache:'no-store',redirect:'error',signal:active.signal,
+          headers:{'content-type':'application/json','x-magos-procurement-token':token},
+          body:JSON.stringify({...body,dryRun})
+        });
+        const result=await response.json();
+        if(!section.isConnected||!authorized())return;
+        const state=result.state||result.error||'REQUEST_FAILED';
+        const safe=response.ok&&result.external_order_sent===false&&result.payment_authorized===false;
+        if(dryRun&&safe&&state==='DRY_RUN'&&signature()===key)approvedPreview=key;
+        output.textContent=[String(state).replaceAll('_',' '),result.reason_code,
+          approvedPreview?'Preview accepted; no records changed':null,
+          !dryRun&&safe&&result.po_id===body.poId&&['COMMITTED','DUPLICATE_NO_OP'].includes(state)?
+            'Writer reported draft result; inspect canonical purchase order and audit':null,
+          !dryRun?'Reconcile canonical receipt before repeating an uncertain operation':null,
+          'No supplier dispatch or payment authorized'].filter(Boolean).join(' · ');
+      }catch{
+        if(section.isConnected&&authorized())output.textContent='Result unavailable. Inspect purchase order and audit before retry; timeout does not establish rollback.';
+      }finally{
+        clearTimeout(deadline);busy=false;preview.disabled=false;
+        for(const k of keys)fields[k].disabled=false;
+        commit.disabled=approvedPreview!==signature();
+      }
+    }
+    return section;
   }
 
   function buildJobReleaseControls(quoteId){
