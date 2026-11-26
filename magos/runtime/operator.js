@@ -333,6 +333,11 @@
       list.append(element('dt', name), valueCell);
     }
     target.append(list);
+    if(['leads','clients','jobs'].includes(department)&&item.title==='Duplicate record ID'){
+      const output=element('section');output.setAttribute('aria-live','polite');
+      const check=button('Inspect duplicate records',()=>inspectDuplicate(department,item.id,output,check),'secondary');
+      target.append(check,output);
+    }
     if(department==='quotes'){
       const signingOutput=element('p');
       signingOutput.setAttribute('role','status');
@@ -798,6 +803,33 @@
       clearTimeout(deadline);
       if(inspection===active)button.disabled=false;
     }
+  }
+
+  async function inspectDuplicate(scope,id,output,control){
+    inspection?.abort();const active=new AbortController();inspection=active;
+    control.disabled=true;output.textContent='Checking canonical records…';
+    const deadline=setTimeout(()=>active.abort(),15000);
+    try{
+      const response=await read('/v1/operator/actions/inspect-duplicate/'+encodeURIComponent(scope)+'/'+encodeURIComponent(id),active.signal);
+      const report=await response.json();
+      if(inspection!==active)return;
+      if(!response.ok||report.schema_version!=='MAGOS_OPERATOR_ACTION_V1'||report.side_effects!==false)throw Error('INSPECTION_UNAVAILABLE');
+      output.replaceChildren(element('h4',report.match_count+' matching records · '+report.state));
+      output.append(element('p','Checked '+report.checked_at+' · '+report.source.name+' · Read-only; no correction authorized.'));
+      if(report.conflicting_fields.length)output.append(element('p','Conflicting fields: '+report.conflicting_fields.join(', ')));
+      const table=element('table'),head=element('tr');
+      head.append(element('th','Field'));
+      for(const match of report.matches)head.append(element('th','Match '+match.match));
+      table.append(head);
+      for(const field of Object.keys(report.matches[0]?.fields||{})){
+        const row=element('tr');row.append(element('th',field));
+        for(const match of report.matches)row.append(element('td',match.fields[field]||'—'));
+        table.append(row);
+      }
+      if(report.matches.length)output.append(table);
+      if(report.truncated)output.append(element('p','Only the first 50 matches are shown.'));
+    }catch{if(inspection===active)output.textContent='Inspection unavailable. No records changed.';}
+    finally{clearTimeout(deadline);if(inspection===active)control.disabled=false;}
   }
 
   async function inspectClientSigningReadiness(output,button){
