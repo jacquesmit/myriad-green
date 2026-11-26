@@ -215,3 +215,13 @@ test('operator deployment identity ignores superseded responses and aborts on lo
  assert.match(source,/if\(deploymentRequest!==active\|\|!authorized\(\)\)return;/);
  assert.match(source,/deploymentRequest\?\.abort\(\);\s*deploymentRequest = undefined;/);
 });
+
+test('selected record replaces long table and returns focus; quotation duplicates have scoped inspection',()=>{
+ const source=fs.readFileSync(require.resolve('../runtime/operator.js'),'utf8');
+ assert.match(source,/\$\('records'\)\.hidden=true/);
+ assert.match(source,/Back to '\+labels\[department\]/);
+ assert.match(source,/heading\.focus/);
+ assert.match(source,/\['leads','clients','jobs','quotes'\]\.includes\(department\)/);
+ assert.match(source,/report\.department!==scope\|\|report\.id!==id/);
+ assert.match(source,/explainCommercial\(deposit\?\.reason_code\)/);
+});
