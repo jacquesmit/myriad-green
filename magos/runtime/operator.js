@@ -479,11 +479,16 @@
         ()=>inspectReceivable(item.details['Invoice ID'],receivableOutput,receivableCheck),'secondary');
       target.append(receivableCheck,receivableOutput);
     }
-    if (department === 'quotes') {
-      const output = element('p');
-      output.setAttribute('role', 'status');
-      const check = button('Inspect job readiness', () => inspectQuote(item.id, output, check), 'secondary');
-      target.append(check, output);
+    if (department === 'quotes' && item.title !== 'Duplicate record ID') {
+      const workspace=element('section',undefined,'commercial-workspace');
+      workspace.append(element('h3','Quotation to job workspace'),
+        element('p','Inspect the canonical quote, signed acceptance and deposit records together. Recorded clearance is not independent bank confirmation.'));
+      const output=element('div',undefined,'commercial-results');
+      output.setAttribute('aria-live','polite');
+      const check=button('Check commercial evidence',()=>inspectCommercialWorkspace(item.id,output,check),'secondary');
+      workspace.append(check,output,buildJobReleaseControls(item.id));
+      target.append(workspace);
+      check.click();
       // This credential is separate from read access and is erased after use.
       // User action cannot bypass server-owned signature verification.
       const authLabel=element('label','Quote acceptance authorization token');
@@ -950,6 +955,150 @@
       clearTimeout(deadline);
       input.value='';
       button.disabled=false;
+    }
+  }
+
+  function buildJobReleaseControls(quoteId){
+    const section=element('section',undefined,'commercial-release');
+    section.append(element('h4','Create or verify authorized job'),
+      element('p','Use the signed acceptance event reference and canonical job ID. The server independently verifies signature, bank clearance and transaction replay. No scheduling or purchasing is performed.'));
+    const fields={};
+    for(const [key,label,type] of [
+      ['jobId','Canonical job ID (JOB-…)','text'],
+      ['sourceEventId','Signed acceptance source event ID','text'],
+      ['token','Separate job creation authorization','password']
+    ]){
+      const wrapper=element('label',label),input=element('input');
+      input.type=type;input.autocomplete='off';input.spellcheck=false;
+      wrapper.append(input);section.append(wrapper);fields[key]=input;
+    }
+    const output=element('p');output.setAttribute('role','status');
+    const actions=element('div',undefined,'related-actions');
+    let previewed=null,busy=false;
+    const snapshot=()=>JSON.stringify([quoteId,fields.jobId.value.trim(),fields.sourceEventId.value.trim()]);
+    const invalidate=()=>{previewed=null;commit.disabled=true;};
+    for(const key of ['jobId','sourceEventId'])fields[key].addEventListener('input',invalidate);
+    const preview=button('Preview governed job creation',()=>submit(true),'secondary');
+    const commit=button('Create / verify exact job',()=>submit(false),'secondary');
+    commit.disabled=true;
+    actions.append(preview,commit);section.append(actions,output);
+    async function submit(dryRun){
+      if(busy||!authorized()||!section.isConnected)return;
+      const jobId=fields.jobId.value.trim(),sourceEventId=fields.sourceEventId.value.trim();
+      const token=fields.token.value.trim(),key=snapshot();
+      if(!/^JOB-[^|\\s]+$/.test(jobId)||!sourceEventId||sourceEventId.includes('|')||!token){
+        output.textContent='Enter a valid canonical job ID, signed event ID and separate authorization.';
+        return;
+      }
+      if(!dryRun&&previewed!==key){invalidate();output.textContent='Preview these exact identifiers first.';return;}
+      if(!dryRun&&!window.confirm('Create this exact authorized job, or verify its existing committed receipt? No booking or purchasing is authorized.'))return;
+      busy=true;invalidate();preview.disabled=true;
+      fields.jobId.disabled=fields.sourceEventId.disabled=true;
+      fields.token.value='';
+      output.textContent=dryRun?'Checking independent authority and transaction plan…':'Executing governed job transaction…';
+      const active=new AbortController(),deadline=setTimeout(()=>active.abort(),30000);
+      try{
+        const response=await fetch('/v1/governance/create-job',{
+          method:'POST',cache:'no-store',redirect:'error',signal:active.signal,
+          headers:{'content-type':'application/json','x-magos-job-token':token},
+          body:JSON.stringify({quoteId,jobId,sourceEventId,dryRun})
+        });
+        const result=await response.json();
+        if(!section.isConnected||!authorized())return;
+        const state=result.state||result.error||'REQUEST_FAILED';
+        const exact=result.job_id===jobId;
+        const replay=state==='DUPLICATE_NO_OP'&&exact&&result.readback?.verified===true;
+        const ready=response.ok&&exact&&(state==='DRY_RUN'||replay);
+        if(dryRun&&ready&&snapshot()===key)previewed=key;
+        const verified=response.ok&&exact&&result.readback?.verified===true&&['COMMITTED','DUPLICATE_NO_OP'].includes(state);
+        output.textContent=[
+          state.replaceAll('_',' '),result.reason_code,
+          verified?'Canonical readback verified':null,
+          dryRun&&ready?'Preview only; no new business writes':null,
+          verified?'Refresh operations to load the latest linked job':null,
+          !dryRun&&!verified?'Do not retry blindly; inspect the canonical audit first':null
+        ].filter(Boolean).join(' · ');
+      }catch{
+        if(section.isConnected&&authorized())output.textContent='Result unavailable. Check the canonical audit before retrying; a timeout does not establish rollback.';
+      }finally{
+        clearTimeout(deadline);busy=false;preview.disabled=false;
+        fields.jobId.disabled=fields.sourceEventId.disabled=false;
+        commit.disabled=previewed!==snapshot();
+      }
+    }
+    return section;
+  }
+
+  async function inspectCommercialWorkspace(quoteId,output,control){
+    inspection?.abort();
+    const active=new AbortController();
+    inspection=active;
+    control.disabled=true;
+    output.replaceChildren(element('p','Reading canonical quotation and payment evidence…'));
+    const deadline=setTimeout(()=>active.abort(),20000);
+    const current=()=>inspection===active&&authorized();
+    async function get(path){
+      const response=await read(path,active.signal);
+      const result=await response.json();
+      if(!response.ok||typeof result.state!=='string'||result.side_effects!==false)
+        throw Error('Inspection unavailable');
+      return result;
+    }
+    function stage(title,status,details){
+      const card=element('section',undefined,'commercial-stage');
+      card.append(element('h4',title),element('strong',String(status||'UNKNOWN').replaceAll('_',' ')));
+      for(const detail of details.filter(Boolean))card.append(element('p',detail));
+      output.append(card);
+    }
+    try{
+      const result=await get('/v1/operator/job-activation/'+encodeURIComponent(quoteId));
+      if(!current())return;
+      if(result.quote?.quote_id && result.quote.quote_id!==quoteId)throw Error('Quote identity mismatch');
+      output.replaceChildren();
+      const q=result.quote||{},a=result.acceptance||{},checks=result.checks||{};
+      stage('1. Quotation',checks.canonical_quote,[
+        q.quote_status&&'Quote status: '+q.quote_status,
+        q.line_control_state&&'Line control: '+q.line_control_state,
+        ...(Array.isArray(q.reasons)?q.reasons:[]),q.reason_code]);
+      stage('2. Signed acceptance',checks.signed_acceptance,[
+        a.quote_version&&'Quote version: '+a.quote_version,
+        a.reason_code,
+        a.quote_version_verified===true?'Version independently verified':'Version verification not established']);
+      let deposit=result.deposit;
+      // Inspect payment separately even when quotation is not accepted yet.
+      if(!deposit&&q.opportunity_id){
+        try{
+          const payment=await get('/v1/operator/deposit-evidence/'+encodeURIComponent(q.opportunity_id));
+          if(!current())return;
+          if(payment.opportunity_id&&payment.opportunity_id!==q.opportunity_id)throw Error('Opportunity identity mismatch');
+          deposit=payment;
+        }catch{
+          if(!current())return;
+          deposit={state:'UNAVAILABLE'};
+        }
+      }
+      stage('3. Deposit evidence',deposit?.state||'NOT_CHECKED',[
+        typeof deposit?.deposit_required==='number'?'Required: '+zar.format(deposit.deposit_required):'Required: unknown',
+        typeof deposit?.cleared_deposit_total==='number'?'Recorded cleared: '+zar.format(deposit.cleared_deposit_total):'Recorded cleared: unknown',
+        deposit?.reason_code,'Independent bank clearance is not established by this inspection.']);
+      stage('4. Job release',result.state,[
+        result.next_action||'Resolve the recorded blockers before attempting job release.',
+        'No job, booking or payment changes performed.']);
+      const related=element('div',undefined,'related-actions');
+      if(q.opportunity_id&&data?.departments?.jobs?.records?.some(row=>row.id===q.opportunity_id&&row.title!=='Duplicate record ID'))
+        related.append(button('Open linked opportunity / job',()=>show('jobs',q.opportunity_id),'secondary'));
+      if(q.client_crm_id&&data?.departments?.clients?.records?.some(row=>row.id===q.client_crm_id&&row.title!=='Duplicate record ID'))
+        related.append(button('Open linked client',()=>show('clients',q.client_crm_id),'secondary'));
+      if(deposit?.control_id&&data?.departments?.finance?.records?.some(row=>row.id===deposit.control_id&&row.title!=='Duplicate record ID'))
+        related.append(button('Open payment control',()=>show('finance',deposit.control_id),'secondary'));
+      if(related.children.length)output.append(related);
+      output.append(element('small','Inspection received '+dateFormat.format(new Date())+' · read-only'));
+    }catch{
+      if(current())output.replaceChildren(element('p','Commercial evidence unavailable. Retry the inspection; no change was made.'));
+    }finally{
+      clearTimeout(deadline);
+      control.disabled=false;
+      if(inspection===active)inspection=undefined;
     }
   }
 
