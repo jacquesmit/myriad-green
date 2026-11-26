@@ -197,3 +197,16 @@ test('quote details offer real client signing readiness without issuing a client
  assert.match(source,/READY_FOR_CONTROLLED_SIGNING_TEST/);
  assert.match(source,/Live customer signing, approval and quote-version verification still require controlled testing/);
 });
+
+
+test('operator refresh invalidates cached coverage and reloads selected capability workspace',()=>{
+ const source=fs.readFileSync(require.resolve('../runtime/operator.js'),'utf8');
+ assert.match(source,/data = result;\s*coverageRequest\?\.abort\(\);\s*coverageRequest = undefined;\s*coverage = undefined;/);
+ assert.match(source,/if\(coverageView\(department\)\)void loadCoverage\(\);/);
+});
+test('operator deployment identity ignores superseded responses and aborts on lock',()=>{
+ const source=fs.readFileSync(require.resolve('../runtime/operator.js'),'utf8');
+ assert.match(source,/deploymentRequest=active/);
+ assert.match(source,/if\(deploymentRequest!==active\|\|!authorized\(\)\)return;/);
+ assert.match(source,/deploymentRequest\?\.abort\(\);\s*deploymentRequest = undefined;/);
+});

@@ -64,6 +64,7 @@
   let data;
   let coverage;
   let coverageRequest;
+  let deploymentRequest;
   let request;
   let inspection;
 
@@ -538,12 +539,15 @@
   async function loadDeploymentIdentity(){
     const output=$('deployment');
     output.textContent='Checking deployed process identity…';
+    deploymentRequest?.abort();
     const active=new AbortController();
+    deploymentRequest=active;
     const deadline=setTimeout(()=>active.abort(),8000);
     try{
       const response=await read('/v1/operator/deployment',active.signal);
       const result=await response.json();
-      if(!authorized()||result.schema_version!=='MAGOS_OPERATOR_DEPLOYMENT_V1'||
+      if(deploymentRequest!==active||!authorized())return;
+      if(result.schema_version!=='MAGOS_OPERATOR_DEPLOYMENT_V1'||
          result.side_effects!==false)throw Error('DEPLOYMENT_UNAVAILABLE');
       if(response.status===200&&result.status==='PROCESS_START_GIT_MATCH'&&
          /^[0-9a-f]{40}$/.test(result.commit_sha)){
@@ -553,7 +557,7 @@
         output.textContent='Running code identity NOT VERIFIED — do not assume latest GitHub code is deployed';
       }
     }catch{
-      if(authorized())output.textContent='Deployment identity unavailable — do not assume live release';
+      if(deploymentRequest===active&&authorized())output.textContent='Deployment identity unavailable — do not assume live release';
     }finally{clearTimeout(deadline);}
   }
 
@@ -953,6 +957,8 @@
     request = undefined;
     coverageRequest?.abort();
     coverageRequest = undefined;
+    deploymentRequest?.abort();
+    deploymentRequest = undefined;
     coverage = undefined;
     credential = '';
     sessionActive = false;
@@ -1057,7 +1063,11 @@
         throw new Error('Dashboard unavailable');
       }
       data = result;
+      coverageRequest?.abort();
+      coverageRequest = undefined;
+      coverage = undefined;
       void loadDeploymentIdentity();
+      if(coverageView(department))void loadCoverage();
       page = 0;
       queuePage = 0;
       hideDetail();
