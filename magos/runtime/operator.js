@@ -486,7 +486,7 @@
       const output=element('div',undefined,'commercial-results');
       output.setAttribute('aria-live','polite');
       const check=button('Check commercial evidence',()=>inspectCommercialWorkspace(item.id,output,check),'secondary');
-      workspace.append(check,output);
+      workspace.append(check,output,buildJobReleaseControls(item.id));
       target.append(workspace);
       check.click();
       // This credential is separate from read access and is erased after use.
@@ -956,6 +956,77 @@
       input.value='';
       button.disabled=false;
     }
+  }
+
+  function buildJobReleaseControls(quoteId){
+    const section=element('section',undefined,'commercial-release');
+    section.append(element('h4','Create or verify authorized job'),
+      element('p','Use the signed acceptance event reference and canonical job ID. The server independently verifies signature, bank clearance and transaction replay. No scheduling or purchasing is performed.'));
+    const fields={};
+    for(const [key,label,type] of [
+      ['jobId','Canonical job ID (JOB-…)','text'],
+      ['sourceEventId','Signed acceptance source event ID','text'],
+      ['token','Separate job creation authorization','password']
+    ]){
+      const wrapper=element('label',label),input=element('input');
+      input.type=type;input.autocomplete='off';input.spellcheck=false;
+      wrapper.append(input);section.append(wrapper);fields[key]=input;
+    }
+    const output=element('p');output.setAttribute('role','status');
+    const actions=element('div',undefined,'related-actions');
+    let previewed=null,busy=false;
+    const snapshot=()=>JSON.stringify([quoteId,fields.jobId.value.trim(),fields.sourceEventId.value.trim()]);
+    const invalidate=()=>{previewed=null;commit.disabled=true;};
+    for(const key of ['jobId','sourceEventId'])fields[key].addEventListener('input',invalidate);
+    const preview=button('Preview governed job creation',()=>submit(true),'secondary');
+    const commit=button('Create / verify exact job',()=>submit(false),'secondary');
+    commit.disabled=true;
+    actions.append(preview,commit);section.append(actions,output);
+    async function submit(dryRun){
+      if(busy||!authorized()||!section.isConnected)return;
+      const jobId=fields.jobId.value.trim(),sourceEventId=fields.sourceEventId.value.trim();
+      const token=fields.token.value.trim(),key=snapshot();
+      if(!/^JOB-[^|\\s]+$/.test(jobId)||!sourceEventId||sourceEventId.includes('|')||!token){
+        output.textContent='Enter a valid canonical job ID, signed event ID and separate authorization.';
+        return;
+      }
+      if(!dryRun&&previewed!==key){invalidate();output.textContent='Preview these exact identifiers first.';return;}
+      if(!dryRun&&!window.confirm('Create this exact authorized job, or verify its existing committed receipt? No booking or purchasing is authorized.'))return;
+      busy=true;invalidate();preview.disabled=true;
+      fields.jobId.disabled=fields.sourceEventId.disabled=true;
+      fields.token.value='';
+      output.textContent=dryRun?'Checking independent authority and transaction plan…':'Executing governed job transaction…';
+      const active=new AbortController(),deadline=setTimeout(()=>active.abort(),30000);
+      try{
+        const response=await fetch('/v1/governance/create-job',{
+          method:'POST',cache:'no-store',redirect:'error',signal:active.signal,
+          headers:{'content-type':'application/json','x-magos-job-token':token},
+          body:JSON.stringify({quoteId,jobId,sourceEventId,dryRun})
+        });
+        const result=await response.json();
+        if(!section.isConnected||!authorized())return;
+        const state=result.state||result.error||'REQUEST_FAILED';
+        const exact=result.job_id===jobId;
+        const replay=state==='DUPLICATE_NO_OP'&&exact&&result.readback?.verified===true;
+        const ready=response.ok&&exact&&(state==='DRY_RUN'||replay);
+        if(dryRun&&ready&&snapshot()===key)previewed=key;
+        const verified=response.ok&&exact&&result.readback?.verified===true&&['COMMITTED','DUPLICATE_NO_OP'].includes(state);
+        output.textContent=[
+          state.replaceAll('_',' '),result.reason_code,
+          verified?'Canonical readback verified':null,
+          dryRun&&ready?'Preview only; no new business writes':null,
+          verified?'Refresh operations to load the latest linked job':null,
+          !dryRun&&!verified?'Do not retry blindly; inspect the canonical audit first':null
+        ].filter(Boolean).join(' · ');
+      }catch{
+        if(section.isConnected&&authorized())output.textContent='Result unavailable. Check the canonical audit before retrying; a timeout does not establish rollback.';
+      }finally{
+        clearTimeout(deadline);busy=false;preview.disabled=false;
+        fields.jobId.disabled=fields.sourceEventId.disabled=false;
+        commit.disabled=previewed!==snapshot();
+      }
+    }
+    return section;
   }
 
   async function inspectCommercialWorkspace(quoteId,output,control){

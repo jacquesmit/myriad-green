@@ -10,6 +10,9 @@
 
 
 
+## 26 November 2026 — governed job creation workspace extension
+PR121 initial head cda4d2d3419ef19edc39587658f8b4df4aa9c0e0 passed all three reported CI workflows. Candidate extends quotation workspace with exact job/source event inputs, separately authorized dry-run, input-bound preview, explicit confirmation, existing governed create-job endpoint, verified commit/replay feedback and timeout reconciliation warning. No browser token persistence; operator read permission remains insufficient for writes. Existing provider signature/bank authority and canonical writer unchanged. Browser execution, live provider configuration and controlled golden transaction pending. No production business mutations.
+
 ## 26 November 2026 — production receipt and commercial workspace candidate
 Owner supplied cPanel Terminal receipt for exact release 4aabc1f1a3c123870f6b19c007b7b502dfaa25a5: 663/663 sequential host tests PASS, zero failures/cancelled/skipped, Node 20.20.2, backup gzip integrity PASS, rollback b5e73575e092ef6abf39842e3ffb9ff44a45084e. Node-to-Bash private credential handoff via child_process.spawnSync resolved deployment blocker without exposing secrets. Terminal final STATE=DEPLOYED_AND_READ_ONLY_PREFLIGHT_PASS, 129 core records, 23 capabilities (0 PASS, 19 PARTIAL, 4 FAIL), no write side effects; BUSINESS_GOLDEN_PATH=NOT_YET_VERIFIED. Full raw preflight check list not supplied. New candidate adds automatic quote-to-job evidence workspace with existing activation/deposit endpoints, exact linked opportunity/client/payment navigation and clear separation of recorded deposit evidence from independent settlement. Read-only; existing separately authorized quote acceptance retained. CI/browser acceptance and deployment of new workspace pending; no new business writes or authorization escalation.
 

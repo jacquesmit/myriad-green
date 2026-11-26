@@ -15,3 +15,17 @@ test('commercial workspace frontend parses and uses existing authenticated read 
  assert.match(block,/No job, booking or payment changes performed/);
  assert.doesNotMatch(block,/method:\s*['"]POST|innerHTML|localStorage/);
 });
+
+test('job release control uses separate authority, exact identifiers and mandatory preview',()=>{
+ const start=source.indexOf('  function buildJobReleaseControls(');
+ const end=source.indexOf('  async function inspectCommercialWorkspace(',start);
+ assert.ok(start>=0&&end>start);
+ const block=source.slice(start,end);
+ assert.match(block,/previewed!==key/);
+ assert.match(block,/x-magos-job-token/);
+ assert.match(block,/JSON.stringify\(\{quoteId,jobId,sourceEventId,dryRun\}\)/);
+ assert.match(block,/fields.token.value=''/);
+ assert.match(block,/result.readback\?\.verified===true/);
+ assert.match(block,/window.confirm/);
+ assert.doesNotMatch(block,/localStorage|innerHTML/);
+});
