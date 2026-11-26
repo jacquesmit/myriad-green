@@ -423,3 +423,31 @@ test('actual recorded contradictory job states become review actions but not act
  assert.equal(r.attention.filter(x=>x.type==='JOB_STATUS_REVIEW').length,2);
  assert.equal(r.side_effects,false);
 });
+
+test('operator action inspects exact duplicate IDs without writes and rejects arbitrary scopes',async()=>{
+ const {inspectOperatorAction}=require('../processor/operator-dashboard');
+ const stores=makeStores();
+ const result=await inspectOperatorAction({stores,action:'inspect-duplicate',department:'jobs',id:'DUP'});
+ assert.equal(result.state,'REVIEW_REQUIRED');
+ assert.equal(result.match_count,2);
+ assert.deepEqual(result.matches.map(x=>x.fields.job_id),['J-1','J-2']);
+ assert.ok(result.conflicting_fields.includes('job_id'));
+ assert.equal(result.side_effects,false);
+ assert.equal(result.resolution_authorized,false);
+ assert.equal((await inspectOperatorAction({stores,action:'inspect-duplicate',department:'jobs',id:'DU'})).state,'NOT_FOUND');
+ assert.equal((await inspectOperatorAction({stores,action:'inspect-duplicate',department:'jobs',id:'O-1'})).state,'UNIQUE');
+ assert.equal((await inspectOperatorAction({stores,action:'inspect-duplicate',department:'__proto__',id:'DUP'})).state,'INVALID_ACTION_INPUT');
+ assert.equal((await inspectOperatorAction({stores,action:'delete',department:'jobs',id:'DUP'})).state,'INVALID_ACTION_INPUT');
+});
+test('operator action HTTP requires operator authority and fails closed on unavailable source',async()=>{
+ const app=createRuntimeApp({token:'runtime',operatorReadToken:'operator-secret',writerFactory:()=>({stores:makeStores('Intake_Queue')})});
+ const server=http.createServer(app);await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+ const base='http://127.0.0.1:'+server.address().port+'/v1/operator/actions/inspect-duplicate/';
+ const headers={'X-MAGOS-Operator-Token':'operator-secret'};
+ try{
+  assert.equal((await fetch(base+'jobs/DUP')).status,401);
+  const ok=await fetch(base+'jobs/DUP',{headers});assert.equal(ok.status,200);assert.equal((await ok.json()).match_count,2);
+  assert.equal((await fetch(base+'finance/DUP',{headers})).status,400);
+  assert.equal((await fetch(base+'leads/DUP',{headers})).status,503);
+ }finally{await new Promise(resolve=>server.close(resolve));}
+});
