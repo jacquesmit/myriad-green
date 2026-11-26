@@ -792,3 +792,7 @@ PR #113 merged at 373b22ccaea84fcb4e0c92245f4fe491e9a842ca after four CI checks 
  
 **Resume:** controlled release of integrated runtime after exact candidate host tests and rollback preparation; CORE-003 and quotation/payment/job lifecycle acceptance; frontend usability in parallel. Do not interpret earlier candidate entries as unresolved merges. No production or commercial record mutation during this documentation reconciliation. Drive capability states must not be promoted on synthetic evidence alone. Full subsystem-document and Drive parity remains to be checked; this receipt reconciles the current engineering index and directly affected dashboard/lead/writer documents.
 
+
+
+## 26 November 2026 — commercial golden path integration candidate
+PR #115 merged at 83cdd7694be57a9ab1391b92797c2b9b849efc76 after three CI checks PASS. Control Hub Core_Build_Queue J4:L4 and J12:L12 updated and read back; CORE-003 and CORE-011 remain PARTIAL. Candidate 2c800a2146bf421e5dcb7b1d2142ee4b4759260b adds actual accepted-job executor + P3 writer integration using synthetic canonical stores and injected authority, asserting job/execution readback, repeated request no mutation, and payment reversal between plan and commit rejected by real writer. Existing executor replays route to REVIEW_REQUIRED before writer, not DUPLICATE_NO_OP; exact replay acceptance remains outstanding. Independent provider signatures/bank settlement, live canonical schema, production deployment and full business acceptance not proven. Exact-head CI pending. No live business writes.
