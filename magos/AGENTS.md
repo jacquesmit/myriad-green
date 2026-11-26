@@ -47,3 +47,7 @@ runtime test over new charts, documents or generic agent definitions.
 
 ## Shared HOSTAFRICA release testing (mandatory)
 Use `npm run test:hostafrica` in an isolated candidate checkout; retain the exact SHA, full log and successful exit status before authorizing deployment. Never interpret a killed process as a passing test or substitute a targeted rerun for full release acceptance. See the cPanel runbook.
+
+
+## Mandatory shared optimization and output-quality standard
+Read [Myriad Green Search, AI Discovery and Conversion Standard](../SEARCH-AI-DISCOVERY-STANDARD.md) for every public-content, website, ecommerce, publisher or public-tool task. All MAGOS work applies relevant provenance, accessibility, data quality, security and maintainability controls; private workflows and records must never be exposed for search indexing. Public outputs require documented acceptance against the shared standard, in addition to existing authority, transaction and release gates.
