@@ -792,3 +792,7 @@ PR #113 merged at 373b22ccaea84fcb4e0c92245f4fe491e9a842ca after four CI checks 
  
 **Resume:** controlled release of integrated runtime after exact candidate host tests and rollback preparation; CORE-003 and quotation/payment/job lifecycle acceptance; frontend usability in parallel. Do not interpret earlier candidate entries as unresolved merges. No production or commercial record mutation during this documentation reconciliation. Drive capability states must not be promoted on synthetic evidence alone. Full subsystem-document and Drive parity remains to be checked; this receipt reconciles the current engineering index and directly affected dashboard/lead/writer documents.
 
+
+
+## 26 November 2026 — owner-directed operator action workspaces
+Recorded full requirements in MAGOS-OPERATOR-DASHBOARD.md: one-click channel checks, configurable 50-prospect discovery, supplier verification/pricing, dedicated workspaces and governed duplicate resolution. Requirements only, implementation/CI/live acceptance pending. No live mutation.
