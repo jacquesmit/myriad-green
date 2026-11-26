@@ -185,15 +185,34 @@ class WordPressWaterAlertPublisher {
   }
 
   async verifySitemap(publicUrl){
-    const sitemap=new URL('/post-sitemap.xml',this.origin).toString();
-    for(let i=0;i<this.sitemapAttempts;i++){
+    const allowed=url=>{
       try{
-        const response=await this.request(sitemap,{
-          method:'GET',redirect:'error',headers:{Accept:'application/xml,text/xml'},signal:AbortSignal.timeout(12000)
-        });
-        if(response.status===200){
-          const body=await response.text();
-          if(body.includes(publicUrl))return {verified:true};
+        const u=new URL(url);
+        return u.origin===this.origin&&!u.username&&!u.password&&!u.search&&!u.hash;
+      }catch{return false;}
+    };
+    if(!allowed(publicUrl))return {verified:false,reason_code:'WP_ALERT_SITEMAP_NOT_CONFIRMED'};
+    const locations=xml=>Array.from(xml.matchAll(/<loc(?:\s[^>]*)?>\s*([^<]+?)\s*<\/loc>/gi),m=>m[1].replace(/&amp;/g,'&'));
+    const read=async url=>{
+      const response=await this.request(url,{
+        method:'GET',redirect:'error',headers:{Accept:'application/xml,text/xml'},signal:AbortSignal.timeout(12000)
+      });
+      if(response.status!==200)return '';
+      const body=await response.text();
+      return body.length<=5000000?body:'';
+    };
+    for(let i=0;i<this.sitemapAttempts;i++){
+      const first=new URL('/post-sitemap.xml',this.origin).toString();
+      try{if(locations(await read(first)).includes(publicUrl))return {verified:true};}catch{}
+      // Rank Math can split post URLs across numbered child sitemaps.
+      // Follow only exact same-origin post sitemap paths, never arbitrary URLs.
+      try{
+        const index=await read(new URL('/sitemap_index.xml',this.origin).toString());
+        const children=[...new Set(locations(index))].filter(url=>
+          allowed(url)&&/^\/post-sitemap[0-9]*\.xml$/.test(new URL(url).pathname)&&url!==first
+        ).slice(0,20);
+        for(const child of children){
+          try{if(locations(await read(child)).includes(publicUrl))return {verified:true};}catch{}
         }
       }catch{}
       if(i+1<this.sitemapAttempts&&this.sitemapDelayMs)await this.sleep(this.sitemapDelayMs);
