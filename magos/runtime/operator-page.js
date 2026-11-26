@@ -84,7 +84,7 @@ function operatorPage() {
       </div>
       <section id="detail" class="panel detail" aria-label="Record details" hidden></section>
     </section>
-    <footer>Read-only operational views from the existing MAGOS registers.</footer>
+    <footer>Canonical MAGOS records and separately authorized business actions.</footer>
   </main>
 </div></body></html>`;
 }

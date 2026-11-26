@@ -469,3 +469,17 @@ test('duplicate inspection validates projected headers and caps serialized UTF-8
  const report=await run(async()=>Array.from({length:50},()=>({intake_id:'DUP',...Object.fromEntries(fields.map(f=>[f,'\u0001'.repeat(256)]))})));
  assert.equal(report.match_count,50);assert.ok(report.matches.length<50);assert.equal(report.truncated,true);assert.ok(Buffer.byteLength(JSON.stringify(report),'utf8')<=65536);
 });
+
+test('quotation duplicate inspection projects exact matches and conflicts without mutation',async()=>{
+ const {inspectOperatorAction}=require('../processor/operator-dashboard');
+ const stores={commercial:{readObjects:async(sheet,options)=>{
+  assert.equal(sheet,'Quotes');assert.equal(options.maxRows,10001);
+  assert.ok(options.requiredHeaders.includes('Line Control State'));
+  return [{quote_id:'Q-DUP','Project / Scope':'A','Quote Status':'DRAFT',opportunity_id:'O-1'},{quote_id:'Q-DUP','Project / Scope':'B','Quote Status':'ACTIVE',opportunity_id:'O-2'},{quote_id:'Q-DUP-OTHER'}];
+ }}};
+ const report=await inspectOperatorAction({stores,action:'inspect-duplicate',department:'quotes',id:'Q-DUP'});
+ assert.equal(report.match_count,2);assert.equal(report.state,'REVIEW_REQUIRED');
+ assert.deepEqual(report.matches.map(x=>x.fields['Project / Scope']),['A','B']);
+ assert.ok(report.conflicting_fields.includes('opportunity_id'));assert.ok(report.conflicting_fields.includes('Quote Status'));
+ assert.equal(report.resolution_authorized,false);assert.equal(report.side_effects,false);
+});

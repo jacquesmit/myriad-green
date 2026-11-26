@@ -418,6 +418,7 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
 
  // Fixed server-side action catalogue: no caller-specified workbook or field access.
  const duplicateFields={
+  quotes:['Quote Status','opportunity_id','job_id','Next Action','Valid Until','Project / Scope','Workflow Stage','Line Control State','Drive Link'],
   leads:['source_event_id','source_system','source_type','processing_status','crm_id','opportunity_id','received_at'],
   clients:['company','lead_direction','record_origin','acquisition_source','crm_status','opportunity_id','job_id'],
   jobs:['job_id','client_crm_id','job_status','next_action'],

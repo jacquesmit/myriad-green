@@ -188,7 +188,9 @@
     rows.replaceChildren(...matches.slice(page * pageSize, (page + 1) * pageSize).map(item => {
       const row = element('tr');
       const id = element('td');
-      id.append(button(item.title || item.id, () => showDetail(item), 'row-link'));
+      const open=button(item.title || item.id, () => showDetail(item), 'row-link');
+      open.dataset.recordId=item.id;
+      id.append(open);
       if (item.title) id.append(element('small', item.id, 'muted'));
       row.append(id, element('td', item.status.replaceAll('_', ' ')), element('td', item.next_action || '—'));
       return row;
@@ -310,13 +312,25 @@
     inspection = undefined;
     $('detail').hidden = true;
     $('detail').replaceChildren();
+    if(department!=='overview')$('records').hidden=department==='registers';
   }
 
   function showDetail(item) {
     hideDetail();
     const target = $('detail');
     target.hidden = false;
-    target.append(element('h3', item.title ? item.title + ' · ' + item.id : item.id));
+    $('records').hidden=true;
+    const back=button('Back to '+labels[department],()=>{
+      hideDetail();
+      $('records').scrollIntoView({block:'start'});
+      const rowButton=[...$('rows').querySelectorAll('button')].find(b=>b.dataset.recordId===item.id);
+      (rowButton||$('search')).focus();
+    },'secondary');
+    const heading=element('h3',item.title ? item.title+' · '+item.id : item.id);
+    heading.tabIndex=-1;
+    const header=element('header',undefined,'record-workspace-header');
+    header.append(back,heading);
+    target.append(header);
     const list = element('dl');
     for (const [key, value] of Object.entries({ Status: item.status, 'Next action': item.next_action, ...item.details })) {
       if (value === '') continue;
@@ -333,12 +347,13 @@
       list.append(element('dt', name), valueCell);
     }
     target.append(list);
-    if(['leads','clients','jobs'].includes(department)&&item.title==='Duplicate record ID'){
+    if(['leads','clients','jobs','quotes'].includes(department)&&item.title==='Duplicate record ID'){
       const output=element('section');output.setAttribute('aria-live','polite');
       const check=button('Inspect duplicate records',()=>inspectDuplicate(department,item.id,output,check),'secondary');
-      target.append(check,output);
+      target.append(element('p','This identifier matches multiple records. Compare the evidence before changing or releasing any record.'),check,output);
+      check.click();
     }
-    if(department==='quotes'){
+    if(department==='quotes'&&item.title!=='Duplicate record ID'){
       const signingOutput=element('p');
       signingOutput.setAttribute('role','status');
       const signingCheck=button('Check client signing readiness',
@@ -489,7 +504,8 @@
         ()=>reviewQuoteAcceptance(item.id,authInput,acceptOutput,commit,false),'secondary');
       target.append(authLabel,preview,commit,acceptOutput);
     }
-    target.scrollIntoView({ block: 'nearest' });
+    heading.focus({preventScroll:true});
+    target.scrollIntoView({ block: 'start' });
   }
 
   async function loadCoverage() {
@@ -803,20 +819,23 @@
       const response=await read('/v1/operator/actions/inspect-duplicate/'+encodeURIComponent(scope)+'/'+encodeURIComponent(id),active.signal);
       const report=await response.json();
       if(inspection!==active)return;
-      if(!response.ok||report.schema_version!=='MAGOS_OPERATOR_ACTION_V1'||report.side_effects!==false)throw Error('INSPECTION_UNAVAILABLE');
+      if(!response.ok||report.schema_version!=='MAGOS_OPERATOR_ACTION_V1'||report.side_effects!==false||report.department!==scope||report.id!==id)throw Error('INSPECTION_UNAVAILABLE');
       if(active.signal.aborted)return;
       if(report.state==='SOURCE_LIMIT_EXCEEDED'){output.textContent='Source exceeds inspection limit; no complete match count available. Review canonical register.';return;}
       output.replaceChildren(element('h4',report.match_count+' matching records · '+report.state));
       output.append(element('p','Checked '+report.checked_at+' · '+report.source.name+' · Read-only; no correction authorized.'));
+      const sourceUrl=link(report.source.url);
+      if(sourceUrl){const anchor=element('a','Open original register ↗');anchor.href=sourceUrl;anchor.target='_blank';anchor.rel='noopener noreferrer';output.append(anchor);}
       if(report.conflicting_fields.length)output.append(element('p','Conflicting fields: '+report.conflicting_fields.join(', ')));
       for(const match of report.matches){
-        const section=element('section'),list=element('dl');
+        const section=element('section',undefined,'duplicate-match'),list=element('dl');
         section.append(element('h5','Match '+match.match));
         for(const [field,value] of Object.entries(match.fields)){
-          list.append(element('dt',field),element('dd',value||'—'));
+          list.append(element('dt',field),element('dd',value||'—',report.conflicting_fields.includes(field)?'conflicting-value':undefined));
         }
         section.append(list);output.append(section);
       }
+      if(report.match_count>1)output.append(element('p','Do not merge these records based on the ID alone. Compare scope, opportunity, issued version and supporting evidence. Correction requires a governed resolution.'));
       if(report.values_truncated)output.append(element('p','Long field values shortened; review canonical source before acting.'));
       if(report.truncated)output.append(element('p','Showing '+report.matches.length+' of '+report.match_count+' matches; output limited. Review canonical source.'));
     }catch{if(inspection===active&&!active.signal.aborted)output.textContent='Inspection unavailable. No records changed.';}
@@ -835,7 +854,7 @@
       if(report.schema_version!=='MAGOS_CLIENT_SIGNING_READINESS_V1'||
          report.side_effects!==false)throw Error('SIGNING_READINESS_UNAVAILABLE');
       const blockers=(report.checks||[]).filter(c=>c.state!=='PASS')
-        .map(c=>c.reason_code?.replaceAll('_',' ')||'Unverified prerequisite');
+        .map(c=>explainCommercial(c.reason_code)||'Unverified prerequisite');
       output.textContent=report.state==='READY_FOR_CONTROLLED_SIGNING_TEST'?
         'Page and reviewed bridge available. Live customer signing, approval and quote-version verification still require controlled testing.':
         'Client signing blocked: '+(blockers.join(' · ')||'Provider checks unavailable');
@@ -1125,6 +1144,22 @@
     return section;
   }
 
+  const commercialReasonText={
+    QUOTE_NOT_ACCEPTED:'The quotation is not accepted yet. Complete costing, issue the approved quotation and obtain the signed acceptance.',
+    QUOTE_LINES_NOT_VERIFIED:'Verify the quotation lines, quantities and supplier costs before issuing.',
+    BLOCKED_PENDING_VERIFIED_COSTING:'Supplier costs and quotation totals have not been verified.',
+    OPPORTUNITY_NOT_VERIFIED:'Resolve the linked CRM opportunity before release.',
+    JOB_ALREADY_EXISTS:'A linked job already exists. Open the existing job rather than creating a duplicate.',
+    PAYMENT_CONTROL_NOT_FOUND:'No payment control record is linked to this opportunity.',
+    INSUFFICIENT_CLEARED_ALLOCATIONS:'Recorded cleared deposits do not meet the required amount.',
+    CLIENT_SIGNING_PAGE_NOT_PUBLISHED_OR_UNAVAILABLE:'Client signing page is not published or cannot be reached.',
+    REVIEWED_CLIENT_SIGNATURE_BRIDGE_NOT_REGISTERED_OR_UNAVAILABLE:'Reviewed signature verification bridge is not available.'
+  };
+  function explainCommercial(value){
+    if(!value)return '';
+    return Object.hasOwn(commercialReasonText,value)?commercialReasonText[value]:String(value).replaceAll('_',' ');
+  }
+
   async function inspectCommercialWorkspace(quoteId,output,control){
     inspection?.abort();
     const active=new AbortController();
@@ -1154,8 +1189,8 @@
       const q=result.quote||{},a=result.acceptance||{},checks=result.checks||{};
       stage('1. Quotation',checks.canonical_quote,[
         q.quote_status&&'Quote status: '+q.quote_status,
-        q.line_control_state&&'Line control: '+q.line_control_state,
-        ...(Array.isArray(q.reasons)?q.reasons:[]),q.reason_code]);
+        q.line_control_state&&'Line control: '+explainCommercial(q.line_control_state),
+        ...(Array.isArray(q.reasons)?q.reasons.map(explainCommercial):[]),explainCommercial(q.reason_code)]);
       stage('2. Signed acceptance',checks.signed_acceptance,[
         a.quote_version&&'Quote version: '+a.quote_version,
         a.reason_code,
@@ -1176,7 +1211,7 @@
       stage('3. Deposit evidence',deposit?.state||'NOT_CHECKED',[
         typeof deposit?.deposit_required==='number'?'Required: '+zar.format(deposit.deposit_required):'Required: unknown',
         typeof deposit?.cleared_deposit_total==='number'?'Recorded cleared: '+zar.format(deposit.cleared_deposit_total):'Recorded cleared: unknown',
-        deposit?.reason_code,'Independent bank clearance is not established by this inspection.']);
+        explainCommercial(deposit?.reason_code),'Independent bank clearance is not established by this inspection.']);
       stage('4. Job release',result.state,[
         result.next_action||'Resolve the recorded blockers before attempting job release.',
         'No job, booking or payment changes performed.']);
