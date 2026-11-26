@@ -1,5 +1,7 @@
 # MAGOS Operations Command Centre
 
+> **26 November 2026 parity receipt:** PR #114 merged at 21031d4c0db6411da80e2f63bdbc7ce6c8b2aecd, three CI workflows passed; refresh consistency and stale deployment response guards integrated. PR #108 integrated OAuth/session code; live configuration and browser acceptance pending. Existing operator token login and live data reported by owner; newer runtime deployment not verified. See [MAGOS-CURRENT.md](MAGOS-CURRENT.md).
+
 > **25 November 2026 live status:** deployed release `b5e73575e092ef6abf39842e3ffb9ff44a45084e`, 647/647 host regression tests and 13/13 read-only production preflight checks PASS. Operator shell/assets, deployment identity, auth isolation, canonical coverage and 129 core records verified. Existing operator page is not an undeployed candidate. Detailed record-by-record UX and business workflow acceptance remain separate. See [MAGOS-CURRENT.md](MAGOS-CURRENT.md).
 
 The existing production page is https://runtime.myriadgreen.co.za/operator.

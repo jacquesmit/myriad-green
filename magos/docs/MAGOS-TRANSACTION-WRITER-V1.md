@@ -1,5 +1,7 @@
 # MAGOS Transaction Writer V1
 
+> **26 November 2026 parity receipt:** PR #113 merged at 373b22ccaea84fcb4e0c92245f4fe491e9a842ca, four CI workflows passed. Actual lead processor and transaction writer tested together using isolated storage; exact readback, canonical linkage, replay and authority rejection tested. Live CORE-003 remains PARTIAL. See [MAGOS-CURRENT.md](MAGOS-CURRENT.md).
+
 Status: P1 CODE IMPLEMENTED / LIVE ACCEPTANCE REQUIRED
 
 ## Purpose

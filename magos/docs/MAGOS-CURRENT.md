@@ -2,13 +2,27 @@
 
 > **Authoritative current index.** Read this file **first**, then [MAGOS-STATUS.md](MAGOS-STATUS.md) for append-only engineering history, the relevant subsystem runbook, source code, CI, and live sources. Previous decisions stay discoverable. A historic claim never overrides newer verified source evidence. Never claim deployment or customer transaction acceptance from a GitHub merge.
 
-**As-of:** 2026-11-25 (Africa/Johannesburg); authoritative snapshot immediately below.
+**As-of:** 2026-11-26 (Africa/Johannesburg); authoritative snapshot immediately below.
 **System:** MAGOS — the existing whole-business Myriad Green operating system, not a new product or collection of renamed agents.  
 **Repository:** [jacquesmit/myriad-green](https://github.com/jacquesmit/myriad-green)  
 **Production:** `https://runtime.myriadgreen.co.za` — tested release `b5e73575e092ef6abf39842e3ffb9ff44a45084e` DEPLOYED; 647/647 tests and 13/13 read-only preflight PASS.
 
 
 
+
+## CURRENT ENGINEERING PARITY — 26 November 2026 (SAST)
+
+**GitHub integrated baseline:** `21031d4c0db6411da80e2f63bdbc7ce6c8b2aecd`. **Last accepted production:** `b5e73575e092ef6abf39842e3ffb9ff44a45084e` (owner-reported 647/647 host tests and 13/13 preflight). Newer application changes are not verified deployed. Owner reported successful operator login and live data on 26 November; exact running SHA not independently read this session. Whole-business acceptance remains PARTIAL.
+
+| Package | Integrated evidence | Outstanding |
+| --- | --- | --- |
+| CI hardening | PR #109, merge d502ead9070e4f34b6d0692131e800a3e57a542d; four CI workflows PASS | Branch protection, dependency lockfile, security scanning |
+| CI modernization and TAP evidence | PR #112, merge b875d40419180d26c5da232f1580b40bc4780442; six CI workflows PASS; artifact 15104589315 metadata verified; #110 closed | Artifact contents not independently downloaded; git annotation cause unverified |
+| CORE-003 synthetic lead integration | PR #113, merge 373b22ccaea84fcb4e0c92245f4fe491e9a842ca; four CI workflows PASS | Controlled live canonical write/readback/replay; not a business PASS |
+| Operator refresh and deployment request guards | PR #114, merge 21031d4c0db6411da80e2f63bdbc7ce6c8b2aecd; three CI workflows PASS | Browser interaction and production readback |
+| OAuth and consolidated inventories | PR #108 integrated; source implementation exists | Live OAuth configuration, authenticated acceptance and deployment |
+ 
+**Resume:** controlled release of integrated runtime after exact candidate host tests and rollback preparation; CORE-003 and quotation/payment/job lifecycle acceptance; frontend usability in parallel. Do not interpret earlier candidate entries as unresolved merges. No production or commercial record mutation during this documentation reconciliation. Drive capability states must not be promoted on synthetic evidence alone. Full subsystem-document and Drive parity remains to be checked; this receipt reconciles the current engineering index and directly affected dashboard/lead/writer documents.
 
 ## 26 November 2026 — engineering CI hardening candidate
 Existing Runtime P2 CI now triggers for all magos/** and MAGOS workflow changes and runs the complete sequential `npm run test:hostafrica` suite rather than a hand-maintained list. Existing entrypoint, container and release checks retained. Transaction writer CI aligned to documented Host Africa Node 20. Changes are candidate-only until exact-head CI passes and merge is verified; no host deployment or business acceptance implied. Dependency lockfile, protected branch enforcement, security scanning, isolated staging and CORE-003 golden-path execution remain outstanding. Preserve the last accepted production receipt and existing status authority.
