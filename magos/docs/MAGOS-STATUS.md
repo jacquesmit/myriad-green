@@ -760,3 +760,7 @@ Combined PR #105 (owner OAuth/session controls), #106 (bounded sitemap verificat
 - Transaction writer CI uses Node 20, consistent with the documented hosting environment.
 - Candidate commits 34808c5c and a232f53e; exact-head CI, merge and production deployment not yet verified. No new business acceptance claimed.
 - Remaining: reproducible lockfile installation, branch protection, security scanning, isolated staging, and canonical CORE-003 golden-path testing. Existing production receipt unchanged.
+
+
+## 26 November 2026 — shared optimization standard adopted
+Owner approved SEO/AEO/GEO/AIO/AISO/LLMO/local/semantic/entity SEO/E-E-A-T/SXO/CRO/multimodal/agent-friendly acceptance across Myriad Green and MAGOS. Canonical standard: [SEARCH-AI-DISCOVERY-STANDARD.md](../../SEARCH-AI-DISCOVERY-STANDARD.md); source commit cfd0baae1a8960f623e65aa60461ebbfe8d25977. Documentation only; existing page compliance and automated gates not certified; no production change.
