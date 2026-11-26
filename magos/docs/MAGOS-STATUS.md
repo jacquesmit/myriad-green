@@ -753,3 +753,10 @@ Owner supplied cPanel evidence: corrected PR #104 exact merged SHA `b5e73575e092
 
 ## 26 November 2026 — consolidated release candidate
 Combined PR #105 (owner OAuth/session controls), #106 (bounded sitemap verification), and #107 (whole-system dashboard inventories) from exact previously tested heads 80ae47f8788cae0a07ccd6e95bca591c7c291339, a624328094afdfa2eafcfb1db90b4d41c2b708fc, b60f1e48c926ae1b076b9bef73dab7eef5eb0911. Non-overlapping code copied only after base blob equality; operator.js combined navigation with authorized() session/token checks. Preserve existing main documentation. Individual CI receipts do not certify integrated release. Pending integrated exact-head CI, deployment, OAuth configuration and authenticated UI readback. Water source factual corroboration remains TO_CONFIRM; no claim of independent corroboration, no unattended publication activation. Targeted cache invalidation and genuine same-source update remain pending. Dashboard reads register labels, not live business acceptance. Existing deployed release unchanged; CORE-003 controlled canonical business write/readback/replay remains next core acceptance. No duplicate scheduler, no new authority or credentials.
+
+
+## 26 November 2026 — engineering pipeline hardening candidate
+- Runtime CI now covers all MAGOS paths and automatically runs the entire sequential regression suite; retained hosted-entrypoint and container smoke checks and existing release checks.
+- Transaction writer CI uses Node 20, consistent with the documented hosting environment.
+- Candidate commits 34808c5c and a232f53e; exact-head CI, merge and production deployment not yet verified. No new business acceptance claimed.
+- Remaining: reproducible lockfile installation, branch protection, security scanning, isolated staging, and canonical CORE-003 golden-path testing. Existing production receipt unchanged.

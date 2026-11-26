@@ -9,6 +9,10 @@
 
 
 
+
+## 26 November 2026 — engineering CI hardening candidate
+Existing Runtime P2 CI now triggers for all magos/** and MAGOS workflow changes and runs the complete sequential `npm run test:hostafrica` suite rather than a hand-maintained list. Existing entrypoint, container and release checks retained. Transaction writer CI aligned to documented Host Africa Node 20. Changes are candidate-only until exact-head CI passes and merge is verified; no host deployment or business acceptance implied. Dependency lockfile, protected branch enforcement, security scanning, isolated staging and CORE-003 golden-path execution remain outstanding. Preserve the last accepted production receipt and existing status authority.
+
 ## CURRENT AUTHORITATIVE HANDOFF — 25 November 2026 (SAST)
 
 **DEPLOYED_AND_READ_ONLY_PREFLIGHT_PASS. BUSINESS_GOLDEN_PATH=NOT_YET_VERIFIED.** This section supersedes every earlier runtime/hosting/dashboard-deployment blocker or pending statement in this file and historical documents. Do not repeat passed checks or treat a historical incident as an active blocker. Revalidate only when new evidence, changed code/configuration, or a genuine regression requires it.
