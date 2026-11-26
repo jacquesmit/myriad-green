@@ -50,19 +50,19 @@ class FakeAudit extends FakeStore {
   constructor(tables) {
     super(tables);
   }
-  async beginRun({ idempotencyKey }) {
+  async beginRun({ idempotencyKey, inputScope, evidenceLink }) {
     const existing = await this.findByKey('Automation_Run_Log', 'idempotency_key', idempotencyKey);
     if (existing && existing.object.run_state === 'COMMITTED') {
       return { duplicate: true, existing: existing.object };
     }
     if (existing) {
       await this.updateFieldsByKey('Automation_Run_Log', 'idempotency_key', idempotencyKey, {
-        run_state: 'RUNNING', error_or_blocker: ''
+        run_state: 'RUNNING', error_or_blocker: '', input_scope:inputScope, evidence_link:evidenceLink
       });
       return { duplicate: false, retry: true, runLogId: existing.object.run_log_id };
     }
     await this.appendObject('Automation_Run_Log', {
-      run_log_id: 'ARL-1', idempotency_key: idempotencyKey, run_state: 'RUNNING'
+      run_log_id: 'ARL-1', idempotency_key: idempotencyKey, run_state: 'RUNNING', input_scope:inputScope, evidence_link:evidenceLink
     });
     return { duplicate: false, retry: false, runLogId: 'ARL-1' };
   }
@@ -586,9 +586,8 @@ test('commercial golden path commits real P3 job and linked execution with readb
  assert.equal((await f.audit.findByKey('Automation_Run_Log','idempotency_key',key)).object.run_state,'COMMITTED');
  const before=structuredClone({crm:f.crm.tables,commercial:f.commercial.tables,audit:f.audit.tables});
  const replay=await executeAcceptedJob(args);
- // Existing planner deliberately sends already-linked jobs to reconciliation.
- // Do not claim DUPLICATE_NO_OP at the HTTP/executor boundary until implemented.
- assert.equal(replay.state,'REVIEW_REQUIRED');
+ assert.equal(replay.state,'DUPLICATE_NO_OP');
+ assert.equal(replay.current_job_readiness,'NOT_ASSESSED');
  assert.deepEqual({crm:f.crm.tables,commercial:f.commercial.tables,audit:f.audit.tables},before);
 });
 test('commercial golden path real P3 rejects payment reversal between planning and commit',async()=>{
@@ -603,4 +602,17 @@ test('commercial golden path real P3 rejects payment reversal between planning a
  assert.match(result.transaction.error,/PRECONDITION_FAILED/);
  assert.equal((await f.crm.findByKey('Jobs_Opportunities','opportunity_id','O1')).object.job_id,'');
  assert.equal(await f.commercial.findByKey('Job Execution','Execution ID','EXEC-1'),null);
+});
+
+test('commercial replay refuses changed identity and scope; preserves progressed state',async()=>{
+ const f=commercialGoldenFixture(),args={...f.args,writer:f.writer,authorityVerifier:f.authorityVerifier};
+ assert.equal((await executeAcceptedJob(args)).state,'COMMITTED');
+ const job=f.crm.tables.Jobs_Opportunities[0];
+ job.job_status='JOB_IN_PROGRESS';
+ const before=structuredClone({crm:f.crm.tables,commercial:f.commercial.tables,audit:f.audit.tables});
+ assert.equal((await executeAcceptedJob(args)).state,'DUPLICATE_NO_OP');
+ assert.equal((await executeAcceptedJob({...args,jobId:'JOB-2'})).state,'REVIEW_REQUIRED');
+ assert.deepEqual({crm:f.crm.tables,commercial:f.commercial.tables,audit:f.audit.tables},before);
+ f.commercial.tables.Quotes[0]['Project / Scope']='Changed scope';
+ assert.equal((await executeAcceptedJob(args)).state,'REVIEW_REQUIRED');
 });
