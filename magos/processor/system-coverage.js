@@ -12,6 +12,35 @@ const REQUIRED_HEADERS=['Capability ID','Business Capability','Current State','I
 const truth=v=>String(v??'').trim();
 const {buildDeliveryRoadmap}=require('./delivery-roadmap');
 
+
+// Register labels are observations, not proof of live execution.
+const INVENTORY = [
+  ['systems','System_Directory','System ID','System / Module','Lifecycle status',44,4002],
+  ['gates','Lifecycle_Gates','Gate ID','Transition','To State',18,1701952547],
+  ['packages','Core_Build_Queue','Queue ID','Work Package','State',12,2063886831],
+  ['automations','Automation_Directory','Automation ID','Business purpose','Status',35,4003]
+];
+async function readInventory(store) {
+  const result=await Promise.all(INVENTORY.map(async ([key,tab,idField,nameField,stateField,baseline,gid])=>{
+    const source={url:'https://docs.google.com/spreadsheets/d/'+encodeURIComponent(store.spreadsheetId||CONTROL_HUB_ID)+'/edit#gid='+gid};
+    try {
+      const rows=await store.readObjects(tab,{maxRows:null,requiredHeaders:[idField,nameField,stateField],headerRow:['systems','automations'].includes(key)?4:1});
+      if(!Array.isArray(rows)||!rows.length)throw Error('REGISTER_EMPTY');
+      const seen=new Set(),records=[];
+      for(const row of rows){
+        const id=truth(row[idField]),status=truth(row[stateField]);
+        if(!id||seen.has(id)||!truth(row[nameField])||/^#(REF!|N\/A|VALUE!|ERROR!|DIV\/0!|NAME\?|NUM!|NULL!)/i.test(status))throw Error('REGISTER_INVALID');
+        seen.add(id);
+        records.push({id,title:truth(row[nameField]),status:status||'UNKNOWN',
+          next_action:truth(row['Next Executable Action']||row['Next action']||row['Required Evidence / Conditions']),
+          details:{register:tab,source_label_only:'YES',production_acceptance:'NOT_VERIFIED'}});
+      }
+      return [key,{state:records.length<baseline?'PARTIAL':'LIVE',baseline,count:records.length,records,source}];
+    } catch {return [key,{state:'UNAVAILABLE',baseline,count:null,records:[],source}];}
+  }));
+  return Object.fromEntries(result);
+}
+
 class SystemCoverageReader {
   constructor({store}={}) {
     this.store=store||new AuditLedger({
@@ -61,6 +90,7 @@ class SystemCoverageReader {
       authority:'READ_ONLY_PROJECTION',
       checked_at:new Date().toISOString(),
       counts,capabilities,delivery,
+      inventory:await readInventory(this.store),
       entire_business_scope:true,
       // Source capability labels are necessary, never sufficient for launch.
       // Production requires independently verified host/real-provider gates.
