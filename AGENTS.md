@@ -162,3 +162,7 @@ The owner requested **only this GitHub Markdown rule**. Creating or updating thi
 - Avoid continuous animation, layout shifts, blocking input, duplicated animation runtimes or unnecessary global bundles. Scope animations to the owning component and load only needed assets.
 - Acceptance gate: verify mobile/tablet/desktop behavior, accessibility and reduced-motion fallback, browser compatibility, network/JS payload, and regression-free conversions. Document actual measurements and evidence, not assumed benefits.
 - This entry is **rules/documentation only**; it does not authorize WordPress/Elementor edits, deployment, plugin installation, or changes to live code. Maintain the existing release/approval gates.
+
+
+## Mandatory cross-system search and AI discovery standard (owner-approved 26 November 2026)
+Read [SEARCH-AI-DISCOVERY-STANDARD.md](SEARCH-AI-DISCOVERY-STANDARD.md) before creating or materially changing any website page, ecommerce experience, journal article, generated public content or public tool. Apply SEO, AEO, GEO, AIO, AISO, LLMO, local/semantic/entity SEO, E-E-A-T, SXO, CRO, multimodal and agent-friendly controls proportionately; record relevant acceptance evidence. This extends existing rules; it does not authorize deployment or claim existing compliance.
