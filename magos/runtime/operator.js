@@ -3,13 +3,17 @@
 (() => {
   const $ = id => document.getElementById(id);
   const groups = [
-    ['Command centre', [['overview', 'Overview'], ['system', 'Whole MAGOS build'], ['exceptions', 'Exceptions']]],
+    ['Command centre', [['overview', 'Overview'], ['system', 'Whole MAGOS build'], ['systems', 'System directory'], ['gates', 'Lifecycle gates'], ['packages', 'Core build queue'], ['automations', 'Automation directory'], ['exceptions', 'Exceptions']]],
     ['Clients and delivery', [['leads', 'Inbound enquiries'], ['clients', 'Inbound CRM'], ['prospects', 'Scraper / outbound prospects'], ['provenance', 'Provenance review'], ['conversions', 'Lead-to-job conversion'], ['quotes', 'Quotes & acceptance'], ['jobs', 'Active jobs'], ['dispatch', 'Dispatch & bookings'], ['evidence', 'Work proof'], ['variations', 'Scope variations']]],
     ['Commercial', [['finance', 'Finance & payments'], ['labour', 'Labour cost review'], ['procurement', 'Procurement'], ['suppliers', 'Suppliers'], ['registers', 'Other registers']]],
   ];
   const labels = Object.fromEntries(groups.flatMap(([, entries]) => entries));
   const descriptions = {
-    system: 'All MAGOS capabilities, live readiness and completion gates from the existing Control Hub.',
+    system: 'Business capability acceptance and proposed rollout targets from the existing Control Hub.',
+    systems: 'Registered active, planned and legacy systems; source labels are not production acceptance.',
+    gates: 'Required lifecycle transitions and evidence; transition names are not proof of passing.',
+    packages: 'Original core development packages, recorded states and next executable actions.',
+    automations: 'Registered automation purpose and source status; not independently verified provider activity.',
     leads: 'Verified operational inbound work and the next routing decision.',
     clients: 'Inbound CRM enquiries separated from scraped prospecting records.',
     prospects: 'Original scraper and outbound prospects, including converted prospects whose origin is preserved.',
@@ -53,6 +57,10 @@
   let page = 0;
   let queuePage = 0;
   let credential = '';
+  let sessionActive = false;
+  let humanLoginConfigured = false;
+  let sessionExpiryTimer;
+  const authorized = () => sessionActive || Boolean(credential);
   let data;
   let coverage;
   let coverageRequest;
@@ -100,13 +108,17 @@
     container.append(previous, element('span', (index * pageSize + 1) + '–' + Math.min((index + 1) * pageSize, total) + ' of ' + total), next);
   }
 
+  const inventoryKeys = new Set(['systems','gates','packages','automations']);
+  const coverageView = key => key === 'system' || inventoryKeys.has(key);
+  const viewState = key => key === 'system' ? coverage : inventoryKeys.has(key) ? coverage?.inventory?.[key] : data?.departments[key];
+
   function show(key, recordId) {
     department = key;
     page = 0;
     $('search').value = recordId || '';
     hideDetail();
     renderView();
-    if (key === 'system' && !coverage && credential) loadCoverage();
+    if (coverageView(key) && !coverage && authorized()) loadCoverage();
     if (recordId) {
       const record = data?.departments[key]?.records?.find(item => item.id === recordId);
       if (record) showDetail(record);
@@ -158,15 +170,16 @@
 
   function renderRecords() {
     const rows = $('rows');
-    const state = department === 'system' ? coverage : data?.departments[department];
+    const state = viewState(department);
     const query = $('search').value.trim().toLowerCase();
     const matches = (state?.records || []).filter(item =>
       [item.id, item.title, item.status, item.next_action, ...Object.values(item.details)].some(value =>
         String(value ?? '').toLowerCase().includes(query))
     );
     const readable = state?.state === 'LIVE' || state?.state === 'PARTIAL';
+    const baseline = state?.baseline ? ' · baseline '+state.baseline+' · source labels only' : '';
     const conflicts = state?.conflict_count ? ' · ' + state.conflict_count + ' duplicate IDs need review' : '';
-    $('record-count').textContent = readable ? matches.length + ' records' + conflicts : 'Records unavailable';
+    $('record-count').textContent = readable ? matches.length + ' records' + conflicts + baseline : 'Records unavailable';
     $('search').disabled = !readable;
     $('record-pages').hidden = true;
     if (!readable) return notice(rows, data ? 'This register could not be read. Open the source or try refreshing.' : 'Load live operations to view these records.');
@@ -271,7 +284,7 @@
     $('directory').hidden = department !== 'registers';
     $('records').hidden = department === 'registers';
     const source = $('source');
-    const url = link(department === 'system' ? coverage?.source?.url : data?.departments[department]?.source?.url);
+    const url = link(viewState(department)?.source?.url);
     source.hidden = !url;
     if (url) source.href = url;
     else source.removeAttribute('href');
@@ -492,13 +505,14 @@
       const response = await read('/v1/operator/coverage',active.signal);
       if(!response.ok) throw new Error('COVERAGE_SOURCE_UNAVAILABLE');
       const result = await response.json();
-      if(coverageRequest !== active || !credential) return;
+      if(coverageRequest !== active || !authorized()) return;
       if(result.schema_version !== 'MAGOS_SYSTEM_COVERAGE_V1' ||
          !Array.isArray(result.capabilities) || result.side_effects !== false) {
         throw new Error('INVALID_COVERAGE_RESPONSE');
       }
       coverage={
         delivery:result.delivery,
+        inventory:result.inventory || {},
         state:'LIVE',
         records:result.capabilities.map(cap=>({
           id:cap.id,title:cap.name,status:cap.state,
@@ -514,10 +528,10 @@
         source:{url:'https://docs.google.com/spreadsheets/d/1lxFrUEGeEojkxbpQiVfj1AxuB5C1ayaTzAT8rkaTObo/edit'}
       };
     }catch {
-      if(coverageRequest!==active || !credential)return;
+      if(coverageRequest!==active || !authorized())return;
       coverage={state:'UNAVAILABLE',records:[]};
     } finally {
-      if(coverageRequest===active && department==='system')renderView();
+      if(coverageRequest===active && coverageView(department))renderView();
     }
   }
 
@@ -529,7 +543,7 @@
     try{
       const response=await read('/v1/operator/deployment',active.signal);
       const result=await response.json();
-      if(!credential||result.schema_version!=='MAGOS_OPERATOR_DEPLOYMENT_V1'||
+      if(!authorized()||result.schema_version!=='MAGOS_OPERATOR_DEPLOYMENT_V1'||
          result.side_effects!==false)throw Error('DEPLOYMENT_UNAVAILABLE');
       if(response.status===200&&result.status==='PROCESS_START_GIT_MATCH'&&
          /^[0-9a-f]{40}$/.test(result.commit_sha)){
@@ -539,13 +553,14 @@
         output.textContent='Running code identity NOT VERIFIED — do not assume latest GitHub code is deployed';
       }
     }catch{
-      if(credential)output.textContent='Deployment identity unavailable — do not assume live release';
+      if(authorized())output.textContent='Deployment identity unavailable — do not assume live release';
     }finally{clearTimeout(deadline);}
   }
 
   function read(path, signal) {
     return fetch(path, {
-      headers: { 'X-MAGOS-Operator-Token': credential },
+      headers: credential ? { 'X-MAGOS-Operator-Token': credential } : {},
+      credentials: 'same-origin',
       cache: 'no-store',
       redirect: 'error',
       signal,
@@ -940,12 +955,22 @@
     coverageRequest = undefined;
     coverage = undefined;
     credential = '';
+    sessionActive = false;
+    $('security-panel').hidden = true;
+    $('security-open').hidden = true;
+    $('security-events').replaceChildren();
+    $('security-message').textContent = '';
+    clearTimeout(sessionExpiryTimer);
     data = undefined;
     $('deployment').textContent='Deployed code: not yet verified';
     $('credential').value = '';
     $('credential').disabled = false;
+    $('credential').hidden = humanLoginConfigured;
+    $('credential-label').hidden = humanLoginConfigured;
+    $('google-login').hidden = !humanLoginConfigured;
     $('load').disabled = false;
     $('load').textContent = 'Load live operations';
+    $('load').hidden = humanLoginConfigured;
     $('clear').hidden = true;
     $('asof').textContent = '';
     $('rows').replaceChildren();
@@ -958,12 +983,55 @@
     show('overview');
   }
 
-  $('clear').addEventListener('click', () => lock());
+  $('security-close').addEventListener('click',()=>{$('security-panel').hidden=true;});
+  $('security-open').addEventListener('click',async()=>{
+    if(!sessionActive)return;
+    $('security-panel').hidden=false;
+    $('security-events').replaceChildren();
+    $('security-message').textContent='Reading security history…';
+    try{
+      const response=await fetch('/operator/auth/security',{credentials:'same-origin',cache:'no-store'});
+      if(!sessionActive)return;
+      if(response.status===401){lock('Session expired. Sign in again.');return;}
+      if(!response.ok)throw Error('history');
+      const result=await response.json();
+      if(!sessionActive||$('security-panel').hidden)return;
+      for(const row of result.events||[]){
+        const tr=element('tr');
+        tr.append(element('td',dateFormat.format(new Date(row.at))),element('td',row.event.replaceAll('_',' ')));
+        $('security-events').append(tr);
+      }
+      $('security-message').textContent='Recent security events (up to 100).';
+    }catch{if(sessionActive)$('security-message').textContent='Security history unavailable.';}
+  });
+  $('revoke-all').addEventListener('click',async()=>{
+    if(!sessionActive||!window.confirm('Sign out all human dashboard sessions, including this device?'))return;
+    $('revoke-all').disabled=true;
+    try{
+      const response=await fetch('/operator/auth/revoke-all',{method:'POST',credentials:'same-origin',cache:'no-store'});
+      if(!response.ok)throw Error('revocation');
+      const result=await response.json();
+      if(!result.all_human_sessions_revoked)throw Error('revocation');
+      lock(result.audit_recorded?'All human sessions revoked. Sign in again.':'All human sessions revoked; audit recording unavailable.');
+    }catch{if(sessionActive)$('security-message').textContent='Revocation not confirmed. Try again.';}
+    finally{$('revoke-all').disabled=false;}
+  });
+  $('clear').addEventListener('click', async () => {
+    const wasSession = sessionActive;
+    lock(wasSession ? 'Signing out…' : undefined);
+    if (wasSession) {
+      try {
+        const response = await fetch('/operator/auth/logout',{method:'POST',credentials:'same-origin',cache:'no-store'});
+        if(!response.ok)throw Error('logout');
+        state('Signed out. Sign in with Google to continue.','Locked');
+      } catch { state('Local view cleared, but server logout failed. Retry sign-out or close this browser.','Review required','partial'); $('clear').hidden=false; sessionActive=true; }
+    }
+  });
   $('search').addEventListener('input', () => { page = 0; hideDetail(); renderRecords(); });
   $('login').addEventListener('submit', async event => {
     event.preventDefault();
     const entered = $('credential').value.trim();
-    if (!entered && !credential) {
+    if (!entered && !authorized()) {
       state('Enter the dashboard access token.', 'Locked');
       $('credential').focus();
       return;
@@ -982,7 +1050,7 @@
       const response = await read('/v1/operator/dashboard', active.signal);
       const result = await response.json();
       if (request !== active) return;
-      if (response.status === 401) return lock('The dashboard access token was rejected.');
+      if (response.status === 401) return lock('Access expired or rejected. Sign in again.');
       if (result.error === 'OPERATOR_ACCESS_NOT_CONFIGURED') return lock('Dashboard access has not been configured on the server.');
       if (!response.ok || result.schema_version !== 'MAGOS_OPERATOR_DASHBOARD/V1' || result.side_effects !== false ||
         !result.departments || !result.overview_counts || !Array.isArray(result.attention) || !Array.isArray(result.links)) {
@@ -995,6 +1063,9 @@
       hideDetail();
       $('asof').textContent = 'Checked ' + dateFormat.format(new Date(data.checked_at)) + ' SAST';
       $('load').textContent = 'Refresh operations';
+      $('load').hidden = false;
+      $('google-login').hidden = true;
+      $('security-open').hidden = !sessionActive;
       const departments = Object.values(data.departments);
       const unavailable = departments.filter(item => item.state === 'UNAVAILABLE').length;
       const conflicts = departments.reduce((total, item) => total + (item.conflict_count || 0), 0);
@@ -1013,4 +1084,24 @@
     }
   });
   renderView();
+  async function initializeLogin(){
+    try {
+      const response=await fetch('/operator/auth/status',{cache:'no-store',credentials:'same-origin'});
+      if(!response.ok)return;
+      const status=await response.json();
+      humanLoginConfigured=status.configured===true;
+      if(!humanLoginConfigured)return;
+      $('credential').hidden=true;
+      $('credential-label').hidden=true;
+      $('google-login').hidden=status.authenticated===true||status.available===false;
+      $('load').hidden=status.authenticated!==true;
+      sessionActive=status.authenticated===true;
+      if(sessionActive){
+        sessionExpiryTimer=setTimeout(()=>lock('Session expired. Sign in again.'),Math.max(0,status.expires_at-Date.now()));
+        $('login').requestSubmit();
+      }else state(status.available===false?'Owner sign-in is currently unavailable or locked. Contact the owner.':'Sign in with your approved Google account.','Locked');
+    }catch{/* Existing token access remains available if status is unavailable. */}
+  }
+  window.addEventListener('pageshow',event=>{if(event.persisted){lock();void initializeLogin();}});
+  void initializeLogin();
 })();
