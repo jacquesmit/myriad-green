@@ -3,13 +3,17 @@
 (() => {
   const $ = id => document.getElementById(id);
   const groups = [
-    ['Command centre', [['overview', 'Overview'], ['system', 'Whole MAGOS build'], ['exceptions', 'Exceptions']]],
+    ['Command centre', [['overview', 'Overview'], ['system', 'Whole MAGOS build'], ['systems', 'System directory'], ['gates', 'Lifecycle gates'], ['packages', 'Core build queue'], ['automations', 'Automation directory'], ['exceptions', 'Exceptions']]],
     ['Clients and delivery', [['leads', 'Inbound enquiries'], ['clients', 'Inbound CRM'], ['prospects', 'Scraper / outbound prospects'], ['provenance', 'Provenance review'], ['conversions', 'Lead-to-job conversion'], ['quotes', 'Quotes & acceptance'], ['jobs', 'Active jobs'], ['dispatch', 'Dispatch & bookings'], ['evidence', 'Work proof'], ['variations', 'Scope variations']]],
     ['Commercial', [['finance', 'Finance & payments'], ['labour', 'Labour cost review'], ['procurement', 'Procurement'], ['suppliers', 'Suppliers'], ['registers', 'Other registers']]],
   ];
   const labels = Object.fromEntries(groups.flatMap(([, entries]) => entries));
   const descriptions = {
-    system: 'All MAGOS capabilities, live readiness and completion gates from the existing Control Hub.',
+    system: 'Business capability acceptance and proposed rollout targets from the existing Control Hub.',
+    systems: 'Registered active, planned and legacy systems; source labels are not production acceptance.',
+    gates: 'Required lifecycle transitions and evidence; transition names are not proof of passing.',
+    packages: 'Original core development packages, recorded states and next executable actions.',
+    automations: 'Registered automation purpose and source status; not independently verified provider activity.',
     leads: 'Verified operational inbound work and the next routing decision.',
     clients: 'Inbound CRM enquiries separated from scraped prospecting records.',
     prospects: 'Original scraper and outbound prospects, including converted prospects whose origin is preserved.',
@@ -100,13 +104,17 @@
     container.append(previous, element('span', (index * pageSize + 1) + '–' + Math.min((index + 1) * pageSize, total) + ' of ' + total), next);
   }
 
+  const inventoryKeys = new Set(['systems','gates','packages','automations']);
+  const coverageView = key => key === 'system' || inventoryKeys.has(key);
+  const viewState = key => key === 'system' ? coverage : inventoryKeys.has(key) ? coverage?.inventory?.[key] : data?.departments[key];
+
   function show(key, recordId) {
     department = key;
     page = 0;
     $('search').value = recordId || '';
     hideDetail();
     renderView();
-    if (key === 'system' && !coverage && credential) loadCoverage();
+    if (coverageView(key) && !coverage && credential) loadCoverage();
     if (recordId) {
       const record = data?.departments[key]?.records?.find(item => item.id === recordId);
       if (record) showDetail(record);
@@ -158,15 +166,16 @@
 
   function renderRecords() {
     const rows = $('rows');
-    const state = department === 'system' ? coverage : data?.departments[department];
+    const state = viewState(department);
     const query = $('search').value.trim().toLowerCase();
     const matches = (state?.records || []).filter(item =>
       [item.id, item.title, item.status, item.next_action, ...Object.values(item.details)].some(value =>
         String(value ?? '').toLowerCase().includes(query))
     );
     const readable = state?.state === 'LIVE' || state?.state === 'PARTIAL';
+    const baseline = state?.baseline ? ' · baseline '+state.baseline+' · source labels only' : '';
     const conflicts = state?.conflict_count ? ' · ' + state.conflict_count + ' duplicate IDs need review' : '';
-    $('record-count').textContent = readable ? matches.length + ' records' + conflicts : 'Records unavailable';
+    $('record-count').textContent = readable ? matches.length + ' records' + conflicts + baseline : 'Records unavailable';
     $('search').disabled = !readable;
     $('record-pages').hidden = true;
     if (!readable) return notice(rows, data ? 'This register could not be read. Open the source or try refreshing.' : 'Load live operations to view these records.');
@@ -271,7 +280,7 @@
     $('directory').hidden = department !== 'registers';
     $('records').hidden = department === 'registers';
     const source = $('source');
-    const url = link(department === 'system' ? coverage?.source?.url : data?.departments[department]?.source?.url);
+    const url = link(viewState(department)?.source?.url);
     source.hidden = !url;
     if (url) source.href = url;
     else source.removeAttribute('href');
@@ -499,6 +508,7 @@
       }
       coverage={
         delivery:result.delivery,
+        inventory:result.inventory || {},
         state:'LIVE',
         records:result.capabilities.map(cap=>({
           id:cap.id,title:cap.name,status:cap.state,
@@ -517,7 +527,7 @@
       if(coverageRequest!==active || !credential)return;
       coverage={state:'UNAVAILABLE',records:[]};
     } finally {
-      if(coverageRequest===active && department==='system')renderView();
+      if(coverageRequest===active && coverageView(department))renderView();
     }
   }
 
