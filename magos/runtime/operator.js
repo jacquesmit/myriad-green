@@ -5,6 +5,7 @@
   const groups = [
     ['Command centre', [['overview', 'Overview'], ['system', 'Whole MAGOS build'], ['systems', 'System directory'], ['gates', 'Lifecycle gates'], ['packages', 'Core build queue'], ['automations', 'Automation directory'], ['exceptions', 'Exceptions']]],
     ['Clients and delivery', [['leads', 'Inbound enquiries'], ['clients', 'Inbound CRM'], ['prospects', 'Scraper / outbound prospects'], ['provenance', 'Provenance review'], ['conversions', 'Lead-to-job conversion'], ['quotes', 'Quotes & acceptance'], ['jobs', 'Active jobs'], ['dispatch', 'Dispatch & bookings'], ['evidence', 'Work proof'], ['variations', 'Scope variations']]],
+    ['Workforce', [['workforce', 'Employee onboarding']]],
     ['Commercial', [['finance', 'Finance & payments'], ['labour', 'Labour cost review'], ['procurement', 'Procurement'], ['suppliers', 'Suppliers'], ['registers', 'Other registers']]],
   ];
   const labels = Object.fromEntries(groups.flatMap(([, entries]) => entries));
@@ -25,6 +26,7 @@
     evidence: 'Before and after evidence, variations and completion sign-off.',
     variations: 'Simpro/Fergus benchmark: changed scope, client consent, pricing, invoicing and retrospective exceptions.',
     finance: 'Cleared allocations drive receipt totals and contract balances. Payment proof is shown separately.',
+    workforce: 'Prepare a governed employee onboarding draft. No employee record or statutory submission is created.',
     labour: 'Aspire/LMN benchmark: approved rate inputs versus provisional crew-day calculations. Actual timesheets not independently verified.',
     procurement: 'Purchasing lines awaiting approval or technical review.',
     suppliers: 'Supplier approval, trading status and payment terms.',
@@ -272,6 +274,38 @@
     }));
   }
 
+  let workforceRequest;
+  function renderWorkforce() {
+    const target=$('directory');
+    target.replaceChildren();
+    if(!authorized()){target.append(element('p','Sign in to prepare an onboarding draft.'));return;}
+    const label=element('label','Employment pathway');
+    const select=element('select');
+    for(const [value,title] of [['new','New employee'],['existing','Existing employee regularisation'],['executive','Executive employment']]){
+      const option=element('option',title);option.value=value;select.append(option);
+    }
+    label.append(select);
+    const output=element('div');output.setAttribute('role','status');
+    const run=button('Prepare onboarding draft',async()=>{
+      workforceRequest?.abort();
+      const active=new AbortController();workforceRequest=active;
+      const timer=setTimeout(()=>active.abort(),10000);
+      run.disabled=true;output.textContent='Preparing draft…';
+      try {
+        const response=await read('/v1/operator/workforce/onboarding?type='+encodeURIComponent(select.value),active.signal);
+        const result=await response.json();
+        if(workforceRequest!==active||!authorized()||department!=='workforce')return;
+        if(!response.ok||result.schema_version!=='MAGOS_WORKFORCE_DRAFT_V1'||result.side_effects!==false||result.employee_created!==false||!Array.isArray(result.steps))throw Error('INVALID_DRAFT');
+        const list=element('ol');
+        for(const step of result.steps)list.append(element('li',step.label+' — '+step.state));
+        output.replaceChildren(element('h3','Review required'),list,element('p','Draft only. No employee or registration created. Optional benefits disabled.'));
+      }catch{
+        if(workforceRequest===active&&authorized()&&department==='workforce')output.textContent='Draft unavailable. No records changed.';
+      }finally{clearTimeout(timer);run.disabled=false;}
+    });
+    target.append(label,run,output);
+  }
+
   function renderView() {
     renderNavigation();
     $('overview').hidden = department !== 'overview';
@@ -281,13 +315,14 @@
     $('department-note').textContent = descriptions[department];
     renderDeliveryRoadmap();
     renderConversionFunnel();
-    $('directory').hidden = department !== 'registers';
-    $('records').hidden = department === 'registers';
+    $('directory').hidden = !['registers','workforce'].includes(department);
+    $('records').hidden = ['registers','workforce'].includes(department);
     const source = $('source');
     const url = link(viewState(department)?.source?.url);
     source.hidden = !url;
     if (url) source.href = url;
     else source.removeAttribute('href');
+    if (department === 'workforce') {renderWorkforce();return;}
     if (department === 'registers') {
       const anchors = (data?.links || []).flatMap(entry => {
         const href = link(entry.url);
@@ -949,6 +984,8 @@
   }
 
   function lock(message = 'Dashboard locked. Enter your access token to load operations.') {
+    workforceRequest?.abort();
+    workforceRequest=undefined;
     request?.abort();
     request = undefined;
     coverageRequest?.abort();
