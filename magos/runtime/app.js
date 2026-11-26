@@ -946,7 +946,7 @@ function createRuntimeApp({
   // Create a DRAFT purchase order from exact live supplier quote evidence.
   // No supplier dispatch, procurement release or payment authority occurs.
   app.post('/v1/governance/procurement-draft', async(req,res)=>{
-    if(!procurementApprovalToken || [token,leadIngressToken,supplierApprovalToken,jobCreationToken].some(
+    if(!procurementApprovalToken || [token,leadIngressToken,supplierEmailIngressToken,supplierApprovalToken,jobCreationToken,operatorReadToken].some(
       value=>constantTimeEqual(value,procurementApprovalToken)
     )) return res.status(503).json({error:'PROCUREMENT_DRAFT_AUTH_NOT_CONFIGURED'});
     if(!constantTimeEqual(req.get('x-magos-procurement-token'),procurementApprovalToken)) {
