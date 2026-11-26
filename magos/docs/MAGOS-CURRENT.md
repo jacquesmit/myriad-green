@@ -10,6 +10,11 @@
 
 
 
+
+
+## 26 November 2026 — operational workspace owner direction
+Owner requires in-dashboard one-click inbound channel checks, configurable daily prospect discovery (default 50), supplier verification/pricing, dedicated growth/governance workspaces and safe duplicate-ID inspection/resolution. See [operator dashboard requirements](MAGOS-OPERATOR-DASHBOARD.md#26-november-2026--owner-directed-operational-workspaces-and-one-click-actions-requirements-not-implemented). Requirements only; no production actions authorized. Keep commercial lifecycle work and existing authority gates.
+
 ## CURRENT ENGINEERING PARITY — 26 November 2026 (SAST)
 
 **GitHub integrated baseline:** `21031d4c0db6411da80e2f63bdbc7ce6c8b2aecd`. **Last accepted production:** `b5e73575e092ef6abf39842e3ffb9ff44a45084e` (owner-reported 647/647 host tests and 13/13 preflight). Newer application changes are not verified deployed. Owner reported successful operator login and live data on 26 November; exact running SHA not independently read this session. Whole-business acceptance remains PARTIAL.
