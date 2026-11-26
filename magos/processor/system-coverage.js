@@ -29,12 +29,15 @@ async function readInventory(store) {
       const seen=new Set(),records=[];
       for(const row of rows){
         const id=truth(row[idField]),status=truth(row[stateField]);
+        // Ignore completely empty display rows, including other-column import spill.
+        if(!id&&!truth(row[nameField])&&!status)continue;
         if(!id||seen.has(id)||!truth(row[nameField])||/^#(REF!|N\/A|VALUE!|ERROR!|DIV\/0!|NAME\?|NUM!|NULL!)/i.test(status))throw Error('REGISTER_INVALID');
         seen.add(id);
         records.push({id,title:truth(row[nameField]),status:status||'UNKNOWN',
           next_action:truth(row['Next Executable Action']||row['Next action']||row['Required Evidence / Conditions']),
           details:{register:tab,source_label_only:'YES',production_acceptance:'NOT_VERIFIED'}});
       }
+      if(!records.length)throw Error('REGISTER_EMPTY');
       return [key,{state:records.length<baseline?'PARTIAL':'LIVE',baseline,count:records.length,records,source}];
     } catch {return [key,{state:'UNAVAILABLE',baseline,count:null,records:[],source}];}
   }));
