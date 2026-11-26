@@ -364,6 +364,36 @@
     section.append(lines,button('Add quotation line',addLine,'secondary'),calculate,output);addLine();return section;
   }
 
+  // Only source-backed, unambiguous workflow states may expose consequential
+  // quotation actions. An archived/draft/unknown quote is still readable.
+  function quoteActionPolicy(item) {
+    const status=String(item?.status||'').trim().toUpperCase();
+    const linkedJobId=String(item?.details?.job_id||'').trim();
+    const opportunityId=String(item?.details?.opportunity_id||'').trim();
+    const allowed=new Set(['ACTIVE','ACCEPTED']);
+    if(!allowed.has(status))return {
+      status,release:false,accept:false,existingJob:null,
+      reason:'This quotation is not ACTIVE or ACCEPTED. Review its canonical status before any acceptance or job release.'
+    };
+    if(linkedJobId){
+      const matches=(data?.departments?.jobs?.records||[]).filter(r=>
+        r.title!=='Duplicate record ID'&&r.details?.job_id===linkedJobId&&
+        r.id===opportunityId);
+      if(matches.length===1 && data?.departments?.jobs?.state!=='UNAVAILABLE')
+        return {status,release:false,accept:false,
+          existingJob:{department:'jobs',id:matches[0].id},
+          reason:'This quote already has a matching canonical job. Open that job to continue delivery or closeout.'};
+      return {status,release:false,accept:false,existingJob:null,
+        reason:'A job reference exists, but its exact canonical opportunity and job identity cannot be uniquely confirmed. Reconcile the records first.'};
+    }
+    return {status,release:status==='ACCEPTED',accept:status==='ACTIVE',
+      existingJob:null,
+      reason:status==='ACTIVE'?
+       'An ACTIVE quote can be reviewed for independently signed acceptance; job release remains unavailable until acceptance is recorded.':
+       'An ACCEPTED quote without a linked job may be reviewed for governed job creation; independent acceptance, payment and authority still apply.'
+    };
+  }
+
   function showDetail(item) {
     hideDetail();
     const target = $('detail');
@@ -529,30 +559,41 @@
     }
     if (department === 'quotes' && item.title !== 'Duplicate record ID') {
       target.append(buildQuotationCalculator());
+      const policy=quoteActionPolicy(item);
       const workspace=element('section',undefined,'commercial-workspace');
       workspace.append(element('h3','Quotation to job workspace'),
-        element('p','Inspect the canonical quote, signed acceptance and deposit records together. Recorded clearance is not independent bank confirmation.'));
+        element('p','Inspect canonical quote, acceptance and deposit evidence. Recorded clearance is not independent bank confirmation.'));
+      const explanation=element('p',policy.reason);
+      explanation.setAttribute('role','status');
+      workspace.append(explanation);
       const output=element('div',undefined,'commercial-results');
       output.setAttribute('aria-live','polite');
       const check=button('Check commercial evidence',()=>inspectCommercialWorkspace(item.id,output,check),'secondary');
-      workspace.append(check,output,buildJobReleaseControls(item.id));
+      workspace.append(check,output);
+      if(policy.existingJob) {
+        workspace.append(button('Open linked job',()=>show(policy.existingJob.department,policy.existingJob.id),'secondary'));
+      } else if(policy.release) {
+        workspace.append(buildJobReleaseControls(item.id));
+      }
       target.append(workspace);
       check.click();
-      // This credential is separate from read access and is erased after use.
-      // User action cannot bypass server-owned signature verification.
-      const authLabel=element('label','Quote acceptance authorization token');
-      const authInput=element('input');
-      authInput.type='password';
-      authInput.autocomplete='off';
-      authInput.setAttribute('aria-label','Quote acceptance authorization token');
-      authLabel.append(authInput);
-      const acceptOutput=element('p');
-      acceptOutput.setAttribute('role','status');
-      const preview=button('Preview reviewed signature acceptance',
-        ()=>reviewQuoteAcceptance(item.id,authInput,acceptOutput,preview,true),'secondary');
-      const commit=button('Accept independently reviewed quote',
-        ()=>reviewQuoteAcceptance(item.id,authInput,acceptOutput,commit,false),'secondary');
-      target.append(authLabel,preview,commit,acceptOutput);
+      if(policy.accept){
+        // Authorization is independent, and is never requested for archived,
+        // declined or already accepted records.
+        const authLabel=element('label','Quote acceptance authorization token');
+        const authInput=element('input');
+        authInput.type='password';
+        authInput.autocomplete='off';
+        authInput.setAttribute('aria-label','Quote acceptance authorization token');
+        authLabel.append(authInput);
+        const acceptOutput=element('p');
+        acceptOutput.setAttribute('role','status');
+        const preview=button('Preview reviewed signature acceptance',
+          ()=>reviewQuoteAcceptance(item.id,authInput,acceptOutput,preview,true),'secondary');
+        const commit=button('Accept independently reviewed quote',
+          ()=>reviewQuoteAcceptance(item.id,authInput,acceptOutput,commit,false),'secondary');
+        target.append(authLabel,preview,commit,acceptOutput);
+      }
     }
     heading.focus({preventScroll:true});
     target.scrollIntoView({ block: 'start' });

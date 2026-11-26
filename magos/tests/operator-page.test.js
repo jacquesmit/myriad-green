@@ -225,3 +225,55 @@ test('selected record replaces long table and returns focus; quotation duplicate
  assert.match(source,/report\.department!==scope\|\|report\.id!==id/);
  assert.match(source,/explainCommercial\(deposit\?\.reason_code\)/);
 });
+
+test('quotation actions fail closed for archived/draft/declined/unknown records',()=>{
+ const source=fs.readFileSync(require.resolve('../runtime/operator.js'),'utf8');
+ const vm=require('node:vm');
+ const start=source.indexOf('function quoteActionPolicy(item) {');
+ const end=source.indexOf('  function showDetail(item)',start);
+ assert.ok(start>0&&end>start);
+ const policy=vm.runInNewContext('('+source.slice(start,end).trim()+')',{
+   data:{departments:{jobs:{state:'LIVE',records:[]}}}
+ });
+ for(const status of ['ARCHIVED','DRAFT','DECLINED','EXPIRED','CANCELLED','SUPERSEDED','VOID','UNKNOWN']){
+  const result=policy({status,details:{job_id:'',opportunity_id:'OP-1'}});
+  assert.equal(result.release,false,status);
+  assert.equal(result.accept,false,status);
+  assert.equal(result.existingJob,null,status);
+ }
+ const active=policy({status:'ACTIVE',details:{}});
+ assert.equal(active.accept,true);
+ assert.equal(active.release,false);
+ const accepted=policy({status:'ACCEPTED',details:{}});
+ assert.equal(accepted.accept,false);
+ assert.equal(accepted.release,true);
+ assert.match(source,/if\(policy\.accept\)/);
+ assert.match(source,/else if\(policy\.release\)/);
+});
+test('job-linked quotation offers exact record navigation, not duplicate job creation',()=>{
+ const source=fs.readFileSync(require.resolve('../runtime/operator.js'),'utf8');
+ const vm=require('node:vm');
+ const fn=source.slice(source.indexOf('function quoteActionPolicy(item) {'),
+    source.indexOf('  function showDetail(item)')).trim();
+ const item={status:'ACCEPTED',details:{job_id:'JOB-1',opportunity_id:'OP-1'}};
+ const invoke=jobs=>vm.runInNewContext('('+fn+')',{
+  data:{departments:{jobs:{state:'LIVE',records:jobs}}}
+ })(item);
+ const matching={id:'OP-1',details:{job_id:'JOB-1'}};
+ const valid=invoke([matching]);
+ assert.equal(valid.release,false);
+ assert.equal(valid.accept,false);
+ assert.equal(valid.existingJob.id,'OP-1');
+ for(const records of [
+  [],[matching,matching],
+  [{id:'OP-OTHER',details:{job_id:'JOB-1'}}],
+  [{id:'OP-1',details:{job_id:'JOB-WRONG'}}]
+ ]){
+  const result=invoke(records);
+  assert.equal(result.release,false);
+  assert.equal(result.accept,false);
+  assert.equal(result.existingJob,null);
+ }
+ assert.match(source,/Open linked job/);
+ assert.match(source,/show\(policy\.existingJob\.department,policy\.existingJob\.id\)/);
+});
