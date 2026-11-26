@@ -32,7 +32,7 @@ const tables = {
 };
 const makeStores = (fail = '') => {
   const readObjects = async (name, options) => {
-    assert.equal(options.maxRows, null);
+    assert.ok(options.maxRows===null||options.maxRows===10001);
     assert.ok(options.requiredHeaders.length > 0);
     if (name === fail) throw new Error('Register unavailable');
     return tables[name];
@@ -422,4 +422,50 @@ test('actual recorded contradictory job states become review actions but not act
  assert.equal(r.departments.jobs.records.find(x=>x.id==='O-NOJOB').status,'REVIEW_REQUIRED');
  assert.equal(r.attention.filter(x=>x.type==='JOB_STATUS_REVIEW').length,2);
  assert.equal(r.side_effects,false);
+});
+
+test('operator action inspects exact duplicate IDs without writes and rejects arbitrary scopes',async()=>{
+ const {inspectOperatorAction}=require('../processor/operator-dashboard');
+ const stores=makeStores();
+ const result=await inspectOperatorAction({stores,action:'inspect-duplicate',department:'jobs',id:'DUP'});
+ assert.equal(result.state,'REVIEW_REQUIRED');
+ assert.equal(result.match_count,2);
+ assert.deepEqual(result.matches.map(x=>x.fields.job_id),['J-1','J-2']);
+ assert.ok(result.conflicting_fields.includes('job_id'));
+ assert.equal(result.side_effects,false);
+ assert.equal(result.resolution_authorized,false);
+ assert.equal((await inspectOperatorAction({stores,action:'inspect-duplicate',department:'jobs',id:'DU'})).state,'NOT_FOUND');
+ assert.equal((await inspectOperatorAction({stores,action:'inspect-duplicate',department:'jobs',id:'O-1'})).state,'UNIQUE');
+ assert.equal((await inspectOperatorAction({stores,action:'inspect-duplicate',department:'__proto__',id:'DUP'})).state,'INVALID_ACTION_INPUT');
+ assert.equal((await inspectOperatorAction({stores,action:'delete',department:'jobs',id:'DUP'})).state,'INVALID_ACTION_INPUT');
+});
+test('operator action HTTP requires operator authority and fails closed on unavailable source',async()=>{
+ const app=createRuntimeApp({token:'runtime',operatorReadToken:'operator-secret',writerFactory:()=>({stores:makeStores('Intake_Queue')})});
+ const server=http.createServer(app);await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+ const base='http://127.0.0.1:'+server.address().port+'/v1/operator/actions/inspect-duplicate/';
+ const headers={'X-MAGOS-Operator-Token':'operator-secret'};
+ try{
+  assert.equal((await fetch(base+'jobs/DUP')).status,401);
+  const ok=await fetch(base+'jobs/DUP',{headers});assert.equal(ok.status,200);assert.equal((await ok.json()).match_count,2);
+  assert.equal((await fetch(base+'finance/DUP',{headers})).status,400);
+  assert.equal((await fetch(base+'leads/DUP',{headers})).status,503);
+ }finally{await new Promise(resolve=>server.close(resolve));}
+});
+
+ test('duplicate inspection fails closed at scan cap and truncates oversized projections',async()=>{
+ const {inspectOperatorAction}=require('../processor/operator-dashboard');
+ const run=rows=>inspectOperatorAction({stores:{crm:{readObjects:async(_,opts)=>{assert.equal(opts.maxRows,10001);return rows;}}},action:'inspect-duplicate',department:'jobs',id:'DUP'});
+ const limited=await run(Array.from({length:10001},()=>({opportunity_id:'OTHER'})));
+ assert.equal(limited.state,'SOURCE_LIMIT_EXCEEDED');assert.equal(limited.match_count,null);assert.equal(limited.side_effects,false);
+ const result=await run(Array.from({length:51},(_,i)=>({opportunity_id:'DUP',job_id:'X'.repeat(400)+i})));
+ assert.equal(result.match_count,51);assert.equal(result.matches.length,50);assert.equal(result.truncated,true);assert.equal(result.values_truncated,true);assert.equal(result.matches[0].fields.job_id.length,256);assert.ok(result.conflicting_fields.includes('job_id'));
+ });
+
+test('duplicate inspection validates projected headers and caps serialized UTF-8 output',async()=>{
+ const {inspectOperatorAction}=require('../processor/operator-dashboard');
+ const run=readObjects=>inspectOperatorAction({stores:{crm:{readObjects}},action:'inspect-duplicate',department:'leads',id:'DUP'});
+ await assert.rejects(run(async(_,opts)=>{assert.ok(opts.requiredHeaders.includes('received_at'));assert.ok(opts.requiredHeaders.includes('intake_id'));throw Error('Unexpected register schema');}),/Unexpected register schema/);
+ const fields=['source_event_id','source_system','source_type','processing_status','crm_id','opportunity_id','received_at'];
+ const report=await run(async()=>Array.from({length:50},()=>({intake_id:'DUP',...Object.fromEntries(fields.map(f=>[f,'\u0001'.repeat(256)]))})));
+ assert.equal(report.match_count,50);assert.ok(report.matches.length<50);assert.equal(report.truncated,true);assert.ok(Buffer.byteLength(JSON.stringify(report),'utf8')<=65536);
 });

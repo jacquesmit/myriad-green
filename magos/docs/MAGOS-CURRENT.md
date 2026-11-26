@@ -10,9 +10,19 @@
 
 
 
+## 26 November 2026 — PR118 response contract hardening
+Prior head a0ee156f41f82b9bb3f24faf35f54d8d67cd8fcd returned 3/3 successful workflows (45850888698, 45850888684, 45850888701). Candidate adds complete projected-header validation, 64 KiB serialized UTF-8 result ceiling, actual displayed count, and cancellation cleanup that preserves timeout feedback. Added schema and byte-bound regression tests. Missing canonical headers now fail closed; verify deployed register schema before release. Browser acceptance, exact-head CI, production and Drive parity pending. No business writes.
+
+## 26 November 2026 — PR118 inspection hardening candidate
+Previous PR118 head a7507622e4901fe61398dc1961b349c3c62061f0 returned three successful CI runs; PR117 dashboard requirement additions preserved verbatim. New candidate bounds inspection source reads to 10001 rows, fails closed above 10000, limits displayed fields to 256 characters with explicit truncation, renders match sections instead of a wide table and restores cancelled duplicate controls. Added regression fixtures. Exact-head CI, browser acceptance, Drive parity and production deployment pending. No record correction authority or live writes.
+
 ## 26 November 2026 — commercial golden path integration candidate
 PR #115 merged at 83cdd7694be57a9ab1391b92797c2b9b849efc76 after three CI checks PASS. Control Hub Core_Build_Queue J4:L4 and J12:L12 updated and read back; CORE-003 and CORE-011 remain PARTIAL. Candidate 2c800a2146bf421e5dcb7b1d2142ee4b4759260b adds actual accepted-job executor + P3 writer integration using synthetic canonical stores and injected authority, asserting job/execution readback, repeated request no mutation, and payment reversal between plan and commit rejected by real writer. Existing executor replays route to REVIEW_REQUIRED before writer, not DUPLICATE_NO_OP; exact replay acceptance remains outstanding. Independent provider signatures/bank settlement, live canonical schema, production deployment and full business acceptance not proven. Exact-head CI pending. No live business writes.
 
+
+
+## 26 November 2026 — operational action framework first slice
+PR #116 merged at ff597ee773b41ac8773024e498ce465a2dd8cbc4 after four exact-head CI workflows PASS; synthetic commercial integration accepted, live acceptance and exact executor duplicate-no-op outstanding. PR #117 requirements passed three CI workflows but conflicts with new main; preserved full expanded dashboard requirements in this replacement branch. First implemented action: authenticated GET /v1/operator/actions/:action/:department/:id, fixed allowlist inspect-duplicate for leads, clients and jobs, exact ID lookup, bounded projected fields, conflict comparison, source/time and side-effect-free result; existing frontend renders matching fields within record details. No arbitrary workbook access or writes; stable physical identity, merge/rekey preview and governed correction not implemented. Added processor and HTTP tests; exact-head CI and browser acceptance pending. No deployed changes or real data correction. Continue original commercial lifecycle and independent action work in parallel. Drive synchronization outstanding.
 ## CURRENT ENGINEERING PARITY — 26 November 2026 (SAST)
 
 **GitHub integrated baseline:** `21031d4c0db6411da80e2f63bdbc7ce6c8b2aecd`. **Last accepted production:** `b5e73575e092ef6abf39842e3ffb9ff44a45084e` (owner-reported 647/647 host tests and 13/13 preflight). Newer application changes are not verified deployed. Owner reported successful operator login and live data on 26 November; exact running SHA not independently read this session. Whole-business acceptance remains PARTIAL.

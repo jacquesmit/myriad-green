@@ -305,7 +305,7 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
         attention.push(...workItems.map(item => ({ ...item, department: key })));
       }
       const conflictRows = [...conflicts].map(id => record(id, 'Duplicate record ID', 'REVIEW_REQUIRED',
-        'Compare the matching rows in the source register before acting'));
+        Object.hasOwn(duplicateFields,key) ? 'Inspect matching records before acting' : 'Compare the matching rows in the source register before acting'));
       attention.push(...conflictRows.map(item => ({ type: 'EXCEPTION', id: item.id,
         next_action: item.next_action, department: key })));
       departments[key] = { state: conflicts.size ? 'PARTIAL' : 'LIVE', conflict_count: conflicts.size,
@@ -415,4 +415,38 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
   };
 }
 
-module.exports = { loadOperatorDashboard };
+
+ // Fixed server-side action catalogue: no caller-specified workbook or field access.
+ const duplicateFields={
+  leads:['source_event_id','source_system','source_type','processing_status','crm_id','opportunity_id','received_at'],
+  clients:['company','lead_direction','record_origin','acquisition_source','crm_status','opportunity_id','job_id'],
+  jobs:['job_id','client_crm_id','job_status','next_action'],
+ };
+ async function inspectOperatorAction({stores,action,department,id,now=()=>new Date()}={}){
+  if(action!=='inspect-duplicate'||!Object.hasOwn(duplicateFields,department)||
+     typeof id!=='string'||!id.trim()||id.length>200)
+   return {state:'INVALID_ACTION_INPUT',side_effects:false};
+  const [store,sheet,gid,requiredHeaders]=tabs[department], key=idFields[department];
+  const scanLimit=10000;
+  const fields=duplicateFields[department];
+  const rows=await stores[store].readObjects(sheet,{maxRows:scanLimit+1,requiredHeaders:[...new Set([...requiredHeaders,key,...fields])]});
+  if(!Array.isArray(rows))throw Error('SOURCE_UNAVAILABLE');
+  if(rows.length>scanLimit)return {schema_version:'MAGOS_OPERATOR_ACTION_V1',action,department,id:id.trim(),state:'SOURCE_LIMIT_EXCEEDED',checked_at:now().toISOString(),match_count:null,matches:[],truncated:true,conflicting_fields:[],source:{name:sheet,url:sourceLink(stores[store].spreadsheetId||DEFAULT_IDS[store],gid)},resolution_authorized:false,side_effects:false};
+  const matches=rows.filter(row=>txt(row[key])===id.trim());
+  const conflicts=fields.filter(field=>new Set(matches.map(row=>txt(row[field]))).size>1);
+  const report={schema_version:'MAGOS_OPERATOR_ACTION_V1',action,department,id:id.trim(),
+   state:matches.length>1?'REVIEW_REQUIRED':matches.length===1?'UNIQUE':'NOT_FOUND',
+   checked_at:now().toISOString(),match_count:matches.length,
+   matches:matches.slice(0,50).map((row,index)=>({match:index+1,fields:Object.fromEntries(fields.map(field=>[field,txt(row[field]).slice(0,256)]))})),
+   values_truncated:matches.slice(0,50).some(row=>fields.some(field=>txt(row[field]).length>256)),
+   truncated:matches.length>50,conflicting_fields:conflicts,
+   source:{name:sheet,url:sourceLink(stores[store].spreadsheetId||DEFAULT_IDS[store],gid)},
+   resolution_authorized:false,side_effects:false};
+  // Limit serialized UTF-8 output, including JSON escaping, not only field lengths.
+  const byteLimit=64*1024;
+  while(report.matches.length&&Buffer.byteLength(JSON.stringify(report),'utf8')>byteLimit){report.matches.pop();report.truncated=true;}
+  if(Buffer.byteLength(JSON.stringify(report),'utf8')>byteLimit)throw Error('OPERATOR_RESPONSE_LIMIT');
+  return report;
+ }
+
+module.exports = { loadOperatorDashboard, inspectOperatorAction };
