@@ -62,6 +62,11 @@ Combined PR #105 (owner OAuth/session controls), #106 (bounded sitemap verificat
 ## 26 November 2026 — consolidated release merged
 PR #108 exact head `7f6c243e5f23c9c26ace3056833454d7f46c6b93` 5/5 CI PASS (Document Extract 45738646233; Evolving Status 45738646279; Transaction Writer 45738646248; Water Publisher 45738646202; Runtime P2 45738646190). GitHub merge `4bcef11a768783a3d96ba7bcdede245ab126c5f1` confirmed. This is a merged candidate, not deployed; last accepted production remains b5e73575. PRs #105–107 retained as historical candidate branches; do not independently merge overlapping implementations again. OAuth activation, source corroboration, targeted cache invalidation, provider scheduling, production UI validation and CORE-003 business acceptance remain pending. Proceed with independent read-only and deterministic business improvements before grouped host deployment.
 
+
+
+## 26 November 2026 — owner-approved cross-system optimization mandate
+[Shared search, AI discovery, experience and conversion standard](../../SEARCH-AI-DISCOVERY-STANDARD.md) is mandatory for future public website, ecommerce, journal, Water Alert Publisher, MAGOS-generated content and public-tool work. Apply relevant quality and security rules to private systems without exposing private data. Adoption is DOCUMENTED; sitewide audit, automated enforcement and live compliance remain pending. Preserve original screenshot uncertainty, existing governance and production acceptance gates.
+
 ### Next execution, in order
 1. Finish existing Water Alert Publisher: targeted Rank Math/LiteSpeed sitemap invalidation and bounded retry (no routine global purge); independent official notice content verification; legitimate changed-source update acceptance; securely connect existing scheduled Water Alert Publisher (no duplicate schedule, no secrets in prompts/Git); prove unattended run and safe failure reporting. Exact create/replay tests already PASS.
 2. Reconcile existing operator dashboard with verified runtime/capability evidence and expose publishing run outcomes, source links, review exceptions, freshness, next actions; preserve read-only boundary and separate governed action routes. No parallel dashboard or data store. UX/UI and reader-facing journal improvements separate deferred workstreams.
