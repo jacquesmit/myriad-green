@@ -171,12 +171,12 @@ class AuditLedger {
     throw new Error('Unreachable Google Sheets retry state for ' + label);
   }
 
-  async getHeaders(sheetName) {
+  async getHeaders(sheetName, headerRow = 1) {
     const response = await this.withSheetsRetry(
       'getHeaders:' + sheetName,
       () => this.sheets.spreadsheets.values.get({
         spreadsheetId: this.spreadsheetId,
-        range: "'" + sheetName.replace(/'/g, "''") + "'!1:1"
+        range: "'" + sheetName.replace(/'/g, "''") + "'!" + headerRow + ":" + headerRow
       })
     );
     const headers = response.data.values?.[0] || [];
@@ -283,8 +283,9 @@ class AuditLedger {
     return true;
   }
 
-  async readObjects(sheetName, { maxRows = 1000, requiredHeaders = [], valueRenderOption } = {}) {
-    const { headers } = await this.getHeaders(sheetName);
+  async readObjects(sheetName, { maxRows = 1000, requiredHeaders = [], valueRenderOption, headerRow = 1 } = {}) {
+    if (!Number.isInteger(headerRow) || headerRow < 1) throw new Error('Invalid header row');
+    const { headers } = await this.getHeaders(sheetName, headerRow);
     for (const header of requiredHeaders) {
       if (headers.filter(value => value === header).length !== 1) {
         throw new Error('Unexpected register schema: ' + sheetName + ' / ' + header);
@@ -296,7 +297,7 @@ class AuditLedger {
       'readObjects:' + sheetName,
       () => this.sheets.spreadsheets.values.get({
         spreadsheetId: this.spreadsheetId,
-        range: this.quoteSheetName(sheetName) + '!A2:' + endColumn + (maxRows === null ? '' : Math.max(2, maxRows + 1)),
+        range: this.quoteSheetName(sheetName) + '!A' + (headerRow + 1) + ':' + endColumn + (maxRows === null ? '' : Math.max(headerRow + 1, maxRows + headerRow)),
         ...(valueRenderOption ? { valueRenderOption } : {})
       })
     );
@@ -305,7 +306,7 @@ class AuditLedger {
       headers.forEach((header, column) => {
         object[header] = row[column] ?? '';
       });
-      object.__rowNumber = index + 2;
+      object.__rowNumber = index + headerRow + 1;
       return object;
     });
   }
