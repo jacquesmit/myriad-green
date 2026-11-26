@@ -553,3 +553,54 @@ test('CORE-003 authority rejection cannot create synthetic canonical lead record
   assert.notEqual(result.state,'COMMITTED');
   for(const w of decision.transaction_plan.writes) assert.equal(await crm.findByKey(w.sheet,w.key.header,w.key.value),null);
 });
+
+
+// Commercial golden path: real accepted-job executor and P3 writer, isolated sources.
+const {executeAcceptedJob}=require('../processor/accepted-job-execution');
+function commercialGoldenFixture(){
+ const {crm,commercial,audit}=fixtures();
+ const evidence='https://drive.google.com/file/d/SAFE_PAYMENT_EVENT_001/view';
+ crm.tables.Jobs_Opportunities=[{opportunity_id:'O1',job_id:'',job_status:'ASSESSMENT_NEEDED',client_crm_id:'CRM1',client_name:'Synthetic client',site_address:'Test site',primary_service:'Backup water'}];
+ commercial.tables.Quotes=[{quote_id:'Q1',opportunity_id:'O1','Quote Status':'ACCEPTED','Line Control State':'PASS','Project / Scope':'Backup water'}];
+ commercial.tables['Job Execution']=[Object.fromEntries(['Execution ID','Job ID','opportunity_id','quote_id','CRM ID','Client','Site Address','Service','Accepted Scope','Deposit Cleared','Job Status','Schedule Status','Next Action'].map(k=>[k,'']))];
+ commercial.tables['Payment Control']=[{'Control ID':'CTRL-1','Opportunity ID':'O1','Deposit Required (R)':'100'}];
+ commercial.tables.Payment_Allocations=[{control_id:'CTRL-1',allocation_id:'ALLOC-1',payment_event_id:'PAYEVT-1',allocation_type:'DEPOSIT',allocation_state:'CLEARED',amount:'100',evidence_link:evidence}];
+ commercial.tables.Payment_Events=[{payment_event_id:'PAYEVT-1',control_id:'CTRL-1',opportunity_id:'O1',event_type:'PAYMENT_CLEARED',clearance_state:'CLEARED',amount:'100',evidence_link:evidence,idempotency_key:'BANK-1',source_system:'TEST_BANK_SOURCE'}];
+ audit.tables.Writer_Schema_Registry=[...Object.keys(crm.tables.Jobs_Opportunities[0]).map((h,i)=>({workbook_role:'CRM',sheet_name:'Jobs_Opportunities',ordinal_1based:String(i+1),expected_header:h})),...Object.keys(commercial.tables['Job Execution'][0]).map((h,i)=>({workbook_role:'COMMERCIAL',sheet_name:'Job Execution',ordinal_1based:String(i+1),expected_header:h}))];
+ const writer=new TransactionWriter({stores:{crm,commercial,audit},auditStore:audit});
+ const authorityVerifier=async a=>({verified:true,quote_id:a.quoteId,job_id:a.jobId,source_event_id:a.sourceEventId,opportunity_id:'O1',acceptance_evidence:'drive://signed/synthetic',payment_clearance:'CLEARED',payment_control_id:'CTRL-1',allocation_ids:['ALLOC-1'],payment_event_ids:['PAYEVT-1'],bank_clearance_confirmation_id:'SYNTHETIC-BANK-1',bank_confirmation_source:'BANK',bank_confirmed_amount_cents:10000,bank_deposit_required_cents:10000});
+ return {crm,commercial,audit,writer,authorityVerifier,args:{quoteId:'Q1',jobId:'JOB-1',sourceEventId:'SYNTHETIC-COMMERCIAL-1'}};
+}
+test('commercial golden path commits real P3 job and linked execution with readback; repeated request cannot duplicate',async()=>{
+ const f=commercialGoldenFixture();
+ const args={...f.args,writer:f.writer,authorityVerifier:f.authorityVerifier};
+ const result=await executeAcceptedJob(args);
+ assert.equal(result.state,'COMMITTED',JSON.stringify(result));
+ assert.equal(result.readback.verified,true);
+ const job=(await f.crm.findByKey('Jobs_Opportunities','opportunity_id','O1')).object;
+ const exec=(await f.commercial.findByKey('Job Execution','Execution ID','EXEC-1')).object;
+ assert.equal(job.job_id,'JOB-1');assert.equal(exec['CRM ID'],job.client_crm_id);
+ assert.equal(exec['Accepted Scope'],'Backup water');assert.equal(exec['Deposit Cleared'],'CLEARED');
+ assert.equal(exec['Schedule Status'],'TO_SCHEDULE');
+ const key='MAGOS_JOB_CREATE_V1|'+f.args.sourceEventId+'|Q1';
+ assert.equal((await f.audit.findByKey('Automation_Run_Log','idempotency_key',key)).object.run_state,'COMMITTED');
+ const before=structuredClone({crm:f.crm.tables,commercial:f.commercial.tables,audit:f.audit.tables});
+ const replay=await executeAcceptedJob(args);
+ // Existing planner deliberately sends already-linked jobs to reconciliation.
+ // Do not claim DUPLICATE_NO_OP at the HTTP/executor boundary until implemented.
+ assert.equal(replay.state,'REVIEW_REQUIRED');
+ assert.deepEqual({crm:f.crm.tables,commercial:f.commercial.tables,audit:f.audit.tables},before);
+});
+test('commercial golden path real P3 rejects payment reversal between planning and commit',async()=>{
+ const f=commercialGoldenFixture();
+ const original=f.writer.execute.bind(f.writer);
+ f.writer.execute=async plan=>{
+  f.commercial.tables.Payment_Events[0].clearance_state='REVERSED';
+  return original(plan);
+ };
+ const result=await executeAcceptedJob({...f.args,writer:f.writer,authorityVerifier:f.authorityVerifier});
+ assert.equal(result.state,'RETRY_REQUIRED',JSON.stringify(result));
+ assert.match(result.transaction.error,/PRECONDITION_FAILED/);
+ assert.equal((await f.crm.findByKey('Jobs_Opportunities','opportunity_id','O1')).object.job_id,'');
+ assert.equal(await f.commercial.findByKey('Job Execution','Execution ID','EXEC-1'),null);
+});
