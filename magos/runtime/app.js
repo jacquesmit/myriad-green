@@ -56,6 +56,7 @@ function createRuntimeApp({
   deployedCommitSha = process.env.MAGOS_DEPLOY_COMMIT_SHA,
   startupGitStateReader = () => require('./release-preflight').localCheckout(),
   operatorReadToken = process.env.MAGOS_OPERATOR_READ_TOKEN,
+  operatorLogin = require('./operator-login').createOperatorLogin(),
   signedAcceptanceVerifier = null,
   supplierApprovalToken = process.env.MAGOS_SUPPLIER_APPROVAL_TOKEN,
   supplierApprovalAuthorityVerifier = async () => ({verified:false,reason_code:'SUPPLIER_APPROVAL_AUTHORITY_NOT_VERIFIED'}),
@@ -104,6 +105,7 @@ function createRuntimeApp({
   const app = express();
   app.disable('x-powered-by');
   app.use(express.json({ limit: '256kb' }));
+  operatorLogin.mount(app);
 
   let writer;
   let eventProcessor;
@@ -348,6 +350,7 @@ function createRuntimeApp({
     );
   function requireOperatorRead(req,res,next) {
     res.set('Cache-Control','private, no-store');
+    if(operatorLogin.session(req)) return next();
     if(!hasOperatorToken) return res.status(503).json({error:'OPERATOR_ACCESS_NOT_CONFIGURED'});
     if(!constantTimeEqual(req.get('X-MAGOS-Operator-Token'),operatorReadToken)) {
       return res.status(401).json({error:'UNAUTHORIZED'});
@@ -396,7 +399,7 @@ function createRuntimeApp({
   });
 
   function requireOperatorInspection(req,res,next) {
-    return req.get('X-MAGOS-Operator-Token')===undefined ?
+    return req.get('X-MAGOS-Operator-Token')===undefined && !operatorLogin.session(req) ?
       requireRuntimeAuth(req,res,next) : requireOperatorRead(req,res,next);
   }
   // Reuse the canonical commercial/CRM sources. These inspections NEVER write.
