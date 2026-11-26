@@ -10,6 +10,9 @@
 
 
 
+## 26 November 2026 — commercial golden path integration candidate
+PR #115 merged at 83cdd7694be57a9ab1391b92797c2b9b849efc76 after three CI checks PASS. Control Hub Core_Build_Queue J4:L4 and J12:L12 updated and read back; CORE-003 and CORE-011 remain PARTIAL. Candidate 2c800a2146bf421e5dcb7b1d2142ee4b4759260b adds actual accepted-job executor + P3 writer integration using synthetic canonical stores and injected authority, asserting job/execution readback, repeated request no mutation, and payment reversal between plan and commit rejected by real writer. Existing executor replays route to REVIEW_REQUIRED before writer, not DUPLICATE_NO_OP; exact replay acceptance remains outstanding. Independent provider signatures/bank settlement, live canonical schema, production deployment and full business acceptance not proven. Exact-head CI pending. No live business writes.
+
 ## CURRENT ENGINEERING PARITY — 26 November 2026 (SAST)
 
 **GitHub integrated baseline:** `21031d4c0db6411da80e2f63bdbc7ce6c8b2aecd`. **Last accepted production:** `b5e73575e092ef6abf39842e3ffb9ff44a45084e` (owner-reported 647/647 host tests and 13/13 preflight). Newer application changes are not verified deployed. Owner reported successful operator login and live data on 26 November; exact running SHA not independently read this session. Whole-business acceptance remains PARTIAL.
