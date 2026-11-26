@@ -359,6 +359,15 @@ function createRuntimeApp({
   }
   // Independent operator credential can inspect process-start Git provenance,
   // without exposing the privileged writer token or allowing deployment.
+  // No real employee data or writes: draft readiness only.
+  app.get('/v1/operator/workforce/onboarding',requireOperatorRead,(req,res)=>{
+    try {
+      const {planWorkforceOnboarding}=require('../processor/workforce-onboarding');
+      return res.status(200).json(planWorkforceOnboarding({type:req.query.type}));
+    } catch {
+      return res.status(400).json({error:'INVALID_EMPLOYMENT_PATH'});
+    }
+  });
   app.get('/v1/operator/deployment',requireOperatorRead,(req,res)=>{
     const declared=String(deployedCommitSha||'').trim().toLowerCase();
     const startup=String(startupGitState?.sha||'').trim().toLowerCase();
