@@ -546,6 +546,14 @@ function createRuntimeApp({
     }
   });
 
+  app.get('/v1/operator/actions/:action/:department/:id',requireOperatorRead,async(req,res)=>{
+    try{
+      const {inspectOperatorAction}=require('../processor/operator-dashboard');
+      const result=await inspectOperatorAction({stores:getWriter().stores,...req.params});
+      return res.status(result.state==='INVALID_ACTION_INPUT'?400:200).json(result);
+    }catch{return res.status(503).json({error:'OPERATOR_ACTION_SOURCE_UNAVAILABLE'});}
+  });
+
   app.get('/v1/operator/dashboard',requireOperatorRead,async(req,res)=>{
     try {
       const {loadOperatorDashboard}=require('../processor/operator-dashboard');
