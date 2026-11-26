@@ -764,3 +764,7 @@ Combined PR #105 (owner OAuth/session controls), #106 (bounded sitemap verificat
 
 ## 26 November 2026 — shared optimization standard adopted
 Owner approved SEO/AEO/GEO/AIO/AISO/LLMO/local/semantic/entity SEO/E-E-A-T/SXO/CRO/multimodal/agent-friendly acceptance across Myriad Green and MAGOS. Canonical standard: [SEARCH-AI-DISCOVERY-STANDARD.md](../../SEARCH-AI-DISCOVERY-STANDARD.md); source commit cfd0baae1a8960f623e65aa60461ebbfe8d25977. Documentation only; existing page compliance and automated gates not certified; no production change.
+
+
+## 26 November 2026 — engineering package 2 reconciled
+PR #109 merged at d502ead9070e4f34b6d0692131e800a3e57a542d. PR #110 exact head 30994ff0e0ca2670758ddd0c92b3b70fc05de031 passed six CI workflows; regression run 45778845421 generated artifact 15097666515 (metadata verified, content not independently downloaded). Merge rejected due to concurrent changes. Reconciled six workflow files onto main 0341c0ae86f180b295cf828e1ee5afefb0c04292 after confirming original base and current main blob equality for each. Preserved current documentation and appended this receipt. Runner action modernization and TAP retention require fresh integrated CI before merge. Git exit 128 cause, reproducible dependencies, security and CORE-003 remain pending. No production deployment or business acceptance claimed.
