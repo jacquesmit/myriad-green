@@ -81,3 +81,29 @@ test('area discovery accepts only exact published Myriad Green title/slug matche
  assert.equal(found.length,1);
  assert.equal(found[0].post_id,1);
 });
+
+test('sitemap verification discovers numbered post sitemap and rejects substring and external loc',async()=>{
+ const target='https://myriadgreen.co.za/journal/verified-alert/';
+ const calls=[];
+ const p=makeWordPressWaterAlertPublisher({secret,sitemapAttempts:1,request:async(url)=>{
+  calls.push(url);
+  const u=new URL(url);
+  if(u.pathname==='/post-sitemap.xml')return response(200,null,{text:'<loc>'+target+'other</loc>'});
+  if(u.pathname==='/sitemap_index.xml')return response(200,null,{text:'<loc>https://evil.example/post-sitemap2.xml</loc><loc>https://myriadgreen.co.za/page-sitemap.xml</loc><loc>https://myriadgreen.co.za/post-sitemap2.xml</loc>'});
+  if(u.pathname==='/post-sitemap2.xml')return response(200,null,{text:'<loc>'+target+'</loc>'});
+  throw Error('unexpected');
+ }});
+ assert.equal((await p.verifySitemap(target)).verified,true);
+ assert.equal(calls.length,3);
+ assert.ok(calls.every(url=>new URL(url).origin==='https://myriadgreen.co.za'));
+});
+test('sitemap substring is not proof and bounded retries fail closed',async()=>{
+ let reads=0,sleeps=0;
+ const p=makeWordPressWaterAlertPublisher({secret,sitemapAttempts:2,sitemapDelayMs:1,sleep:async()=>{sleeps++;},request:async()=>{
+  reads++;
+  return response(200,null,{text:'<loc>https://myriadgreen.co.za/journal/alert/extra</loc>'});
+ }});
+ assert.equal((await p.verifySitemap('https://myriadgreen.co.za/journal/alert/')).verified,false);
+ assert.equal(reads,4);
+ assert.equal(sleeps,1);
+});
