@@ -86,3 +86,37 @@ test('even 22 source PASS capability rows do not certify live production',async(
  assert.equal(report.production_acceptance,'NOT_VERIFIED');
  assert.equal(report.delivery.counts.validated,0);
 });
+
+test('coverage inventories use actual header rows and preserve source-only status',async()=>{
+ const input={
+ Business_Capability_Map:rows,
+ System_Directory:[{'System ID':'SYS-001','System / Module':'CRM','Lifecycle status':'ACTIVE'}],
+ Lifecycle_Gates:[{'Gate ID':'GATE-001',Transition:'Intake accepted','To State':'INTAKE_RECORDED','Required Evidence / Conditions':'Readback'}],
+ Core_Build_Queue:[{'Queue ID':'CORE-002','Work Package':'Runtime','State':'VALIDATED','Next Executable Action':'Proceed'}],
+ Automation_Directory:[{'Automation ID':'AUTO-1','Business purpose':'Monitor intake',Status:'DISABLED / VALIDATED'},{}]
+ };
+ const result=await new SystemCoverageReader({store:{readObjects:async(tab,opts)=>{
+  if(tab!=='Business_Capability_Map')assert.equal(opts.headerRow,['System_Directory','Automation_Directory'].includes(tab)?4:1);
+  return input[tab];
+ }}}).read();
+ assert.equal(result.inventory.systems.count,1);
+ assert.equal(result.inventory.systems.state,'PARTIAL');
+ assert.equal(result.inventory.gates.records[0].next_action,'Readback');
+ assert.equal(result.inventory.packages.records[0].status,'VALIDATED');
+ assert.equal(result.inventory.automations.count,1);
+ assert.equal(result.inventory.automations.records[0].details.production_acceptance,'NOT_VERIFIED');
+ assert.equal(result.production_complete,false);
+});
+test('inventory duplicate IDs and unavailable sources never masquerade as zero records',async()=>{
+ const result=await new SystemCoverageReader({store:{readObjects:async(tab)=>{
+  if(tab==='Business_Capability_Map')return rows;
+  if(tab==='System_Directory')return Array(2).fill({'System ID':'SYS-001','System / Module':'CRM','Lifecycle status':'ACTIVE'});
+  if(tab==='Automation_Directory')return [{'Automation ID':'AUTO-1','Business purpose':'Monitor',Status:'#REF!'}];
+  throw Error('unavailable');
+ }}}).read();
+ for(const inv of Object.values(result.inventory)){
+  assert.equal(inv.state,'UNAVAILABLE');
+  assert.equal(inv.count,null);
+ }
+ assert.equal(result.counts.total,2);
+});
