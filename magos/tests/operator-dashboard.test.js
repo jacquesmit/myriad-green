@@ -460,3 +460,12 @@ test('operator action HTTP requires operator authority and fails closed on unava
  const result=await run(Array.from({length:51},(_,i)=>({opportunity_id:'DUP',job_id:'X'.repeat(400)+i})));
  assert.equal(result.match_count,51);assert.equal(result.matches.length,50);assert.equal(result.truncated,true);assert.equal(result.values_truncated,true);assert.equal(result.matches[0].fields.job_id.length,256);assert.ok(result.conflicting_fields.includes('job_id'));
  });
+
+test('duplicate inspection validates projected headers and caps serialized UTF-8 output',async()=>{
+ const {inspectOperatorAction}=require('../processor/operator-dashboard');
+ const run=readObjects=>inspectOperatorAction({stores:{crm:{readObjects}},action:'inspect-duplicate',department:'leads',id:'DUP'});
+ await assert.rejects(run(async(_,opts)=>{assert.ok(opts.requiredHeaders.includes('received_at'));assert.ok(opts.requiredHeaders.includes('intake_id'));throw Error('Unexpected register schema');}),/Unexpected register schema/);
+ const fields=['source_event_id','source_system','source_type','processing_status','crm_id','opportunity_id','received_at'];
+ const report=await run(async()=>Array.from({length:50},()=>({intake_id:'DUP',...Object.fromEntries(fields.map(f=>[f,'\u0001'.repeat(256)]))})));
+ assert.equal(report.match_count,50);assert.ok(report.matches.length<50);assert.equal(report.truncated,true);assert.ok(Buffer.byteLength(JSON.stringify(report),'utf8')<=65536);
+});

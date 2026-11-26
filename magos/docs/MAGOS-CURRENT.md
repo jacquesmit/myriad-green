@@ -10,6 +10,9 @@
 
 
 
+## 26 November 2026 — PR118 response contract hardening
+Prior head a0ee156f41f82b9bb3f24faf35f54d8d67cd8fcd returned 3/3 successful workflows (45850888698, 45850888684, 45850888701). Candidate adds complete projected-header validation, 64 KiB serialized UTF-8 result ceiling, actual displayed count, and cancellation cleanup that preserves timeout feedback. Added schema and byte-bound regression tests. Missing canonical headers now fail closed; verify deployed register schema before release. Browser acceptance, exact-head CI, production and Drive parity pending. No business writes.
+
 ## 26 November 2026 — PR118 inspection hardening candidate
 Previous PR118 head a7507622e4901fe61398dc1961b349c3c62061f0 returned three successful CI runs; PR117 dashboard requirement additions preserved verbatim. New candidate bounds inspection source reads to 10001 rows, fails closed above 10000, limits displayed fields to 256 characters with explicit truncation, renders match sections instead of a wide table and restores cancelled duplicate controls. Added regression fixtures. Exact-head CI, browser acceptance, Drive parity and production deployment pending. No record correction authority or live writes.
 

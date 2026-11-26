@@ -829,9 +829,9 @@
         section.append(list);output.append(section);
       }
       if(report.values_truncated)output.append(element('p','Long field values shortened; review canonical source before acting.'));
-      if(report.truncated)output.append(element('p','Only the first 50 matches are shown.'));
-    }catch{if(inspection===active)output.textContent='Inspection unavailable. No records changed.';}
-    finally{clearTimeout(deadline);control.disabled=false;}
+      if(report.truncated)output.append(element('p','Showing '+report.matches.length+' of '+report.match_count+' matches; output limited. Review canonical source.'));
+    }catch{if(inspection===active&&!active.signal.aborted)output.textContent='Inspection unavailable. No records changed.';}
+    finally{clearTimeout(deadline);if(inspection===active){inspection=undefined;control.disabled=false;}}
   }
 
   async function inspectClientSigningReadiness(output,button){

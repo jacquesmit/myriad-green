@@ -428,13 +428,13 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
    return {state:'INVALID_ACTION_INPUT',side_effects:false};
   const [store,sheet,gid,requiredHeaders]=tabs[department], key=idFields[department];
   const scanLimit=10000;
-  const rows=await stores[store].readObjects(sheet,{maxRows:scanLimit+1,requiredHeaders});
+  const fields=duplicateFields[department];
+  const rows=await stores[store].readObjects(sheet,{maxRows:scanLimit+1,requiredHeaders:[...new Set([...requiredHeaders,key,...fields])]});
   if(!Array.isArray(rows))throw Error('SOURCE_UNAVAILABLE');
   if(rows.length>scanLimit)return {schema_version:'MAGOS_OPERATOR_ACTION_V1',action,department,id:id.trim(),state:'SOURCE_LIMIT_EXCEEDED',checked_at:now().toISOString(),match_count:null,matches:[],truncated:true,conflicting_fields:[],source:{name:sheet,url:sourceLink(stores[store].spreadsheetId||DEFAULT_IDS[store],gid)},resolution_authorized:false,side_effects:false};
   const matches=rows.filter(row=>txt(row[key])===id.trim());
-  const fields=duplicateFields[department];
   const conflicts=fields.filter(field=>new Set(matches.map(row=>txt(row[field]))).size>1);
-  return {schema_version:'MAGOS_OPERATOR_ACTION_V1',action,department,id:id.trim(),
+  const report={schema_version:'MAGOS_OPERATOR_ACTION_V1',action,department,id:id.trim(),
    state:matches.length>1?'REVIEW_REQUIRED':matches.length===1?'UNIQUE':'NOT_FOUND',
    checked_at:now().toISOString(),match_count:matches.length,
    matches:matches.slice(0,50).map((row,index)=>({match:index+1,fields:Object.fromEntries(fields.map(field=>[field,txt(row[field]).slice(0,256)]))})),
@@ -442,6 +442,11 @@ async function loadOperatorDashboard(stores, now = () => new Date()) {
    truncated:matches.length>50,conflicting_fields:conflicts,
    source:{name:sheet,url:sourceLink(stores[store].spreadsheetId||DEFAULT_IDS[store],gid)},
    resolution_authorized:false,side_effects:false};
+  // Limit serialized UTF-8 output, including JSON escaping, not only field lengths.
+  const byteLimit=64*1024;
+  while(report.matches.length&&Buffer.byteLength(JSON.stringify(report),'utf8')>byteLimit){report.matches.pop();report.truncated=true;}
+  if(Buffer.byteLength(JSON.stringify(report),'utf8')>byteLimit)throw Error('OPERATOR_RESPONSE_LIMIT');
+  return report;
  }
 
 module.exports = { loadOperatorDashboard, inspectOperatorAction };
