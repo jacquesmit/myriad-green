@@ -109,3 +109,8 @@ PR121 merged at a0cf52cea2480111e8711ea8ada07e8753553341 after exact head e187c7
 ## 26 November 2026 — PR122 regression repair
 Initial PR122 CI failed three legacy operator-page source assertions referencing replaced individual buttons (runtime job 140044002376 and document job 140044003762); evolving status passed. Updated assertions to require integrated workspace and closure endpoint with preserved independent authorization warnings. Added explicit independent bank/actual completion warning to visible delivery stage and exact closeout schema validation. No test removals; old button labels superseded by functional workspace. Exact new CI and browser acceptance pending. Production unchanged.
 
+
+
+## 26 November 2026 — quote record contextual controls candidate
+
+Quotations now display the commercial evidence inspector for all readable states, but hide actual acceptance and job-release controls if the record is ARCHIVED, DRAFT, DECLINED, EXPIRED, CANCELLED, SUPERSEDED, VOID or UNKNOWN. ACTIVE/unlinked shows independent acceptance preview/action only; ACCEPTED/unlinked shows governed job creation preview/action only; a record with a known job pointer exposes **Open linked job** only where the existing jobs projection uniquely proves the same opportunity and job ID. Ambiguous references show a specific reconciliation warning. The backend remains the authoritative decision point for all consequential operations. Source-only feature branch `codex/magos-quote-context-controls-20261126`; CI, live deploy and browser UAT remain separate.
