@@ -315,6 +315,55 @@
     if(department!=='overview')$('records').hidden=department==='registers';
   }
 
+  function buildQuotationCalculator(){
+    const section=element('section',undefined,'commercial-workspace quotation-calculator');
+    section.append(element('h3','Draft quotation calculator'),element('p','Calculate proposed costs, selling prices and gross margin before tax. Inputs are provisional; no quotation is saved, approved or sent.'));
+    const lines=element('div',undefined,'quote-calc-lines'),output=element('section');
+    output.setAttribute('aria-live','polite');
+    let revision=0,active;
+    function invalidate(){revision++;active?.abort();output.textContent='Inputs changed. Recalculate before reviewing totals.';}
+    function addLine(){
+      if(lines.children.length>=100)return;
+      const row=element('div',undefined,'quote-calc-row');
+      const category=element('select');
+      for(const v of ['MATERIALS','LABOUR','OTHER_DIRECT']){const option=element('option',v.replaceAll('_',' '));option.value=v;category.append(option);}
+      const fields={category};
+      const categoryLabel=element('label','Category');categoryLabel.append(category);row.append(categoryLabel);
+      for(const [key,label,initial] of [['description','Description',''],['quantity','Quantity','1'],['unit_cost','Unit cost (R)',''],['unit_selling_price','Unit selling price (R)','']]){
+        const wrapper=element('label',label),input=element('input');input.type='text';input.value=initial;input.autocomplete='off';if(key!=='description')input.inputMode='decimal';wrapper.append(input);row.append(wrapper);fields[key]=input;
+      }
+      row.append(button('Remove line',()=>{row.remove();invalidate();},'secondary'));
+      row.addEventListener('input',invalidate);row.addEventListener('change',invalidate);
+      row.collect=()=>Object.fromEntries(Object.entries(fields).map(([k,v])=>[k,v.value.trim()]));
+      lines.append(row);invalidate();
+    }
+    const calculate=button('Calculate quotation totals',async()=>{
+      active?.abort();const request=new AbortController();active=request;
+      const expected=revision;calculate.disabled=true;output.textContent='Calculating draft…';
+      const deadline=setTimeout(()=>request.abort(),15000);
+      try{
+        const headers={'Content-Type':'application/json'};
+        // Same operator credential boundary as existing read-only dashboard.
+        if(credential)headers['X-MAGOS-Operator-Token']=credential;
+        const response=await fetch('/v1/operator/quotation-calculation',{method:'POST',credentials:'same-origin',headers,body:JSON.stringify({lines:[...lines.children].map(row=>row.collect())}),signal:request.signal,cache:'no-store'});
+        const result=await response.json();
+        if(active!==request||revision!==expected||!section.isConnected||!authorized())return;
+        if(!response.ok||result.schema_version!=='MAGOS_QUOTE_CALC_V1'||result.side_effects!==false||result.issuance_authorized!==false||result.state!=='DRAFT_CALCULATED'){
+          output.textContent='Calculation blocked: '+String(result.reason_code||'invalid or unavailable input').replaceAll('_',' ');return;
+        }
+        output.replaceChildren(element('h4','Calculated draft totals'));
+        const totals=element('dl');
+        for(const [name,value] of [['Total direct cost',zar.format(result.totals.cost)],['Selling total before tax',zar.format(result.totals.selling)],['Gross profit',zar.format(result.totals.gross_profit)],['Gross margin',result.totals.gross_margin_percent===null?'Undefined':result.totals.gross_margin_percent+'%']])totals.append(element('dt',name),element('dd',value));
+        output.append(totals);
+        for(const line of result.lines)output.append(element('p',line.description+' · cost '+zar.format(line.cost)+' · selling '+zar.format(line.selling)+' · gross profit '+zar.format(line.gross_profit)));
+        output.append(element('p','Not approved for issue. Verify supplier costs, tax treatment and every line margin. No records changed.'));
+        if(result.blockers.includes('NON_POSITIVE_LINE_OR_TOTAL_MARGIN'))output.append(element('strong','Warning: at least one line or the overall quotation has no positive margin.'));
+      }catch{if(active===request&&revision===expected&&section.isConnected)output.textContent='Calculation unavailable. No records changed.';}
+      finally{clearTimeout(deadline);if(active===request)calculate.disabled=false;}
+    });
+    section.append(lines,button('Add quotation line',addLine,'secondary'),calculate,output);addLine();return section;
+  }
+
   function showDetail(item) {
     hideDetail();
     const target = $('detail');
@@ -479,6 +528,7 @@
       target.append(receivableCheck,receivableOutput);
     }
     if (department === 'quotes' && item.title !== 'Duplicate record ID') {
+      target.append(buildQuotationCalculator());
       const workspace=element('section',undefined,'commercial-workspace');
       workspace.append(element('h3','Quotation to job workspace'),
         element('p','Inspect the canonical quote, signed acceptance and deposit records together. Recorded clearance is not independent bank confirmation.'));

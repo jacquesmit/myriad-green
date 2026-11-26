@@ -379,6 +379,13 @@ function createRuntimeApp({
   });
   // Live WordPress client-signing dependencies, without disclosing bearer
   // tokens or treating installed software as an actual client receipt.
+  // Pure draft computation; operator read access cannot write or issue a quote.
+  app.post('/v1/operator/quotation-calculation',requireOperatorRead,(req,res)=>{
+    const {calculateQuotation}=require('../processor/quotation-calculator');
+    const result=calculateQuotation(req.body);
+    res.set('Cache-Control','private, no-store');
+    return res.status(result.state==='DRAFT_CALCULATED'?200:400).json(result);
+  });
   app.get('/v1/operator/client-signing-readiness',requireOperatorRead,async(req,res)=>{
     try{
       const {inspectSigningReadiness}=require('../processor/signed-quote-link');
