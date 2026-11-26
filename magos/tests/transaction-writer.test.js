@@ -475,3 +475,81 @@ test('stale RUNNING writer with no declared mutation becomes RETRY_REQUIRED', as
   );
   assert.equal(exception.object.status, 'OPEN');
 });
+
+
+// CORE-003 synthetic integration: actual lead processor -> actual P3 writer.
+// Only storage and identity lookup are substituted; no network or live records.
+const { createLeadSubmittedEvent } = require('../processor/lead-observation');
+const { createLeadProcessor } = require('../processor/lead-processor');
+const { deterministicLeadIds } = require('../processor/lead-planner');
+
+const leadSchemas = {
+  Intake_Queue: 'intake_id received_at source_system source_type source_event_id source_thread_id sender_name sender_email recipient_email subject_or_file_name contact_name contact_email contact_phone company property_or_suburb service_category urgency source_link match_status matched_crm_id matched_opportunity_id routing_action processing_status review_reason last_checked_at notes',
+  CRM_Master: 'date_added company lead_type priority phone preferred_call_number email address recommended_services next_action crm_status notes owner response_status opportunity_stage quote_status job_status review_status post_status do_not_contact opt_out_reason last_action_date next_follow_up_date conversation_summary outcome preferred_email lead_direction record_origin acquisition_source first_contact_channel source_detail source_evidence source_confidence first_touch_date landing_page_or_campaign crm_id contact_id property_id opportunity_id source_message_id',
+  Jobs_Opportunities: 'project_record_id opportunity_id job_id client_crm_id contact_id property_id client_name phone site_address suburb_area municipality province service_region primary_service service_detail issue_summary document_date job_status payment_status review_status post_status next_action next_follow_up_date client_input_evidence_link media_consent_status source created_at updated_at'
+};
+
+function syntheticLeadFixture() {
+  const tables = {}, registry = [];
+  for (const [sheet, fields] of Object.entries(leadSchemas)) {
+    const headers = fields.split(' ');
+    tables[sheet] = [Object.fromEntries(headers.map(h => [h, '']))];
+    headers.forEach((h,i) => registry.push({workbook_role:'CRM',sheet_name:sheet,ordinal_1based:String(i+1),expected_header:h}));
+  }
+  const crm = new FakeStore(tables);
+  const { audit } = fixtures();
+  audit.tables.Writer_Schema_Registry = registry;
+  audit.tables.Data_Ownership_Matrix = [
+    ['Source event','Intake_Queue'],['Client','CRM_Master'],['Opportunity','Jobs_Opportunities']
+  ].map(([entity_type,source_of_truth_tab]) => ({entity_type,source_of_truth_tab,ownership_status:'PASS',source_of_truth_workbook:'Myriad Green Outreach CRM'}));
+  const env = createLeadSubmittedEvent({
+    source:'WEBSITE',source_event_id:'SYNTHETIC-CORE003-001',
+    evidence:[{type:'WEBSITE_SUBMISSION',ref:'https://example.com/synthetic/core003'}],
+    lead:{contact_name:'Synthetic Test Client',contact_email:'core003@example.com',service_category:'Irrigation installation',property_or_suburb:'Pretoria East'}
+  }, {receivedAt:new Date('2026-11-26T08:00:00Z')});
+  const processor = createLeadProcessor({
+    lookupService:{leadResolverDependencies:()=>({
+      findIntakeBySourceEvent:async(source,id)=>(await crm.readObjects('Intake_Queue')).find(r=>r.source_system===source&&r.source_event_id===id)||null,
+      findCrmCandidatesByIdentity:async()=>[],
+      findEntityByCanonicalId:async()=>null
+    })},
+    now:()=>new Date('2026-11-26T08:01:00Z')
+  });
+  const writer = new TransactionWriter({stores:{crm,audit},auditStore:audit});
+  return {crm,audit,env,processor,writer};
+}
+
+test('CORE-003 synthetic website enquiry commits canonical intake, client and opportunity; exact readback and replay', async()=>{
+  const {crm,audit,env,processor,writer}=syntheticLeadFixture();
+  const ids=deterministicLeadIds(env);
+  const decision=await processor.decide(env);
+  assert.equal(decision.decision,'AUTO_WRITE',JSON.stringify(decision));
+  const plan=decision.transaction_plan;
+  assert.deepEqual(plan.writes.map(w=>w.sheet),['Intake_Queue','CRM_Master','Jobs_Opportunities']);
+  const result=await writer.execute(plan);
+  assert.equal(result.state,'COMMITTED',JSON.stringify(result));
+  const intake=(await crm.findByKey('Intake_Queue','intake_id',ids.intake_id)).object;
+  const client=(await crm.findByKey('CRM_Master','crm_id',ids.crm_id)).object;
+  const opp=(await crm.findByKey('Jobs_Opportunities','opportunity_id',ids.opportunity_id)).object;
+  assert.equal(intake.matched_crm_id,client.crm_id);
+  assert.equal(intake.matched_opportunity_id,opp.opportunity_id);
+  assert.equal(opp.client_crm_id,client.crm_id);
+  assert.equal(opp.contact_id,client.contact_id);
+  assert.equal(opp.primary_service,'Irrigation installation');
+  assert.equal(opp.job_status,'NO_JOB');
+  assert.equal(opp.payment_status,'NOT_APPLICABLE');
+  assert.equal((await writer.inspectPlanState(plan)).business_state,'APPLIED');
+  assert.equal((await audit.findByKey('Automation_Run_Log','idempotency_key',plan.idempotency_key)).object.run_state,'COMMITTED');
+  assert.equal((await writer.execute(plan)).state,'DUPLICATE_NO_OP');
+  assert.equal((await processor.decide(env)).decision,'IGNORE');
+  for(const w of plan.writes) assert.equal((await crm.readObjects(w.sheet)).filter(r=>r[w.key.header]===w.key.value).length,1);
+});
+
+test('CORE-003 authority rejection cannot create synthetic canonical lead records',async()=>{
+  const {crm,audit,env,processor,writer}=syntheticLeadFixture();
+  const decision=await processor.decide(env);
+  audit.tables.Data_Ownership_Matrix.find(r=>r.entity_type==='Opportunity').ownership_status='BLOCK';
+  const result=await writer.execute(decision.transaction_plan);
+  assert.notEqual(result.state,'COMMITTED');
+  for(const w of decision.transaction_plan.writes) assert.equal(await crm.findByKey(w.sheet,w.key.header,w.key.value),null);
+});
