@@ -5,10 +5,13 @@
 **As-of:** 2026-11-26 (Africa/Johannesburg); authoritative snapshot immediately below.
 **System:** MAGOS — the existing whole-business Myriad Green operating system, not a new product or collection of renamed agents.  
 **Repository:** [jacquesmit/myriad-green](https://github.com/jacquesmit/myriad-green)  
-**Production:** `https://runtime.myriadgreen.co.za` — tested release `b5e73575e092ef6abf39842e3ffb9ff44a45084e` DEPLOYED; 647/647 tests and 13/13 read-only preflight PASS.
+**Production:** `https://runtime.myriadgreen.co.za` — owner-terminal verified release `4aabc1f1a3c123870f6b19c007b7b502dfaa25a5` DEPLOYED; 663/663 host tests and read-only preflight PASS; business acceptance pending.
 
 
 
+
+## 26 November 2026 — production receipt and commercial workspace candidate
+Owner supplied cPanel Terminal receipt for exact release 4aabc1f1a3c123870f6b19c007b7b502dfaa25a5: 663/663 sequential host tests PASS, zero failures/cancelled/skipped, Node 20.20.2, backup gzip integrity PASS, rollback b5e73575e092ef6abf39842e3ffb9ff44a45084e. Node-to-Bash private credential handoff via child_process.spawnSync resolved deployment blocker without exposing secrets. Terminal final STATE=DEPLOYED_AND_READ_ONLY_PREFLIGHT_PASS, 129 core records, 23 capabilities (0 PASS, 19 PARTIAL, 4 FAIL), no write side effects; BUSINESS_GOLDEN_PATH=NOT_YET_VERIFIED. Full raw preflight check list not supplied. New candidate adds automatic quote-to-job evidence workspace with existing activation/deposit endpoints, exact linked opportunity/client/payment navigation and clear separation of recorded deposit evidence from independent settlement. Read-only; existing separately authorized quote acceptance retained. CI/browser acceptance and deployment of new workspace pending; no new business writes or authorization escalation.
 
 ## 26 November 2026 — PR119 integrated and Control Hub reconciled
 PR119 merged at 24dc3f16eba8c7a3662dc726d51dfffe7ad92b0b following exact-head 93e961fb2002ed85ba206837810bf4cd132fa1d5 four CI PASS (45852048228, 45852043116, 45852042992, 45852042640). PR118 merged 3c05c06229adc95104faabafce98fd2d25c57cf3; PR117 closed after requirements comparison. Control Hub Core_Build_Queue J4:L5 and J12:L12 updated and read back on 26 November; CORE-003/004/011 remain PARTIAL. Latest integrated runtime candidate not verified deployed. Last accepted production b5e73575e092ef6abf39842e3ffb9ff44a45084e remains historical evidence. Next: exact release host inspection, backup, sequential regression, authenticated preflight, browser/source-schema checks and controlled live acceptance. No live business writes. Concurrency, legacy receipt reconciliation and independent quote-version/bank authority remain open.
