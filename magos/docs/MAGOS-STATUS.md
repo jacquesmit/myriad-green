@@ -760,3 +760,7 @@ Combined PR #105 (owner OAuth/session controls), #106 (bounded sitemap verificat
 - Transaction writer CI uses Node 20, consistent with the documented hosting environment.
 - Candidate commits 34808c5c and a232f53e; exact-head CI, merge and production deployment not yet verified. No new business acceptance claimed.
 - Remaining: reproducible lockfile installation, branch protection, security scanning, isolated staging, and canonical CORE-003 golden-path testing. Existing production receipt unchanged.
+
+
+## 26 November 2026 — engineering CI evidence and runner modernization candidate
+PR #109 merged at d502ead9070e4f34b6d0692131e800a3e57a542d after four exact-head CI workflows passed, including full sequential regression and container smoke. Package 2 upgrades checkout/setup-node v4 to v5 across six MAGOS workflows while preserving application Node 20 host compatibility. Runtime regression now retains TAP evidence for 14 days, with pipefail preserving failures. Candidate only until exact-head CI and artifact readback pass. Git exit 128 annotation cause remains unverified; do not declare warning resolved. Lockfile, dependency/security scanning, CORE-003 and branch protection remain pending. No production or business write acceptance implied.
