@@ -51,7 +51,8 @@ test('operator exposes read-only supplier cost inspection and shows source block
 
 test('Command Centre offers one integrated lifecycle inspection for each linked job',()=>{
  const source=fs.readFileSync(require.resolve('../runtime/operator.js'),'utf8');
- assert.match(source,/Inspect full job lifecycle/);
+ assert.match(source,/Job delivery workspace/);
+ assert.match(source,/inspectDeliveryWorkspace\(item\.details\.job_id/);
  assert.match(source,/\/v1\/operator\/job-lifecycle\//);
  assert.match(source,/result\.stages/);
  assert.match(source,/result\.next_action/);
@@ -154,7 +155,9 @@ test('frontend includes scope variation review and retains independent job close
  assert.match(source,/Variations to resolve/);
  assert.match(source,/VARIATION_REVIEW/);
  assert.match(source,/Simpro\/Fergus benchmark/);
- assert.match(source,/Inspect complete job closure/);
+ assert.match(source,/Complete job closure and aftercare/);
+ assert.match(source,/operational-closure/);
+ assert.match(source,/No owner closure or outreach authorized/);
 });
 
 test('job details link directly to the existing scoped variation workspace',()=>{
@@ -187,7 +190,9 @@ test('completed job history remains discoverable alongside separate active job K
  assert.match(source,/Jobs on record/);
  assert.match(source,/including completed and historical work/);
  assert.match(source,/Active jobs KPI excludes completed and cancelled jobs/);
- assert.match(source,/Inspect complete job closure/);
+ assert.match(source,/Complete job closure and aftercare/);
+ assert.match(source,/operational-closure/);
+ assert.match(source,/No owner closure or outreach authorized/);
 });
 
 test('quote details offer real client signing readiness without issuing a client link',()=>{

@@ -949,15 +949,16 @@
     const deadline=setTimeout(()=>active.abort(),30000);
     const stages=[
       ['Delivery lifecycle','job-lifecycle','MAGOS_JOB_LIFECYCLE_V1',r=>[
-        ...(r.stages||[]).map(s=>s.name+': '+s.state),...(r.blockers||[]),r.next_action]],
+        ...(r.stages||[]).map(s=>s.name+': '+s.state),...(r.blockers||[]),r.next_action,
+        'Bank settlement and actual completion require independent verification']],
       ['Materials and scheduling','scheduling-readiness','MAGOS_SCHEDULING_READINESS_V1',r=>[
         Number.isInteger(r.procurement_requirement_count)?'Material requirements: '+r.procurement_requirement_count:null,
         ...(r.blockers||[]),...(r.review_reasons||[]),'Provider availability and booking authorization remain separate.']],
-      ['Actual costs and field proof','job-closeout',null,r=>[
+      ['Actual costs and field proof','job-closeout','MAGOS_JOB_CLOSEOUT_READINESS_V1',r=>[
         typeof r.contract_value_zar==='number'?'Contract: '+zar.format(r.contract_value_zar):'Contract value unknown',
         typeof r.evidenced_cost_sum_zar==='number'?'Evidenced direct costs: '+zar.format(r.evidenced_cost_sum_zar):'Actual costs unknown',
         ...(r.blockers||[]),'Final profit is not independently verified.']],
-      ['Closure and aftercare','operational-closure','MAGOS_OPERATIONAL_CLOSURE_V1',r=>[
+      ['Complete job closure and aftercare','operational-closure','MAGOS_OPERATIONAL_CLOSURE_V1',r=>[
         r.finance?.state&&'Receivables: '+r.finance.state,
         r.aftercare?.state&&'Aftercare: '+r.aftercare.state,
         ...(r.blockers||[]),...(r.next_actions||[]),'No owner closure or outreach authorized.']]

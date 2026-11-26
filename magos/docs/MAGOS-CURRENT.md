@@ -10,6 +10,9 @@
 
 
 
+## 26 November 2026 — PR122 regression repair
+Initial PR122 CI failed three legacy operator-page source assertions referencing replaced individual buttons (runtime job 140044002376 and document job 140044003762); evolving status passed. Updated assertions to require integrated workspace and closure endpoint with preserved independent authorization warnings. Added explicit independent bank/actual completion warning to visible delivery stage and exact closeout schema validation. No test removals; old button labels superseded by functional workspace. Exact new CI and browser acceptance pending. Production unchanged.
+
 ## 26 November 2026 — job delivery workspace and procurement draft candidate
 PR121 merged at a0cf52cea2480111e8711ea8ada07e8753553341 after exact head e187c7b8afcdfa2ca7503a4301bb876467c57dec three CI PASS (45857942348, 45857942315, 45857942311). New candidate integrates delivery lifecycle, procurement/scheduling readiness, field proof/cost and closure/aftercare into existing job detail; bounded sequential reads, exact identity and side-effect checks, independent partial-result display. Existing actual-cost capture and verification retained. Adds job-linked internal purchase order draft preview/commit using existing governed route with input-bound preview, separate token, explicit confirmation and uncertain-result reconciliation. Closes missing operator/ingress token isolation in procurement-draft route. No supplier order dispatch or payment release. Canonical job-link authority and independent approval still need verification; no actual booking, final closure or customer outreach authorized. Source-contract tests added; exact CI, browser and production acceptance pending. Production remains owner-reported 4aabc1f1a3c123870f6b19c007b7b502dfaa25a5. No production business writes.
 
