@@ -10,6 +10,9 @@
 
 
 
+## 26 November 2026 — integrated PR118 and commercial replay candidate
+PR118 merged at 3c05c06229adc95104faabafce98fd2d25c57cf3 after exact head 33488a5da8288c2330fffb7e1c6ee3aef2fcbdda 3/3 CI PASS (45851395176, 45851395178, 45851395242). PR117 closed after requirements preservation. Browser/live schema/host acceptance pending. Commercial candidate binds new job creation to SHA-256 receipt in existing audit input_scope, verifies exact canonical links and current authority on replay, refuses legacy unbound receipts, preserves progressed status. Synthetic test additions; exact CI pending. No production change or business writes. Drive synchronization pending. No claim of atomic cross-workbook execution.
+
 ## 26 November 2026 — PR118 response contract hardening
 Prior head a0ee156f41f82b9bb3f24faf35f54d8d67cd8fcd returned 3/3 successful workflows (45850888698, 45850888684, 45850888701). Candidate adds complete projected-header validation, 64 KiB serialized UTF-8 result ceiling, actual displayed count, and cancellation cleanup that preserves timeout feedback. Added schema and byte-bound regression tests. Missing canonical headers now fail closed; verify deployed register schema before release. Browser acceptance, exact-head CI, production and Drive parity pending. No business writes.
 
