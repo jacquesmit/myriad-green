@@ -782,3 +782,7 @@ Run 45968452621 failed at HTTPS issuer download (curl 35). Use the HTTP AIA URI 
 
 ### Runtime CA preparation
 CI 45968629825 passed issuer and leaf verification and direct retrieval of 108870 and 108857. Commits ea3d672ffc4d37413a733c778a0b7346765fcee9 and 8b0e69d1a040d20d9cdd6169b7631a16ebf3d729 extract the reusable preparation script and exercise it in CI. Deployment contract: run sh magos/content/prepare-water-source-ca.sh /absolute/private/issuer.pem as runtime user; configure NODE_EXTRA_CA_CERTS to that path before Node starts, preserving any existing CA configuration; restart and probe. HostAfrica configuration and restart not executed. Classification remains fail-closed.
+
+
+### Owner terminal handover — 2026-11-27
+See [WATER-ALERT-HOSTAFRICA-HANDOVER.md](WATER-ALERT-HOSTAFRICA-HANDOVER.md). Owner away from Terminal; next action read-only existing release inspect. CI 45968927731 PASS. Classification, reviewed merge, host CA configuration and production acceptance pending. No host changes.
