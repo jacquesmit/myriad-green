@@ -561,3 +561,7 @@ Isolated branch `fix/magos-water-retrieval-20261127`: official Tshwane REST fall
 
 ### Water retrieval live acceptance probe — 2026-11-27
 Prior CI all PASS at 741a64a160a2db2e9c0d7911f8796174bc32436e. Commit 299e8e3c1030dcb5b8d7d40479f4e51cd327f7f3 adds read-only live retrieval of official Tshwane IDs 108870 and 108857 in CI. Results pending; CI network is not production runtime. No semantic approval or publication enabled.
+
+
+### Water retrieval transport diagnostics — 2026-11-27
+Live CI run 45965863666: three synthetic tests PASS; both official IDs failed all three routes with generic fetch failed. Governance and document extraction PASS. Commits bc56894f4226f14ae711120dfdc08e7c1d035471 and 9a43adbe644bf9b6405181deb7ace22d39050637 add alternate official hostname and transport cause diagnostics, with updated test. New CI pending. Redirects still rejected; classification, production runtime and publication remain blocked. No production writes.
