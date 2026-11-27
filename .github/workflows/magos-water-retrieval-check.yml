@@ -15,3 +15,16 @@ jobs:
         with:
           node-version: '18'
       - run: node --test magos/content/water-alert-retrieval.test.js
+      - name: Probe actual official notices (read-only)
+        run: |
+          node <<'NODE'
+          const {retrieveArticle}=require('./magos/content/water-alert-source-verifier');
+          (async()=>{
+            for(const id of ['108870','108857']){
+              const url=new URL('https://www.tshwane.gov.za/?p='+id);
+              const r=await retrieveArticle(url,{provider:'CITY_OF_TSHWANE',source_event_id:id},fetch);
+              console.log(JSON.stringify({id,retrieved:!!r.html,source_url:r.source_url,attempts:r.attempts}));
+              if(!r.html)process.exitCode=1;
+            }
+          })().catch(e=>{console.error(e);process.exitCode=1});
+          NODE
