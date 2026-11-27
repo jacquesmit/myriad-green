@@ -753,3 +753,36 @@ Owner supplied cPanel evidence: corrected PR #104 exact merged SHA `b5e73575e092
 
 ## 26 November 2026 — consolidated release candidate
 Combined PR #105 (owner OAuth/session controls), #106 (bounded sitemap verification), and #107 (whole-system dashboard inventories) from exact previously tested heads 80ae47f8788cae0a07ccd6e95bca591c7c291339, a624328094afdfa2eafcfb1db90b4d41c2b708fc, b60f1e48c926ae1b076b9bef73dab7eef5eb0911. Non-overlapping code copied only after base blob equality; operator.js combined navigation with authorized() session/token checks. Preserve existing main documentation. Individual CI receipts do not certify integrated release. Pending integrated exact-head CI, deployment, OAuth configuration and authenticated UI readback. Water source factual corroboration remains TO_CONFIRM; no claim of independent corroboration, no unattended publication activation. Targeted cache invalidation and genuine same-source update remain pending. Dashboard reads register labels, not live business acceptance. Existing deployed release unchanged; CORE-003 controlled canonical business write/readback/replay remains next core acceptance. No duplicate scheduler, no new authority or credentials.
+
+
+## 2026-11-27 — Water alert retrieval repair (PR #127)
+
+Isolated branch `fix/magos-water-retrieval-20261127`: official Tshwane REST fallback and diagnostics implemented (acf19aa9ac548c5233d93e3a04537a950ec368a0). Synthetic regression CI PASS ([run 45963344319](https://github.com/jacquesmit/myriad-green/actions/runs/45963344319)); document extraction CI PASS. Live official retrieval, semantic classification, deployment and publication QA remain BLOCKED/PENDING. No production changes. Prior status gate failed because both authoritative status records were not updated; this entry reconciles that omission without changing the gate.
+
+
+### Water retrieval live acceptance probe — 2026-11-27
+Prior CI all PASS at 741a64a160a2db2e9c0d7911f8796174bc32436e. Commit 299e8e3c1030dcb5b8d7d40479f4e51cd327f7f3 adds read-only live retrieval of official Tshwane IDs 108870 and 108857 in CI. Results pending; CI network is not production runtime. No semantic approval or publication enabled.
+
+
+### Water retrieval transport diagnostics — 2026-11-27
+Live CI run 45965863666: three synthetic tests PASS; both official IDs failed all three routes with generic fetch failed. Governance and document extraction PASS. Commits bc56894f4226f14ae711120dfdc08e7c1d035471 and 9a43adbe644bf9b6405181deb7ace22d39050637 add alternate official hostname and transport cause diagnostics, with updated test. New CI pending. Redirects still rejected; classification, production runtime and publication remain blocked. No production writes.
+
+
+### Municipal TLS blocker — 2026-11-27
+Run 45966033638 confirms UNABLE_TO_VERIFY_LEAF_SIGNATURE for all www routes and UND_ERR_CONNECT_TIMEOUT for alternate host. Commit a45d148cc81f72caaa265e77cffabc62a834dc30 adds system CA trust and certificate-chain diagnostics. TLS validation remains mandatory. Retest pending; no production deployment or publication.
+
+
+### TLS intermediate repair — 2026-11-27
+Run 45966366942 confirms server presents leaf only, issuer GeoTrust TLS RSA CA G1 (DigiCert). Commit 23141ba9bcc26ad04403014e5fcc9229c4408f10 adds HTTPS issuer retrieval, trusted-root verification and explicit leaf hostname/chain verification before CI retry. No TLS bypass. Issuer download and live retrieval pending CI; production unchanged, classification pending.
+
+
+### Issuer transport correction
+Run 45968452621 failed at HTTPS issuer download (curl 35). Use the HTTP AIA URI encoded in the leaf certificate; issuer and leaf must still verify cryptographically against existing trusted roots before HTTPS notice retrieval. No production changes; retest pending.
+
+
+### Runtime CA preparation
+CI 45968629825 passed issuer and leaf verification and direct retrieval of 108870 and 108857. Commits ea3d672ffc4d37413a733c778a0b7346765fcee9 and 8b0e69d1a040d20d9cdd6169b7631a16ebf3d729 extract the reusable preparation script and exercise it in CI. Deployment contract: run sh magos/content/prepare-water-source-ca.sh /absolute/private/issuer.pem as runtime user; configure NODE_EXTRA_CA_CERTS to that path before Node starts, preserving any existing CA configuration; restart and probe. HostAfrica configuration and restart not executed. Classification remains fail-closed.
+
+
+### Owner terminal handover — 2026-11-27
+See [WATER-ALERT-HOSTAFRICA-HANDOVER.md](WATER-ALERT-HOSTAFRICA-HANDOVER.md). Owner away from Terminal; next action read-only existing release inspect. CI 45968927731 PASS. Classification, reviewed merge, host CA configuration and production acceptance pending. No host changes.

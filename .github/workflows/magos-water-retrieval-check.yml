@@ -1,0 +1,38 @@
+name: MAGOS water retrieval checks
+on:
+  pull_request:
+    paths:
+      - 'magos/content/water-alert*'
+      - '.github/workflows/magos-water-retrieval-check.yml'
+permissions:
+  contents: read
+jobs:
+  retrieval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: node --test magos/content/water-alert-retrieval.test.js
+      - name: Diagnose official TLS chain with system trust
+        run: |
+          timeout 20 openssl s_client -connect www.tshwane.gov.za:443 -servername www.tshwane.gov.za -showcerts -verify_return_error </dev/null || true
+          curl --head --connect-timeout 10 --max-time 20 'https://www.tshwane.gov.za/?p=108870' || true
+      - name: Obtain and validate missing DigiCert intermediate
+        run: |
+          sh magos/content/prepare-water-source-ca.sh "$RUNNER_TEMP/tshwane-issuer.pem"
+          echo "NODE_EXTRA_CA_CERTS=$RUNNER_TEMP/tshwane-issuer.pem" >> "$GITHUB_ENV"
+      - name: Probe actual official notices (read-only)
+        run: |
+          node <<'NODE'
+          const {retrieveArticle}=require('./magos/content/water-alert-source-verifier');
+          (async()=>{
+            for(const id of ['108870','108857']){
+              const url=new URL('https://www.tshwane.gov.za/?p='+id);
+              const r=await retrieveArticle(url,{provider:'CITY_OF_TSHWANE',source_event_id:id},fetch);
+              console.log(JSON.stringify({id,retrieved:!!r.html,source_url:r.source_url,attempts:r.attempts}));
+              if(!r.html)process.exitCode=1;
+            }
+          })().catch(e=>{console.error(e);process.exitCode=1});
+          NODE
