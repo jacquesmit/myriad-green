@@ -21,12 +21,7 @@ jobs:
           curl --head --connect-timeout 10 --max-time 20 'https://www.tshwane.gov.za/?p=108870' || true
       - name: Obtain and validate missing DigiCert intermediate
         run: |
-          set -eu
-          curl --fail --silent --show-error --proto '=http' --max-time 25 --max-filesize 65536 'http://cacerts.geotrust.com/GeoTrustTLSRSACAG1.crt' -o "$RUNNER_TEMP/tshwane-issuer.der"
-          openssl x509 -inform DER -in "$RUNNER_TEMP/tshwane-issuer.der" -out "$RUNNER_TEMP/tshwane-issuer.pem"
-          openssl verify -CAfile /etc/ssl/certs/ca-certificates.crt "$RUNNER_TEMP/tshwane-issuer.pem"
-          openssl s_client -connect www.tshwane.gov.za:443 -servername www.tshwane.gov.za -showcerts </dev/null 2>/dev/null | openssl x509 -out "$RUNNER_TEMP/tshwane-leaf.pem"
-          openssl verify -purpose sslserver -verify_hostname www.tshwane.gov.za -CAfile /etc/ssl/certs/ca-certificates.crt -untrusted "$RUNNER_TEMP/tshwane-issuer.pem" "$RUNNER_TEMP/tshwane-leaf.pem"
+          sh magos/content/prepare-water-source-ca.sh "$RUNNER_TEMP/tshwane-issuer.pem"
           echo "NODE_EXTRA_CA_CERTS=$RUNNER_TEMP/tshwane-issuer.pem" >> "$GITHUB_ENV"
       - name: Probe actual official notices (read-only)
         run: |
