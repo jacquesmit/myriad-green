@@ -9,3 +9,7 @@ Live change verified: the lower duplicate Back to Main Shop link was removed fro
 Open: align Water Storage and other department spacing, standardize brand buying panels using verified WooCommerce products, and verify the shared product detail layout across the full equipment catalogue. Validate galleries, price, quantity, variations, cart and checkout routing at desktop, tablet and mobile widths.
 
 The ecommerce release record contains measured findings, route scope and rollback. [Ecommerce hero parity release record](https://github.com/jacquesmit/myriad-green-ecommerce/blob/a4125db4ca509eed6c73f2145c1b488c9fe94d44/releases/2026-11-27-ecommerce-hero-parity.md).
+
+## Rain Bird and RainPoint live checkpoint
+
+WPVibe published brand-scoped Elementor archive templates 10695 (Rain Bird, product 9998) and 10697 (RainPoint, product 10600). Both hero sections were verified in rendered public HTML. The hero links to the live product price. Full responsive, gallery and purchase-path acceptance remains open. Rollback is to return the affected archive template to draft. The exact deployed template JSON is committed in the ecommerce repository under `snapshots/2026-11-27/`.
