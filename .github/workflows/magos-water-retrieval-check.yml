@@ -1,0 +1,17 @@
+name: MAGOS water retrieval checks
+on:
+  pull_request:
+    paths:
+      - 'magos/content/water-alert*'
+      - '.github/workflows/magos-water-retrieval-check.yml'
+permissions:
+  contents: read
+jobs:
+  retrieval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: node --test magos/content/water-alert-retrieval.test.js
