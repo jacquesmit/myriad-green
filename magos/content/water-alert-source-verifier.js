@@ -47,9 +47,15 @@ async function retrieveArticle(url,n,request){
  if(url.search && (!id || url.searchParams.get('p')!==id))throw Error('SOURCE_EVENT_ID_MISMATCH');
  const candidates=[{url:url.href,json:false}];
  if(n.provider==='CITY_OF_TSHWANE' && id && url.searchParams.get('p')===id){
+  const alternate=new URL(url.href);alternate.hostname=url.hostname==='www.tshwane.gov.za'?'tshwane.gov.za':'www.tshwane.gov.za';
+  // Alternate host is attempted after the REST routes.
+  var alternateCandidate={url:alternate.href,json:false};
+ }
+ if(n.provider==='CITY_OF_TSHWANE' && id && url.searchParams.get('p')===id){
   candidates.push({url:new URL('/wp-json/wp/v2/posts/'+id,url.origin).href,json:true});
   candidates.push({url:new URL('/?rest_route=/wp/v2/posts/'+id,url.origin).href,json:true});
  }
+ if(alternateCandidate)candidates.push(alternateCandidate);
  const attempts=[];
  for(const candidate of candidates){
   try{
@@ -65,7 +71,7 @@ async function retrieveArticle(url,n,request){
     return {html:'<article><h1>'+post.title.rendered+'</h1>'+post.content.rendered+'</article>',raw,source_url:candidate.url,attempts};
    }
    return {html:raw,raw,source_url:candidate.url,attempts};
-  }catch(e){attempts.push({url:candidate.url,reason:String(e.name==='TimeoutError'?'TIMEOUT':e.message).slice(0,120)});}
+  }catch(e){attempts.push({url:candidate.url,reason:String(e.name==='TimeoutError'?'TIMEOUT':e.message).slice(0,120),cause_code:String(e.cause?.code||e.code||'').slice(0,80),cause_message:String(e.cause?.message||'').slice(0,160)});}
  }
  return {attempts};
 }
