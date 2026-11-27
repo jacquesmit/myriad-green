@@ -22,7 +22,7 @@ jobs:
       - name: Obtain and validate missing DigiCert intermediate
         run: |
           set -eu
-          curl --fail --silent --show-error --proto '=https' --max-time 25 --max-filesize 65536 'https://cacerts.geotrust.com/GeoTrustTLSRSACAG1.crt' -o "$RUNNER_TEMP/tshwane-issuer.der"
+          curl --fail --silent --show-error --proto '=http' --max-time 25 --max-filesize 65536 'http://cacerts.geotrust.com/GeoTrustTLSRSACAG1.crt' -o "$RUNNER_TEMP/tshwane-issuer.der"
           openssl x509 -inform DER -in "$RUNNER_TEMP/tshwane-issuer.der" -out "$RUNNER_TEMP/tshwane-issuer.pem"
           openssl verify -CAfile /etc/ssl/certs/ca-certificates.crt "$RUNNER_TEMP/tshwane-issuer.pem"
           openssl s_client -connect www.tshwane.gov.za:443 -servername www.tshwane.gov.za -showcerts </dev/null 2>/dev/null | openssl x509 -out "$RUNNER_TEMP/tshwane-leaf.pem"
