@@ -766,3 +766,7 @@ Prior CI all PASS at 741a64a160a2db2e9c0d7911f8796174bc32436e. Commit 299e8e3c10
 
 ### Water retrieval transport diagnostics — 2026-11-27
 Live CI run 45965863666: three synthetic tests PASS; both official IDs failed all three routes with generic fetch failed. Governance and document extraction PASS. Commits bc56894f4226f14ae711120dfdc08e7c1d035471 and 9a43adbe644bf9b6405181deb7ace22d39050637 add alternate official hostname and transport cause diagnostics, with updated test. New CI pending. Redirects still rejected; classification, production runtime and publication remain blocked. No production writes.
+
+
+### Municipal TLS blocker — 2026-11-27
+Run 45966033638 confirms UNABLE_TO_VERIFY_LEAF_SIGNATURE for all www routes and UND_ERR_CONNECT_TIMEOUT for alternate host. Commit a45d148cc81f72caaa265e77cffabc62a834dc30 adds system CA trust and certificate-chain diagnostics. TLS validation remains mandatory. Retest pending; no production deployment or publication.
