@@ -758,3 +758,7 @@ Combined PR #105 (owner OAuth/session controls), #106 (bounded sitemap verificat
 ## 2026-11-27 — Water alert retrieval repair (PR #127)
 
 Isolated branch `fix/magos-water-retrieval-20261127`: official Tshwane REST fallback and diagnostics implemented (acf19aa9ac548c5233d93e3a04537a950ec368a0). Synthetic regression CI PASS ([run 45963344319](https://github.com/jacquesmit/myriad-green/actions/runs/45963344319)); document extraction CI PASS. Live official retrieval, semantic classification, deployment and publication QA remain BLOCKED/PENDING. No production changes. Prior status gate failed because both authoritative status records were not updated; this entry reconciles that omission without changing the gate.
+
+
+### Water retrieval live acceptance probe — 2026-11-27
+Prior CI all PASS at 741a64a160a2db2e9c0d7911f8796174bc32436e. Commit 299e8e3c1030dcb5b8d7d40479f4e51cd327f7f3 adds read-only live retrieval of official Tshwane IDs 108870 and 108857 in CI. Results pending; CI network is not production runtime. No semantic approval or publication enabled.
