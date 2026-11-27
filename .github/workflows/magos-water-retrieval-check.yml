@@ -15,7 +15,13 @@ jobs:
         with:
           node-version: '18'
       - run: node --test magos/content/water-alert-retrieval.test.js
+      - name: Diagnose official TLS chain with system trust
+        run: |
+          timeout 20 openssl s_client -connect www.tshwane.gov.za:443 -servername www.tshwane.gov.za -showcerts -verify_return_error </dev/null || true
+          curl --head --connect-timeout 10 --max-time 20 'https://www.tshwane.gov.za/?p=108870' || true
       - name: Probe actual official notices (read-only)
+        env:
+          NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt
         run: |
           node <<'NODE'
           const {retrieveArticle}=require('./magos/content/water-alert-source-verifier');
