@@ -41,6 +41,34 @@ function dates(day){
  if(!Number.isFinite(+d)||d.toISOString().slice(0,10)!==day)return [];
  return [day,new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(d)];
 }
+// Retrieval is separate from semantic approval. Only exact official hosts are used.
+async function retrieveArticle(url,n,request){
+ const id=/^\d+$/.test(n.source_event_id)?n.source_event_id:null;
+ if(url.search && (!id || url.searchParams.get('p')!==id))throw Error('SOURCE_EVENT_ID_MISMATCH');
+ const candidates=[{url:url.href,json:false}];
+ if(n.provider==='CITY_OF_TSHWANE' && id && url.searchParams.get('p')===id){
+  candidates.push({url:new URL('/wp-json/wp/v2/posts/'+id,url.origin).href,json:true});
+  candidates.push({url:new URL('/?rest_route=/wp/v2/posts/'+id,url.origin).href,json:true});
+ }
+ const attempts=[];
+ for(const candidate of candidates){
+  try{
+   const res=await request(candidate.url,{method:'GET',redirect:'error',signal:AbortSignal.timeout(12000),headers:{Accept:candidate.json?'application/json':'text/html'}});
+   if(res.status!==200)throw Error('HTTP_'+res.status);
+   if(res.url && res.url!==candidate.url)throw Error('SOURCE_REDIRECT_NOT_ALLOWED');
+   const type=res.headers?.get('content-type')||'';
+   if(!(candidate.json?/^application\/json\b/i:/^text\/html\b/i).test(type))throw Error('SOURCE_CONTENT_TYPE');
+   const raw=await boundedText(res);
+   if(candidate.json){
+    const post=JSON.parse(raw);
+    if(String(post.id)!==id || post.status!=='publish' || post.type!=='post' || !approvedUrl(post.link,n.provider) || typeof post.title?.rendered!=='string' || typeof post.content?.rendered!=='string')throw Error('SOURCE_EVENT_ID_MISMATCH');
+    return {html:'<article><h1>'+post.title.rendered+'</h1>'+post.content.rendered+'</article>',raw,source_url:candidate.url,attempts};
+   }
+   return {html:raw,raw,source_url:candidate.url,attempts};
+  }catch(e){attempts.push({url:candidate.url,reason:String(e.name==='TimeoutError'?'TIMEOUT':e.message).slice(0,120)});}
+ }
+ return {attempts};
+}
 async function verifyNoticeContent(input,{request=globalThis.fetch}={}){
  const n=normalizeNotice(input);
  if(!verifyOfficialSource(n).verified)return fail('SOURCE_IDENTITY_UNVERIFIED');
@@ -54,10 +82,9 @@ async function verifyNoticeContent(input,{request=globalThis.fetch}={}){
  // First autonomous lane is narrowly restricted to exact source extracts.
  if(n.tanker_points.length||n.restrictions.length||n.faq.length||n.valid_until)return fail('STRUCTURED_CLAIMS_REVIEW_REQUIRED');
  try{
-  const res=await request(url.href,{method:'GET',redirect:'error',signal:AbortSignal.timeout(12000),headers:{Accept:'text/html'}});
-  if(res.status!==200||!/^text\/html\b/i.test(res.headers?.get('content-type')||''))return fail('SOURCE_UNAVAILABLE');
-  if(res.url&&res.url!==url.href)return fail('SOURCE_REDIRECT_NOT_ALLOWED');
-  const html=await boundedText(res);
+  const retrieved=await retrieveArticle(url,n,request);
+  if(!retrieved.html)return {...fail('SOURCE_RETRIEVAL_FAILED'),attempts:retrieved.attempts};
+  const html=retrieved.html;
   const articles=[...html.replace(/<!--[\s\S]*?-->/g,'').replace(/<(script|style|template)\b[^>]*>[\s\S]*?<\/\1\s*>/gi,'').matchAll(/<article\b[^>]*>([\s\S]*?)<\/article\s*>/gi)];
   if(articles.length!==1)return fail('SOURCE_ARTICLE_AMBIGUOUS');
   const article=articles[0][1];
@@ -69,7 +96,7 @@ async function verifyNoticeContent(input,{request=globalThis.fetch}={}){
   if(!dates(n.effective_date).some(d=>excerpt.includes(norm(d))))return fail('SOURCE_EFFECTIVE_DATE_UNVERIFIED');
   if(!n.affected_areas.every(a=>excerpt.includes(norm(a))))return fail('SOURCE_AREAS_UNVERIFIED');
   // Classification is deliberately review-only until provider-specific semantics are validated.
-  return {...fail('SOURCE_CLASSIFICATION_REVIEW_REQUIRED'),exact_extract_verified:true,source_sha256:crypto.createHash('sha256').update(html).digest('hex'),source_url:url.href};
+  return {...fail('SOURCE_CLASSIFICATION_REVIEW_REQUIRED'),exact_extract_verified:true,source_sha256:crypto.createHash('sha256').update(retrieved.raw).digest('hex'),source_url:retrieved.source_url,attempts:retrieved.attempts};
  }catch{return fail('SOURCE_RETRIEVAL_FAILED');}
 }
-module.exports={verifyNoticeContent,approvedUrl};
+module.exports={verifyNoticeContent,approvedUrl,retrieveArticle};
