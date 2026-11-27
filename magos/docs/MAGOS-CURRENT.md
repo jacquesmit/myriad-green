@@ -569,3 +569,7 @@ Live CI run 45965863666: three synthetic tests PASS; both official IDs failed al
 
 ### Municipal TLS blocker — 2026-11-27
 Run 45966033638 confirms UNABLE_TO_VERIFY_LEAF_SIGNATURE for all www routes and UND_ERR_CONNECT_TIMEOUT for alternate host. Commit a45d148cc81f72caaa265e77cffabc62a834dc30 adds system CA trust and certificate-chain diagnostics. TLS validation remains mandatory. Retest pending; no production deployment or publication.
+
+
+### TLS intermediate repair — 2026-11-27
+Run 45966366942 confirms server presents leaf only, issuer GeoTrust TLS RSA CA G1 (DigiCert). Commit 23141ba9bcc26ad04403014e5fcc9229c4408f10 adds HTTPS issuer retrieval, trusted-root verification and explicit leaf hostname/chain verification before CI retry. No TLS bypass. Issuer download and live retrieval pending CI; production unchanged, classification pending.
