@@ -573,3 +573,7 @@ Run 45966033638 confirms UNABLE_TO_VERIFY_LEAF_SIGNATURE for all www routes and 
 
 ### TLS intermediate repair — 2026-11-27
 Run 45966366942 confirms server presents leaf only, issuer GeoTrust TLS RSA CA G1 (DigiCert). Commit 23141ba9bcc26ad04403014e5fcc9229c4408f10 adds HTTPS issuer retrieval, trusted-root verification and explicit leaf hostname/chain verification before CI retry. No TLS bypass. Issuer download and live retrieval pending CI; production unchanged, classification pending.
+
+
+### Issuer transport correction
+Run 45968452621 failed at HTTPS issuer download (curl 35). Use the HTTP AIA URI encoded in the leaf certificate; issuer and leaf must still verify cryptographically against existing trusted roots before HTTPS notice retrieval. No production changes; retest pending.
