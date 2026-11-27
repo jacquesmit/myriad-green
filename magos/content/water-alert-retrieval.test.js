@@ -24,5 +24,5 @@ test('wrong REST event cannot pass',async()=>{
   return new Response(JSON.stringify({id:108857,status:'publish',type:'post',link:url.href,title:{rendered:'Wrong'},content:{rendered:'Wrong'}}),{headers:{'content-type':'application/json'}});
  });
  assert.equal(result.html,undefined);
- assert.equal(result.attempts.length,3);
+ assert.equal(result.attempts.length,4);
 });
